@@ -22,7 +22,7 @@ This script is an excellent template for any mean reversion startegy you might w
 
 <img width="1289" alt="Screen Shot 2022-09-23 at 7 01 42 AM" src="https://user-images.githubusercontent.com/79699033/191949900-3249c91c-25ca-4f0a-a83e-d3d7893acd04.png">
 
-The most important node in this flow is the "Trading algo - long only" which is show and annotated below.
+The most important node in this flow is the "Trading algo - long only" which is shown and annotated below.
 
 let pos = flow.get("position") // the is the value of any current positions for the ticker
 let orders = flow.get("orders") // this is the value of any open orders for the ticker
