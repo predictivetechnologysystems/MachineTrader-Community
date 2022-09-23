@@ -37,77 +37,48 @@ let ux = (Date.now()) / 1000 // we like to use unixtime in seconds so we divided
 ux = Math.trunc(ux) // make sure we have a whole integer after the division
 
 let ticker = global.get("ticker") // this is the ticker we are trading (set in the "One Second Trades" flow)
+
 let results = "results_" + ticker // this is the name created for a sqlite table for results if you decided to add a results flow 
+
 let avg = global.get("average_price") // this is the moving average value for the ticker (set in the "One Second Trades" flow). The default is 100 trades
+
 let current_price = global.get("price") // value of the last trade 
+
 let d = (current_price - avg) // "d" is the difference between the current price and the average price 
+
 let buytarget = (20 * -1) // the is the 'trigger' price for the trade. Typically it's at least a standard deviation of the price differences. 
+
     // The price is current set at $20. The lower the target, the more trades will occur but the profit per trade will likely be lower
+
 let cvrtarget = (0.01) // this is a second 'trigger' which is the price we the position will be closed. 
+
     // The default "0.01" means thta as sooon as the current price crossed the average price, the position will be closed  
 
+
 let type = "market" // this can be either market or limit (stop limit or trailing limits not required since the trading logic controls the exits 
+
 let tif = "gtc" // gtc or "good until cancelled" seems to work best although this could be "day" or "ioc"
+
 let side = "buy" // we're only doing long trades here.
 
+
 // Alpaca requires limit price > 0.10 (Alpaca required the limit price to be set slightly higher than the current price for Cryptos) 
+
 // These are turned off. This can be turned back on if required.
+
 //let newprice = parseFloat(current_price);
+
 //node.warn("Current Price: " +current_price+ " New Price: " +newprice)
+
 //current_price = (newprice + .11)
+
 //current_price = current_price.toFixed(2);
 
 
 
+
 let buyqty = 50 // this can be changed
+
 let sellqty = -50 // should match the buyqty
-let temp = ''
 
-// These node.warning can be uncommented if you want to monitor what's happending 
-//node.warn("Price diff (buy if negative & < -0.20):  " +d+ " Position: " +pos)
-//node.warn("Ticker: " + ticker + " Position: " + pos + " Orders: " + orders + " Unixtime: " + ux + " Current Price: " + current_price + " Avg Price: " + avg+ " Shares: " +buyqty+ " Type: " +type+ " TIF: " +tif)
-//node.warn("Ticker: " + ticker + " Position: " + pos + " Orders: " + orders + " Unixtime: " + ux + " Current Price: " + current_price + " Avg Price: " + avg + " Diff: " + d)
-
-// testing
-//buytarget = 10
-//pos = 0
-//orders = 0
-
-// the logic below whould be self-explanatory
-
-if (d < buytarget && pos == 0 && orders == 0) {
-    node.warn("buy 100 shares where pos = 0")
-    side = "buy"
-    temp = {
-        "symbol": ticker,
-        "qty": buyqty,
-        "side": side,
-        "type": "market",
- //       "type": "limit",
- //       "limit_price": current_price,
-        "time_in_force": tif
-    };
-    msg.payload = temp;
-    node.warn(msg.payload)
-    return msg
-}
-
-else if (d > cvrtarget && pos > 0) {
-    node.warn("cover long position by selling")
-    let side = "sell"
-    buyqty = pos
-    temp = {
-        "symbol": ticker,
-        "qty": buyqty,
-        "side": side,
-        "type": "market",
-     //   "limit_price": current_price,
-        "time_in_force": tif
-    };
-    msg.payload = temp;
-    node.warn(msg.payload)
-    return msg
-}
-
-
-     
+The rest of the logic should be self explanatory.
