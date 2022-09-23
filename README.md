@@ -11,9 +11,13 @@ Executing the "modify market indicators" node will start a flow that delete the 
 <img width="791" alt="Screen Shot 2022-09-23 at 8 03 47 AM" src="https://user-images.githubusercontent.com/79699033/191956901-aded4117-61cb-4a0b-8a35-6fb76d1e91ef.png">
 
 # Simple Interday Trade
-Interday trades are the easiest algorithms to write since they use and process they often use very little timeseries data. Academic reseach of past performance for broadly held ETFs like SPY has shown that, historically speaking, holding the ERTF overnight and selling in the morning at the market open produces a slightloy higher return than simply holding the asset. Following that logic, we have constructed a trading flow that buys SPY at 3:55 pm  EST(shortly before close), holds it overnight, and sells it just after the market opening bell at 9:31 AM EST.
+Interday trades are the easiest algorithms to write since they often use and process very little timeseries data. Academic reseach of past performance for broadly held ETFs like SPY has shown that, historically speaking, holding the ERTF overnight and selling in the morning at the market open produces a slightly higher return than simply holding the asset. Following that logic, we have constructed a trading flow that buys SPY at 3:55 pm  EST(shortly before close), holds it overnight, and sells it just after the market opening bell at 9:31 AM EST.
 
 <img width="1735" alt="Screen Shot 2022-09-23 at 12 26 52 PM" src="https://user-images.githubusercontent.com/79699033/192009099-961513ca-ae90-4220-b3d8-75bc12b01c84.png">
+
+You'll notice that we have decided to buy with a limit order, using the current price, of SPY. The time in force is set to "gtc" which means the order will stay open until the market close at 4 pm, leaving 5 minutes for the order to be filled. There is some risk the order will not be filled - typically if the price is declining sharply - which might be a good occassion not to make the buy in any event. To assure the order goes through, the trader can change the order type to "market" and comment out the limit price ( // limit_price = current_price).
+
+<img width="356" alt="Screen Shot 2022-09-23 at 12 34 45 PM" src="https://user-images.githubusercontent.com/79699033/192010151-365b5cf1-14ee-4c03-ac7f-2b72054d3c3f.png">
 
 
 
