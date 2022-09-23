@@ -10,6 +10,11 @@ Executing the "modify market indicators" node will start a flow that delete the 
  
 <img width="791" alt="Screen Shot 2022-09-23 at 8 03 47 AM" src="https://user-images.githubusercontent.com/79699033/191956901-aded4117-61cb-4a0b-8a35-6fb76d1e91ef.png">
 
+# Simple Interday Trade
+Interday trades are the easiest algorithms to write since they use and process they often use very little timeseries data. Academic reseach of past performance for broadly held ETFs like SPY has shown that, historically speaking, holding the ERTF overnight and selling in the morning at the market open produces a slightloy higher return than simply holding the asset. Following that logic, we have constructed a trading flow that buys SPY at 3:55 pm  EST(shortly before close), holds it overnight, and sells it just after the market opening bell at 9:31 AM EST.
+
+<img width="1735" alt="Screen Shot 2022-09-23 at 12 26 52 PM" src="https://user-images.githubusercontent.com/79699033/192009099-961513ca-ae90-4220-b3d8-75bc12b01c84.png">
+
 
 
 # One Second Trades to sqlite
