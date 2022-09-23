@@ -29,9 +29,13 @@ The most important node in this flow is the "Trading algo - long only" which is 
 
 
 let pos = flow.get("position") // the is the value of any current positions for the ticker
+
 let orders = flow.get("orders") // this is the value of any open orders for the ticker
+
 let ux = (Date.now()) / 1000 // we like to use unixtime in seconds so we divided the default ms by 1000
+
 ux = Math.trunc(ux) // make sure we have a whole integer after the division
+
 let ticker = global.get("ticker") // this is the ticker we are trading (set in the "One Second Trades" flow)
 let results = "results_" + ticker // this is the name created for a sqlite table for results if you decided to add a results flow 
 let avg = global.get("average_price") // this is the moving average value for the ticker (set in the "One Second Trades" flow). The default is 100 trades
