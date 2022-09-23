@@ -1,0 +1,762 @@
+[
+    {
+        "id": "522980d06a285aae",
+        "type": "tab",
+        "label": "Customize Market and Watchlist",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "cb0011d73b08c977",
+        "type": "inject",
+        "z": "522980d06a285aae",
+        "name": "Add Markets Symbols",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "SPY,QQQ,TLT,VXX,X:BTCUSD,X:ETHUSD",
+        "payloadType": "str",
+        "x": 360,
+        "y": 380,
+        "wires": [
+            [
+                "bc0a13f31d1ddb5a",
+                "901caa5b375d6e21"
+            ]
+        ]
+    },
+    {
+        "id": "bc0a13f31d1ddb5a",
+        "type": "split",
+        "z": "522980d06a285aae",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 570,
+        "y": 380,
+        "wires": [
+            [
+                "8e264664af6e9efd"
+            ]
+        ]
+    },
+    {
+        "id": "8e264664af6e9efd",
+        "type": "function",
+        "z": "522980d06a285aae",
+        "name": "insert query",
+        "func": "let symbol = msg.payload\nlet sql = \"insert into markets (symbol) values ('\" +symbol+ \"')\"\n//node.warn(sql)\nmsg.topic = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 380,
+        "wires": [
+            [
+                "88ecf866bf63904d"
+            ]
+        ]
+    },
+    {
+        "id": "82928cfdb56440fc",
+        "type": "function",
+        "z": "522980d06a285aae",
+        "name": "select query",
+        "func": "let symbol = msg.payload\nlet sql = \"select symbol from markets\"\n//node.warn(sql)\n\nmsg.topic = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 440,
+        "wires": [
+            [
+                "19617f168688ce81"
+            ]
+        ]
+    },
+    {
+        "id": "040c8ecc7a233ee9",
+        "type": "split",
+        "z": "522980d06a285aae",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 800,
+        "y": 440,
+        "wires": [
+            [
+                "9ff3d37970cda338"
+            ]
+        ]
+    },
+    {
+        "id": "93791582f9fcfb64",
+        "type": "function",
+        "z": "522980d06a285aae",
+        "name": "update query",
+        "func": "let ticker = msg.payload.results.ticker\nlet name = msg.payload.results.name\nlet marketcap = msg.payload.results.market_cap\n\nlet sql = \"update markets set name = '\" +name+ \"', marketcap = '\" +marketcap+ \"' where symbol = '\" +ticker+ \"'\" \nnode.warn(sql)\nmsg.topic = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1410,
+        "y": 440,
+        "wires": [
+            [
+                "a25ead7651a0e4d1"
+            ]
+        ]
+    },
+    {
+        "id": "7751e88110de234c",
+        "type": "debug",
+        "z": "522980d06a285aae",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1050,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "88ecf866bf63904d",
+        "type": "sqlite",
+        "z": "522980d06a285aae",
+        "mydb": "9c897ceae3d2854f",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "markets",
+        "x": 900,
+        "y": 380,
+        "wires": [
+            [
+                "7751e88110de234c"
+            ]
+        ]
+    },
+    {
+        "id": "a25ead7651a0e4d1",
+        "type": "sqlite",
+        "z": "522980d06a285aae",
+        "mydb": "9c897ceae3d2854f",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "markets",
+        "x": 1560,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "19617f168688ce81",
+        "type": "sqlite",
+        "z": "522980d06a285aae",
+        "mydb": "9c897ceae3d2854f",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "markets",
+        "x": 660,
+        "y": 440,
+        "wires": [
+            [
+                "040c8ecc7a233ee9"
+            ]
+        ]
+    },
+    {
+        "id": "901caa5b375d6e21",
+        "type": "delay",
+        "z": "522980d06a285aae",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "milliseconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 310,
+        "y": 440,
+        "wires": [
+            [
+                "82928cfdb56440fc"
+            ]
+        ]
+    },
+    {
+        "id": "58997454e3487bc7",
+        "type": "comment",
+        "z": "522980d06a285aae",
+        "name": "Customize Market Symbols",
+        "info": "",
+        "x": 200,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "a88462ea44fbcc69",
+        "type": "comment",
+        "z": "522980d06a285aae",
+        "name": "Customize Watchlist Symbols",
+        "info": "",
+        "x": 200,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "5f02fb943bc528c5",
+        "type": "function",
+        "z": "522980d06a285aae",
+        "name": "Delete existing markets table",
+        "func": "let sql = \"drop table markets\"\nmsg.topic = sql\nnode.warn(msg.topic)\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 540,
+        "y": 200,
+        "wires": [
+            [
+                "d4443016da37fd4d"
+            ]
+        ]
+    },
+    {
+        "id": "d4443016da37fd4d",
+        "type": "sqlite",
+        "z": "522980d06a285aae",
+        "mydb": "9c897ceae3d2854f",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "markets",
+        "x": 760,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "942865c2b82c1119",
+        "type": "function",
+        "z": "522980d06a285aae",
+        "name": "Create new markets table",
+        "func": "let sql = \"create table IF NOT EXISTS markets (symbol TEXT PRIMARY KEY,name TEXT,closing REAL\"\nsql += \",price24h REAL,price7d REAL, date TEXT,change24h REAL,change7d REAL,\"\nsql += \"marketcap REAL,volume REAL,pct24 REAL,pct7d REAL)\" ;\nmsg.topic = sql\nnode.warn(msg.topic)\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 550,
+        "y": 260,
+        "wires": [
+            [
+                "a4b91852c9d68bb9"
+            ]
+        ]
+    },
+    {
+        "id": "a4b91852c9d68bb9",
+        "type": "sqlite",
+        "z": "522980d06a285aae",
+        "mydb": "9c897ceae3d2854f",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "markets",
+        "x": 760,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "05b85961fde26a31",
+        "type": "inject",
+        "z": "522980d06a285aae",
+        "name": "Modify market symbols",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 280,
+        "y": 200,
+        "wires": [
+            [
+                "5f02fb943bc528c5",
+                "415e1534fdedd7d3"
+            ]
+        ]
+    },
+    {
+        "id": "415e1534fdedd7d3",
+        "type": "delay",
+        "z": "522980d06a285aae",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "milliseconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 330,
+        "y": 260,
+        "wires": [
+            [
+                "942865c2b82c1119"
+            ]
+        ]
+    },
+    {
+        "id": "85554f90cd230d4f",
+        "type": "comment",
+        "z": "522980d06a285aae",
+        "name": "Add new comma separated list of symbols here",
+        "info": "",
+        "x": 440,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "7e74e3d740f8a4d0",
+        "type": "sqlite",
+        "z": "522980d06a285aae",
+        "mydb": "40c32af6ca02f2f5",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "watchlist",
+        "x": 780,
+        "y": 600,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "38ff365d70a1a9b6",
+        "type": "split",
+        "z": "522980d06a285aae",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 630,
+        "y": 780,
+        "wires": [
+            [
+                "7fdcf3d4a755d0bb"
+            ]
+        ]
+    },
+    {
+        "id": "7fdcf3d4a755d0bb",
+        "type": "function",
+        "z": "522980d06a285aae",
+        "name": "insert query",
+        "func": "let symbol = msg.payload\nlet sql = \"insert into watchlist (symbol) values ('\" +symbol+ \"')\"\nnode.warn(sql)\nmsg.topic = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 770,
+        "y": 780,
+        "wires": [
+            [
+                "bb0d5c3d836e80cf"
+            ]
+        ]
+    },
+    {
+        "id": "9803dfbf5482bf52",
+        "type": "polygon-tickler-details-rest",
+        "z": "522980d06a285aae",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "x": 1100,
+        "y": 840,
+        "wires": [
+            [
+                "3d9071d281155e45"
+            ]
+        ]
+    },
+    {
+        "id": "9ffb547d37ee5cb7",
+        "type": "function",
+        "z": "522980d06a285aae",
+        "name": "select query",
+        "func": "let symbol = msg.payload\nlet sql = \"select symbol from watchlist\"\n//node.warn(sql)\nmsg.topic = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 840,
+        "wires": [
+            [
+                "5ba86b75795c1e9f"
+            ]
+        ]
+    },
+    {
+        "id": "6251aefb5772bebe",
+        "type": "split",
+        "z": "522980d06a285aae",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 900,
+        "y": 840,
+        "wires": [
+            [
+                "9803dfbf5482bf52"
+            ]
+        ]
+    },
+    {
+        "id": "3d9071d281155e45",
+        "type": "function",
+        "z": "522980d06a285aae",
+        "name": "update query",
+        "func": "let ticker = msg.payload.results.ticker\nlet name = msg.payload.results.name\nlet marketcap = msg.payload.results.market_cap\n\nlet sql = \"update watchlist set name = '\" +name+ \"', marketcap = '\" +marketcap+ \"' where symbol = '\" +ticker+ \"'\" \nnode.warn(sql)\nmsg.topic = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1330,
+        "y": 840,
+        "wires": [
+            [
+                "49eb3f79a0dcc211"
+            ]
+        ]
+    },
+    {
+        "id": "9e50eb984a914c9b",
+        "type": "debug",
+        "z": "522980d06a285aae",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1070,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "ed257d68dcdabd2d",
+        "type": "delay",
+        "z": "522980d06a285aae",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 440,
+        "y": 840,
+        "wires": [
+            [
+                "9ffb547d37ee5cb7"
+            ]
+        ]
+    },
+    {
+        "id": "883688f5e32a7ec0",
+        "type": "function",
+        "z": "522980d06a285aae",
+        "name": "Delete existing watchlist table",
+        "func": "let sql = \"drop table watchlist\"\nmsg.topic = sql\nnode.warn(msg.topic)\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 600,
+        "wires": [
+            [
+                "7e74e3d740f8a4d0"
+            ]
+        ]
+    },
+    {
+        "id": "dae16148a5d26504",
+        "type": "function",
+        "z": "522980d06a285aae",
+        "name": "Create new watchlist table",
+        "func": "let sql = \"create table IF NOT EXISTS watchlist (symbol TEXT PRIMARY KEY,name TEXT,closing REAL\"\nsql += \",price24h REAL,price7d REAL, date TEXT,change24h REAL,change7d REAL,\"\nsql += \"marketcap REAL,volume REAL,pct24 REAL,pct7d REAL)\" ;\nmsg.topic = sql\nnode.warn(msg.topic)\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 580,
+        "y": 660,
+        "wires": [
+            [
+                "50c8f2f0c10a86e2"
+            ]
+        ]
+    },
+    {
+        "id": "1efa72c34885953b",
+        "type": "inject",
+        "z": "522980d06a285aae",
+        "name": "Modify watchlist symbols",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 290,
+        "y": 600,
+        "wires": [
+            [
+                "883688f5e32a7ec0",
+                "de364152fbc59308"
+            ]
+        ]
+    },
+    {
+        "id": "de364152fbc59308",
+        "type": "delay",
+        "z": "522980d06a285aae",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "milliseconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 350,
+        "y": 660,
+        "wires": [
+            [
+                "dae16148a5d26504"
+            ]
+        ]
+    },
+    {
+        "id": "8e8b9f8b6013b6ac",
+        "type": "comment",
+        "z": "522980d06a285aae",
+        "name": "Add new comma separated list of symbols here",
+        "info": "",
+        "x": 460,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "9ea48df46dbe3a0f",
+        "type": "inject",
+        "z": "522980d06a285aae",
+        "name": "Add Watchlist Symbols",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "SPY,TSLA,TQQQ,BAC,URA,URNM,AAPL",
+        "payloadType": "str",
+        "x": 440,
+        "y": 780,
+        "wires": [
+            [
+                "38ff365d70a1a9b6"
+            ]
+        ]
+    },
+    {
+        "id": "49eb3f79a0dcc211",
+        "type": "sqlite",
+        "z": "522980d06a285aae",
+        "mydb": "caab955ed62b1ee8",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "watchlist",
+        "x": 1480,
+        "y": 840,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "51520a20e772f5ff",
+        "type": "polygon-tickler-details-rest",
+        "z": "522980d06a285aae",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "x": 1200,
+        "y": 440,
+        "wires": [
+            [
+                "93791582f9fcfb64"
+            ]
+        ]
+    },
+    {
+        "id": "50c8f2f0c10a86e2",
+        "type": "sqlite",
+        "z": "522980d06a285aae",
+        "mydb": "40c32af6ca02f2f5",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "watchlist",
+        "x": 780,
+        "y": 660,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "bb0d5c3d836e80cf",
+        "type": "sqlite",
+        "z": "522980d06a285aae",
+        "mydb": "40c32af6ca02f2f5",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "watchlist",
+        "x": 920,
+        "y": 780,
+        "wires": [
+            [
+                "9e50eb984a914c9b"
+            ]
+        ]
+    },
+    {
+        "id": "5ba86b75795c1e9f",
+        "type": "sqlite",
+        "z": "522980d06a285aae",
+        "mydb": "40c32af6ca02f2f5",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "watchlist",
+        "x": 740,
+        "y": 840,
+        "wires": [
+            [
+                "6251aefb5772bebe"
+            ]
+        ]
+    },
+    {
+        "id": "9ff3d37970cda338",
+        "type": "function",
+        "z": "522980d06a285aae",
+        "name": "rewrite cryptos",
+        "func": "let symbol = msg.payload.symbol\n\nif (symbol == 'BTCUSD'){\n    symbol = 'X:BTCUSD'\n}\n\nelse if (symbol == 'ETHUSD') {\n    symbol = 'X:ETHUSD'\n}\n\nmsg.payload.symbol = symbol\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 960,
+        "y": 440,
+        "wires": [
+            [
+                "51520a20e772f5ff"
+            ]
+        ]
+    },
+    {
+        "id": "9c897ceae3d2854f",
+        "type": "sqlitedb",
+        "db": "/data/store/markets",
+        "mode": "RWC"
+    },
+    {
+        "id": "40c32af6ca02f2f5",
+        "type": "sqlitedb",
+        "db": "/data/store/watchlist",
+        "mode": "RWC"
+    },
+    {
+        "id": "651f0aab10dc1632",
+        "type": "polygon-account",
+        "name": "Polygon Key"
+    },
+    {
+        "id": "caab955ed62b1ee8",
+        "type": "sqlitedb",
+        "db": "/data/store/algos",
+        "mode": "RWC"
+    }
+]
