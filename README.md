@@ -1,6 +1,17 @@
 # MachineTrader-Community
 This is a community repository for MachineTrader users who want to share json files that can be uploaded in the MachineTrader instances and used to execute algorithmic trading strategies. 
 
+# Modifying your Default Market Indicators and Watchlist
+One of the first things you may decide to do once your personal MachineTrader instance is up and running is to modify the default tickers that are used in the Watchlist and as market Indicators. The "Customize Market Indicators" json allows you to do just that.  
+
+<img width="1595" alt="Screen Shot 2022-09-23 at 8 03 22 AM" src="https://user-images.githubusercontent.com/79699033/191956976-be772e82-b8de-4082-a837-41e7ff0b634c.png">
+
+Executing the "modify market indicators" node will start a flow that delete the current sqlite tbale, where the indicators are stored, and create a new one. The second flow will insert the tickers you'd like to use.  Simple paste a comma-separated list of tickers in the "Add Market Symbols" Node and once you've deployed, they will be your new Market Indicators.  The steps for changing the Watchlist tickers are similar
+ 
+<img width="791" alt="Screen Shot 2022-09-23 at 8 03 47 AM" src="https://user-images.githubusercontent.com/79699033/191956901-aded4117-61cb-4a0b-8a35-6fb76d1e91ef.png">
+
+
+
 # One Second Trades to sqlite
 This json script connects with the Polygon.io data engine and downloads the last trade for the ticker SPY each second to a local sqlite table. Like most MachineTrader scripts, this file is entirely customizable using a MachineTrader low-code, no-code instance. The script will download any equity ticker or crypto pair. It also calculates the moving average based on the last 100 trades. Prices and moving averages are stored  in a sqlite table. The rate of downloads and the length of the moving average are customizable as well. 
 
