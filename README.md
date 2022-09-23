@@ -17,7 +17,7 @@ Interday trades are the easiest algorithms to write since they often use and pro
 
 You'll notice that we have decided to buy with a limit order, using the current price, of SPY. The time in force is set to "gtc" which means the order will stay open until the market close at 4 pm, leaving 5 minutes for the order to be filled. There is some risk the order will not be filled - typically if the price is declining sharply - which might be a good occassion not to make the buy in any event. To assure the order goes through, the trader can change the order type to "market" and comment out the limit price ( // limit_price = current_price).
 
-<img width="356" alt="Screen Shot 2022-09-23 at 12 34 45 PM" src="https://user-images.githubusercontent.com/79699033/192010151-365b5cf1-14ee-4c03-ac7f-2b72054d3c3f.png">
+<img width="286" alt="Screen Shot 2022-09-23 at 1 54 24 PM" src="https://user-images.githubusercontent.com/79699033/192028228-90aadbe4-b58d-4f1e-9971-7a9e4b3987e2.png">
 
 
 
