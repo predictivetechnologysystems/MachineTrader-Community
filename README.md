@@ -20,9 +20,13 @@ This MachineTrader flow will allow you to download orders (open or closed) from 
 # Trade Alpaca Long 
 This script is an excellent template for any mean reversion startegy you might want to employ and is set up to do intraday trading every second of the trading day. It relies on the global variables (ticker and average price) that are assigned and calculated in the One Second Trades scripts above (you'll need to have one of those flows installed and running)  and creates and executes trades according to the logic defined in the function node "Trading algo - long only." As the name suggests, the node only creates long trades. The script uses limit trades as the default which complicates things since we need to pass a limit price (by default we use the price of the last trade), we need to know who the current position is, and if there are any outstanding orders.  The top script gets the position for the ticker we are trading (substituting zero for null so we can use it in an if clause) and any open orders.  The results are stored as flow variables. The "display variables" flow allows you to check that the values that will be used in the trading script look right.
 
-<img width="1289" alt="Screen Shot 2022-09-23 at 7 01 42 AM" src="https://user-images.githubusercontent.com/79699033/191949900-3249c91c-25ca-4f0a-a83e-d3d7893acd04.png">
+<img width="1289" alt="Screen Shot 2022-09-23 at 7 01 42 AM" src="https://user-images.githubusercontent.com/79699033/191953996-74c429d0-5723-4339-86fc-ab6a63d65984.png">
+
+<img width="424" alt="Screen Shot 2022-09-23 at 7 47 26 AM" src="https://user-images.githubusercontent.com/79699033/191954044-866ef826-35ea-4ce5-bbec-eb7ef03f7ca2.png">
+
 
 The most important node in this flow is the "Trading algo - long only" which is shown and annotated below.
+
 
 let pos = flow.get("position") // the is the value of any current positions for the ticker
 let orders = flow.get("orders") // this is the value of any open orders for the ticker
