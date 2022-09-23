@@ -1,0 +1,132 @@
+[
+    {
+        "id": "1023e30ba73e6fcb",
+        "type": "tab",
+        "label": "Download Orders to csv",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "04aef982a073628e",
+        "type": "comment",
+        "z": "1023e30ba73e6fcb",
+        "name": "export and save to a local csv file",
+        "info": "",
+        "x": 170,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "0bfa0811157ed143",
+        "type": "http in",
+        "z": "1023e30ba73e6fcb",
+        "name": "/api/download_orders",
+        "url": "/api/download_orders",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 140,
+        "y": 120,
+        "wires": [
+            [
+                "d8377ce85ded0756"
+            ]
+        ]
+    },
+    {
+        "id": "9fa7da8a2081a3bd",
+        "type": "http response",
+        "z": "1023e30ba73e6fcb",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"outfile.json\""
+        },
+        "x": 1010,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "a2bd30040c060b30",
+        "type": "csv",
+        "z": "1023e30ba73e6fcb",
+        "name": "",
+        "sep": ",",
+        "hdrin": true,
+        "hdrout": "none",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": "id,client_order_id,created_at,updated_at,submitted_at,filled_at,expired_at,canceled_at,failed_at,replaced_at,replaced_by,replaces,asset_id,symbol,asset_class,notional,qty,filled_qty,filled_avg_price,order_class,order_type,type,side,time_in_force,limit_price,stop_price,status,extended_hours,legs,trail_percent,trail_price,hwm,source",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 690,
+        "y": 120,
+        "wires": [
+            [
+                "4d85c3e11bec094c"
+            ]
+        ]
+    },
+    {
+        "id": "4d85c3e11bec094c",
+        "type": "file",
+        "z": "1023e30ba73e6fcb",
+        "name": "write report",
+        "filename": "/data/store/algo3.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 850,
+        "y": 120,
+        "wires": [
+            [
+                "9fa7da8a2081a3bd"
+            ]
+        ]
+    },
+    {
+        "id": "9f23337e92075360",
+        "type": "alpaca-query-order",
+        "z": "1023e30ba73e6fcb",
+        "conf": "0c86a5f06a42b505",
+        "x": 520,
+        "y": 120,
+        "wires": [
+            [
+                "a2bd30040c060b30"
+            ]
+        ]
+    },
+    {
+        "id": "d8377ce85ded0756",
+        "type": "function",
+        "z": "1023e30ba73e6fcb",
+        "name": "get orders",
+        "func": "/* Get Flow variables */\n\nlet ordertype = flow.get(\"orders\")\n//let limit  = flow.get(\"cnt\")\n//ordertype = \"open\"\nordertype = \"closed\"\n\n/* Setup alpaca request arguments */\n\nmsg.payload = {\n    status: ordertype, // \"open or closed\"\n    limit: \"10\", // default is 500\n\tdirection: \"desc\" //  \"asc or desc\"\n\n}\n\n//node.warn(msg.payload)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 120,
+        "wires": [
+            [
+                "9f23337e92075360"
+            ]
+        ]
+    },
+    {
+        "id": "0c86a5f06a42b505",
+        "type": "alpaca-account",
+        "name": "live",
+        "keyId": "PK6PYBK2XRDW0RF4OR2W",
+        "paper": true
+    }
+]
