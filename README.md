@@ -1,12 +1,12 @@
 # MachineTrader-Community
-This is a community repository for MachineTrader users who want to share json files that can be uploaded in the MachineTrader instances and used to execute algorithmic trading strategies. 
+This is a community repository for MachineTrader users who want to upload or share json files in their MachineTrader instances that can be used implement and execute algorithmic trading strategies. 
 
 # Modifying your Default Market Indicators and Watchlist
 One of the first things you may decide to do once your personal MachineTrader instance is up and running is to modify the default tickers that are used in the Watchlist and as market Indicators. The "Customize Market Indicators" json allows you to do just that.  
 
 <img width="1595" alt="Screen Shot 2022-09-23 at 8 03 22 AM" src="https://user-images.githubusercontent.com/79699033/191956976-be772e82-b8de-4082-a837-41e7ff0b634c.png">
 
-Executing the "modify market indicators" node will start a flow that delete the current sqlite tbale, where the indicators are stored, and create a new one. The second flow will insert the tickers you'd like to use.  Simple paste a comma-separated list of tickers in the "Add Market Symbols" Node and once you've deployed, they will be your new Market Indicators.  The steps for changing the Watchlist tickers are similar
+Executing the "modify market indicators" node will start a flow that deletes the current sqlite table, where the indicators are stored, and creates a new one. The second flow will insert the tickers you'd like to use.  Simple paste a comma-separated list of tickers in the "Add Market Symbols" Node and once you've deployed, they will be your new Market Indicators.  The steps for changing the Watchlist tickers are similar
  
 <img width="791" alt="Screen Shot 2022-09-23 at 8 03 47 AM" src="https://user-images.githubusercontent.com/79699033/191956901-aded4117-61cb-4a0b-8a35-6fb76d1e91ef.png">
 
