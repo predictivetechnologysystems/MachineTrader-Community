@@ -34,6 +34,11 @@ You'll notice that we have decided to buy with a limit order, using the current 
 
 <img width="286" alt="Screen Shot 2022-09-23 at 1 54 24 PM" src="https://user-images.githubusercontent.com/79699033/192028228-90aadbe4-b58d-4f1e-9971-7a9e4b3987e2.png">
 
+# Create a portfolio of dividend stocks
+
+
+<img width="1065" alt="Screen Shot 2022-10-12 at 7 35 06 AM" src="https://user-images.githubusercontent.com/79699033/195361029-c9a5d9ae-5888-4673-8afc-f25787406719.png">
+
 
 
 # One Second Trades to sqlite
