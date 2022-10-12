@@ -3,7 +3,11 @@ This is a community repository for MachineTrader users who want to upload or sha
 
 # Adding Your Alpaca Keys to Your Instance
 
-When you first login into your trading instance, the everything is ready to go except the flows that are power by your Alpaca account keys, which you will have to enter manually. To add your keys, click the customize button in the upper right which will bring you to your MachineTrader instance backend or admin. Be careful when you're using the admin because any changes you make will affect the operation of your instance. Notice that the admin consists of a series of tabs each containing a grouping of flows. 
+When you first login into your trading instance, the everything is ready to go except the flows that are powered by your Alpaca account keys which you will have to enter manually. To add your keys, click the customize button in the upper right which will bring you to your MachineTrader instance backend or admin. We will assume that you have retrieved your Alpaca keys from your Alpaca account and are ready to install. If you haven't done that yet, follow the instructions here: https://www.machinetrader.io/learn-articles/adding-alpaca-keys-to-your-machinetrader-instance.
+
+Be careful when you're using the admin because any changes you make will affect the operation of your instance. Notice that the admin consists of a series of tabs each containing a grouping of flows. Go to the far right tab labeled "Add Alpaca Account Keys." 
+
+
 Your secret key is encrypted once you enter it, so no one will be able to get access to your Alpaca account.  
 
 # Modifying your Default Market Indicators and Watchlist
