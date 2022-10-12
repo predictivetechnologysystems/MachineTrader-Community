@@ -11,6 +11,10 @@ Your secret key is encrypted once you enter it, so no one will be able to get ac
 
 <img width="1120" alt="Screen Shot 2022-10-12 at 7 34 19 AM" src="https://user-images.githubusercontent.com/79699033/195339369-afad32d3-64de-4dbb-829f-3b1297a263b5.png">
 
+<img width="512" alt="Screen Shot 2022-10-12 at 7 54 21 AM" src="https://user-images.githubusercontent.com/79699033/195339499-edd469e4-360d-4b22-8d8b-77a6ec8193f2.png">
+
+<img width="530" alt="Screen Shot 2022-10-12 at 7 54 29 AM" src="https://user-images.githubusercontent.com/79699033/195339513-38db9d28-0fe9-4d70-bb51-08a4df3bef30.png">
+
 
 # Modifying your Default Market Indicators and Watchlist
 One of the first things you may decide to do once your personal MachineTrader instance is up and running is to modify the default tickers that are used in the Watchlist and as market Indicators. The "Customize Market Indicators" json allows you to do just that.  
