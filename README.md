@@ -7,8 +7,10 @@ When you first login into your trading instance, the everything is ready to go e
 
 Be careful when you're using the admin because any changes you make will affect the operation of your instance. Notice that the admin consists of a series of tabs each containing a grouping of flows. Go to the far right tab labeled "Add Alpaca Account Keys." 
 
-
 Your secret key is encrypted once you enter it, so no one will be able to get access to your Alpaca account.  
+
+<img width="1120" alt="Screen Shot 2022-10-12 at 7 34 19 AM" src="https://user-images.githubusercontent.com/79699033/195339369-afad32d3-64de-4dbb-829f-3b1297a263b5.png">
+
 
 # Modifying your Default Market Indicators and Watchlist
 One of the first things you may decide to do once your personal MachineTrader instance is up and running is to modify the default tickers that are used in the Watchlist and as market Indicators. The "Customize Market Indicators" json allows you to do just that.  
