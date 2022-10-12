@@ -15,6 +15,10 @@ Your secret key is encrypted once you enter it, so no one will be able to get ac
 
 <img width="530" alt="Screen Shot 2022-10-12 at 7 54 29 AM" src="https://user-images.githubusercontent.com/79699033/195339513-38db9d28-0fe9-4d70-bb51-08a4df3bef30.png">
 
+# Install a Utilities Flow that contains tables for storing sub portfolios, order, and export to csv files
+
+<img width="1043" alt="Screen Shot 2022-10-12 at 7 34 33 AM" src="https://user-images.githubusercontent.com/79699033/195361959-97029e6d-ec4c-4168-8f46-7d62c4056a05.png">
+
 
 # Modifying your Default Market Indicators and Watchlist
 One of the first things you may decide to do once your personal MachineTrader instance is up and running is to modify the default tickers that are used in the Watchlist and as market Indicators. The "Customize Market Indicators" json allows you to do just that.  
@@ -38,6 +42,9 @@ You'll notice that we have decided to buy with a limit order, using the current 
 
 
 <img width="1065" alt="Screen Shot 2022-10-12 at 7 35 06 AM" src="https://user-images.githubusercontent.com/79699033/195361029-c9a5d9ae-5888-4673-8afc-f25787406719.png">
+
+# Download Realtime Tick Data
+<img width="975" alt="Screen Shot 2022-10-12 at 7 35 38 AM" src="https://user-images.githubusercontent.com/79699033/195361332-d67d2914-3dd1-49ee-8cbd-c9fb2b62bda2.png">
 
 
 
