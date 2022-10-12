@@ -1,0 +1,994 @@
+[
+    {
+        "id": "c3845d36cbd343f9",
+        "type": "tab",
+        "label": "Simple Interday Trade",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "a178f58cd17460e0",
+        "type": "inject",
+        "z": "c3845d36cbd343f9",
+        "name": "Set at 9 am",
+        "props": [],
+        "repeat": "",
+        "crontab": "00 09 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 170,
+        "y": 140,
+        "wires": [
+            [
+                "e141aaf6d681e1f5"
+            ]
+        ]
+    },
+    {
+        "id": "e141aaf6d681e1f5",
+        "type": "function",
+        "z": "c3845d36cbd343f9",
+        "name": "set and store ticker SPY variables",
+        "func": "let ticker = 'SPY'\nlet qty = '500'\nmsg.topic = ticker // this pass the ticker value to the flow variable\nnode.warn(\" Ticker: \" +ticker+ \" Qty: \" +qty)\nmsg.payload = qty\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 140,
+        "wires": [
+            [
+                "102e97c964fce6b8"
+            ]
+        ]
+    },
+    {
+        "id": "102e97c964fce6b8",
+        "type": "change",
+        "z": "c3845d36cbd343f9",
+        "name": "set flow variable: ticker, qty",
+        "rules": [
+            {
+                "t": "set",
+                "p": "ticker",
+                "pt": "flow",
+                "to": "topic",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "qty",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 720,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "90f7b34ec6e43fba",
+        "type": "comment",
+        "z": "c3845d36cbd343f9",
+        "name": "Flow #2: Buy and hold shares of SPY at 3:55",
+        "info": "",
+        "x": 210,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "64e7ce5065d5aa17",
+        "type": "comment",
+        "z": "c3845d36cbd343f9",
+        "name": "Flow #1\" Set ticker and quantity to hold",
+        "info": "",
+        "x": 190,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "03fc44c5c91228dc",
+        "type": "comment",
+        "z": "c3845d36cbd343f9",
+        "name": "Trades and Holds SPY overnignt - Paper",
+        "info": "",
+        "x": 200,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "c9a2afa2982feffb",
+        "type": "inject",
+        "z": "c3845d36cbd343f9",
+        "name": "Buy at 3:55 PM and hold",
+        "props": [],
+        "repeat": "",
+        "crontab": "55 15 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 190,
+        "y": 280,
+        "wires": [
+            [
+                "a0c5acf8061f8b61"
+            ]
+        ]
+    },
+    {
+        "id": "a0c5acf8061f8b61",
+        "type": "function",
+        "z": "c3845d36cbd343f9",
+        "name": "Alpaca market order",
+        "func": "let ticker = flow.get(\"ticker\")\nlet qty = flow.get(\"qty\")\nqty = 1\n\nlet temp = ''\n\n// this is a market order \n\ntemp = { \n    \"symbol\": ticker,\n    \"qty\": qty,\n    \"side\": \"buy\",\n    \"type\": \"market\",\n    \"time_in_force\":\"day\"\n}\n\nmsg.payload = temp\nnode.warn(msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 280,
+        "wires": [
+            [
+                "668cd3b9b16bb24f",
+                "834e66680b0bad80"
+            ]
+        ]
+    },
+    {
+        "id": "230ef7258c000a06",
+        "type": "inject",
+        "z": "c3845d36cbd343f9",
+        "name": "Sell at 9:31 AM ",
+        "props": [],
+        "repeat": "",
+        "crontab": "31 09 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 160,
+        "y": 460,
+        "wires": [
+            [
+                "2b4172a87f0912a7"
+            ]
+        ]
+    },
+    {
+        "id": "2b4172a87f0912a7",
+        "type": "function",
+        "z": "c3845d36cbd343f9",
+        "name": "Alpaca market order",
+        "func": "let ticker = flow.get(\"ticker\")\nlet qty = flow.get(\"qty\")\nlet pos = flow.get(\"position\")\n\nlet temp = ''\n\n// this is a market order \n\nif (pos > 0){\ntemp = { \n    \"symbol\": ticker,\n    \"qty\": qty,\n    \"side\": \"sell\",\n    \"type\": \"market\",\n    \"time_in_force\":\"day\"\n}\n}\nmsg.payload = temp\nnode.warn(msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 460,
+        "wires": [
+            [
+                "c4e3e7a956a06e1a"
+            ]
+        ]
+    },
+    {
+        "id": "4f0659a4c2058eb7",
+        "type": "comment",
+        "z": "c3845d36cbd343f9",
+        "name": "Flow $7 Utilitiy Tables",
+        "info": "",
+        "x": 160,
+        "y": 1540,
+        "wires": []
+    },
+    {
+        "id": "886bde8b26b38171",
+        "type": "function",
+        "z": "c3845d36cbd343f9",
+        "name": "store raw orders",
+        "func": "let id = msg.payload[\"id\"]\nlet client_order_id = msg.payload[\"client_order_id\"]\nlet created_at = msg.payload[\"created_at\"]\nlet updated_at = msg.payload[\"updated_at\"]\nlet submitted_at = msg.payload[\"submitted_at\"]\nlet filled_at = msg.payload[\"filled_at\"]\nlet expired_at = msg.payload[\"expired_at\"]\nlet canceled_at = msg.payload[\"canceled_at\"]\nlet failed_at = msg.payload[\"failed_at\"]\nlet replaced_at = msg.payload[\"replaced_at\"]\nlet replaced_by = msg.payload[\"replaced_by\"]\nlet replaces = msg.payload[\"replaces\"]\nlet asset_id = msg.payload[\"asset_id\"]\nlet symbol = msg.payload[\"symbol\"]\nlet asset_class = msg.payload[\"asset_class\"]\nlet notional = msg.payload[\"notional\"]\nlet qty = msg.payload[\"qty\"]\nlet filled_qty = msg.payload[\"filled_qty\"]\nlet filled_avg_price = msg.payload[\"filled_avg_price\"]\nlet order_class = msg.payload[\"order_class\"]\nlet order_type = msg.payload[\"order_type\"]\nlet type = msg.payload[\"type\"]\nlet side = msg.payload[\"side\"]\nlet time_in_force = msg.payload[\"time_in_force\"]\nlet limit_price = msg.payload[\"limit_price\"]\nlet stop_price = msg.payload[\"stop_price\"]\nlet status = msg.payload[\"status\"]\nlet extended_hours = msg.payload[\"extended_hours\"]\nlet legs = msg.payload[\"legs\"]\nlet trail_percent = msg.payload[\"trail_percent\"]\nlet trail_price = msg.payload[\"trail_price\"]\nlet hwm = msg.payload[\"hwm\"]\nlet subtag = msg.payload[\"subtag\"]\nlet source = msg.payload[\"source\"]\n\nlet sql = \"insert into orders (id,client_order_id,created_at,updated_at,submitted_at,filled_at,expired_at,canceled_at,failed_at,replaced_at,replaced_by,replaces,asset_id,symbol,asset_class,notional,qty,filled_qty,filled_avg_price,order_class,order_type,type,side,time_in_force,limit_price,stop_price,status,extended_hours,legs,trail_percent,trail_price,hwm,subtag,source) values ('\" + id + \"','\" + client_order_id + \"','\" + created_at + \"','\" + updated_at + \"','\" + submitted_at + \"','\" + filled_at + \"','\" + expired_at + \"','\" + canceled_at + \"','\" + failed_at + \"','\" + replaced_at + \"','\" + replaced_by + \"','\" + replaces + \"','\" + asset_id + \"','\" + symbol + \"','\" + asset_class + \"','\" + notional + \"','\" + qty + \"','\" + filled_qty + \"','\" + filled_avg_price + \"','\" + order_class + \"','\" + order_type + \"','\" + type + \"','\" + side + \"','\" + time_in_force + \"','\" + limit_price + \"','\" + stop_price + \"','\" + status + \"','\" + extended_hours + \"','\" + legs + \"','\" + trail_percent + \"','\" + trail_price + \"','\" + hwm + \"','\" + subtag + \"','\" + source + \"');\"\n\n//node.warn(sql)\nmsg.topic = sql\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 860,
+        "y": 260,
+        "wires": [
+            [
+                "5e5fe195538602cf"
+            ]
+        ]
+    },
+    {
+        "id": "5e5fe195538602cf",
+        "type": "sqlite",
+        "z": "c3845d36cbd343f9",
+        "mydb": "3da37290d92c1dc8",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "orders",
+        "x": 1010,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "550ee4e93ac47a6b",
+        "type": "inject",
+        "z": "c3845d36cbd343f9",
+        "name": "SELECT * FROM  orders table",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "select * from orders;",
+        "x": 200,
+        "y": 1600,
+        "wires": [
+            [
+                "d4ccfdfe1bc0c112"
+            ]
+        ]
+    },
+    {
+        "id": "d4ccfdfe1bc0c112",
+        "type": "sqlite",
+        "z": "c3845d36cbd343f9",
+        "mydb": "3da37290d92c1dc8",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "orders",
+        "x": 410,
+        "y": 1600,
+        "wires": [
+            [
+                "ba9d0c29721245f0"
+            ]
+        ]
+    },
+    {
+        "id": "a706a505774874ba",
+        "type": "sqlite",
+        "z": "c3845d36cbd343f9",
+        "mydb": "d6e22e31a8a67436",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "portfolios",
+        "x": 940,
+        "y": 1660,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ba9d0c29721245f0",
+        "type": "function",
+        "z": "c3845d36cbd343f9",
+        "name": "insert into sub_portfolio",
+        "func": "let text = ''\n\nfor (var i=0;i<msg.payload.length;i++) \n\n{\n\n    let id = 1\n    let symbol  = msg.payload[i][\"symbol\"]\n//    node.warn(\"ID: \" +id+ \" Ticker: \" +symbol)\n    let sql = \"insert into sub_portfolio (id,ticker) values (\" + id + \",'\" + symbol + \"');\"\n    text += sql\n}\n\n//node.warn(text)\nmsg.payload = text\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 1600,
+        "wires": [
+            [
+                "05961d9da72516bb"
+            ]
+        ]
+    },
+    {
+        "id": "05961d9da72516bb",
+        "type": "split",
+        "z": "c3845d36cbd343f9",
+        "name": "",
+        "splt": ";",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 770,
+        "y": 1600,
+        "wires": [
+            [
+                "e8c5307d79b54b16"
+            ]
+        ]
+    },
+    {
+        "id": "e8c5307d79b54b16",
+        "type": "function",
+        "z": "c3845d36cbd343f9",
+        "name": "change payload to topic",
+        "func": "msg.topic = msg.payload\nnode.warn(msg.topic)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 970,
+        "y": 1600,
+        "wires": [
+            [
+                "9deea5b205d0cd0f"
+            ]
+        ]
+    },
+    {
+        "id": "9deea5b205d0cd0f",
+        "type": "delay",
+        "z": "c3845d36cbd343f9",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "40",
+        "timeoutUnits": "milliseconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 790,
+        "y": 1660,
+        "wires": [
+            [
+                "a706a505774874ba"
+            ]
+        ]
+    },
+    {
+        "id": "668cd3b9b16bb24f",
+        "type": "function",
+        "z": "c3845d36cbd343f9",
+        "name": "insert in sub_portfolio id = 2",
+        "func": "let ticker = msg.payload[\"symbol\"]\nlet id = 2\n\nlet sql = \"insert into sub_portfolio (id, ticker) values (\" +id+ \",'\" +ticker+ \"');\"\n\nmsg.topic = sql\nnode.warn(msg.topic)\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 720,
+        "y": 340,
+        "wires": [
+            [
+                "26299180738f487f"
+            ]
+        ]
+    },
+    {
+        "id": "26299180738f487f",
+        "type": "sqlite",
+        "z": "c3845d36cbd343f9",
+        "mydb": "d6e22e31a8a67436",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "portfolios",
+        "x": 940,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "eaa18acf4424022a",
+        "type": "comment",
+        "z": "c3845d36cbd343f9",
+        "name": "Flow #3: Sell shares of SPY at 9:31",
+        "info": "",
+        "x": 180,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "99331ddf97c3e100",
+        "type": "function",
+        "z": "c3845d36cbd343f9",
+        "name": "store raw orders",
+        "func": "let id = msg.payload[\"id\"]\nlet client_order_id = msg.payload[\"client_order_id\"]\nlet created_at = msg.payload[\"created_at\"]\nlet updated_at = msg.payload[\"updated_at\"]\nlet submitted_at = msg.payload[\"submitted_at\"]\nlet filled_at = msg.payload[\"filled_at\"]\nlet expired_at = msg.payload[\"expired_at\"]\nlet canceled_at = msg.payload[\"canceled_at\"]\nlet failed_at = msg.payload[\"failed_at\"]\nlet replaced_at = msg.payload[\"replaced_at\"]\nlet replaced_by = msg.payload[\"replaced_by\"]\nlet replaces = msg.payload[\"replaces\"]\nlet asset_id = msg.payload[\"asset_id\"]\nlet symbol = msg.payload[\"symbol\"]\nlet asset_class = msg.payload[\"asset_class\"]\nlet notional = msg.payload[\"notional\"]\nlet qty = msg.payload[\"qty\"]\nlet filled_qty = msg.payload[\"filled_qty\"]\nlet filled_avg_price = msg.payload[\"filled_avg_price\"]\nlet order_class = msg.payload[\"order_class\"]\nlet order_type = msg.payload[\"order_type\"]\nlet type = msg.payload[\"type\"]\nlet side = msg.payload[\"side\"]\nlet time_in_force = msg.payload[\"time_in_force\"]\nlet limit_price = msg.payload[\"limit_price\"]\nlet stop_price = msg.payload[\"stop_price\"]\nlet status = msg.payload[\"status\"]\nlet extended_hours = msg.payload[\"extended_hours\"]\nlet legs = msg.payload[\"legs\"]\nlet trail_percent = msg.payload[\"trail_percent\"]\nlet trail_price = msg.payload[\"trail_price\"]\nlet hwm = msg.payload[\"hwm\"]\nlet subtag = msg.payload[\"subtag\"]\nlet source = msg.payload[\"source\"]\n\nlet sql = \"insert into orders (id,client_order_id,created_at,updated_at,submitted_at,filled_at,expired_at,canceled_at,failed_at,replaced_at,replaced_by,replaces,asset_id,symbol,asset_class,notional,qty,filled_qty,filled_avg_price,order_class,order_type,type,side,time_in_force,limit_price,stop_price,status,extended_hours,legs,trail_percent,trail_price,hwm,subtag,source) values ('\" + id + \"','\" + client_order_id + \"','\" + created_at + \"','\" + updated_at + \"','\" + submitted_at + \"','\" + filled_at + \"','\" + expired_at + \"','\" + canceled_at + \"','\" + failed_at + \"','\" + replaced_at + \"','\" + replaced_by + \"','\" + replaces + \"','\" + asset_id + \"','\" + symbol + \"','\" + asset_class + \"','\" + notional + \"','\" + qty + \"','\" + filled_qty + \"','\" + filled_avg_price + \"','\" + order_class + \"','\" + order_type + \"','\" + type + \"','\" + side + \"','\" + time_in_force + \"','\" + limit_price + \"','\" + stop_price + \"','\" + status + \"','\" + extended_hours + \"','\" + legs + \"','\" + trail_percent + \"','\" + trail_price + \"','\" + hwm + \"','\" + subtag + \"','\" + source + \"');\"\n\n//node.warn(sql)\nmsg.topic = sql\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 840,
+        "y": 460,
+        "wires": [
+            [
+                "3c136b2f4aca2a76"
+            ]
+        ]
+    },
+    {
+        "id": "3c136b2f4aca2a76",
+        "type": "sqlite",
+        "z": "c3845d36cbd343f9",
+        "mydb": "3da37290d92c1dc8",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "orders",
+        "x": 1030,
+        "y": 460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3b1d7b3f8d4177c8",
+        "type": "inject",
+        "z": "c3845d36cbd343f9",
+        "name": "SELECT * portfolio where id = 2",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "select * from sub_portfolio where id = 2",
+        "x": 210,
+        "y": 1740,
+        "wires": [
+            [
+                "cbdd8e704f58aebb"
+            ]
+        ]
+    },
+    {
+        "id": "5e4857f51f2ae401",
+        "type": "sqlite",
+        "z": "c3845d36cbd343f9",
+        "mydb": "d6e22e31a8a67436",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "portfolios",
+        "x": 940,
+        "y": 1860,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4bef57f65b3a036c",
+        "type": "function",
+        "z": "c3845d36cbd343f9",
+        "name": "insert into sub_portfolio",
+        "func": "let text = ''\n\nfor (var i=0;i<msg.payload.length;i++) \n\n{\n\n    let id = 1\n    let symbol  = msg.payload[i][\"symbol\"]\n//    node.warn(\"ID: \" +id+ \" Ticker: \" +symbol)\n    let sql = \"insert into sub_portfolio (id,ticker) values (\" + id + \",'\" + symbol + \"');\"\n    text += sql\n}\n\n//node.warn(text)\nmsg.payload = text\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 1800,
+        "wires": [
+            [
+                "5fdd36de63bc6fcc"
+            ]
+        ]
+    },
+    {
+        "id": "5fdd36de63bc6fcc",
+        "type": "split",
+        "z": "c3845d36cbd343f9",
+        "name": "",
+        "splt": ";",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 770,
+        "y": 1800,
+        "wires": [
+            [
+                "7852a8b28f3e796f"
+            ]
+        ]
+    },
+    {
+        "id": "7852a8b28f3e796f",
+        "type": "function",
+        "z": "c3845d36cbd343f9",
+        "name": "change payload to topic",
+        "func": "msg.topic = msg.payload\nnode.warn(msg.topic)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 970,
+        "y": 1800,
+        "wires": [
+            [
+                "3d740748482e1c1f"
+            ]
+        ]
+    },
+    {
+        "id": "3d740748482e1c1f",
+        "type": "delay",
+        "z": "c3845d36cbd343f9",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "40",
+        "timeoutUnits": "milliseconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 790,
+        "y": 1860,
+        "wires": [
+            [
+                "5e4857f51f2ae401"
+            ]
+        ]
+    },
+    {
+        "id": "cbdd8e704f58aebb",
+        "type": "sqlite",
+        "z": "c3845d36cbd343f9",
+        "mydb": "d6e22e31a8a67436",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "portfolios",
+        "x": 420,
+        "y": 1740,
+        "wires": [
+            [
+                "82f786f3b3653120"
+            ]
+        ]
+    },
+    {
+        "id": "82f786f3b3653120",
+        "type": "debug",
+        "z": "c3845d36cbd343f9",
+        "name": "debug 55",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 560,
+        "y": 1740,
+        "wires": []
+    },
+    {
+        "id": "9d069dd56aee43b4",
+        "type": "inject",
+        "z": "c3845d36cbd343f9",
+        "name": "SELECT * ticker where id = 2",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "select ticker from sub_portfolio where id = 2",
+        "x": 200,
+        "y": 1960,
+        "wires": [
+            [
+                "66bbf208a491cf52"
+            ]
+        ]
+    },
+    {
+        "id": "66bbf208a491cf52",
+        "type": "sqlite",
+        "z": "c3845d36cbd343f9",
+        "mydb": "d6e22e31a8a67436",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "portfolios",
+        "x": 400,
+        "y": 1960,
+        "wires": [
+            [
+                "f8da68c5a7a3f1cc"
+            ]
+        ]
+    },
+    {
+        "id": "f8da68c5a7a3f1cc",
+        "type": "function",
+        "z": "c3845d36cbd343f9",
+        "name": "function 1",
+        "func": "let id = 2\nlet symbol = ''\n\nfor (var i = 0; i < msg.payload.length; i++) {\n\n    symbol = msg.payload[i][\"ticker\"]\n    node.warn(\"ID: \" +id+ \" Ticker: \" +symbol)\n}\n\nmsg.topic = symbol\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 1960,
+        "wires": [
+            [
+                "f08500e96d1f8b12"
+            ]
+        ]
+    },
+    {
+        "id": "22460078a42971e7",
+        "type": "function",
+        "z": "c3845d36cbd343f9",
+        "name": "update sub_portfolio where id = 2",
+        "func": "let sql = ''\nlet ticker = msg.topic\n//let ticker = flow.get(\"ticker\")\nlet symbol = ''\nfor (var i=0;i<msg.payload.length;i++) \n\n{\n\n    let asset_id = msg.payload[i][\"asset_id\"]\n    let symbol = msg.payload[i][\"symbol\"]\n    let exchange = msg.payload[i][\"exchange\"]\n    let asset_class = msg.payload[i][\"asset_class\"]\n    let asset_marginable = msg.payload[i][\"asset_marginable\"]\n    let qty = msg.payload[i][\"qty\"]\n    let avg_entry_price = msg.payload[i][\"avg_entry_price\"]\n    let side = msg.payload[i][\"side\"]\n    let market_value = msg.payload[i][\"market_value\"]\n    let cost_basis = msg.payload[i][\"cost_basis\"]\n    let unrealized_pl = msg.payload[i][\"unrealized_pl\"]\n    let unrealized_plpc = msg.payload[i][\"unrealized_plpc\"]\n    let unrealized_intraday_pl = msg.payload[i][\"unrealized_intraday_pl\"]\n    let unrealized_intraday_plpc = msg.payload[i][\"unrealized_intraday_plpc\"]\n    let current_price = msg.payload[i][\"current_price\"]\n    let lastday_price = msg.payload[i][\"lastday_price\"]\n    let change_today = msg.payload[i][\"change_today\"]\n    let qty_available = msg.payload[i][\"qty_available\"]\n\n    if (symbol === ticker) {\n \n//    node.warn(\"Symbol: \" + symbol + \" Side: \" + side + \" Qty: \" + qty + \" Market Value: \" + market_value + \" Gain to date: \" + unrealized_pl + \" Pct Gain: \" +unrealized_plpc)\n    sql = \"update sub_portfolio set gain_today = \" + unrealized_intraday_pl + \", pctgain_today = \"\n    sql += unrealized_intraday_plpc + \", gain = \" +unrealized_pl+ \", pctgain = \" +unrealized_plpc+ \" where ticker = '\" +symbol+ \"' and id = 2;\" \n    msg.topic = sql\n    node.warn(msg.topic)\n    }\n}\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1020,
+        "y": 1960,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "89645ce705325ac3",
+        "type": "comment",
+        "z": "c3845d36cbd343f9",
+        "name": "Update sub_portfolio values",
+        "info": "",
+        "x": 180,
+        "y": 1900,
+        "wires": []
+    },
+    {
+        "id": "ddce695f0ab7f309",
+        "type": "inject",
+        "z": "c3845d36cbd343f9",
+        "name": "SELECT * ticker where id = 1",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "select ticker from sub_portfolio where id = 1",
+        "x": 200,
+        "y": 2040,
+        "wires": [
+            [
+                "2ebe9a7927816b1a"
+            ]
+        ]
+    },
+    {
+        "id": "2ebe9a7927816b1a",
+        "type": "sqlite",
+        "z": "c3845d36cbd343f9",
+        "mydb": "d6e22e31a8a67436",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "portfolios",
+        "x": 400,
+        "y": 2040,
+        "wires": [
+            [
+                "6004b9f6b3d31c43"
+            ]
+        ]
+    },
+    {
+        "id": "6004b9f6b3d31c43",
+        "type": "function",
+        "z": "c3845d36cbd343f9",
+        "name": "function 2",
+        "func": "let id = 1\nlet symbol = ''\nlet cnt = msg.payload.length\nnode.warn(\"Count: \" +cnt)\n\nfor (var i = 0; i < msg.payload.length; i++) {\n\n    symbol = msg.payload[i][\"ticker\"]\n    node.warn(\"ID: \" +id+ \" Ticker: \" +symbol)\n}\n\nmsg.topic = symbol\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 540,
+        "y": 2040,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "48cc4f85b7cbe664",
+        "type": "function",
+        "z": "c3845d36cbd343f9",
+        "name": "update sub_portfolio where id = 2",
+        "func": "let sql = ''\nlet ticker = msg.topic\n//let ticker = flow.get(\"ticker\")\nlet symbol = ''\nfor (var i=0;i<msg.payload.length;i++) \n\n{\n\n    let asset_id = msg.payload[i][\"asset_id\"]\n    let symbol = msg.payload[i][\"symbol\"]\n    let exchange = msg.payload[i][\"exchange\"]\n    let asset_class = msg.payload[i][\"asset_class\"]\n    let asset_marginable = msg.payload[i][\"asset_marginable\"]\n    let qty = msg.payload[i][\"qty\"]\n    let avg_entry_price = msg.payload[i][\"avg_entry_price\"]\n    let side = msg.payload[i][\"side\"]\n    let market_value = msg.payload[i][\"market_value\"]\n    let cost_basis = msg.payload[i][\"cost_basis\"]\n    let unrealized_pl = msg.payload[i][\"unrealized_pl\"]\n    let unrealized_plpc = msg.payload[i][\"unrealized_plpc\"]\n    let unrealized_intraday_pl = msg.payload[i][\"unrealized_intraday_pl\"]\n    let unrealized_intraday_plpc = msg.payload[i][\"unrealized_intraday_plpc\"]\n    let current_price = msg.payload[i][\"current_price\"]\n    let lastday_price = msg.payload[i][\"lastday_price\"]\n    let change_today = msg.payload[i][\"change_today\"]\n    let qty_available = msg.payload[i][\"qty_available\"]\n\n    if (symbol === ticker) {\n \n//    node.warn(\"Symbol: \" + symbol + \" Side: \" + side + \" Qty: \" + qty + \" Market Value: \" + market_value + \" Gain to date: \" + unrealized_pl + \" Pct Gain: \" +unrealized_plpc)\n    sql = \"update sub_portfolio set gain_today = \" + unrealized_intraday_pl + \", pctgain_today = \"\n    sql += unrealized_intraday_plpc + \", gain = \" +unrealized_pl+ \", pctgain = \" +unrealized_plpc+ \" where ticker = '\" +symbol+ \"' and id = 2;\" \n    msg.topic = sql\n    node.warn(msg.topic)\n    }\n}\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1020,
+        "y": 2040,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "01cca00932fc752f",
+        "type": "comment",
+        "z": "c3845d36cbd343f9",
+        "name": "Flow #4: Update Gains/Losses for Sub Portfolio - Needs to have an position open to update",
+        "info": "",
+        "x": 360,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "772d65f3df7a261b",
+        "type": "function",
+        "z": "c3845d36cbd343f9",
+        "name": "update positions",
+        "func": "let sql = ''\nlet portfolio_id = 2\nlet ticker = flow.get(\"ticker\")\nlet symbol = ''\nlet qty = ''\nlet temp = ''\n\nfor (var i=0;i<msg.payload.length;i++) \n\n{\n\n    let asset_id = msg.payload[i][\"asset_id\"]\n    let symbol = msg.payload[i][\"symbol\"]\n    let exchange = msg.payload[i][\"exchange\"]\n    let asset_class = msg.payload[i][\"asset_class\"]\n    let asset_marginable = msg.payload[i][\"asset_marginable\"]\n    let qty = msg.payload[i][\"qty\"]\n    let avg_entry_price = msg.payload[i][\"avg_entry_price\"]\n    let side = msg.payload[i][\"side\"]\n    let market_value = msg.payload[i][\"market_value\"]\n    let cost_basis = msg.payload[i][\"cost_basis\"]\n    let unrealized_pl = msg.payload[i][\"unrealized_pl\"]\n    let unrealized_plpc = msg.payload[i][\"unrealized_plpc\"]\n    let unrealized_intraday_pl = msg.payload[i][\"unrealized_intraday_pl\"]\n    let unrealized_intraday_plpc = msg.payload[i][\"unrealized_intraday_plpc\"]\n    let current_price = msg.payload[i][\"current_price\"]\n    let lastday_price = msg.payload[i][\"lastday_price\"]\n    let change_today = msg.payload[i][\"change_today\"]\n    let qty_available = msg.payload[i][\"qty_available\"]\n\n    if (symbol === ticker){\n    sql = \"update sub_portfolio set gain_today = \" +unrealized_intraday_pl+ \", pctgain_today = \" +unrealized_intraday_plpc +\", gain = \" +unrealized_pl+ \", pctgain = \" +unrealized_plpc+ \" where ticker = '\" +symbol+ \"' and id = \" +portfolio_id+ \";\\n\" \n    temp += sql\n    }\n}\n\nmsg.topic = qty\nmsg.payload = temp\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 620,
+        "wires": [
+            [
+                "1fcdc3bbe9213ac4",
+                "2fd7942d58eeb238"
+            ]
+        ]
+    },
+    {
+        "id": "f59aa5850b92b493",
+        "type": "sqlite",
+        "z": "c3845d36cbd343f9",
+        "mydb": "d6e22e31a8a67436",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "portfolios",
+        "x": 1140,
+        "y": 620,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1fcdc3bbe9213ac4",
+        "type": "split",
+        "z": "c3845d36cbd343f9",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 770,
+        "y": 620,
+        "wires": [
+            [
+                "38ffde1af3408141"
+            ]
+        ]
+    },
+    {
+        "id": "38ffde1af3408141",
+        "type": "function",
+        "z": "c3845d36cbd343f9",
+        "name": "change payload to topic",
+        "func": "msg.topic = msg.payload\nnode.warn(msg.topic)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 950,
+        "y": 620,
+        "wires": [
+            [
+                "f59aa5850b92b493"
+            ]
+        ]
+    },
+    {
+        "id": "c655e5a318aaa6a0",
+        "type": "inject",
+        "z": "c3845d36cbd343f9",
+        "name": "6 AM",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 620,
+        "wires": [
+            [
+                "36cd6de2ad16392d"
+            ]
+        ]
+    },
+    {
+        "id": "c109d695e98bdfc9",
+        "type": "comment",
+        "z": "c3845d36cbd343f9",
+        "name": "Create a sub portfolio for this strategy",
+        "info": "",
+        "x": 390,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "834e66680b0bad80",
+        "type": "alpaca-order",
+        "z": "c3845d36cbd343f9",
+        "conf": "0c86a5f06a42b505",
+        "x": 670,
+        "y": 260,
+        "wires": [
+            [
+                "886bde8b26b38171"
+            ]
+        ]
+    },
+    {
+        "id": "c4e3e7a956a06e1a",
+        "type": "alpaca-order",
+        "z": "c3845d36cbd343f9",
+        "conf": "0c86a5f06a42b505",
+        "x": 650,
+        "y": 460,
+        "wires": [
+            [
+                "99331ddf97c3e100"
+            ]
+        ]
+    },
+    {
+        "id": "f08500e96d1f8b12",
+        "type": "alpaca-position-query",
+        "z": "c3845d36cbd343f9",
+        "conf": "0c86a5f06a42b505",
+        "x": 750,
+        "y": 1960,
+        "wires": [
+            [
+                "22460078a42971e7"
+            ]
+        ]
+    },
+    {
+        "id": "60d7ae1b22c52986",
+        "type": "alpaca-position-query",
+        "z": "c3845d36cbd343f9",
+        "conf": "0c86a5f06a42b505",
+        "x": 750,
+        "y": 2040,
+        "wires": [
+            [
+                "48cc4f85b7cbe664"
+            ]
+        ]
+    },
+    {
+        "id": "36cd6de2ad16392d",
+        "type": "alpaca-position-query",
+        "z": "c3845d36cbd343f9",
+        "conf": "0c86a5f06a42b505",
+        "x": 350,
+        "y": 620,
+        "wires": [
+            [
+                "772d65f3df7a261b"
+            ]
+        ]
+    },
+    {
+        "id": "2fd7942d58eeb238",
+        "type": "change",
+        "z": "c3845d36cbd343f9",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "portfolio",
+                "pt": "flow",
+                "to": "topic",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 810,
+        "y": 660,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "42c246dcb62cfed6",
+        "type": "comment",
+        "z": "c3845d36cbd343f9",
+        "name": "Note that the trade won't execute if there is no position",
+        "info": "",
+        "x": 460,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "3da37290d92c1dc8",
+        "type": "sqlitedb",
+        "db": "/data/store/orders",
+        "mode": "RWC"
+    },
+    {
+        "id": "d6e22e31a8a67436",
+        "type": "sqlitedb",
+        "db": "/data/store/portfolios",
+        "mode": "RWC"
+    },
+    {
+        "id": "0c86a5f06a42b505",
+        "type": "alpaca-account",
+        "name": "live",
+        "keyId": "PK5NTIWS5NJ8S2MFN6QT",
+        "paper": true
+    }
+]

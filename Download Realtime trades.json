@@ -1,0 +1,1106 @@
+[
+    {
+        "id": "0e5e235f4b098982",
+        "type": "tab",
+        "label": "SPY One Second Trades",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "4413d13f5257be5a",
+        "type": "comment",
+        "z": "0e5e235f4b098982",
+        "name": "This flow stores one second timeseries data, calculates moving average, and records difference between current price and moving average for BTCUSD",
+        "info": "",
+        "x": 540,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "58d8687b2ee7181b",
+        "type": "inject",
+        "z": "0e5e235f4b098982",
+        "name": "Set symbol 1x only",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 690,
+        "y": 480,
+        "wires": [
+            [
+                "26f9f2dd533dd717"
+            ]
+        ]
+    },
+    {
+        "id": "a887bc962d76e283",
+        "type": "comment",
+        "z": "0e5e235f4b098982",
+        "name": "Specify ticker",
+        "info": "",
+        "x": 250,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "26f9f2dd533dd717",
+        "type": "function",
+        "z": "0e5e235f4b098982",
+        "name": "set and store ticker SPYvariables",
+        "func": "let ticker = 'SPY'\nmsg.topic = ticker\n//node.warn(\"Global Ticker: \" +ticker)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 980,
+        "y": 480,
+        "wires": [
+            [
+                "357fe0bda9bc7aad"
+            ]
+        ]
+    },
+    {
+        "id": "357fe0bda9bc7aad",
+        "type": "change",
+        "z": "0e5e235f4b098982",
+        "name": "set global variables: ticker, avg_count",
+        "rules": [
+            {
+                "t": "set",
+                "p": "ticker",
+                "pt": "global",
+                "to": "topic",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "avg_count",
+                "pt": "global",
+                "to": "100",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1290,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a2a91035ea344816",
+        "type": "comment",
+        "z": "0e5e235f4b098982",
+        "name": "Function node allows manipulation of the msg.payload",
+        "info": "",
+        "x": 620,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "e8de02021c776f84",
+        "type": "comment",
+        "z": "0e5e235f4b098982",
+        "name": "Change node used to stores flow variables ticker and count",
+        "info": "",
+        "x": 1060,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "23ed20e66006612e",
+        "type": "sqlite",
+        "z": "0e5e235f4b098982",
+        "mydb": "04b12a7c350616b1",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "algo4 database",
+        "x": 640,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b4654eb4f72ffef5",
+        "type": "inject",
+        "z": "0e5e235f4b098982",
+        "name": "CREATE sqlite table",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 330,
+        "y": 160,
+        "wires": [
+            [
+                "e87b2e1e145cc706"
+            ]
+        ]
+    },
+    {
+        "id": "ec06d05692b1a833",
+        "type": "sqlite",
+        "z": "0e5e235f4b098982",
+        "mydb": "04b12a7c350616b1",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "algo4 database",
+        "x": 860,
+        "y": 600,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0a58f7a444690229",
+        "type": "function",
+        "z": "0e5e235f4b098982",
+        "name": "display polygon output",
+        "func": "let ux = Date.now()\nlet nstime = '';\nlet price = '0';\nlet size = '';\nlet exchange = '';\nlet item = ''\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    nstime = item.participant_timestamp;\n    size = item.size;\n    exchange = item.exchange;\n   // node.warn(\"Current Price: \" +price)\n \n    msg.payload = price\n    \n}\n\nmsg.topic = ux\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1000,
+        "y": 380,
+        "wires": [
+            [
+                "ce62c63add3912bd"
+            ]
+        ]
+    },
+    {
+        "id": "a3bf76fd3b8f42fa",
+        "type": "change",
+        "z": "0e5e235f4b098982",
+        "name": "global.price, global.ux",
+        "rules": [
+            {
+                "t": "set",
+                "p": "price",
+                "pt": "global",
+                "to": "payload",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "ux",
+                "pt": "global",
+                "to": "topic",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1220,
+        "y": 420,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "176f329aed4ed10e",
+        "type": "polygon-last-trade-v3",
+        "z": "0e5e235f4b098982",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "x": 760,
+        "y": 380,
+        "wires": [
+            [
+                "0a58f7a444690229"
+            ]
+        ]
+    },
+    {
+        "id": "4a2aea9ac1c133f2",
+        "type": "function",
+        "z": "0e5e235f4b098982",
+        "name": "prepay payload for polygon",
+        "func": "let symbol = global.get(\"ticker\")\nlet count = 1 // get only one record\n\n// if crypto\n//symbol = symbol.replace(\"\",\"X:\")\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: count,\n}\n\n//node.warn(msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 380,
+        "wires": [
+            [
+                "176f329aed4ed10e"
+            ]
+        ]
+    },
+    {
+        "id": "fda0ae416a0d35ed",
+        "type": "change",
+        "z": "0e5e235f4b098982",
+        "name": "global.average_price",
+        "rules": [
+            {
+                "t": "set",
+                "p": "average_price",
+                "pt": "global",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1220,
+        "y": 1020,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "83004af213f99bd7",
+        "type": "comment",
+        "z": "0e5e235f4b098982",
+        "name": "export and save to a local csv file",
+        "info": "",
+        "x": 170,
+        "y": 1140,
+        "wires": []
+    },
+    {
+        "id": "ed0483a010a16487",
+        "type": "sqlite",
+        "z": "0e5e235f4b098982",
+        "mydb": "04b12a7c350616b1",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "algo4 sqlite database",
+        "x": 580,
+        "y": 1180,
+        "wires": [
+            [
+                "8e35e22a633b7cdf"
+            ]
+        ]
+    },
+    {
+        "id": "2a1f3e248617f5bd",
+        "type": "comment",
+        "z": "0e5e235f4b098982",
+        "name": "Run every second. Calculate average and update tables",
+        "info": "",
+        "x": 380,
+        "y": 920,
+        "wires": []
+    },
+    {
+        "id": "b45fd6528dd84749",
+        "type": "function",
+        "z": "0e5e235f4b098982",
+        "name": "Store on local sqlite",
+        "func": "let unixtime = Date.now()\nlet ticker = ''\nlet price = 0\n\nticker = global.get(\"ticker\")\nprice = global.get(\"price\")\n\n\nlet ux = (unixtime / 1000)\n\nlet sql = \"insert into \" +ticker+ \" (unixtime,ux,cur_price) values ('\" + unixtime + \"','\" +ux+ \"','\" + price+ \"');\"\n//node.warn(sql)\nmsg.topic = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 600,
+        "wires": [
+            [
+                "ec06d05692b1a833"
+            ]
+        ]
+    },
+    {
+        "id": "9554a702a4019aa9",
+        "type": "http in",
+        "z": "0e5e235f4b098982",
+        "name": "/api/download_spy",
+        "url": "/api/download_spy",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 130,
+        "y": 1180,
+        "wires": [
+            [
+                "f78d165bf1e8d96c"
+            ]
+        ]
+    },
+    {
+        "id": "04566aa1242e4c23",
+        "type": "http response",
+        "z": "0e5e235f4b098982",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"outfile.json\""
+        },
+        "x": 1090,
+        "y": 1180,
+        "wires": []
+    },
+    {
+        "id": "8e35e22a633b7cdf",
+        "type": "csv",
+        "z": "0e5e235f4b098982",
+        "name": "",
+        "sep": ",",
+        "hdrin": "",
+        "hdrout": "none",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": "unixtime, local_time, cur_price, avg_price, price_dif",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 770,
+        "y": 1180,
+        "wires": [
+            [
+                "b1bd9af1c7f1db93"
+            ]
+        ]
+    },
+    {
+        "id": "f78d165bf1e8d96c",
+        "type": "function",
+        "z": "0e5e235f4b098982",
+        "name": "export query",
+        "func": "let ticker = flow.get(\"ticker\")\n \n//msg.topic = \"select * from results_\" +ticker\nmsg.topic=\"select * from \" +ticker\nnode.warn(msg.topic)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 1180,
+        "wires": [
+            [
+                "ed0483a010a16487"
+            ]
+        ]
+    },
+    {
+        "id": "b1bd9af1c7f1db93",
+        "type": "file",
+        "z": "0e5e235f4b098982",
+        "name": "write report",
+        "filename": "/data/store/algo3.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 930,
+        "y": 1180,
+        "wires": [
+            [
+                "04566aa1242e4c23"
+            ]
+        ]
+    },
+    {
+        "id": "88173d69a5ed4b02",
+        "type": "comment",
+        "z": "0e5e235f4b098982",
+        "name": "Flow #3",
+        "info": "",
+        "x": 90,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "fb42e9a674b0d801",
+        "type": "comment",
+        "z": "0e5e235f4b098982",
+        "name": "Flow #4",
+        "info": "",
+        "x": 90,
+        "y": 920,
+        "wires": []
+    },
+    {
+        "id": "8c320ae31c9bc943",
+        "type": "comment",
+        "z": "0e5e235f4b098982",
+        "name": "Flow #2",
+        "info": "",
+        "x": 90,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "ef266b31973c32aa",
+        "type": "comment",
+        "z": "0e5e235f4b098982",
+        "name": "Flow #1",
+        "info": "",
+        "x": 90,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "eecc6e46f0773c9b",
+        "type": "comment",
+        "z": "0e5e235f4b098982",
+        "name": "Flow #7",
+        "info": "",
+        "x": 90,
+        "y": 1100,
+        "wires": []
+    },
+    {
+        "id": "50525b77d39bf541",
+        "type": "inject",
+        "z": "0e5e235f4b098982",
+        "name": "calculate average price",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 160,
+        "y": 980,
+        "wires": [
+            [
+                "13432a82c2410fd5"
+            ]
+        ]
+    },
+    {
+        "id": "f8b2a011bdbacfa8",
+        "type": "sqlite",
+        "z": "0e5e235f4b098982",
+        "mydb": "04b12a7c350616b1",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "algo4 database",
+        "x": 600,
+        "y": 980,
+        "wires": [
+            [
+                "88ead00f6814f8cc"
+            ]
+        ]
+    },
+    {
+        "id": "88ead00f6814f8cc",
+        "type": "function",
+        "z": "0e5e235f4b098982",
+        "name": "create array for average",
+        "func": "const prices = [];\nlet item = ''\nlet price = ''\n\nfor (item of msg.payload) {\n    price = item.cur_price;\n    prices.push(price);  \n//    node.warn(price)\n\n}\n\n//node.warn(prices)\nmsg.payload = prices\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 830,
+        "y": 980,
+        "wires": [
+            [
+                "963ec37a0dfcec48"
+            ]
+        ]
+    },
+    {
+        "id": "b092f3f104c084dc",
+        "type": "comment",
+        "z": "0e5e235f4b098982",
+        "name": "Flow #8 Utilities",
+        "info": "",
+        "x": 120,
+        "y": 1300,
+        "wires": []
+    },
+    {
+        "id": "13432a82c2410fd5",
+        "type": "function",
+        "z": "0e5e235f4b098982",
+        "name": "select specified rows",
+        "func": "let count = global.get(\"avg_count\") // number of rows to include in average\nlet ticker = global.get(\"ticker\")\nlet sql = \"select cur_price from \" +ticker+ \" order by unixtime desc limit \" +count \n//node.warn(sql)\nmsg.topic = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 980,
+        "wires": [
+            [
+                "f8b2a011bdbacfa8"
+            ]
+        ]
+    },
+    {
+        "id": "d3aa54a282f6fb4d",
+        "type": "sqlite",
+        "z": "0e5e235f4b098982",
+        "mydb": "04b12a7c350616b1",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "algo4 database",
+        "x": 540,
+        "y": 1360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e1c5404f370e8b41",
+        "type": "inject",
+        "z": "0e5e235f4b098982",
+        "name": "each hour",
+        "props": [],
+        "repeat": "3600",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 1360,
+        "wires": [
+            [
+                "eaf56cf2d0a19ea8"
+            ]
+        ]
+    },
+    {
+        "id": "62da43450f758697",
+        "type": "inject",
+        "z": "0e5e235f4b098982",
+        "name": "select count(*) from dpy",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "select count(*) from spy",
+        "payload": "",
+        "payloadType": "date",
+        "x": 800,
+        "y": 1360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6854309d41d6f57b",
+        "type": "sqlite",
+        "z": "0e5e235f4b098982",
+        "mydb": "04b12a7c350616b1",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "algo4 database",
+        "x": 1000,
+        "y": 1360,
+        "wires": [
+            [
+                "a728e5e98aa5a7f6"
+            ]
+        ]
+    },
+    {
+        "id": "a728e5e98aa5a7f6",
+        "type": "debug",
+        "z": "0e5e235f4b098982",
+        "name": "debug 13",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1160,
+        "y": 1360,
+        "wires": []
+    },
+    {
+        "id": "eaf56cf2d0a19ea8",
+        "type": "function",
+        "z": "0e5e235f4b098982",
+        "name": "delete past 2 hrs",
+        "func": "let table = global.get(\"ticker\")\nlet t = Date.now()\nt = (t -7200)\n\nlet sql = \"delete from \" +table+ \" where ux < \" +t  \nnode.warn(sql)\nmsg.topic = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 1360,
+        "wires": [
+            [
+                "d3aa54a282f6fb4d"
+            ]
+        ]
+    },
+    {
+        "id": "68d41b70bf135d40",
+        "type": "inject",
+        "z": "0e5e235f4b098982",
+        "name": "Display Flow Variables",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 340,
+        "y": 100,
+        "wires": [
+            [
+                "501cb0e5dd74127d"
+            ]
+        ]
+    },
+    {
+        "id": "501cb0e5dd74127d",
+        "type": "function",
+        "z": "0e5e235f4b098982",
+        "name": "display variables",
+        "func": "let ticker = global.get(\"ticker\")\nlet count = global.get(\"avg_count\")\nlet ux = global.get(\"ux\")\nlet avg = global.get(\"average_price\")\nlet current_price = global.get(\"price\")\nlet current_diff = current_price - avg\n\nnode.warn(\"Ticker: \" +ticker+ \" Avg Count: \" +count+ \" Unixtime: \" +ux+ \" Current Price: \" + current_price + \" Avg Price: \" + avg + \" Price Difference: \" +current_diff)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5cb602f9910ccf25",
+        "type": "inject",
+        "z": "0e5e235f4b098982",
+        "name": "get count",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "select count(*) from spy",
+        "x": 840,
+        "y": 100,
+        "wires": [
+            [
+                "bda7fb52e3fd3715"
+            ]
+        ]
+    },
+    {
+        "id": "bda7fb52e3fd3715",
+        "type": "sqlite",
+        "z": "0e5e235f4b098982",
+        "mydb": "04b12a7c350616b1",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "algo4 database",
+        "x": 1040,
+        "y": 100,
+        "wires": [
+            [
+                "1ba66dc6dd70a3ef"
+            ]
+        ]
+    },
+    {
+        "id": "1ba66dc6dd70a3ef",
+        "type": "debug",
+        "z": "0e5e235f4b098982",
+        "name": "debug 35",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1200,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "beb788bb05cb57ad",
+        "type": "inject",
+        "z": "0e5e235f4b098982",
+        "name": "Test algo4 table",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "select cur_price from SPY order by unixtime desc limit 300",
+        "x": 860,
+        "y": 160,
+        "wires": [
+            [
+                "5a1f0ad67b1b899f"
+            ]
+        ]
+    },
+    {
+        "id": "5a1f0ad67b1b899f",
+        "type": "sqlite",
+        "z": "0e5e235f4b098982",
+        "mydb": "04b12a7c350616b1",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "algo4 database",
+        "x": 1040,
+        "y": 160,
+        "wires": [
+            [
+                "b499c0163f9603b0"
+            ]
+        ]
+    },
+    {
+        "id": "b499c0163f9603b0",
+        "type": "debug",
+        "z": "0e5e235f4b098982",
+        "name": "debug 34",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1200,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "ce62c63add3912bd",
+        "type": "function",
+        "z": "0e5e235f4b098982",
+        "name": "Format to 2 decimals",
+        "func": "let price = msg.payload\nprice = price.toFixed(2)\nmsg.payload = price\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1220,
+        "y": 380,
+        "wires": [
+            [
+                "a3bf76fd3b8f42fa"
+            ]
+        ]
+    },
+    {
+        "id": "ee635596e8e249ab",
+        "type": "function",
+        "z": "0e5e235f4b098982",
+        "name": "Format to 2 decimals",
+        "func": "let price = msg.payload\nprice = price.toFixed(2)\nmsg.payload = price\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1220,
+        "y": 980,
+        "wires": [
+            [
+                "fda0ae416a0d35ed"
+            ]
+        ]
+    },
+    {
+        "id": "e87b2e1e145cc706",
+        "type": "function",
+        "z": "0e5e235f4b098982",
+        "name": "query",
+        "func": "let ticker = global.get(\"ticker\")\nlet table = ticker\nlet sql = \"create table IF NOT EXISTS \" +table+ \" (unixtime INTEGER PRIMARY KEY asc, ux INTEGER, cur_price REAL,avg_price REAL,price_dif REAL)\"\nnode.warn(sql)\nmsg.topic = sql\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 160,
+        "wires": [
+            [
+                "23ed20e66006612e"
+            ]
+        ]
+    },
+    {
+        "id": "2973f252afdd47c7",
+        "type": "function",
+        "z": "0e5e235f4b098982",
+        "name": "display polygon output",
+        "func": "let ux = Date.now()\nlet nstime = '';\nlet price = '0';\nlet size = '';\nlet exchange = '';\nlet item = ''\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    nstime = item.participant_timestamp;\n    size = item.size;\n    exchange = item.exchange;\n    node.warn(\"Current Price: \" +price)\n \n    msg.payload = price\n    \n}\n\nmsg.topic = ux\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 960,
+        "y": 540,
+        "wires": [
+            [
+                "3f78e9e8ac104e29"
+            ]
+        ]
+    },
+    {
+        "id": "42de0e456b1c3f1f",
+        "type": "change",
+        "z": "0e5e235f4b098982",
+        "name": "global.price, global.ux",
+        "rules": [
+            {
+                "t": "set",
+                "p": "price",
+                "pt": "global",
+                "to": "payload",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "ux",
+                "pt": "global",
+                "to": "topic",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1100,
+        "y": 640,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1ba1348a8ca48ad4",
+        "type": "polygon-last-trade-v3",
+        "z": "0e5e235f4b098982",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "x": 720,
+        "y": 540,
+        "wires": [
+            [
+                "2973f252afdd47c7"
+            ]
+        ]
+    },
+    {
+        "id": "6073b30a1f7ff272",
+        "type": "function",
+        "z": "0e5e235f4b098982",
+        "name": "prepay payload for polygon",
+        "func": "//let symbol = global.get(\"ticker\")\nlet symbol = 'X:ETHUSD'\nlet count = 1 // get only one record\n\n// if crypto\n//symbol = symbol.replace(\"\",\"X:\")\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: count,\n}\n\n//node.warn(msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 540,
+        "wires": [
+            [
+                "1ba1348a8ca48ad4",
+                "3b78f1a0a780302c",
+                "b45fd6528dd84749",
+                "4a2aea9ac1c133f2"
+            ]
+        ]
+    },
+    {
+        "id": "3f78e9e8ac104e29",
+        "type": "function",
+        "z": "0e5e235f4b098982",
+        "name": "Format to 2 decimals",
+        "func": "let price = msg.payload\nprice = price.toFixed(2)\nmsg.payload = price\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1100,
+        "y": 580,
+        "wires": [
+            [
+                "42de0e456b1c3f1f"
+            ]
+        ]
+    },
+    {
+        "id": "3ba53f5ade6fda85",
+        "type": "loop",
+        "z": "0e5e235f4b098982",
+        "name": "Set to 50400 seconds (14 hrs)",
+        "kind": "fcnt",
+        "count": "100",
+        "initial": "1",
+        "step": "1",
+        "condition": "",
+        "conditionType": "js",
+        "when": "before",
+        "enumeration": "enum",
+        "enumerationType": "msg",
+        "limit": "",
+        "loopPayload": "loop-index",
+        "finalPayload": "final-count",
+        "x": 450,
+        "y": 700,
+        "wires": [
+            [
+                "0038cf3458ad91c3"
+            ],
+            [
+                "6073b30a1f7ff272"
+            ]
+        ]
+    },
+    {
+        "id": "3b78f1a0a780302c",
+        "type": "delay",
+        "z": "0e5e235f4b098982",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 220,
+        "y": 700,
+        "wires": [
+            [
+                "3ba53f5ade6fda85"
+            ]
+        ]
+    },
+    {
+        "id": "0038cf3458ad91c3",
+        "type": "debug",
+        "z": "0e5e235f4b098982",
+        "name": "debug 45",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 700,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "2ed27a865f59fcc6",
+        "type": "inject",
+        "z": "0e5e235f4b098982",
+        "name": "6 am - 8 pm M-F",
+        "props": [],
+        "repeat": "",
+        "crontab": "00 06 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 540,
+        "wires": [
+            [
+                "6073b30a1f7ff272"
+            ]
+        ]
+    },
+    {
+        "id": "963ec37a0dfcec48",
+        "type": "calculator",
+        "z": "0e5e235f4b098982",
+        "name": "",
+        "inputMsgField": "payload",
+        "outputMsgField": "payload",
+        "operation": "avg",
+        "constant": "",
+        "round": false,
+        "decimals": 0,
+        "x": 1040,
+        "y": 980,
+        "wires": [
+            [
+                "ee635596e8e249ab"
+            ]
+        ]
+    },
+    {
+        "id": "04b12a7c350616b1",
+        "type": "sqlitedb",
+        "db": "/data/store/algo4",
+        "mode": "RWC"
+    },
+    {
+        "id": "651f0aab10dc1632",
+        "type": "polygon-account",
+        "name": "Polygon Key"
+    }
+]
