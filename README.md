@@ -1,5 +1,10 @@
 # MachineTrader-Community
-This is a community repository for MachineTrader users who want to upload or share json files in their MachineTrader instances that can be used implement and execute algorithmic trading strategies. 
+This is a community repository for MachineTrader users who want to upload or share json files in their MachineTrader instances that can be used implement and execute algorithmic trading strategies. Before attempting to upload any of these json scripts, we highly recommend reviewing the MachineTrader "Intro to Nodes and Flows in the video training library." [url] 
+
+# Adding Your Alpaca Keys to Your Instance
+
+When you first login into your trading instance, the everything is ready to go except the flows that are power by your Alpaca account keys, which you will have to enter manually. To add your keys, click the customize button in the upper right which will bring you to your MachineTrader instance backend or admin. Be careful when you're using the admin because any changes you make will affect the operation of your instance. Notice that the admin consists of a series of tabs each containing a grouping of flows. 
+Your secret key is encrypted once you enter it, so no one will be able to get access to your Alpaca account.  
 
 # Modifying your Default Market Indicators and Watchlist
 One of the first things you may decide to do once your personal MachineTrader instance is up and running is to modify the default tickers that are used in the Watchlist and as market Indicators. The "Customize Market Indicators" json allows you to do just that.  
