@@ -1,6 +1,8 @@
 # MachineTrader-Community
 This is a community repository for MachineTrader users who want to upload or share json files in their MachineTrader instances that can be used implement and execute algorithmic trading strategies. Before attempting to upload any of these json scripts, we highly recommend reviewing the MachineTrader "Intro to Nodes and Flows in the video training library." [url] 
 
+Many of the procedures described below have corresponding instructional videos so if you prefer video learning, to to the MachineTrader YouTube channel.
+
 # Adding Your Alpaca Keys to Your Instance
 
 When you first login into your trading instance, everything is ready to go except the flows that are powered by your Alpaca account keys which you will have to enter manually. To add your keys, click the customize button in the upper right which will bring you to your MachineTrader instance backend or admin. We will assume that you have retrieved your Alpaca keys from your Alpaca account and are ready to install. If you haven't done that yet, follow the instructions here: https://www.machinetrader.io/learn-articles/adding-alpaca-keys-to-your-machinetrader-instance.
@@ -17,7 +19,29 @@ Your secret key is encrypted once you enter it, so no one will be able to get ac
 
 # Install a Utilities Flow that contains tables for storing sub portfolios, order, and export to csv files
 
-<img width="1043" alt="Screen Shot 2022-10-12 at 7 34 33 AM" src="https://user-images.githubusercontent.com/79699033/195361959-97029e6d-ec4c-4168-8f46-7d62c4056a05.png">
+The "Utilities" flow contains flows that allow you to create and monitor "sub portfolios," to keep a record of "raw orders," and to export the contents of sqlite tables to a browser, which can be stored on your local machine. 
+
+Sub Portfolio Tables
+
+The sub portfolio flows allow you to group your portfolio assets into groups based on the algo strategy. The "Create Sub Portfolio table" flow creates a sub_portfolio table in a sqlite "portfolios" database. Note that we have created fields for gain, pctgain, gain_today, and pctgain_today which will allow you to track the performance of the strategy daily (or more often if you wish). 
+
+The "Drop Sub Portfolio table" simples deletes the table, allowing you to start again if the table is flawed in any way. "Create unique index" does what is states: it creates a unique index combining the ticker and the sub portfolio id assigned to the strategy so that you can't accidently duplicate holdings in the portfolio. The last three flows allow you to display the contents of the tables so that you can review the performance of your strategies.  
+Orders Tables
+
+The orders tables allows to store and retrieve Alpaca order information. The raw orders table stores the information that Alpacas return whenever a trade is entered. This data is not necessary the same as as the data returned when a request is made for "Open Orders" or "Closed Orders." As you decide to more precisely monitor in the information you sent to the Alapaca and the information captured in their order system, this information will be useful.
+
+The open orders can be used to store information about unfilled orders at the end of a time period, typically as the end of the day. 
+
+The closed orders table can store close order information received from Alpaca. Alpaca's sytems returns a limit of 500 orders so if your trading strategy is performing several hundred trades a day or more, you'll want to store the closed order information for future reference. 
+
+Export and save to a local csv file
+
+This is a very useful routine for downloading data from your instance to be viewed, typically, in an Excel spreadsheet. The file is downloaded by entering the named file in the node "/api/download_subportfolio" [yourinstancename.machinetrader.io/api/download_subportfolio]. The file will appear in the bottom left corner of the browser. The file is actually a json file that contains rows of comma separated fields. Simply copy and paste into an Excel spreadsheet using "Data > Text to Columns" using the comman separator.
+
+The flow can be modified to download the contents of any sqlite table in your instance.
+
+<img width="968" alt="Screen Shot 2022-10-13 at 6 48 15 AM" src="https://user-images.githubusercontent.com/79699033/195577872-551575eb-03ed-4e99-93d5-c845defca704.png">
+
 
 
 # Modifying your Default Market Indicators and Watchlist
@@ -25,7 +49,7 @@ One of the first things you may decide to do once your personal MachineTrader in
 
 <img width="1595" alt="Screen Shot 2022-09-23 at 8 03 22 AM" src="https://user-images.githubusercontent.com/79699033/191956976-be772e82-b8de-4082-a837-41e7ff0b634c.png">
 
-Executing the "modify market indicators" node will start a flow that deletes the current sqlite table, where the indicators are stored, and creates a new one. The second flow will insert the tickers you'd like to use.  Simply paste a comma-separated list of tickers in the "Add Market Symbols" Node and once you've deployed, they will be your new Market Indicators.  One caveat for add crypto pairs: make sure you use the Polygon.io syntax for cryptos which start with an "X:" so that Bitcoin has the ticker "X:BTCUSD".  The full list of Polygon cryptos is shown in the file "crypto list.txt".  
+Executing the "modify market indicators" node will start a flow that deletes the current sqlite table, where the indicators are stored, and creates a new one. The second flow will insert the tickers you'd like to use.  Simply paste a comma-separated list of tickers in the "Add Market Symbols" Node and once you've deployed, they will be your new Market Indicators.  One caveat for add crypto pairs: make sure you use the Polygon.io syntax for cryptos which start with an "X:" For example, Bitcoin uses the ticker "X:BTCUSD".  The full list of Polygon cryptos is shown in the file "crypto list.txt".  
 
 The steps for changing the Watchlist tickers are similar. 
  
