@@ -106,13 +106,34 @@ Download json file "Build a portfoliio.json" and import to your instance.
 
 One of the really useful things you can do simply and easily is to build your very own no-load, commission-free ETFs. MachineTrader maintains nearly a dozen collections representing different combinations of assets. One collection is called "dividends" and it includes more than one thousand stocks that pay regular dividends. The flow we discuss here uses the dividend collection to construct a portfolio of stocks that pay dividends.
 
-  
-<img width="1065" alt="Screen Shot 2022-10-12 at 7 35 06 AM" src="https://user-images.githubusercontent.com/79699033/195361029-c9a5d9ae-5888-4673-8afc-f25787406719.png">
+ <img width="953" alt="Create dividend portfolio" src="https://user-images.githubusercontent.com/79699033/195637359-bf814670-e24a-45ab-9d6a-02e4605f95dc.png">
 
-The initial flow queries MachineTrader's ptsapi database for the collection dividends. The sql is defined to get a unique list of tickers, along with the previous day's closing price, but filtered to include those tickers what have a value betwen 4 and 10 in the "pct" field and which have an exdate greater than 6/1/2022.  The pct field contains the value expressed as a pct of the current annual dividend for the stock; i.e. give us a list of stocks paying annual dividends between 4 and 10 percent. Since this is a low code, no code platform, you can change that query in the "Get divident stocks" function to reflect your own preferences. Being the cautious types, we avoid including any stock paying an annual dividend above 10 percent. We also don't want to bother with any stocks paying less than 4 percent. Revise the query as you like.
+
+The initial flow queries MachineTrader's ptsapi database for the collection dividends. The sql is defined to get a unique list of tickers, along with the previous day's closing price, but filtered to include those tickers what have a value betwen 4 and 10 in the "pct" field and which have an exdate greater than 6/1/2022.  The dividend table includes informaton on dividends going back 15 years, but we're only interested in the lastest information -- after 6/1/22. 
+
+The pct field contains the value expressed as a pct of the current annual dividend for the stock; i.e. give us a list of stocks paying annual dividends between 4 and 10 percent. Since this is a low code, no code platform, you can change that query in the "Get divident stocks" function to reflect your own preferences. Being the cautious types, we avoid including any stock paying an annual dividend above 10 percent. We also don't want to bother with any stocks paying less than 4 percent. Revise the query as you like.
 
 <img width="696" alt="dividend query" src="https://user-images.githubusercontent.com/79699033/195627730-2e2f0bb8-6e6d-4ccd-8975-e6aa9f885596.png">
 
+The query is executed and the number of stocks found that matched the criteria is stored in the flow variable flow.stocks. 
+
+The second flow lets me define the size of my desired portfolio in whole dollars (flow.portfolio_size) and assigns id = 1 to the flow.portfolio_id.
+Note that is used the inject node ("set size of portfolio whole dollars) to send these variables to the change node.
+
+<img width="465" alt="inject node" src="https://user-images.githubusercontent.com/79699033/195629996-f459ff40-c977-435b-ac78-0bb560a5c0a2.png">
+
+<img width="346" alt="change node" src="https://user-images.githubusercontent.com/79699033/195630040-1cee4d03-5b12-46e4-8e46-60579b6eac68.png">
+
+Click the "Display flow variables" in the third flow to make sure we stored the values we wanted. You can see that our filter reduced the list of stocks to buy to 91.  One problem  with the loop node we're using is that the number of iterations in the loop has to be set manually. So open the "Fixed Count Loop and enter the value 91 as shown below. 
+
+<img width="287" alt="Fixed Loop Node" src="https://user-images.githubusercontent.com/79699033/195634794-5ef052b8-9d62-4a92-b280-607419049c58.png">
+
+We're now ready to send our orders to Alpaca to be filled. When we buy a large numbber of stocks like this, we recommend using "loop" amnd "delay" nodes so that don't overwhelm the Alapaca API. Depending on your Alpaca subscription plan, you're limited to 200 queries a minute so we need to be careful - don't want to be cancelled!  For simplicity, we're using market orders. Depending on how long you plan to hold the portfolio, market orders are probably fine.  Flow 3 concludes by storing order info in the orders database and the portfolio info is inserted into the portfolio database.
+
+Flow 4 concludes this strategy with an inject node running each morning at 6 AM which hits the "Alpaca Positions Query," parsing that information in the "update positions" node, splitting the position array into separate rows (split node) so the each line of information becomes it's own update query. With the update, if you view or download the position table, you can see how the strategy is workimng on a daily basis.
 
 
+
+
+  
 
