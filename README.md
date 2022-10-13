@@ -1,7 +1,7 @@
 # MachineTrader-Community
 This is a community repository for MachineTrader users who want to upload or share json files in their MachineTrader instances that can be used implement and execute algorithmic trading strategies. Before attempting to upload any of these json scripts, we highly recommend reviewing the MachineTrader "Intro to Nodes and Flows in the video training library." [url] 
 
-Many of the procedures described below have corresponding instructional videos so if you prefer video learning, to to the MachineTrader YouTube channel.
+Many of the procedures described below have corresponding instructional videos so if you prefer video learning, go to the MachineTrader YouTube channel.
 
 # Adding Your Alpaca Keys to Your Instance
 
