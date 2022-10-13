@@ -5,6 +5,8 @@ Many of the procedures described below have corresponding instructional videos s
 
 # Adding Your Alpaca Keys to Your Instance
 
+Download json file "Alpaca Account Management.json" and import to your instance.
+
 When you first login into your trading instance, everything is ready to go except the flows that are powered by your Alpaca account keys which you will have to enter manually. To add your keys, click the customize button in the upper right which will bring you to your MachineTrader instance backend or admin. We will assume that you have retrieved your Alpaca keys from your Alpaca account and are ready to install. If you haven't done that yet, follow the instructions here: https://www.machinetrader.io/learn-articles/adding-alpaca-keys-to-your-machinetrader-instance.
 
 Be careful when you're using the admin because any changes you make will affect the operation of your instance. Notice that the admin consists of a series of tabs each containing a grouping of flows. Go to the far right tab labeled "Add Alpaca Account Keys." 
@@ -18,6 +20,8 @@ Your secret key is encrypted once you enter it, so no one will be able to get ac
 <img width="530" alt="Screen Shot 2022-10-12 at 7 54 29 AM" src="https://user-images.githubusercontent.com/79699033/195339513-38db9d28-0fe9-4d70-bb51-08a4df3bef30.png">
 
 # Install a Utilities Flow that contains tables for storing sub portfolios, orders, and export to csv files
+
+Download json file "Utilities.json" and import to your instance.
 
 The "Utilities" flow contains flows that allow you to create and monitor "sub portfolios," to keep a record of orders, and to export the contents of sqlite tables to a browser, which can be stored on your local machine. 
 
@@ -46,6 +50,9 @@ The flow can be modified to download the contents of any sqlite table in your in
 
 
 # Modifying your Default Market Indicators and Watchlist
+
+Download json file "Customize Market Indicators.json" and import to your instance.
+
 One of the first things you may decide to do once your personal MachineTrader instance is up and running is to modify the default tickers that are used in the Watchlist and as market Indicators. The "Customize Market Indicators" json allows you to do just that.  
 
 <img width="1595" alt="Screen Shot 2022-09-23 at 8 03 22 AM" src="https://user-images.githubusercontent.com/79699033/191956976-be772e82-b8de-4082-a837-41e7ff0b634c.png">
@@ -56,7 +63,10 @@ The steps for changing the Watchlist tickers are similar.
  
 <img width="791" alt="Screen Shot 2022-09-23 at 8 03 47 AM" src="https://user-images.githubusercontent.com/79699033/191956901-aded4117-61cb-4a0b-8a35-6fb76d1e91ef.png">
 
-# Simple Interday Trade
+# Simple Interday Trade - Trade and Hold SPY Overnight
+
+Download json file "Trade and hold SPY overnight.json" and import to your instance.
+
 Interday trades are the easiest algorithms to write since they often use and process very little timeseries data. Academic reseach of past performance for broadly held ETFs like SPY has shown that, historically speaking, holding SPY overnight and selling at the market open produces a slightly higher return than simply holding the asset. Following that logic, we have constructed a trading flow that buys SPY at 3:55 pm  EST(shortly before close), holds it overnight, and sells it just after the market opening bell at 9:31 AM EST.
 
 <img width="1735" alt="Screen Shot 2022-09-23 at 12 26 52 PM" src="https://user-images.githubusercontent.com/79699033/192009099-961513ca-ae90-4220-b3d8-75bc12b01c84.png">
@@ -65,8 +75,9 @@ You'll notice that we have decided to buy with a limit order, using the current 
 
 <img width="286" alt="Screen Shot 2022-09-23 at 1 54 24 PM" src="https://user-images.githubusercontent.com/79699033/192028228-90aadbe4-b58d-4f1e-9971-7a9e4b3987e2.png">
 
-# Create a portfolio of dividend stocks
+# Build Your Own no load, commission-free ETFF - Create a dividend stock portfolio
 
+Download json file "Build a portfoliio.json" and import to your instance.
 
 <img width="1065" alt="Screen Shot 2022-10-12 at 7 35 06 AM" src="https://user-images.githubusercontent.com/79699033/195361029-c9a5d9ae-5888-4673-8afc-f25787406719.png">
 
