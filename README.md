@@ -3,7 +3,7 @@ This is a community repository for MachineTrader users who want to upload or sha
 
 # Adding Your Alpaca Keys to Your Instance
 
-When you first login into your trading instance, the everything is ready to go except the flows that are powered by your Alpaca account keys which you will have to enter manually. To add your keys, click the customize button in the upper right which will bring you to your MachineTrader instance backend or admin. We will assume that you have retrieved your Alpaca keys from your Alpaca account and are ready to install. If you haven't done that yet, follow the instructions here: https://www.machinetrader.io/learn-articles/adding-alpaca-keys-to-your-machinetrader-instance.
+When you first login into your trading instance, everything is ready to go except the flows that are powered by your Alpaca account keys which you will have to enter manually. To add your keys, click the customize button in the upper right which will bring you to your MachineTrader instance backend or admin. We will assume that you have retrieved your Alpaca keys from your Alpaca account and are ready to install. If you haven't done that yet, follow the instructions here: https://www.machinetrader.io/learn-articles/adding-alpaca-keys-to-your-machinetrader-instance.
 
 Be careful when you're using the admin because any changes you make will affect the operation of your instance. Notice that the admin consists of a series of tabs each containing a grouping of flows. Go to the far right tab labeled "Add Alpaca Account Keys." 
 
@@ -25,7 +25,9 @@ One of the first things you may decide to do once your personal MachineTrader in
 
 <img width="1595" alt="Screen Shot 2022-09-23 at 8 03 22 AM" src="https://user-images.githubusercontent.com/79699033/191956976-be772e82-b8de-4082-a837-41e7ff0b634c.png">
 
-Executing the "modify market indicators" node will start a flow that deletes the current sqlite table, where the indicators are stored, and creates a new one. The second flow will insert the tickers you'd like to use.  Simple paste a comma-separated list of tickers in the "Add Market Symbols" Node and once you've deployed, they will be your new Market Indicators.  The steps for changing the Watchlist tickers are similar
+Executing the "modify market indicators" node will start a flow that deletes the current sqlite table, where the indicators are stored, and creates a new one. The second flow will insert the tickers you'd like to use.  Simply paste a comma-separated list of tickers in the "Add Market Symbols" Node and once you've deployed, they will be your new Market Indicators.  One caveat for add crypto pairs: make sure you use the Polygon.io syntax for cryptos which start with an "X:" so that Bitcoin has the ticker "X:BTCUSD".  The full list of Polygon cryptos is shown in the file "crypto list.txt".  
+
+The steps for changing the Watchlist tickers are similar. 
  
 <img width="791" alt="Screen Shot 2022-09-23 at 8 03 47 AM" src="https://user-images.githubusercontent.com/79699033/191956901-aded4117-61cb-4a0b-8a35-6fb76d1e91ef.png">
 
