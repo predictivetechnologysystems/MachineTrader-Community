@@ -71,9 +71,34 @@ Interday trades are the easiest algorithms to write since they often use and pro
 
 <img width="1111" alt="Trade and Hold SPY Overnight" src="https://user-images.githubusercontent.com/79699033/195580563-8205de40-906d-4b51-ba5a-9f7e9a5ac38f.png">
 
-You'll notice that we have decided to buy with a limit order, using the current price, of SPY. The time in force is set to "gtc" which means the order will stay open until the market close at 4 pm, leaving 5 minutes for the order to be filled. There is some risk the order will not be filled - typically if the price is declining sharply - which might be a good occassion not to make the buy in any event. To assure the order goes through, the trader can change the order type to "market" and comment out the limit price ( // limit_price = current_price).
+This strategy begins (Flow #1) with an inject node set to fire at 9 AM each day. The purpose of the first flow is to create flow variables for the ticker and the number of shares we want to trade. The values are stored in flow variables: flow.ticker and flow.qty.  We have set the ticker value to "SPY" and the qty value to "100". As a general rule we like to use flow variables rather than hard code the ticker and quanties since it will be much easier to update this flow to trade another ticker or quantity since you'll only have to modify this one flow.
 
-<img width="286" alt="Screen Shot 2022-09-23 at 1 54 24 PM" src="https://user-images.githubusercontent.com/79699033/192028228-90aadbe4-b58d-4f1e-9971-7a9e4b3987e2.png">
+Flow #2 is used to buy the 100 shares of SPY at 3:55 PM EST (remember you'll have to change your close setting in the inject node adjusting to EST if your working from a different time zone). The function node "Alpaca market order" contains the instructions we need to send to Alpaca to make the trade. We are using a market order here for simplicity. To use limit orders, stop limits, or other order types require additional data flows which will be demonstrated in later documents and videos.
+
+<img width="412" alt="alpaca market order" src="https://user-images.githubusercontent.com/79699033/195585413-75c63feb-fcfd-4db2-9d62-58b4f2e87c54.png">
+
+The function node "market order" contains the information Alpaca requires to execute an order which for market orders require a ticker, qty, side (buy or sell), type (market, limit, stop limit, etc.), and time_in_force (day, gtc (good until cancelled), ioc (immediate or cancel), fok (Fill or Kill).  We're using market order shere for simplicity. Later documentw will show you how to implement advance order types. Note that crypto orders are limited to time-in_force types "gtc" or "ioc".
+
+The ticker and qty are set from the flow variables. The side, type, and time_in_force are hard coded.
+ 
+The order is passed to Alpaca in the "Alpaca Order" node. Alpaca responds with information that the order is "in process" and that information is processed on your end in the "store raw orders" function node and then stored. Alpaca returns quite a bit of information about the order which is processed and stored by the function node "store raw orders" and sent to the sqlite raw_orders table.
+
+<img width="767" alt="store raw orders" src="https://user-images.githubusercontent.com/79699033/195587787-3cf60624-339f-4a47-b909-2212e6cfa339.png">
+
+We also connected the Alpaca market order node to another function node "insert in sub_portfolio id = 2" which allow us to store the order information in the sub_portfolio table to thta we can track the performance of this strategy.
+
+Flow #3 covers the position we took the previous day by selling whatever quantity of SPY is being held (as of 6 am in the morning.
+
+<img width="435" alt="market sell order" src="https://user-images.githubusercontent.com/79699033/195588432-1be1b1e6-1720-409e-9cd2-1be6e7553a5d.png">
+
+Here we are using a market order similar to the buy order in Fow #2. However, instead of hard coding it to sell a specific qty -- which would cause us to take a short position if for some reason the buy order on the previous day failed - we take the qty to be sold from a the flow variable flow.postion. The variable is assigned at 6 am in the morning based on running the Alpaca Positions query.  In this case we use the "update positions" function to retrieve information that is specific to the ticker we are buying and the specific sub portfolio.  
+
+This is the sql query used in the alpaca positions query: sql = "update sub_portfolio set gain_today = " +unrealized_intraday_pl+ ", pctgain_today = " +unrealized_intraday_plpc +", gain = " +unrealized_pl+ ", pctgain = " +unrealized_plpc+ " where ticker = '" +symbol+ "' and id = " +portfolio_id+ ";\n" 
+
+Flow #4 is set to fire at 6 AM on trading days and gathers the information required by the sell order in Flow 3 while also update the sub_portfolio table to track performance.
+
+  <img width="747" alt="alpaca positions query" src="https://user-images.githubusercontent.com/79699033/195590153-74687a72-8851-4f44-9264-efb12c41b649.png">
+
 
 # Build Your Own no load, commission-free ETFF - Create a dividend stock portfolio
 
