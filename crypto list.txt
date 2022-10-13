@@ -1,0 +1,397 @@
+ ticker       | name                                                   |
++--------------+--------------------------------------------------------+
+| X:1INCHUSD   | 1inch - United States Dollar                           |
+| X:AAVEUSD    | Aave - United States Dollar                            |
+| X:ACATUSD    | Alphacat - United States Dollar                        |
+| X:ACHUSD     | Alchemy Pay - United States Dollar                     |
+| X:ACTUSD     | Achain - United States Dollar                          |
+| X:ADAUSD     | Cardano - United States Dollar                         |
+| X:AEUSD      | Aeternity - United States Dollar                       |
+| X:AIDUSD     | AidCoin - United States Dollar                         |
+| X:AIOUSD     | All In One Coins - United States Dollar                |
+| X:ALBTUSD    | AllianceBlock - United States Dollar                   |
+| X:ALCXUSD    | Alchemix - United States Dollar                        |
+| X:ALGOUSD    | Algorand - United States Dollar                        |
+| X:AMMUSD     | MicroMoney - United States Dollar                      |
+| X:AMPUSD     | Amp - United States Dollar                             |
+| X:ANKRUSD    | Ankr - United States Dollar                            |
+| X:ANTUSD     | Aragon - United States Dollar                          |
+| X:APEUSD     | ApeCoin - United States Dollar                         |
+| X:API3USD    | API3 - United States Dollar                            |
+| X:ARDRUSD    | Ardor - United States Dollar                           |
+| X:ARPAUSD    | ARPA Chain - United States Dollar                      |
+| X:ASMUSD     | Assemble Protocol - United States Dollar               |
+| X:ATMUSD     | Bitcoin ATM - United States Dollar                     |
+| X:ATOMUSD    | Cosmos - United States Dollar                          |
+| X:AUCTIONUSD | Bounce Token - United States Dollar                    |
+| X:AUCUSD     | Auctus - United States Dollar                          |
+| X:AVAXUSD    | Avalanche - United States Dollar                       |
+| X:AVTUSD     | Aventus - United States Dollar                         |
+| X:AXSUSD     | Axie Infinity - United States Dollar                   |
+| X:B2XUSD     | SegWit2x - United States Dollar                        |
+| X:BABUSD     | Babel - United States Dollar                           |
+| X:BADGERUSD  | Badger Dao - United States Dollar                      |
+| X:BALUSD     | Balancer - United States Dollar                        |
+| X:BANCAUSD   | Banca - United States Dollar                           |
+| X:BANDUSD    | Band Protocol - United States Dollar                   |
+| X:BATUSD     | Basic Attention Token - United States Dollar           |
+| X:BBNUSD     | Banyan Network - United States Dollar                  |
+| X:BCDUSD     | Bitcoin Diamond - United States Dollar                 |
+| X:BCHABCUSD  | Bitcoin Cash ABC - United States Dollar                |
+| X:BCHCZK     | Bitcoin Cash - Czech Koruna                            |
+| X:BCHEUR     | Bitcoin Cash - Euro                                    |
+| X:BCHGBP     | Bitcoin Cash - Great Britian Pound                     |
+| X:BCHSVUSD   | Bitcoin SV - United States Dollar                      |
+| X:BCHUSD     | Bitcoin Cash - United States Dollar                    |
+| X:BCIUSD     | Bitcoin Interest - United States Dollar                |
+| X:BCNUSD     | Bytecoin - United States Dollar                        |
+| X:BERRYUSD   | Rentberr - United States Dollar                        |
+| X:BFTUSD     | BnkToTheFuture - United States Dollar                  |
+| X:BITSUSD    | Bitstar - United States Dollar                         |
+| X:BIXUSD     | Bibox Token - United States Dollar                     |
+| X:BMCUSD     | Blackmoon - United States Dollar                       |
+| X:BNBUSD     | Binance Coin - United States Dollar                    |
+| X:BNKUSD     | Bankera - United States Dollar                         |
+| X:BNTUSD     | Bancor - United States Dollar                          |
+| X:BOBAUSD    | Boba Network - United States Dollar                    |
+| X:BONDUSD    | BarnBridge - United States Dollar                      |
+| X:BOSONUSD   | Boson Protocol - United States Dollar                  |
+| X:BQXUSD     | Ethos - United States Dollar                           |
+| X:BSVUSD     | Bitcoin SV - United States Dollar                      |
+| X:BTCAUD     | Bitcoin - Australian Dollar                            |
+| X:BTCCZK     | Bitcoin - Czech Koruna                                 |
+| X:BTCEUR     | Bitcoin - Euro                                         |
+| X:BTCGBP     | Bitcoin - Great Britain Pound                          |
+| X:BTCJPY     | Bitcoin - Japanese Yen                                 |
+| X:BTCPUSD    | Bitcoin Private - United States Dollar                 |
+| X:BTCUSD     | Bitcoin - United States Dollar                         |
+| X:BTGUSD     | Bitcoin Gold - United States Dollar                    |
+| X:BTMUSD     | Bytom - United States Dollar                           |
+| X:BTRSTUSD   | Braintrust - United States Dollar                      |
+| X:BTSEUSD    | BTSE - United States Dollar                            |
+| X:BTSUSD     | BitShares - United States Dollar                       |
+| X:BTTUSD     | BitTorrent - United States Dollar                      |
+| X:BTXUSD     | Bitcore - United States Dollar                         |
+| X:CCLUSD     | Cyclean - United States Dollar                         |
+| X:CDCCUSD    | CDCC - United States Dollar                            |
+| X:CELUSD     | Celsius - United States Dollar                         |
+| X:CGLDUSD    | Celo - United States Dollar                            |
+| X:CHSBUSD    | SwissBorg - United States Dollar                       |
+| X:CHZUSD     | Chiliz - United States Dollar                          |
+| X:CLOUSD     | Callisto - United States Dollar                        |
+| X:CLVUSD     | Clover Finance - United States Dollar                  |
+| X:CMCTUSD    | Crowd Machine - United States Dollar                   |
+| X:CMTUSD     | CyberMiles - United States Dollar                      |
+| X:CNDUSD     | Cindicator - United States Dollar                      |
+| X:CNNUSD     | CNN Crypto - United States Dollar                      |
+| X:COMPUSD    | Compound - United States Dollar                        |
+| X:COTIUSD    | Coti - United States Dollar                            |
+| X:COVALUSD   | Circuits of Value - United States Dollar               |
+| X:CROUSD     | Crypto.com - United States Dollar                      |
+| X:CRPTUSD    | Crypterium - United States Dollar                      |
+| X:CRVUSD     | Curve DAO Token - United States Dollar                 |
+| X:CSMUSD     | Consentium - United States Dollar                      |
+| X:CTKUSD     | CertiK - United States Dollar                          |
+| X:CTSIUSD    | Cartesi - United States Dollar                         |
+| X:CTXCUSD    | CarTaxi Token - United States Dollar                   |
+| X:CVCUSD     | Civic - United States Dollar                           |
+| X:CVHUSD     | Curriculum Vitae - United States Dollar                |
+| X:DADIUSD    | DADI - United States Dollar                            |
+| X:DAIUSD     | Dai - United States Dollar                             |
+| X:DASHUSD    | Dash - United States Dollar                            |
+| X:DATAUSD    | DATA - United States Dollar                            |
+| X:DATUSD     | Datum - United States Dollar                           |
+| X:DBETUSD    | DecentBet - United States Dollar                       |
+| X:DCNUSD     | Dentacoin - United States Dollar                       |
+| X:DCRUSD     | Decred - United States Dollar                          |
+| X:DDXUSD     | DerivaDAO - United States Dollar                       |
+| X:DGBUSD     | DigiByte - United States Dollar                        |
+| X:DGTXUSD    | Digitex - United States Dollar                         |
+| X:DGXUSD     | Digix Gold Token - United States Dollar                |
+| X:DIMUSD     | DIMCOIN - United States Dollar                         |
+| X:DNYUSD     | District0x - United States Dollar                      |
+| X:DOGEUSD    | Dogecoin - United States Dollar                        |
+| X:DORUSD     | Dorado - United States Dollar                          |
+| X:DOTUSD     | Polkadot - United States Dollar                        |
+| X:DRNUSD     | Digital Reserve Network - United States Dollar         |
+| X:DSHUSD     | Dash - United States Dollar                            |
+| X:DTAUSD     | Data - United States Dollar                            |
+| X:DTHUSD     | Dether - United States Dollar                          |
+| X:DUSKUSD    | Dusk Network - United States Dollar                    |
+| X:DVFUSD     | DeversiFi - United States Dollar                       |
+| X:DWSUSD     | DWS - United States Dollar                             |
+| X:EDGUSD     | Edgeless - United States Dollar                        |
+| X:EDOUSD     | Eidoo - United States Dollar                           |
+| X:EGLDUSD    | Elrond - United States Dollar                          |
+| X:EJOYUSD    | Ether Joy - United States Dollar                       |
+| X:ELAUSD     | Elastos - United States Dollar                         |
+| X:ELECUSD    | Electrify.Asia - United States Dollar                  |
+| X:ELFUSD     | Aelf - United States Dollar                            |
+| X:ENJUSD     | Enjin Coin - United States Dollar                      |
+| X:EOSUSD     | EOS - United States Dollar                             |
+| X:ESSUSD     | Essentia - United States Dollar                        |
+| X:ETCAUD     | Ethereum Classic - Australian Dollar                   |
+| X:ETCUSD     | Ethereum Classic - United States Dollar                |
+| X:ETHAUD     | Ethereum - Australian dollar                           |
+| X:ETHBTC     | Ethereum - Bitcoin                                     |
+| X:ETHUSD     | Ethereum - United States Dollar                        |
+| X:ETNUSD     | Electroneum - United States Dollar                     |
+| X:ETPUSD     | Metaverse - United States Dollar                       |
+| X:EURSUSD    | STASIS EURS - United States Dollar                     |
+| X:EVXUSD     | Everex - United States Dollar                          |
+| X:FARMUSD    | Harvest Finance - United States Dollar                 |
+| X:FCLUSD     | Fractal - United States Dollar                         |
+| X:FETUSD     | Fetch.ai - United States Dollar                        |
+| X:FILUSD     | Filecoin - United States Dollar                        |
+| X:FLOWUSD    | Flow - United States Dollar                            |
+| X:FORTHUSD   | Ampleforth Governance Token - United States Dollar     |
+| X:FOXUSD     | Shapeshift FOX Token - United States Dollar            |
+| X:FSNUSD     | Fusion - United States Dollar                          |
+| X:FTMUSD     | Fantom - United States Dollar                          |
+| X:FTTUSD     | FTX Token - United States Dollar                       |
+| X:FUELUSD    | Etherparty - United States Dollar                      |
+| X:FUNUSD     | FunFair - United States Dollar                         |
+| X:FXUSD      | Function X - United States Dollar                      |
+| X:GALAUSD    | Gala Games - United States Dollar                      |
+| X:GBXUSD     | GoByte - United States Dollar                          |
+| X:GLMUSD     | Golem - United States Dollar                           |
+| X:GNOUSD     | Gnosis - United States Dollar                          |
+| X:GNTUSD     | Golem - United States Dollar                           |
+| X:GOTUSD     | Got - United States Dollar                             |
+| X:GRTUSD     | The Graph - United States Dollar                       |
+| X:GTCUSD     | Gitcoin - United States Dollar                         |
+| X:GUSDUSD    | Gemini Dollar - United States Dollar                   |
+| X:GXCUSD     | Gx Coin - United States Dollar                         |
+| X:GYENUSD    | GYEN - United States Dollar                            |
+| X:HANDUSD    | ShowHand - United States Dollar                        |
+| X:HB10USD    | Huobi HB10 Index - United States Dollar                |
+| X:HBARUSD    | Hedera - United States Dollar                          |
+| X:HCUSD      | HyperCash - United States Dollar                       |
+| X:HEZUSD     | Hermez Network - United States Dollar                  |
+| X:HITUSD     | Hit - United States Dollar                             |
+| X:HMTUSD     | Human - United States Dollar                           |
+| X:HOTUSD     | Holo - United States Dollar                            |
+| X:HPTUSD     | Huobi Pool Token - United States Dollar                |
+| X:HTMLUSD    | HTML Coin - United States Dollar                       |
+| X:HTUSD      | Huobi Token - United States Dollar                     |
+| X:ICEUSD     | Popsicle Finance - United States Dollar                |
+| X:ICPUSD     | Internet Computer - United States Dollar               |
+| X:ICXUSD     | Icon - United States Dollar                            |
+| X:IMXUSD     | Immutable X - United States Dollar                     |
+| X:INJUSD     | Injective - United States Dollar                       |
+| X:INKUSD     | Ink - United States Dollar                             |
+| X:INTUSD     | Internet Node Token - United States Dollar             |
+| X:IOSTUSD    | IOST - United States Dollar                            |
+| X:IOSUSD     | IOS - United States Dollar                             |
+| X:IOTAUSD    | IOTA - United States Dollar                            |
+| X:IOTUSD     | IOTA - United States Dollar                            |
+| X:IOTXUSD    | IoTeX - United States Dollar                           |
+| X:IPLUSD     | InsurePal - United States Dollar                       |
+| X:IQXUSD     | IQ Token - United States Dollar                        |
+| X:ITCUSD     | InformationCoin - United States Dollar                 |
+| X:JASMYUSD   | JasmyCoin - United States Dollar                       |
+| X:JSTUSD     | JUST - United States Dollar                            |
+| X:KAVAUSD    | Kava - United States Dollar                            |
+| X:KEEPUSD    | Keep Network - United States Dollar                    |
+| X:KNCUSD     | Kyber Network - United States Dollar                   |
+| X:KRLUSD     | Kryll - United States Dollar                           |
+| X:KRMUSD     | Karma - United States Dollar                           |
+| X:KSMUSD     | Kusama - United States Dollar                          |
+| X:LCXUSD     | LCX - United States Dollar                             |
+| X:LETUSD     | LET - United States Dollar                             |
+| X:LINKUSD    | Chainlink - United States Dollar                       |
+| X:LOCUSD     | LockTrip - United States Dollar                        |
+| X:LOOMUSD    | Loom - United States Dollar                            |
+| X:LPTUSD     | Livepeer - United States Dollar                        |
+| X:LRCUSD     | Loopring - United States Dollar                        |
+| X:LSKUSD     | Lisk - United States Dollar                            |
+| X:LTCAUD     | Litecoin - Australian Dollar                           |
+| X:LTCBTC     | Litecoin - Bitcoin                                     |
+| X:LTCCZK     | Litecoin - Czech Koruna                                |
+| X:LTCEUR     | Litecoin - Euro                                        |
+| X:LTCUSD     | Litecoin - United States Dollar                        |
+| X:LUCUSD     | Level Up Coin - United States Dollar                   |
+| X:LUNAUSD    | Terra - United States Dollar                           |
+| X:LYMUSD     | Lympo - United States Dollar                           |
+| X:MAIDUSD    | MaidSafe - United States Dollar                        |
+| X:MANAUSD    | Decentraland - United States Dollar                    |
+| X:MANUSD     | Crypto-Man - United States Dollar                      |
+| X:MASKUSD    | Mask Network - United States Dollar                    |
+| X:MATICUSD   | Polygon - United States Dollar                         |
+| X:MCOUSD     | Crypto.com - United States Dollar                      |
+| X:MDSUSD     | MediShares - United States Dollar                      |
+| X:MESSEUSD   | MESSE TOKEN - United States Dollar                     |
+| X:MGOUSD     | MobileGo - United States Dollar                        |
+| X:MIRUSD     | Mirror Protocol - United States Dollar                 |
+| X:MITHUSD    | Mithril - United States Dollar                         |
+| X:MITUSD     | MIT Digital Currency Initiative - United States Dollar |
+| X:MKRUSD     | Maker - United States Dollar                           |
+| X:MLNUSD     | Melon - United States Dollar                           |
+| X:MNAUSD     | Decentraland - United States Dollar                    |
+| X:MNXUSD     | MinexCoin - United States Dollar                       |
+| X:MOBUSD     | MobileCoin - United States Dollar                      |
+| X:MORPHUSD   | Morpheus - United States Dollar                        |
+| X:MRSUSD     | Marginless - United States Dollar                      |
+| X:MTNUSD     | Medicalchain - United States Dollar                    |
+| X:MUSDUSD    | mStable USD - United States Dollar                     |
+| X:NANOUSD    | Nano - United States Dollar                            |
+| X:NASUSD     | Nebulas - United States Dollar                         |
+| X:NCAUSD     | Nucleus Vision - United States Dollar                  |
+| X:NCTUSD     | PolySwarm - United States Dollar                       |
+| X:NEARUSD    | NEAR Protocol - United States Dollar                   |
+| X:NEOUSD     | Neo - United States Dollar                             |
+| X:NEXOUSD    | Nexo - United States Dollar                            |
+| X:NGCUSD     | NAGA - United States Dollar                            |
+| X:NIOUSD     | Autonio - United States Dollar                         |
+| X:NKNUSD     | NKN - United States Dollar                             |
+| X:NMRUSD     | Numeraire - United States Dollar                       |
+| X:NOAHUSD    | Noah Coin - United States Dollar                       |
+| X:NTKUSD     | Neurotoken - United States Dollar                      |
+| X:NULSUSD    | Nuls - United States Dollar                            |
+| X:NUUSD      | NuCypher - United States Dollar                        |
+| X:NXTUSD     | NXT - United States Dollar                             |
+| X:OAXUSD     | OAX - United States Dollar                             |
+| X:OCEANUSD   | Ocean Protocol - United States Dollar                  |
+| X:OCNUSD     | Odyssey - United States Dollar                         |
+| X:ODEUSD     | ODEM - United States Dollar                            |
+| X:OGNUSD     | Origin Protocol - United States Dollar                 |
+| X:OMGUSD     | OmiseGO - United States Dollar                         |
+| X:ONLUSD     | On.Live - United States Dollar                         |
+| X:ONTUSD     | Ontology - United States Dollar                        |
+| X:ORNUSD     | Orion Protocol - United States Dollar                  |
+| X:OXTUSD     | Orchid - United States Dollar                          |
+| X:OXYUSD     | Oxygen - United States Dollar                          |
+| X:PAIUSD     | Project PAI - United States Dollar                     |
+| X:PASUSD     | Pascal - United States Dollar                          |
+| X:PATUSD     | Patron - United States Dollar                          |
+| X:PAXGUSD    | PAX Gold - United States Dollar                        |
+| X:PAXUSD     | Paxos Standard Token - United States Dollar            |
+| X:PERPUSD    | Perpetual Protocol - United States Dollar              |
+| X:PETHUSD    | Dai - United States Dollar                             |
+| X:PLANETSUSD | PlanetWatch - United States Dollar                     |
+| X:PLAUSD     | PlayDapp - United States Dollar                        |
+| X:PMAUSD     | PumaPay - United States Dollar                         |
+| X:PNKUSD     | Kleros - United States Dollar                          |
+| X:POAUSD     | POA Network - United States Dollar                     |
+| X:POLYUSD    | Polymath - United States Dollar                        |
+| X:PPCUSD     | Peercoin - United States Dollar                        |
+| X:QNTUSD     | Quant - United States Dollar                           |
+| X:QNTUUSD    | Quanta Utility Token - United States Dollar            |
+| X:QRDOUSD    | Qredo - United States Dollar                           |
+| X:QSHUSD     | QASH - United States Dollar                            |
+| X:QTFUSD     | Quantfury Token - United States Dollar                 |
+| X:QTMUSD     | Quantreum - United States Dollar                       |
+| X:QTUMUSD    | Quantum - United States Dollar                         |
+| X:QUICKUSD   | QuickSwap - United States Dollar                       |
+| X:RAIUSD     | Rai Reflex Index - United States Dollar                |
+| X:RARIUSD    | Rarible - United States Dollar                         |
+| X:REEFUSD    | Reef - United States Dollar                            |
+| X:RENUSD     | Ren - United States Dollar                             |
+| X:REPUSD     | Augur - United States Dollar                           |
+| X:REQUSD     | Request - United States Dollar                         |
+| X:RIFUSD     | RIF Token - United States Dollar                       |
+| X:RLCUSD     | iExec - United States Dollar                           |
+| X:RLYUSD     | Rally - United States Dollar                           |
+| X:RNDRUSD    | Render Token - United States Dollar                    |
+| X:ROSEUSD    | Oasis Network - United States Dollar                   |
+| X:RUFFUSD    | Ruff - United States Dollar                            |
+| X:SANDUSD    | The Sandbox - United States Dollar                     |
+| X:SANUSD     | Santiment Network Token - United States Dollar         |
+| X:SCUSD      | Siacoin - United States Dollar                         |
+| X:SEEUSD     | See - United States Dollar                             |
+| X:SENTUSD    | Sentinel - United States Dollar                        |
+| X:SENUSD     | Consensus - United States Dollar                       |
+| X:SHIBUSD    | Shiba Inu - United States Dollar                       |
+| X:SKLUSD     | SKALE Network - United States Dollar                   |
+| X:SMARTUSD   | SmartCash - United States Dollar                       |
+| X:SMTUSD     | SmartMesh - United States Dollar                       |
+| X:SNCUSD     | SunContract - United States Dollar                     |
+| X:SNTUSD     | Status - United States Dollar                          |
+| X:SNXUSD     | Synthetix - United States Dollar                       |
+| X:SOCUSD     | All Sports - United States Dollar                      |
+| X:SOLUSD     | Solana - United States Dollar                          |
+| X:SPELLUSD   | Spell Token - United States Dollar                     |
+| X:SPFUSD     | SportyCo - United States Dollar                        |
+| X:SRMUSD     | Serum - United States Dollar                           |
+| X:SRNUSD     | SIRIN LABS Token - United States Dollar                |
+| X:STEEMUSD   | Steem - United States Dollar                           |
+| X:STORJUSD   | Storj - United States Dollar                           |
+| X:STQUSD     | Storiqa - United States Dollar                         |
+| X:STRATUSD   | Stratis - United States Dollar                         |
+| X:STRUSD     | StarCoin - United States Dollar                        |
+| X:STUUSD     | Student Coin - United States Dollar                    |
+| X:STXUSD     | Stox - United States Dollar                            |
+| X:SUBUSD     | Substratum - United States Dollar                      |
+| X:SUKUUSD    | SUKU - United States Dollar                            |
+| X:SURUSD     | Suretly - United States Dollar                         |
+| X:SUSHIUSD   | Sushi - United States Dollar                           |
+| X:SWFTCUSD   | SwiftCoin - United States Dollar                       |
+| X:TDSUSD     | TokenDesk - United States Dollar                       |
+| X:THETAUSD   | Theta Token - United States Dollar                     |
+| X:TIVUSD     | TrakInvest - United States Dollar                      |
+| X:TKAUSD     | Tokia - United States Dollar                           |
+| X:TKNUSD     | TokenCard - United States Dollar                       |
+| X:TLOSUSD    | Telos - United States Dollar                           |
+| X:TNBUSD     | Time New Bank - United States Dollar                   |
+| X:TNTUSD     | Tierion - United States Dollar                         |
+| X:TRACUSD    | OriginTrail - United States Dollar                     |
+| X:TRBUSD     | Tellor - United States Dollar                          |
+| X:TRIBEUSD   | Tribe - United States Dollar                           |
+| X:TRUUSD     | TrueFi - United States Dollar                          |
+| X:TRXUSD     | TRON - United States Dollar                            |
+| X:TSDUSD     | TrueUSD - United States Dollar                         |
+| X:TUSDUSD    | TrueUSD - United States Dollar                         |
+| X:UDCUSD     | Universal Digital Coin - United States Dollar          |
+| X:UMAUSD     | UMA - United States Dollar                             |
+| X:UNIUSD     | Uniswap - United States Dollar                         |
+| X:UOSUSD     | Ultra - United States Dollar                           |
+| X:USDCUSD    | USD Coin - United States Dollar                        |
+| X:USDTUSD    | Tether - United States Dollar                          |
+| X:USTUSD     | TerraUST - United States Dollar                        |
+| X:UTKUSD     | UTrust - United States Dollar                          |
+| X:UTTUSD     | United Traders Token - United States Dollar            |
+| X:VEEUSD     | BLOCKv - United States Dollar                          |
+| X:VELOUSD    | Velo - United States Dollar                            |
+| X:VETUSD     | VeChain - United States Dollar                         |
+| X:VGXUSD     | Voyager Token - United States Dollar                   |
+| X:VIBUSD     | Viberate - United States Dollar                        |
+| X:VLDUSD     | Vetri - United States Dollar                           |
+| X:VOCOUSD    | Provoco - United States Dollar                         |
+| X:VSYUSD     | VSY - United States Dollar                             |
+| X:WAVESUSD   | Waves - United States Dollar                           |
+| X:WAXUSD     | Wax - United States Dollar                             |
+| X:WBTCUSD    | Wrapped Bitcoin - United States Dollar                 |
+| X:WICCUSD    | WaykiChain - United States Dollar                      |
+| X:WIKIUSD    | Wiki - United States Dollar                            |
+| X:WIZUSD     | CrowdWiz - United States Dollar                        |
+| X:WLOUSD     | Pigzbe - United States Dollar                          |
+| X:WLUNAUSD   | Wrapped LUNA Token - United States Dollar              |
+| X:WPRUSD     | WePower - United States Dollar                         |
+| X:XAUTUSD    | Tether Gold - United States Dollar                     |
+| X:XDCUSD     | XDC Network - United States Dollar                     |
+| X:XDNUSD     | DigitalNote - United States Dollar                     |
+| X:XEMUSD     | NEM - United States Dollar                             |
+| X:XLMUSD     | Stellar - United States Dollar                         |
+| X:XMOUSD     | Monero Original - United States Dollar                 |
+| X:XMRUSD     | Monero - United States Dollar                          |
+| X:XRAUSD     | Ratecoin - United States Dollar                        |
+| X:XRDUSD     | Radix - United States Dollar                           |
+| X:XRPAUD     | Ripple - Australian dollar                             |
+| X:XRPBTC     | Ripple - Bitcoin                                       |
+| X:XRPUSD     | Ripple - United States Dollar                          |
+| X:XSNUSD     | Stakenet - United States Dollar                        |
+| X:XTZUSD     | Tezos - United States Dollar                           |
+| X:XUCUSD     | Exchange Union - United States Dollar                  |
+| X:XVGUSD     | Verge - United States Dollar                           |
+| X:XYOUSD     | XYO - United States Dollar                             |
+| X:YFIUSD     | yearn.finance - United States Dollar                   |
+| X:YGGUSD     | YggDrash - United States Dollar                        |
+| X:YYWUSD     | YOYOW - United States Dollar                           |
+| X:ZAPUSD     | Zap - United States Dollar                             |
+| X:ZCNUSD     | 0chain - United States Dollar                          |
+| X:ZECUSD     | Zcash - United States Dollar                           |
+| X:ZENUSD     | Horizen - United States Dollar                         |
+| X:ZILUSD     | Zilliqa - United States Dollar                         |
+| X:ZMTUSD     | Zipmex - United States Dollar                          |
+| X:ZRXUSD     | 0x - United States Dollar                              |
+| X:ZSCUSD     | Zeusshield - United States Dollar                 
