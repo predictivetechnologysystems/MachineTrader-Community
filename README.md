@@ -19,7 +19,7 @@ Your secret key is encrypted once you enter it, so no one will be able to get ac
 
 <img width="530" alt="Screen Shot 2022-10-12 at 7 54 29 AM" src="https://user-images.githubusercontent.com/79699033/195339513-38db9d28-0fe9-4d70-bb51-08a4df3bef30.png">
 
-# Install a Utilities Flow that contains tables for storing sub portfolios, orders, and export to csv files
+# Install a Utilities Flow that contains tables for storing sub portfolios, orders, and exporting to csv files
 
 Download json file "Utilities.json" and import to your instance.
 
