@@ -81,7 +81,7 @@ The function node "market order" contains the information Alpaca requires to exe
 
 The ticker and qty are set from the flow variables. The side, type, and time_in_force are hard coded.
  
-The order is passed to Alpaca in the "Alpaca Order" node. Alpaca responds with information that the order is "in process" and that information is processed on your end in the "store raw orders" function node and then stored. Alpaca returns quite a bit of information about the order which is processed and stored by the function node "store raw orders" and sent to the sqlite raw_orders table.
+The order is passed to Alpaca in the "Alpaca Order" node.  Alpaca returns quite a bit of information about the order which is processed and stored by the function node "store raw orders" and sent to the sqlite raw_orders table. If you look carefully at the sql insert, you will see that only some of the information is stored.  This can be modified according to your needs although you will need to modify the create table statement in the "Utilities" node to create additional fields.
 
 <img width="767" alt="store raw orders" src="https://user-images.githubusercontent.com/79699033/195587787-3cf60624-339f-4a47-b909-2212e6cfa339.png">
 
@@ -103,6 +103,10 @@ Flow #4 is set to fire at 6 AM on trading days and gathers the information requi
 # Build Your Own no load, commission-free ETFF - Create a dividend stock portfolio
 
 Download json file "Build a portfoliio.json" and import to your instance.
+
+One of the really useful things you can do simply and easily is to build your very own no-load, commission-free ETFs. MachineTrader maintains nearly a dozen collections representing different combinations of assets. One collection is called "dividends" and it includes more than one thousand stocks that pay regular dividends. The flow we discuss here uses the dividend collection to construct a portfolio of stocks that pay dividends.
+
+    
 
 <img width="1065" alt="Screen Shot 2022-10-12 at 7 35 06 AM" src="https://user-images.githubusercontent.com/79699033/195361029-c9a5d9ae-5888-4673-8afc-f25787406719.png">
 
