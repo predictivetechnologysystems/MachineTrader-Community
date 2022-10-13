@@ -100,17 +100,19 @@ Flow #4 is set to fire at 6 AM on trading days and gathers the information requi
   <img width="747" alt="alpaca positions query" src="https://user-images.githubusercontent.com/79699033/195590153-74687a72-8851-4f44-9264-efb12c41b649.png">
 
 
-# Build Your Own no load, commission-free ETFF - Create a dividend stock portfolio
+# Build Your Own no-load, commission-free ETFF - Create a dividend stock portfolio
 
 Download json file "Build a portfoliio.json" and import to your instance.
 
 One of the really useful things you can do simply and easily is to build your very own no-load, commission-free ETFs. MachineTrader maintains nearly a dozen collections representing different combinations of assets. One collection is called "dividends" and it includes more than one thousand stocks that pay regular dividends. The flow we discuss here uses the dividend collection to construct a portfolio of stocks that pay dividends.
 
-    
-
+  
 <img width="1065" alt="Screen Shot 2022-10-12 at 7 35 06 AM" src="https://user-images.githubusercontent.com/79699033/195361029-c9a5d9ae-5888-4673-8afc-f25787406719.png">
 
-# Download Realtime Tick Data
-<img width="975" alt="Screen Shot 2022-10-12 at 7 35 38 AM" src="https://user-images.githubusercontent.com/79699033/195361332-d67d2914-3dd1-49ee-8cbd-c9fb2b62bda2.png">
+The initial flow queries MachineTrader's ptsapi database for the collection dividends. The sql is defined to get a unique list of tickers, along with the previous day's closing price, but filtered to include those tickers what have a value betwen 4 and 10 in the "pct" field and which have an exdate greater than 6/1/2022.  The pct field contains the value expressed as a pct of the current annual dividend for the stock; i.e. give us a list of stocks paying annual dividends between 4 and 10 percent. Since this is a low code, no code platform, you can change that query in the "Get divident stocks" function to reflect your own preferences. Being the cautious types, we avoid including any stock paying an annual dividend above 10 percent. We also don't want to bother with any stocks paying less than 4 percent. Revise the query as you like.
+
+<img width="696" alt="dividend query" src="https://user-images.githubusercontent.com/79699033/195627730-2e2f0bb8-6e6d-4ccd-8975-e6aa9f885596.png">
+
+
 
 
