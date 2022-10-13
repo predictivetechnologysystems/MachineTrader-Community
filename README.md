@@ -17,15 +17,16 @@ Your secret key is encrypted once you enter it, so no one will be able to get ac
 
 <img width="530" alt="Screen Shot 2022-10-12 at 7 54 29 AM" src="https://user-images.githubusercontent.com/79699033/195339513-38db9d28-0fe9-4d70-bb51-08a4df3bef30.png">
 
-# Install a Utilities Flow that contains tables for storing sub portfolios, order, and export to csv files
+# Install a Utilities Flow that contains tables for storing sub portfolios, orders, and export to csv files
 
-The "Utilities" flow contains flows that allow you to create and monitor "sub portfolios," to keep a record of "raw orders," and to export the contents of sqlite tables to a browser, which can be stored on your local machine. 
+The "Utilities" flow contains flows that allow you to create and monitor "sub portfolios," to keep a record of orders, and to export the contents of sqlite tables to a browser, which can be stored on your local machine. 
 
 Sub Portfolio Tables
 
 The sub portfolio flows allow you to group your portfolio assets into groups based on the algo strategy. The "Create Sub Portfolio table" flow creates a sub_portfolio table in a sqlite "portfolios" database. Note that we have created fields for gain, pctgain, gain_today, and pctgain_today which will allow you to track the performance of the strategy daily (or more often if you wish). 
 
-The "Drop Sub Portfolio table" simples deletes the table, allowing you to start again if the table is flawed in any way. "Create unique index" does what is states: it creates a unique index combining the ticker and the sub portfolio id assigned to the strategy so that you can't accidently duplicate holdings in the portfolio. The last three flows allow you to display the contents of the tables so that you can review the performance of your strategies.  
+The "Drop Sub Portfolio table" simples deletes the table, allowing you to start again if the table is flawed in any way. "Create unique index" does what is states: it creates a unique index combining the ticker and the sub portfolio id assigned to the strategy so that you can't accidently duplicate holdings in the portfolio. The last three flows allow you to display the contents of the tables so that you can review the performance of your strategies.
+
 Orders Tables
 
 The orders tables allows to store and retrieve Alpaca order information. The raw orders table stores the information that Alpacas return whenever a trade is entered. This data is not necessary the same as as the data returned when a request is made for "Open Orders" or "Closed Orders." As you decide to more precisely monitor in the information you sent to the Alapaca and the information captured in their order system, this information will be useful.
