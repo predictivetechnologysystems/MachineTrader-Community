@@ -91,11 +91,11 @@ Flow #3 covers the position we took the previous day by selling whatever quantit
 
 <img width="435" alt="market sell order" src="https://user-images.githubusercontent.com/79699033/195588432-1be1b1e6-1720-409e-9cd2-1be6e7553a5d.png">
 
-Here we are using a market order similar to the buy order in Fow #2. However, instead of hard coding it to sell a specific qty -- which would cause us to take a short position if for some reason the buy order on the previous day failed - we take the qty to be sold from a the flow variable flow.postion. The variable is assigned at 6 am in the morning based on running the Alpaca Positions query.  In this case we use the "update positions" function to retrieve information that is specific to the ticker we are buying and the specific sub portfolio.  
+Here we are using a market order similar to the buy order in Flow #2. However, instead of hard coding it to sell a specific qty -- which would cause us to take a short position if for some reason the buy order on the previous day failed - we take the qty to be sold from the flow variable flow.postion. The variable is assigned at 6 am in the morning based on running the Alpaca Positions query.  In this case we use the "update positions" function to retrieve information that is specific to the ticker we are buying and the specific sub portfolio.  
 
 This is the sql query used in the alpaca positions query: sql = "update sub_portfolio set gain_today = " +unrealized_intraday_pl+ ", pctgain_today = " +unrealized_intraday_plpc +", gain = " +unrealized_pl+ ", pctgain = " +unrealized_plpc+ " where ticker = '" +symbol+ "' and id = " +portfolio_id+ ";\n" 
 
-Flow #4 is set to fire at 6 AM on trading days and gathers the information required by the sell order in Flow 3 while also update the sub_portfolio table to track performance.
+Flow #4 is set to fire at 6 AM on trading days and gathers the information required by the sell order in Flow 3 while also updating the sub_portfolio table to track performance.
 
   <img width="747" alt="alpaca positions query" src="https://user-images.githubusercontent.com/79699033/195590153-74687a72-8851-4f44-9264-efb12c41b649.png">
 
