@@ -5,7 +5,7 @@ Many of the procedures described below have corresponding instructional videos s
 
 # Adding Your Alpaca Keys to Your Instance
 
-Download json file "Alpaca Account Management.json" and import to your instance.
+Download json file "Alpaca Account Management.json" and import to your instance. To view the instructional video, click here: https://drive.google.com/file/d/1Kz-h77E0QO-SEA_qbdGFgaBQUwJ2V1mk/view?usp=sharing
 
 When you first login into your trading instance, everything is ready to go except the flows that are powered by your Alpaca account keys which you will have to enter manually. To add your keys, click the customize button in the upper right which will bring you to your MachineTrader instance backend or admin. We will assume that you have retrieved your Alpaca keys from your Alpaca account and are ready to install. If you haven't done that yet, follow the instructions here: https://www.machinetrader.io/learn-articles/adding-alpaca-keys-to-your-machinetrader-instance.
 
@@ -51,7 +51,7 @@ The flow can be modified to download the contents of any sqlite table in your in
 
 # Modifying your Default Market Indicators and Watchlist
 
-Download json file "Customize Market Indicators.json" and import to your instance.
+Download json file "Customize Market Indicators.json" and import to your instance. To view the instructional video, click here: https://drive.google.com/file/d/1Kz-h77E0QO-SEA_qbdGFgaBQUwJ2V1mk/view?usp=sharing
 
 One of the first things you may decide to do once your personal MachineTrader instance is up and running is to modify the default tickers that are used in the Watchlist and as market Indicators. The "Customize Market Indicators" json allows you to do just that.  
 
@@ -63,9 +63,11 @@ The steps for changing the Watchlist tickers are similar.
  
 <img width="791" alt="Screen Shot 2022-09-23 at 8 03 47 AM" src="https://user-images.githubusercontent.com/79699033/191956901-aded4117-61cb-4a0b-8a35-6fb76d1e91ef.png">
 
+Once you have changed the Market Indicators and/or the Watchlist, you'll need to kick start the flows that update the prices and changes.  
+
 # Simple Interday Trade - Trade and Hold SPY Overnight
 
-Download json file "Trade and hold SPY overnight.json" and import to your instance.
+Download json file "Trade and hold SPY overnight.json" and import to your instance. To view the instructional video, click here: https://drive.google.com/file/d/1QdPHE3HiGdpuGrlmGD9ZlY0gZ_phy2GC/view?usp=sharing
 
 Interday trades are the easiest algorithms to write since they often use and process very little timeseries data. Academic reseach of past performance for broadly held ETFs like SPY has shown that, historically speaking, holding SPY overnight and selling at the market open produces a slightly higher return than simply holding the asset. Following that logic, we have constructed a trading flow that buys SPY at 3:55 pm  EST(shortly before close), holds it overnight, and sells it just after the market opening bell at 9:31 AM EST.
 
