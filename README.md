@@ -63,7 +63,10 @@ The steps for changing the Watchlist tickers are similar.
  
 <img width="791" alt="Screen Shot 2022-09-23 at 8 03 47 AM" src="https://user-images.githubusercontent.com/79699033/191956901-aded4117-61cb-4a0b-8a35-6fb76d1e91ef.png">
 
-Once you have changed the Market Indicators and/or the Watchlist, you'll need to kick start the flows that update the prices and changes.  
+Once you have changed the Market Indicators and/or the Watchlist, you'll need to kick start the flows that update the prices and changes. Click the three "Update"  inject nodes under Watchlist and the three "Update" Nodes under Markets to activate the scripts.
+
+<img width="1333" alt="Screen Shot 2022-10-14 at 3 42 34 PM" src="https://user-images.githubusercontent.com/79699033/195928988-0068ead4-4839-4098-88d6-78a19a7ac247.png">
+
 
 # Simple Interday Trade - Trade and Hold SPY Overnight
 
