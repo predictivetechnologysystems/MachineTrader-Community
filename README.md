@@ -1,5 +1,5 @@
 # MachineTrader-Community
-This is a community repository for MachineTrader users who want to upload or share json files in their MachineTrader instances that can be used implement and execute algorithmic trading strategies. The easiest method for downloading the json files you'll need is to click the green "Code" to the right and then download zip files. 
+This is a community repository for MachineTrader users who want to upload or share json files in their MachineTrader instances that can be used implement and execute algorithmic trading strategies. The easiest method for downloading the json files you'll need is to click the green "Code" to the right and then download zip files. You'll then be able to "Import" the json files into your instance as you need them.
 
 Before attempting to upload any of these json scripts, we highly recommend reviewing the MachineTrader "Intro to Nodes and Flows in the video training library" by clicking here: https://drive.google.com/file/d/1sZTaXBhRjyAKSIIaxdYJ8Lh2xVoUtV_8/view?usp=sharing
 
