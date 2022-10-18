@@ -69,7 +69,7 @@ Once you have changed the Market Indicators and/or the Watchlist, you'll need to
 
 <img width="1333" alt="Screen Shot 2022-10-14 at 3 42 34 PM" src="https://user-images.githubusercontent.com/79699033/195928988-0068ead4-4839-4098-88d6-78a19a7ac247.png">
 
-# Adding Loops 
+# Adding Missing Nodes to Your Instance (i.e. "Loop") 
 
 When importing certain JSON files, you may find that you do not have a particular node in your instance.  At this time, the only node that should be missing is the “Loop” node.  If that is the case, you will see the missing node and connections as red dotted lines, as shown below:
 
