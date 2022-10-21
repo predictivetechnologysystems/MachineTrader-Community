@@ -1,0 +1,1147 @@
+[
+    {
+        "id": "c54a5fec38a025e4",
+        "type": "tab",
+        "label": "Working with TickStreams",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "62be4208fd5187c8",
+        "type": "comment",
+        "z": "c54a5fec38a025e4",
+        "name": "This flow downloads and stores tickstream data, calculates moving average, and records difference between current price and moving average",
+        "info": "",
+        "x": 520,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "1a0170d07fd07629",
+        "type": "inject",
+        "z": "c54a5fec38a025e4",
+        "name": "Set symbol and tick count",
+        "props": [
+            {
+                "p": "ticker",
+                "v": "QQQ",
+                "vt": "str"
+            },
+            {
+                "p": "count",
+                "v": "100",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 06 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 200,
+        "y": 140,
+        "wires": [
+            [
+                "b863d8f2edd54a98"
+            ]
+        ]
+    },
+    {
+        "id": "b863d8f2edd54a98",
+        "type": "change",
+        "z": "c54a5fec38a025e4",
+        "name": "set global variables: ticker, avg_count",
+        "rules": [
+            {
+                "t": "set",
+                "p": "ticker",
+                "pt": "flow",
+                "to": "ticker",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "count",
+                "pt": "flow",
+                "to": "count",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 490,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f6e843c4a66c3bec",
+        "type": "comment",
+        "z": "c54a5fec38a025e4",
+        "name": "Wait until 5 mins of data is collected. Then run every second. Calculate a moving average and update table",
+        "info": "",
+        "x": 420,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "bef0597e4aeba081",
+        "type": "comment",
+        "z": "c54a5fec38a025e4",
+        "name": "Flow #3: Calculate difference from the moving average and display",
+        "info": "",
+        "x": 300,
+        "y": 1000,
+        "wires": []
+    },
+    {
+        "id": "e81c91eab7ab1238",
+        "type": "function",
+        "z": "c54a5fec38a025e4",
+        "name": "create array for average",
+        "func": "const prices = [];\nlet item = ''\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload) {\n    price = item.price;\n    prices.push(price);  \n//    node.warn(price)\n\n}\n\nmsg.price = price\nmsg.payload = prices\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 850,
+        "y": 860,
+        "wires": [
+            [
+                "5cde16a2f0e906ed"
+            ]
+        ]
+    },
+    {
+        "id": "d8ca5ffd5d61f0e4",
+        "type": "function",
+        "z": "c54a5fec38a025e4",
+        "name": "select specified rows",
+        "func": "let count = flow.get(\"count\") // number of rows to include in average\nlet ticker = flow.get(\"ticker\")\nlet sql = \"select price from last_trade order by unixtime desc limit \" +count \n//node.warn(sql)\nmsg.topic = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 860,
+        "wires": [
+            [
+                "3e74cd956053824d",
+                "760d65393026a8b8"
+            ]
+        ]
+    },
+    {
+        "id": "b602587822e401fb",
+        "type": "function",
+        "z": "c54a5fec38a025e4",
+        "name": "Format to 2 decimals",
+        "func": "let avg_price = msg.payload\navg_price = avg_price.toFixed(2)\n\nlet unixtime = Date.now()\nlet ux = (unixtime / 1000)\nux = Math.round(ux)\nux = ux - 1 // allows updates with a 1 sec lag\n\nlet price = msg.price\n\nmsg.payload = avg_price\n//node.warn(\"Unixtime: \" +ux+ \" Current Price: \" +price+ \" Avg Price: \" +avg_price)\nlet sql = \"update last_trade set avg_price = \" +avg_price+ \" where ux = \" +ux+ \";\"\n//node.warn(sql)\nmsg.topic = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1240,
+        "y": 860,
+        "wires": [
+            [
+                "60acd598635bfaaa"
+            ]
+        ]
+    },
+    {
+        "id": "b103017f35ed6878",
+        "type": "function",
+        "z": "c54a5fec38a025e4",
+        "name": "display polygon output",
+        "func": "let unixtime = Date.now()\nlet ux = (unixtime / 1000)\nux = Math.round(ux)\n\nlet nstime = 0;\nlet price = 0;\nlet size = 0;\nlet exchange = '';\nlet item = ''\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    nstime = item.participant_timestamp;\n    size = item.size;\n    exchange = item.exchange;\n\n    \n}\n\n\nprice = price.toFixed(2)\nmsg.price = price\nmsg.ux = ux\n//let sql = \"insert into last_trade (unixtime,ux,price) values (\" +unixtime+ \",\" +ux+ \",\" +price+ \");\"\n//node.warn(sql)\n//msg.topic = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 960,
+        "y": 500,
+        "wires": [
+            [
+                "90eab2782e5c308c",
+                "c3591dee8a930de7"
+            ]
+        ]
+    },
+    {
+        "id": "90eab2782e5c308c",
+        "type": "change",
+        "z": "c54a5fec38a025e4",
+        "name": "flow.price, flow.ux",
+        "rules": [
+            {
+                "t": "set",
+                "p": "price",
+                "pt": "flow",
+                "to": "price",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "ux",
+                "pt": "flow",
+                "to": "ux",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1210,
+        "y": 500,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "621b74e5d76c8fdb",
+        "type": "polygon-last-trade-v3",
+        "z": "c54a5fec38a025e4",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "x": 740,
+        "y": 500,
+        "wires": [
+            [
+                "b103017f35ed6878"
+            ]
+        ]
+    },
+    {
+        "id": "b9056d17a6d03875",
+        "type": "function",
+        "z": "c54a5fec38a025e4",
+        "name": "prepare payload for polygon",
+        "func": "let symbol = flow.get(\"ticker\")\n\nlet count = 1 // get only one record\n\n// if crypto\n//symbol = symbol.replace(\"\",\"X:\")\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: count,\n}\n\n//node.warn(msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 500,
+        "wires": [
+            [
+                "621b74e5d76c8fdb",
+                "a6fb0cef69f62d7d"
+            ]
+        ]
+    },
+    {
+        "id": "e42f4705225a8a11",
+        "type": "loop",
+        "z": "c54a5fec38a025e4",
+        "name": "Set to 25200 seconds (7 hrs)",
+        "kind": "fcnt",
+        "count": "25200",
+        "initial": "1",
+        "step": "1",
+        "condition": "",
+        "conditionType": "js",
+        "when": "before",
+        "enumeration": "enum",
+        "enumerationType": "msg",
+        "limit": "",
+        "loopPayload": "loop-index",
+        "finalPayload": "final-count",
+        "x": 640,
+        "y": 580,
+        "wires": [
+            [],
+            [
+                "b9056d17a6d03875"
+            ]
+        ]
+    },
+    {
+        "id": "a6fb0cef69f62d7d",
+        "type": "delay",
+        "z": "c54a5fec38a025e4",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 420,
+        "y": 580,
+        "wires": [
+            [
+                "e42f4705225a8a11"
+            ]
+        ]
+    },
+    {
+        "id": "0afda0378b5764cc",
+        "type": "inject",
+        "z": "c54a5fec38a025e4",
+        "name": "9:01 am - 4 pm M-F",
+        "props": [],
+        "repeat": "",
+        "crontab": "01 09 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 180,
+        "y": 500,
+        "wires": [
+            [
+                "b9056d17a6d03875"
+            ]
+        ]
+    },
+    {
+        "id": "5cde16a2f0e906ed",
+        "type": "calculator",
+        "z": "c54a5fec38a025e4",
+        "name": "",
+        "inputMsgField": "payload",
+        "outputMsgField": "payload",
+        "operation": "avg",
+        "constant": "",
+        "round": false,
+        "decimals": 0,
+        "x": 1060,
+        "y": 860,
+        "wires": [
+            [
+                "b602587822e401fb"
+            ]
+        ]
+    },
+    {
+        "id": "9d9029c39b0f76d1",
+        "type": "inject",
+        "z": "c54a5fec38a025e4",
+        "name": "Display Variables",
+        "props": [
+            {
+                "p": "ticker",
+                "v": "ticker",
+                "vt": "flow"
+            },
+            {
+                "p": "count",
+                "v": "count",
+                "vt": "flow"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 800,
+        "y": 140,
+        "wires": [
+            [
+                "e9c3ad5b58b74c3d"
+            ]
+        ]
+    },
+    {
+        "id": "e9c3ad5b58b74c3d",
+        "type": "function",
+        "z": "c54a5fec38a025e4",
+        "name": "Show ticker and count",
+        "func": "let count = msg.count\nlet ticker = msg.ticker\n\nnode.warn(\"Ticker: \" +ticker+ \" Count: \" +count)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1040,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "da8fe1ef104f4f37",
+        "type": "inject",
+        "z": "c54a5fec38a025e4",
+        "name": "Display last_trade table table",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "select * from last_trade where avg_price > 0 order by unixtime desc limit 1",
+        "x": 240,
+        "y": 1060,
+        "wires": [
+            [
+                "ffeb5d6387a3029f"
+            ]
+        ]
+    },
+    {
+        "id": "ffeb5d6387a3029f",
+        "type": "sqlite",
+        "z": "c54a5fec38a025e4",
+        "mydb": "cb2ac5f4534f52cd",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "prices",
+        "x": 450,
+        "y": 1060,
+        "wires": [
+            [
+                "88aa4901326fbaf0"
+            ]
+        ]
+    },
+    {
+        "id": "3e74cd956053824d",
+        "type": "sqlite",
+        "z": "c54a5fec38a025e4",
+        "mydb": "cb2ac5f4534f52cd",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "prices",
+        "x": 650,
+        "y": 860,
+        "wires": [
+            [
+                "e81c91eab7ab1238"
+            ]
+        ]
+    },
+    {
+        "id": "60acd598635bfaaa",
+        "type": "sqlite",
+        "z": "c54a5fec38a025e4",
+        "mydb": "cb2ac5f4534f52cd",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "prices",
+        "x": 1430,
+        "y": 860,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "88aa4901326fbaf0",
+        "type": "function",
+        "z": "c54a5fec38a025e4",
+        "name": "display diff",
+        "func": "let item = 0\nlet price = 0\nlet ux = 0\nlet avg_price = 0\nlet diff = 0\n\n\nfor (item of msg.payload) {\n    price = item.price;\n    ux = item.unixtime\n    avg_price = item.avg_price\n    diff = item.diff\n\n}\n\ndiff = (price - avg_price)\ndiff = diff.toFixed(2)\nnode.warn(\"Unixtime: \" +ux+ \" Price: \" +price+ \" Avg Price: \" +avg_price+ \" Diff: \" +diff)\nmsg.diff\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 610,
+        "y": 1060,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "dff76a4851a83a7b",
+        "type": "loop",
+        "z": "c54a5fec38a025e4",
+        "name": "Set to 25200 seconds (7 hrs)",
+        "kind": "fcnt",
+        "count": "25200",
+        "initial": "1",
+        "step": "1",
+        "condition": "",
+        "conditionType": "js",
+        "when": "before",
+        "enumeration": "enum",
+        "enumerationType": "msg",
+        "limit": "",
+        "loopPayload": "loop-index",
+        "finalPayload": "final-count",
+        "x": 640,
+        "y": 920,
+        "wires": [
+            [],
+            [
+                "d8ca5ffd5d61f0e4"
+            ]
+        ]
+    },
+    {
+        "id": "760d65393026a8b8",
+        "type": "delay",
+        "z": "c54a5fec38a025e4",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 380,
+        "y": 920,
+        "wires": [
+            [
+                "dff76a4851a83a7b"
+            ]
+        ]
+    },
+    {
+        "id": "d9fb01fc49fba77d",
+        "type": "comment",
+        "z": "c54a5fec38a025e4",
+        "name": "Flow 2: Download tickstream data",
+        "info": "",
+        "x": 180,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "0ca1b3cb56b6c08f",
+        "type": "comment",
+        "z": "c54a5fec38a025e4",
+        "name": "Flow 1: Select a ticker and set the number of ticks to include in the moving average.",
+        "info": "",
+        "x": 330,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "a0b33bb90bc586b8",
+        "type": "comment",
+        "z": "c54a5fec38a025e4",
+        "name": "In order to make sure the price data is clean and free of errors (which will distort the moving average), start by downloading and storing  only one value in the last_trade table..",
+        "info": "",
+        "x": 630,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "3f72d6eef194bf72",
+        "type": "inject",
+        "z": "c54a5fec38a025e4",
+        "name": "9:05 am - 4 pm M-F",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 190,
+        "y": 860,
+        "wires": [
+            [
+                "d8ca5ffd5d61f0e4"
+            ]
+        ]
+    },
+    {
+        "id": "3635a0a686b8320b",
+        "type": "sqlite",
+        "z": "c54a5fec38a025e4",
+        "mydb": "cb2ac5f4534f52cd",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "prices",
+        "x": 630,
+        "y": 740,
+        "wires": [
+            [
+                "11acde822523cb11"
+            ]
+        ]
+    },
+    {
+        "id": "88b6932f633a6a00",
+        "type": "comment",
+        "z": "c54a5fec38a025e4",
+        "name": "Cleanse Data: This flow filters out any price changes that are greater or less than than 1 before storing in the last_trades table which is used to calculate the moving average.",
+        "info": "",
+        "x": 630,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "11acde822523cb11",
+        "type": "function",
+        "z": "c54a5fec38a025e4",
+        "name": "display polygon output",
+        "func": "let unixtime = Date.now()\nlet ux = (unixtime / 1000)\nux = Math.round(ux)\n\nlet price1 = flow.get(\"price\")\nlet price2 = 0\n\n\n\nlet item = ''\n\nfor (item of msg.payload) {\n    price2 = item.price;\n   \n}\n\n//node.warn(\"Price1: \" +price1+ \" Price2: \" +price2)\n\nlet chg = Math.abs(price2 - price1) // this gets the absolute value of the change\n//node.warn(chg)\n\nlet sql = ''\n\nif (chg < 1){ \nsql = \"insert into last_trade (unixtime,ux,price) values (\" +unixtime+ \",\" +ux+ \",\" +price1+ \");\"\n}\n\n\nmsg.topic = sql\n//node.warn(sql)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 800,
+        "y": 740,
+        "wires": [
+            [
+                "42451066381c7110"
+            ]
+        ]
+    },
+    {
+        "id": "aebe26f2d8728719",
+        "type": "function",
+        "z": "c54a5fec38a025e4",
+        "name": "get value before last",
+        "func": "let sql = \"select price from last_trade order by unixtime desc limit 2, 1\"\nmsg.topic = sql\n//node.warn(sql)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 740,
+        "wires": [
+            [
+                "3635a0a686b8320b"
+            ]
+        ]
+    },
+    {
+        "id": "c3591dee8a930de7",
+        "type": "delay",
+        "z": "c54a5fec38a025e4",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "milliseconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 590,
+        "y": 680,
+        "wires": [
+            [
+                "aebe26f2d8728719"
+            ]
+        ]
+    },
+    {
+        "id": "42451066381c7110",
+        "type": "sqlite",
+        "z": "c54a5fec38a025e4",
+        "mydb": "cb2ac5f4534f52cd",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "prices",
+        "x": 970,
+        "y": 740,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0f4bf80b825e943a",
+        "type": "function",
+        "z": "c54a5fec38a025e4",
+        "name": "display polygon output",
+        "func": "let unixtime = Date.now()\nlet ux = (unixtime / 1000)\nux = Math.round(ux)\n\nlet nstime = 0;\nlet price = 0;\nlet size = 0;\nlet exchange = '';\nlet item = ''\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    nstime = item.participant_timestamp;\n    size = item.size;\n    exchange = item.exchange;\n\n    \n}\n\n\nprice = price.toFixed(2)\nmsg.price = price\nmsg.ux = ux\nlet sql = \"insert into last_trade (unixtime,ux,price) values (\" +unixtime+ \",\" +ux+ \",\" +price+ \");\"\nnode.warn(sql)\nmsg.topic = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 920,
+        "y": 320,
+        "wires": [
+            [
+                "5b895f66f5762c2e"
+            ]
+        ]
+    },
+    {
+        "id": "fbafb71914667d49",
+        "type": "polygon-last-trade-v3",
+        "z": "c54a5fec38a025e4",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "x": 680,
+        "y": 320,
+        "wires": [
+            [
+                "0f4bf80b825e943a"
+            ]
+        ]
+    },
+    {
+        "id": "3fe178f4061bc57c",
+        "type": "function",
+        "z": "c54a5fec38a025e4",
+        "name": "prepare payload for polygon",
+        "func": "let symbol = flow.get(\"ticker\")\n\nlet count = 1 // get only one record\n\n// if crypto\n//symbol = symbol.replace(\"\",\"X:\")\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: count,\n}\n\n//node.warn(msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 320,
+        "wires": [
+            [
+                "fbafb71914667d49",
+                "c95e48f40c662b86"
+            ]
+        ]
+    },
+    {
+        "id": "5b895f66f5762c2e",
+        "type": "sqlite",
+        "z": "c54a5fec38a025e4",
+        "mydb": "cb2ac5f4534f52cd",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "prices",
+        "x": 1110,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1bbe420c1697730f",
+        "type": "inject",
+        "z": "c54a5fec38a025e4",
+        "name": "9 am - 4 pm M-F",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 180,
+        "y": 320,
+        "wires": [
+            [
+                "3fe178f4061bc57c"
+            ]
+        ]
+    },
+    {
+        "id": "221afc7e33e6d58c",
+        "type": "comment",
+        "z": "c54a5fec38a025e4",
+        "name": "Utilities: Ticker Prices Table",
+        "info": "",
+        "x": 200,
+        "y": 1160,
+        "wires": []
+    },
+    {
+        "id": "9d06a4caae758604",
+        "type": "inject",
+        "z": "c54a5fec38a025e4",
+        "name": "Create last_trade table table at 8 am",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 05 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "create table IF NOT EXISTS last_trade (unixtime INTEGER, ux INTEGER, price REAL,avg_price REAL,diff REAL)",
+        "x": 270,
+        "y": 1200,
+        "wires": [
+            [
+                "1410be73eca574e9"
+            ]
+        ]
+    },
+    {
+        "id": "1410be73eca574e9",
+        "type": "sqlite",
+        "z": "c54a5fec38a025e4",
+        "mydb": "cb2ac5f4534f52cd",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "prices",
+        "x": 490,
+        "y": 1200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "89b463e010607014",
+        "type": "inject",
+        "z": "c54a5fec38a025e4",
+        "name": "Display last_trade table table",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "select * from last_trade",
+        "x": 240,
+        "y": 1240,
+        "wires": [
+            [
+                "c0d42a8fd94f455f"
+            ]
+        ]
+    },
+    {
+        "id": "c0d42a8fd94f455f",
+        "type": "sqlite",
+        "z": "c54a5fec38a025e4",
+        "mydb": "cb2ac5f4534f52cd",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "prices",
+        "x": 470,
+        "y": 1240,
+        "wires": [
+            [
+                "6e16de60bd937a53"
+            ]
+        ]
+    },
+    {
+        "id": "6e16de60bd937a53",
+        "type": "debug",
+        "z": "c54a5fec38a025e4",
+        "name": "debug 77",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 600,
+        "y": 1240,
+        "wires": []
+    },
+    {
+        "id": "5d71dc76e6a409ba",
+        "type": "inject",
+        "z": "c54a5fec38a025e4",
+        "name": "Drop last_trade table at 1 am",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 01 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "drop table last_trade",
+        "x": 710,
+        "y": 1200,
+        "wires": [
+            [
+                "1930e3d6ec092634"
+            ]
+        ]
+    },
+    {
+        "id": "1930e3d6ec092634",
+        "type": "sqlite",
+        "z": "c54a5fec38a025e4",
+        "mydb": "cb2ac5f4534f52cd",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "prices",
+        "x": 910,
+        "y": 1200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "25e2fe5d7764b118",
+        "type": "sqlite",
+        "z": "c54a5fec38a025e4",
+        "mydb": "cb2ac5f4534f52cd",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "prices",
+        "x": 310,
+        "y": 1280,
+        "wires": [
+            [
+                "272d1e0b1d6fdeb6"
+            ]
+        ]
+    },
+    {
+        "id": "5ee952cfa074e203",
+        "type": "inject",
+        "z": "c54a5fec38a025e4",
+        "name": "Get Count",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "select count(*) as a from last_trade",
+        "x": 180,
+        "y": 1280,
+        "wires": [
+            [
+                "25e2fe5d7764b118"
+            ]
+        ]
+    },
+    {
+        "id": "272d1e0b1d6fdeb6",
+        "type": "debug",
+        "z": "c54a5fec38a025e4",
+        "name": "Total Rows in last_trade table",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 530,
+        "y": 1280,
+        "wires": []
+    },
+    {
+        "id": "44da5754065961c2",
+        "type": "comment",
+        "z": "c54a5fec38a025e4",
+        "name": "export and save to a local csv file",
+        "info": "",
+        "x": 230,
+        "y": 1340,
+        "wires": []
+    },
+    {
+        "id": "4f3f78e22d5f8f83",
+        "type": "http in",
+        "z": "c54a5fec38a025e4",
+        "name": "/api/download_last_trade",
+        "url": "/api/download_last_trade",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 210,
+        "y": 1380,
+        "wires": [
+            [
+                "8be2dd4355bb0d6b"
+            ]
+        ]
+    },
+    {
+        "id": "6e5e95484f5cb3da",
+        "type": "http response",
+        "z": "c54a5fec38a025e4",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"outfile.json\""
+        },
+        "x": 1050,
+        "y": 1380,
+        "wires": []
+    },
+    {
+        "id": "f5d80b75f5641728",
+        "type": "csv",
+        "z": "c54a5fec38a025e4",
+        "name": "",
+        "sep": ",",
+        "hdrin": true,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": "unixtime, ux, price, avg_price, dif",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 730,
+        "y": 1380,
+        "wires": [
+            [
+                "490576705b1132a8"
+            ]
+        ]
+    },
+    {
+        "id": "8be2dd4355bb0d6b",
+        "type": "function",
+        "z": "c54a5fec38a025e4",
+        "name": "export query",
+        "func": "msg.topic= \"select * from last_trade\"\nnode.warn(msg.topic)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 1380,
+        "wires": [
+            [
+                "a586cb796b43c7b8"
+            ]
+        ]
+    },
+    {
+        "id": "490576705b1132a8",
+        "type": "file",
+        "z": "c54a5fec38a025e4",
+        "name": "write report",
+        "filename": "/data/store/algo3.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 890,
+        "y": 1380,
+        "wires": [
+            [
+                "6e5e95484f5cb3da"
+            ]
+        ]
+    },
+    {
+        "id": "a586cb796b43c7b8",
+        "type": "sqlite",
+        "z": "c54a5fec38a025e4",
+        "mydb": "cb2ac5f4534f52cd",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "prices",
+        "x": 570,
+        "y": 1380,
+        "wires": [
+            [
+                "f5d80b75f5641728"
+            ]
+        ]
+    },
+    {
+        "id": "9668938c8fdd8e6f",
+        "type": "comment",
+        "z": "c54a5fec38a025e4",
+        "name": "One minute late, start the download loop routine which gets the last_trade every second and stores them as flow variables.",
+        "info": "",
+        "x": 470,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "96ff001a29e914af",
+        "type": "loop",
+        "z": "c54a5fec38a025e4",
+        "name": "Insert two values",
+        "kind": "fcnt",
+        "count": "2",
+        "initial": "1",
+        "step": "1",
+        "condition": "",
+        "conditionType": "js",
+        "when": "before",
+        "enumeration": "enum",
+        "enumerationType": "msg",
+        "limit": "",
+        "loopPayload": "loop-index",
+        "finalPayload": "final-count",
+        "x": 510,
+        "y": 380,
+        "wires": [
+            [],
+            [
+                "3fe178f4061bc57c"
+            ]
+        ]
+    },
+    {
+        "id": "c95e48f40c662b86",
+        "type": "delay",
+        "z": "c54a5fec38a025e4",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 320,
+        "y": 380,
+        "wires": [
+            [
+                "96ff001a29e914af"
+            ]
+        ]
+    },
+    {
+        "id": "651f0aab10dc1632",
+        "type": "polygon-account",
+        "name": "Polygon Key"
+    },
+    {
+        "id": "cb2ac5f4534f52cd",
+        "type": "sqlitedb",
+        "db": "/data/store/prices",
+        "mode": "RWC"
+    }
+]

@@ -1,0 +1,650 @@
+[
+    {
+        "id": "030aa62ba5f7e90c",
+        "type": "tab",
+        "label": "Create Dividend Portfolio",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "e4b28f3b1584a72b",
+        "type": "comment",
+        "z": "030aa62ba5f7e90c",
+        "name": "Flow 1: Create a portfolio of dividend stocks ",
+        "info": "",
+        "x": 210,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "3a8b237e283f29ac",
+        "type": "mysql",
+        "z": "030aa62ba5f7e90c",
+        "mydb": "3564bcf07c743fdf",
+        "name": "ptsapi",
+        "x": 570,
+        "y": 180,
+        "wires": [
+            [
+                "a7cdc4c85bbef646"
+            ]
+        ]
+    },
+    {
+        "id": "9c746471e2eea04d",
+        "type": "function",
+        "z": "030aa62ba5f7e90c",
+        "name": "Get dividend stocks",
+        "func": "let sql = \"select distinct ticker,close from dividends where pct between 4 and 10 and exdate > '2022-06-01'\"\nmsg.topic = sql\n//node.warn(sql)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 180,
+        "wires": [
+            [
+                "3a8b237e283f29ac"
+            ]
+        ]
+    },
+    {
+        "id": "089d761b8a4c2206",
+        "type": "inject",
+        "z": "030aa62ba5f7e90c",
+        "name": "get count ",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 180,
+        "y": 180,
+        "wires": [
+            [
+                "9c746471e2eea04d"
+            ]
+        ]
+    },
+    {
+        "id": "87b2d766d337601e",
+        "type": "comment",
+        "z": "030aa62ba5f7e90c",
+        "name": "Get list of dividend stocks from data center that meet criteria in the function node",
+        "info": "",
+        "x": 320,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "a7cdc4c85bbef646",
+        "type": "function",
+        "z": "030aa62ba5f7e90c",
+        "name": "calculate total number of stocks",
+        "func": "let cnt = msg.payload.length\nmsg.payload = cnt\nnode.warn(\"Count: \" +cnt)\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 180,
+        "wires": [
+            [
+                "4035db3803fb1d01"
+            ]
+        ]
+    },
+    {
+        "id": "c3042eb32ecbde8f",
+        "type": "mysql",
+        "z": "030aa62ba5f7e90c",
+        "mydb": "3564bcf07c743fdf",
+        "name": "ptsapi",
+        "x": 510,
+        "y": 500,
+        "wires": [
+            [
+                "aa5adab6973662f4"
+            ]
+        ]
+    },
+    {
+        "id": "6cc0c64ceb72dc88",
+        "type": "function",
+        "z": "030aa62ba5f7e90c",
+        "name": "Get dividend stocks",
+        "func": "let cnt = msg.payload\ncnt = cnt + 1\nlet sql = \"select distinct ticker,close from dividends where pct between 4 and 21 and exdate > '2022-06-01' limit \" +cnt+ \", 1\"\nmsg.topic = sql\n//node.warn(sql)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 500,
+        "wires": [
+            [
+                "c3042eb32ecbde8f"
+            ]
+        ]
+    },
+    {
+        "id": "aa5adab6973662f4",
+        "type": "function",
+        "z": "030aa62ba5f7e90c",
+        "name": "output",
+        "func": "let psize = flow.get(\"portfolio_size\")\nlet id = flow.get(\"id\")\n\n\n\nfor (let i = 0; i < msg.payload.length; i++) {\n\n    let ticker = msg.payload[i][\"ticker\"]\n    let close = msg.payload[i][\"close\"]\n    let qty = (psize / 91) / close\n    qty = Math.round(qty);\n    let sql = \"insert into sub_portfolio (id, ticker, price, qty) values (\" +id+ \",'\" +ticker+ \"','\" +close+ \"','\" +qty+ \"');\";\n    msg.topic = sql\n\n// create a market order for Alpaca\n    let temp = ''\n    temp = {\n        \"symbol\": ticker,\n        \"qty\": qty, // buy 0.1 of a share at first \n        \"side\": \"buy\",\n        \"type\": \"market\",\n        \"time_in_force\": \"gtc\"\n    };\n\n\n\n    msg.payload = temp\n    node.warn(msg.payload)\n    node.warn(msg.topic)\n}\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 630,
+        "y": 500,
+        "wires": [
+            [
+                "d3da435a61f03791",
+                "d22f6d8cb5830769",
+                "a776ed9eaeb5976a"
+            ]
+        ]
+    },
+    {
+        "id": "7bdb27144b33d778",
+        "type": "inject",
+        "z": "030aa62ba5f7e90c",
+        "name": "start at 0",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "0",
+        "payloadType": "num",
+        "x": 140,
+        "y": 500,
+        "wires": [
+            [
+                "6cc0c64ceb72dc88"
+            ]
+        ]
+    },
+    {
+        "id": "d3da435a61f03791",
+        "type": "loop",
+        "z": "030aa62ba5f7e90c",
+        "name": "",
+        "kind": "fcnt",
+        "count": "91",
+        "initial": "1",
+        "step": "1",
+        "condition": "",
+        "conditionType": "js",
+        "when": "before",
+        "enumeration": "enum",
+        "enumerationType": "msg",
+        "limit": "",
+        "loopPayload": "loop-index",
+        "finalPayload": "final-count",
+        "x": 330,
+        "y": 680,
+        "wires": [
+            [],
+            [
+                "fda99a82f16b2c84"
+            ]
+        ]
+    },
+    {
+        "id": "fda99a82f16b2c84",
+        "type": "delay",
+        "z": "030aa62ba5f7e90c",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 500,
+        "y": 680,
+        "wires": [
+            [
+                "6cc0c64ceb72dc88"
+            ]
+        ]
+    },
+    {
+        "id": "f86f845963eb5610",
+        "type": "function",
+        "z": "030aa62ba5f7e90c",
+        "name": "store raw orders",
+        "func": "let id = msg.payload[\"id\"]\nlet client_order_id = msg.payload[\"client_order_id\"]\nlet created_at = msg.payload[\"created_at\"]\nlet updated_at = msg.payload[\"updated_at\"]\nlet submitted_at = msg.payload[\"submitted_at\"]\nlet filled_at = msg.payload[\"filled_at\"]\nlet expired_at = msg.payload[\"expired_at\"]\nlet canceled_at = msg.payload[\"canceled_at\"]\nlet failed_at = msg.payload[\"failed_at\"]\nlet replaced_at = msg.payload[\"replaced_at\"]\nlet replaced_by = msg.payload[\"replaced_by\"]\nlet replaces = msg.payload[\"replaces\"]\nlet asset_id = msg.payload[\"asset_id\"]\nlet symbol = msg.payload[\"symbol\"]\nlet asset_class = msg.payload[\"asset_class\"]\nlet notional = msg.payload[\"notional\"]\nlet qty = msg.payload[\"qty\"]\nlet filled_qty = msg.payload[\"filled_qty\"]\nlet filled_avg_price = msg.payload[\"filled_avg_price\"]\nlet order_class = msg.payload[\"order_class\"]\nlet order_type = msg.payload[\"order_type\"]\nlet type = msg.payload[\"type\"]\nlet side = msg.payload[\"side\"]\nlet time_in_force = msg.payload[\"time_in_force\"]\nlet limit_price = msg.payload[\"limit_price\"]\nlet stop_price = msg.payload[\"stop_price\"]\nlet status = msg.payload[\"status\"]\nlet extended_hours = msg.payload[\"extended_hours\"]\nlet legs = msg.payload[\"legs\"]\nlet trail_percent = msg.payload[\"trail_percent\"]\nlet trail_price = msg.payload[\"trail_price\"]\nlet hwm = msg.payload[\"hwm\"]\nlet subtag = msg.payload[\"subtag\"]\nlet source = msg.payload[\"source\"]\n\nlet sql = \"insert into orders (id,client_order_id,created_at,updated_at,submitted_at,filled_at,expired_at,canceled_at,failed_at,replaced_at,replaced_by,replaces,asset_id,symbol,asset_class,notional,qty,filled_qty,filled_avg_price,order_class,order_type,type,side,time_in_force,limit_price,stop_price,status,extended_hours,legs,trail_percent,trail_price,hwm,subtag,source) values ('\" + id + \"','\" + client_order_id + \"','\" + created_at + \"','\" + updated_at + \"','\" + submitted_at + \"','\" + filled_at + \"','\" + expired_at + \"','\" + canceled_at + \"','\" + failed_at + \"','\" + replaced_at + \"','\" + replaced_by + \"','\" + replaces + \"','\" + asset_id + \"','\" + symbol + \"','\" + asset_class + \"','\" + notional + \"','\" + qty + \"','\" + filled_qty + \"','\" + filled_avg_price + \"','\" + order_class + \"','\" + order_type + \"','\" + type + \"','\" + side + \"','\" + time_in_force + \"','\" + limit_price + \"','\" + stop_price + \"','\" + status + \"','\" + extended_hours + \"','\" + legs + \"','\" + trail_percent + \"','\" + trail_price + \"','\" + hwm + \"','\" + subtag + \"','\" + source + \"');\"\n\nnode.warn(sql)\nmsg.topic = sql\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 960,
+        "y": 580,
+        "wires": [
+            [
+                "415a6afc53c4e3f8"
+            ]
+        ]
+    },
+    {
+        "id": "415a6afc53c4e3f8",
+        "type": "sqlite",
+        "z": "030aa62ba5f7e90c",
+        "mydb": "3da37290d92c1dc8",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "orders",
+        "x": 1110,
+        "y": 580,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a8670f6de48e4082",
+        "type": "comment",
+        "z": "030aa62ba5f7e90c",
+        "name": "create the query for the dividends here:",
+        "info": "",
+        "x": 550,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "a776ed9eaeb5976a",
+        "type": "alpaca-order",
+        "z": "030aa62ba5f7e90c",
+        "conf": "0c86a5f06a42b505",
+        "x": 790,
+        "y": 580,
+        "wires": [
+            [
+                "f86f845963eb5610"
+            ]
+        ]
+    },
+    {
+        "id": "4035db3803fb1d01",
+        "type": "change",
+        "z": "030aa62ba5f7e90c",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "stocks",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1020,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "856c3d7a96a67b0b",
+        "type": "inject",
+        "z": "030aa62ba5f7e90c",
+        "name": "Display flow variables",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 180,
+        "y": 380,
+        "wires": [
+            [
+                "bf7980b24f62fd68"
+            ]
+        ]
+    },
+    {
+        "id": "bf7980b24f62fd68",
+        "type": "function",
+        "z": "030aa62ba5f7e90c",
+        "name": "Flow vars",
+        "func": "let cnt = flow.get(\"stocks\")\nlet psize = flow.get(\"portfolio_size\")\nlet portfolioid = flow.get(\"id\")\nlet name = flow.get(\"name\")\n\nnode.warn(\"Portfolio ID: \" +portfolioid+ \" Name: \" +name+ \" Portfolio Size: \" +psize+ \" Number of stocks: \" +cnt) \nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5aa42237af5cf715",
+        "type": "comment",
+        "z": "030aa62ba5f7e90c",
+        "name": "Flow 3: Buy Portfolio ",
+        "info": "",
+        "x": 130,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "5ed62fd73ebe7cfd",
+        "type": "comment",
+        "z": "030aa62ba5f7e90c",
+        "name": "enter the number of stocks manually in the \"Fixed Count Look\"",
+        "info": "",
+        "x": 290,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "d22f6d8cb5830769",
+        "type": "sqlite",
+        "z": "030aa62ba5f7e90c",
+        "mydb": "d6e22e31a8a67436",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "portfolios",
+        "x": 800,
+        "y": 500,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8ff781e96fbff400",
+        "type": "comment",
+        "z": "030aa62ba5f7e90c",
+        "name": "Flow 2: Set the portfolio values",
+        "info": "",
+        "x": 170,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "eed15f9c2c3d0731",
+        "type": "function",
+        "z": "030aa62ba5f7e90c",
+        "name": "set and store ticker portfolio and trading variables",
+        "func": "let portfolio_id = 1\nlet name = \"Build and hold Portfolio of Dividend Stocks (Algo 1).\"\nlet status = \"running\"\nlet trade_freq = 1\nlet size = 50000 // this is the total size of this portfolio\n\n\n\nnode.warn(\" Name: \" +name+ \" Portfolio Size: \" +size)\nmsg.portfolio = portfolio_id\nmsg.name = name\nmsg.status = status\nmsg.trade = trade_freq\nmsg.size = size\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 320,
+        "wires": [
+            [
+                "44a7594deb301af9"
+            ]
+        ]
+    },
+    {
+        "id": "a6abbb6675782880",
+        "type": "inject",
+        "z": "030aa62ba5f7e90c",
+        "name": "Set at 9 am",
+        "props": [],
+        "repeat": "",
+        "crontab": "00 09 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 190,
+        "y": 320,
+        "wires": [
+            [
+                "eed15f9c2c3d0731"
+            ]
+        ]
+    },
+    {
+        "id": "44a7594deb301af9",
+        "type": "change",
+        "z": "030aa62ba5f7e90c",
+        "name": "set flow variable: ticker, qty,portfolioid",
+        "rules": [
+            {
+                "t": "set",
+                "p": "ticker",
+                "pt": "flow",
+                "to": "topic",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "qty",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "id",
+                "pt": "flow",
+                "to": "portfolio",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "name",
+                "pt": "flow",
+                "to": "name",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "trades",
+                "pt": "flow",
+                "to": "trade",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "status",
+                "pt": "flow",
+                "to": "status",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "portfolio_size",
+                "pt": "flow",
+                "to": "size",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 850,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b8616ddedcc201de",
+        "type": "comment",
+        "z": "030aa62ba5f7e90c",
+        "name": "Add Portfolio to Algo Table for Daily Tracking",
+        "info": "",
+        "x": 230,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "305fd8018f971067",
+        "type": "inject",
+        "z": "030aa62ba5f7e90c",
+        "name": "Run first time",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 840,
+        "wires": [
+            [
+                "d0ba528734b81813"
+            ]
+        ]
+    },
+    {
+        "id": "d0ba528734b81813",
+        "type": "function",
+        "z": "030aa62ba5f7e90c",
+        "name": "add to algo table",
+        "func": "let id = 1\nlet name = 'Build and hold Portfolio of Dividend Stocks (id = 1).'\nlet status = 'running'\nlet trade_freg = 0\nlet num_trades = 0\nlet sharpe = 0\nlet unixtime = 0\nlet portfolio = 0 // size of portfolio\nlet gain_today = 0\nlet pctgain = 0\nlet gainloss = 0 \nlet gainlosspct = 0\n\nlet sql = \"insert into algo (id,name,status,trade_freq,num_trades,sharpe,unixtime,portfolio,gain_today,pctgain_today,gainloss,gainlosspct) values (\"\nsql += id + \",'\" + name + \"','\" + status + \"','\" + trade_freg+ \"','\" +num_trades+ \"','\" +sharpe+ \"','\" +unixtime+ \"','\" +portfolio+ \"','\" +gain_today+ \"','\" +pctgain+ \"','\" +gainloss+ \"','\" +gainlosspct+ \"');\"\n\nnode.warn(sql)\nmsg.topic= sql\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 840,
+        "wires": [
+            [
+                "6af064063c9bf0fb"
+            ]
+        ]
+    },
+    {
+        "id": "86ad40a254adb9be",
+        "type": "inject",
+        "z": "030aa62ba5f7e90c",
+        "name": "Display ALGO table",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "select * from algo ",
+        "x": 170,
+        "y": 920,
+        "wires": [
+            [
+                "b607cd7106eac95f"
+            ]
+        ]
+    },
+    {
+        "id": "b607cd7106eac95f",
+        "type": "sqlite",
+        "z": "030aa62ba5f7e90c",
+        "mydb": "53728b47003f9caf",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "algos",
+        "x": 330,
+        "y": 920,
+        "wires": [
+            [
+                "bc047a96b1c9f920"
+            ]
+        ]
+    },
+    {
+        "id": "bc047a96b1c9f920",
+        "type": "debug",
+        "z": "030aa62ba5f7e90c",
+        "name": "debug 84",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 460,
+        "y": 920,
+        "wires": []
+    },
+    {
+        "id": "6af064063c9bf0fb",
+        "type": "sqlite",
+        "z": "030aa62ba5f7e90c",
+        "mydb": "53728b47003f9caf",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "algos",
+        "x": 510,
+        "y": 840,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3564bcf07c743fdf",
+        "type": "MySQLdatabase",
+        "name": "ptsapi",
+        "host": "ptsapi.cax8fspskl8t.us-east-1.rds.amazonaws.com",
+        "port": "3306",
+        "db": "ptsapi",
+        "tz": "EST5EDT",
+        "charset": "UTF8"
+    },
+    {
+        "id": "3da37290d92c1dc8",
+        "type": "sqlitedb",
+        "db": "/data/store/orders",
+        "mode": "RWC"
+    },
+    {
+        "id": "0c86a5f06a42b505",
+        "type": "alpaca-account",
+        "name": "live",
+        "keyId": "PK5NTIWS5NJ8S2MFN6QT",
+        "paper": true
+    },
+    {
+        "id": "d6e22e31a8a67436",
+        "type": "sqlitedb",
+        "db": "/data/store/portfolios",
+        "mode": "RWC"
+    },
+    {
+        "id": "53728b47003f9caf",
+        "type": "sqlitedb",
+        "db": "/data/store/algo",
+        "mode": "RWC"
+    }
+]
