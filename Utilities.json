@@ -1,0 +1,1087 @@
+[
+    {
+        "id": "b75ecc517daa63fb",
+        "type": "tab",
+        "label": "Utility Tables",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "e911109027fafee4",
+        "type": "inject",
+        "z": "b75ecc517daa63fb",
+        "name": "Create Algo table",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "create table IF NOT EXISTS algo (id INTEGER,name TEXT, status TEXT, trade_freq TEXT,num_trades INTEGER,sharpe REAL,unixtime INTEGER, portfolio REAL, gain_today_realized REAL, gain_today_unrealized REAL, pctgain_today REAL,gainloss_realized REAL,gainloss_unrealized REAL, gainlosspct REAL, benchmarkgain_today REAL, benchmarkgain REAL,benchmarkpct_today REAL,  benchmarkpct REAL)",
+        "x": 160,
+        "y": 80,
+        "wires": [
+            [
+                "f4c183bfb82de1a9"
+            ]
+        ]
+    },
+    {
+        "id": "f4c183bfb82de1a9",
+        "type": "sqlite",
+        "z": "b75ecc517daa63fb",
+        "mydb": "53728b47003f9caf",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "algos",
+        "x": 330,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0cfb55883fb2f4b7",
+        "type": "comment",
+        "z": "b75ecc517daa63fb",
+        "name": "Algo Table",
+        "info": "",
+        "x": 100,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "2649142ff9669a4f",
+        "type": "inject",
+        "z": "b75ecc517daa63fb",
+        "name": "Drop ALGO table",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "drop table algo ",
+        "x": 900,
+        "y": 80,
+        "wires": [
+            [
+                "b4cb6ae311ec2489"
+            ]
+        ]
+    },
+    {
+        "id": "b4cb6ae311ec2489",
+        "type": "sqlite",
+        "z": "b75ecc517daa63fb",
+        "mydb": "53728b47003f9caf",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "algos",
+        "x": 1050,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "860a1ec2340ff709",
+        "type": "inject",
+        "z": "b75ecc517daa63fb",
+        "name": "Create unique index on algo",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "CREATE UNIQUE INDEX id ON algo  (id);",
+        "x": 540,
+        "y": 80,
+        "wires": [
+            [
+                "2ed6f1dc30b70a72"
+            ]
+        ]
+    },
+    {
+        "id": "2ed6f1dc30b70a72",
+        "type": "sqlite",
+        "z": "b75ecc517daa63fb",
+        "mydb": "53728b47003f9caf",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "algos",
+        "x": 730,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a851b945176a121c",
+        "type": "function",
+        "z": "b75ecc517daa63fb",
+        "name": "create portfolio table",
+        "func": "let sql = \"create table IF NOT EXISTS portfolio (account TEXT,date TEXT,portfolioid REAL,ticker TEXT,price REAL,qty REAL,position TEXT,clientorderid TEXT,filled_type TEXT,filled_side TEXT,filled_tif TEXT,filled_status TEXT,filled_price REAL,filled_qty REAL,filled_at TEXT,current_position REAL,current_price REAL,current_value REAL,current_profit REAL,gainlosspct REAL, newprice REAL,newqty REAL,newposition REAL,newclient_order_id TEXT,trade_profit REAL,newfilled_type TEXT,newfilled_side TEXT,newfilled_tif TEXT,newfilled_status TEXT,newfilled_at TEXT,newfilled_price REAL,newfilled_qty REAL,benchmark TEXT,benchmark_start REAL, benchmark_end REAL,benchmark_profit REAL, benchmark_profitpct REAL)\"\nmsg.topic = sql\nnode.warn(msg.topic)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 180,
+        "wires": [
+            [
+                "9af4400ba85dcf40"
+            ]
+        ]
+    },
+    {
+        "id": "ca480a06cd7d6f77",
+        "type": "inject",
+        "z": "b75ecc517daa63fb",
+        "name": "Go",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 180,
+        "wires": [
+            [
+                "a851b945176a121c"
+            ]
+        ]
+    },
+    {
+        "id": "9af4400ba85dcf40",
+        "type": "sqlite",
+        "z": "b75ecc517daa63fb",
+        "mydb": "3f62e3c9b171abc2",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "portfolios",
+        "x": 500,
+        "y": 180,
+        "wires": [
+            [
+                "7f4c302502761ae0"
+            ]
+        ]
+    },
+    {
+        "id": "f2e2d26cd4cb9f50",
+        "type": "comment",
+        "z": "b75ecc517daa63fb",
+        "name": "Portfolio Table",
+        "info": "",
+        "x": 110,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "2b4f0d92e71010a8",
+        "type": "function",
+        "z": "b75ecc517daa63fb",
+        "name": "drop  portfolio table",
+        "func": "let sql = \"drop table portfolio\"\nmsg.topic = sql\nnode.warn(msg.topic)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1030,
+        "y": 180,
+        "wires": [
+            [
+                "eb5dd767e1ef5f33"
+            ]
+        ]
+    },
+    {
+        "id": "3fdb6ceae77eb670",
+        "type": "inject",
+        "z": "b75ecc517daa63fb",
+        "name": "DROP",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 850,
+        "y": 180,
+        "wires": [
+            [
+                "2b4f0d92e71010a8"
+            ]
+        ]
+    },
+    {
+        "id": "eb5dd767e1ef5f33",
+        "type": "sqlite",
+        "z": "b75ecc517daa63fb",
+        "mydb": "3f62e3c9b171abc2",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "portfolios",
+        "x": 1220,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f604f9dfd41eae85",
+        "type": "http in",
+        "z": "b75ecc517daa63fb",
+        "name": "/api/download_portfolio",
+        "url": "/api/download_portfolio",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 140,
+        "y": 320,
+        "wires": [
+            [
+                "ad44a2a199f634fe"
+            ]
+        ]
+    },
+    {
+        "id": "531ade60f308d1b8",
+        "type": "http response",
+        "z": "b75ecc517daa63fb",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"outfile.json\""
+        },
+        "x": 970,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "d0e679bdb075b243",
+        "type": "csv",
+        "z": "b75ecc517daa63fb",
+        "name": "",
+        "sep": ",",
+        "hdrin": true,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": "account,date,portfolioid,ticker,price,qty,position,clientorderid,filled_price,filled_qty,filled_at,current_position,current_price,current_value,current_profit,newprice,newqty,newposition,newclient_order_id,trade_profit,newfilled_at,newfilled_price,newfilled_qty,benchmark,benchmark_start,benchmark_end,benchmar_profit,benchmark_profitpct",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 670,
+        "y": 320,
+        "wires": [
+            [
+                "4128c838e96d593f"
+            ]
+        ]
+    },
+    {
+        "id": "ad44a2a199f634fe",
+        "type": "function",
+        "z": "b75ecc517daa63fb",
+        "name": "export query",
+        "func": "msg.topic= \"select * from portfolio\"\nnode.warn(msg.topic)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 320,
+        "wires": [
+            [
+                "fbb096eb390776c9"
+            ]
+        ]
+    },
+    {
+        "id": "4128c838e96d593f",
+        "type": "file",
+        "z": "b75ecc517daa63fb",
+        "name": "write report",
+        "filename": "/data/store/portfolios.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 830,
+        "y": 320,
+        "wires": [
+            [
+                "531ade60f308d1b8"
+            ]
+        ]
+    },
+    {
+        "id": "fbb096eb390776c9",
+        "type": "sqlite",
+        "z": "b75ecc517daa63fb",
+        "mydb": "8f654a02aea52c94",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "portfolios",
+        "x": 520,
+        "y": 320,
+        "wires": [
+            [
+                "d0e679bdb075b243"
+            ]
+        ]
+    },
+    {
+        "id": "7f4c302502761ae0",
+        "type": "debug",
+        "z": "b75ecc517daa63fb",
+        "name": "debug 131",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "a43b38ab697615c8",
+        "type": "comment",
+        "z": "b75ecc517daa63fb",
+        "name": "This flow downloads the portfolio table ",
+        "info": "",
+        "x": 190,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "5c1ae9d7cf85c0eb",
+        "type": "alpaca-position-query",
+        "z": "b75ecc517daa63fb",
+        "conf": "e535f42f1df1b25f",
+        "x": 470,
+        "y": 440,
+        "wires": [
+            [
+                "993d7ed14538e0ee"
+            ]
+        ]
+    },
+    {
+        "id": "993d7ed14538e0ee",
+        "type": "split",
+        "z": "b75ecc517daa63fb",
+        "name": "",
+        "splt": "",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 650,
+        "y": 440,
+        "wires": [
+            [
+                "b9b370f7d2bc5588"
+            ]
+        ]
+    },
+    {
+        "id": "a093062d0d39c787",
+        "type": "alpaca-order",
+        "z": "b75ecc517daa63fb",
+        "conf": "e535f42f1df1b25f",
+        "x": 1130,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5fae4f3c5e0bac81",
+        "type": "inject",
+        "z": "b75ecc517daa63fb",
+        "name": "CLOSES LONG POSITIONS",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 200,
+        "y": 440,
+        "wires": [
+            [
+                "5c1ae9d7cf85c0eb"
+            ]
+        ]
+    },
+    {
+        "id": "b9b370f7d2bc5588",
+        "type": "delay",
+        "z": "b75ecc517daa63fb",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "2",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 790,
+        "y": 440,
+        "wires": [
+            [
+                "28413aa0f5bce85c"
+            ]
+        ]
+    },
+    {
+        "id": "28413aa0f5bce85c",
+        "type": "function",
+        "z": "b75ecc517daa63fb",
+        "name": "update portfolio",
+        "func": "let d = new Date()\nlet sql = ''\nlet symbol = msg.ticker\nlet benchmark_end = flow.get(\"benchmark_end\")\nlet id = flow.get(\"portfolioid\")\n\n\nlet ticker = msg.payload[\"symbol\"]\nlet qty = msg.payload[\"qty\"] // for crypto, this is less than the filled_qty due to commissions\nlet current_price = msg.payload[\"current_price\"]\nlet entry_price = msg.payload[\"avg_entry_price\"]\nlet gain_today = msg.payload[\"unrealized_intraday_pl\"]\nlet pctgain_today = msg.payload[\"unrealized_intraday_plpc\"]\nlet gain = msg.payload[\"unrealized_pl\"]\nlet pctgain = msg.payload[\"unrealized_plpc\"]\n\nlet current_value = (qty * current_price)\nlet current_profit = gain_today\nlet gainlosspct = pctgain_today\n\n// create clientorderid\nlet client_order_id = \"SELL\" +ticker + d\n\n\n\n// create a market order for Alpaca\nlet temp = ''\ntemp = {\n    \"symbol\": ticker,\n    \"qty\": qty,\n    \"side\": \"sell\",\n    \"type\": \"market\",\n    //       \"limit_price\": price,\n    \"client_order_id\": client_order_id,\n    \"time_in_force\": \"gtc\"\n};\n\n\nmsg.payload = temp\nnode.warn(msg.payload)\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 960,
+        "y": 440,
+        "wires": [
+            [
+                "a093062d0d39c787"
+            ]
+        ]
+    },
+    {
+        "id": "a45e5ec87a277426",
+        "type": "inject",
+        "z": "b75ecc517daa63fb",
+        "name": "Create Algo table",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "create table IF NOT EXISTS algo (id INTEGER,name TEXT, status TEXT, trade_freq TEXT,num_trades INTEGER,sharpe REAL,unixtime INTEGER, portfolio REAL, gain_today_realized REAL, gain_today_unrealized REAL, pctgain_today REAL,gainloss_realized REAL,gainloss_unrealized REAL, gainlosspct REAL, benchmarkgain_today REAL, benchmarkgain REAL,benchmarkpct_today REAL,  benchmarkpct REAL)",
+        "x": 160,
+        "y": 600,
+        "wires": [
+            [
+                "06c7c27b557ad11a"
+            ]
+        ]
+    },
+    {
+        "id": "06c7c27b557ad11a",
+        "type": "sqlite",
+        "z": "b75ecc517daa63fb",
+        "mydb": "53728b47003f9caf",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "algos",
+        "x": 330,
+        "y": 600,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e5061431f6034db8",
+        "type": "comment",
+        "z": "b75ecc517daa63fb",
+        "name": "Algo Table",
+        "info": "",
+        "x": 100,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "e784e98acbe166a1",
+        "type": "inject",
+        "z": "b75ecc517daa63fb",
+        "name": "Drop ALGO table",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "drop table algo ",
+        "x": 900,
+        "y": 600,
+        "wires": [
+            [
+                "9bfef6bad84d328f"
+            ]
+        ]
+    },
+    {
+        "id": "9bfef6bad84d328f",
+        "type": "sqlite",
+        "z": "b75ecc517daa63fb",
+        "mydb": "53728b47003f9caf",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "algos",
+        "x": 1050,
+        "y": 600,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "44105a4c8925800e",
+        "type": "inject",
+        "z": "b75ecc517daa63fb",
+        "name": "Display ALGO table",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "select * from algo ",
+        "x": 170,
+        "y": 660,
+        "wires": [
+            [
+                "7aaca729dadc3cf7"
+            ]
+        ]
+    },
+    {
+        "id": "7aaca729dadc3cf7",
+        "type": "sqlite",
+        "z": "b75ecc517daa63fb",
+        "mydb": "53728b47003f9caf",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "algos",
+        "x": 330,
+        "y": 660,
+        "wires": [
+            [
+                "d50a6c23e4325c72"
+            ]
+        ]
+    },
+    {
+        "id": "d50a6c23e4325c72",
+        "type": "debug",
+        "z": "b75ecc517daa63fb",
+        "name": "debug 144",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 460,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "eba043feabf2054d",
+        "type": "inject",
+        "z": "b75ecc517daa63fb",
+        "name": "Create unique index on algo",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "CREATE UNIQUE INDEX id ON algo  (id);",
+        "x": 540,
+        "y": 600,
+        "wires": [
+            [
+                "44cf5a289bd96426"
+            ]
+        ]
+    },
+    {
+        "id": "44cf5a289bd96426",
+        "type": "sqlite",
+        "z": "b75ecc517daa63fb",
+        "mydb": "53728b47003f9caf",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "algos",
+        "x": 730,
+        "y": 600,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "817fa63b15324d11",
+        "type": "inject",
+        "z": "b75ecc517daa63fb",
+        "name": "delete from algo table",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "delete from algo where id = 4",
+        "x": 180,
+        "y": 720,
+        "wires": [
+            [
+                "591dfe7384cd1814"
+            ]
+        ]
+    },
+    {
+        "id": "591dfe7384cd1814",
+        "type": "sqlite",
+        "z": "b75ecc517daa63fb",
+        "mydb": "53728b47003f9caf",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "algos",
+        "x": 370,
+        "y": 720,
+        "wires": [
+            [
+                "087391cdb6cbe867"
+            ]
+        ]
+    },
+    {
+        "id": "087391cdb6cbe867",
+        "type": "debug",
+        "z": "b75ecc517daa63fb",
+        "name": "debug 145",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 500,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "fa1acb083bed07c5",
+        "type": "function",
+        "z": "b75ecc517daa63fb",
+        "name": "create portfolio table",
+        "func": "let sql = \"create table IF NOT EXISTS portfolio (account TEXT,date TEXT,portfolioid REAL,ticker TEXT,price REAL,qty REAL,position TEXT,clientorderid TEXT,filled_type TEXT,filled_side TEXT,filled_tif TEXT,filled_status TEXT,filled_price REAL,filled_qty REAL,filled_at TEXT,current_position REAL,current_price REAL,current_value REAL,current_profit REAL,gainlosspct REAL, newprice REAL,newqty REAL,newposition REAL,newclient_order_id TEXT,trade_profit REAL,newfilled_type TEXT,newfilled_side TEXT,newfilled_tif TEXT,newfilled_status TEXT,newfilled_at TEXT,newfilled_price REAL,newfilled_qty REAL,benchmark TEXT,benchmark_start REAL, benchmark_end REAL,benchmark_profit REAL, benchmark_profitpct REAL)\"\nmsg.topic = sql\nnode.warn(msg.topic)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 880,
+        "wires": [
+            [
+                "bc8e50e4398f28c0"
+            ]
+        ]
+    },
+    {
+        "id": "c7c3f1b1ba4f8ff3",
+        "type": "inject",
+        "z": "b75ecc517daa63fb",
+        "name": "Go",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 880,
+        "wires": [
+            [
+                "fa1acb083bed07c5"
+            ]
+        ]
+    },
+    {
+        "id": "bc8e50e4398f28c0",
+        "type": "sqlite",
+        "z": "b75ecc517daa63fb",
+        "mydb": "3f62e3c9b171abc2",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "portfolios",
+        "x": 480,
+        "y": 880,
+        "wires": [
+            [
+                "b32c0419c19bbe80"
+            ]
+        ]
+    },
+    {
+        "id": "597fb9af151d9b7b",
+        "type": "comment",
+        "z": "b75ecc517daa63fb",
+        "name": "Portfolio Table",
+        "info": "",
+        "x": 90,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "205d807fbd7ed470",
+        "type": "function",
+        "z": "b75ecc517daa63fb",
+        "name": "drop  portfolio table",
+        "func": "let sql = \"drop table portfolio\"\nmsg.topic = sql\nnode.warn(msg.topic)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 290,
+        "y": 1000,
+        "wires": [
+            [
+                "6465109747630fdb"
+            ]
+        ]
+    },
+    {
+        "id": "340b19c377d2c03d",
+        "type": "inject",
+        "z": "b75ecc517daa63fb",
+        "name": "DROP",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 1000,
+        "wires": [
+            [
+                "205d807fbd7ed470"
+            ]
+        ]
+    },
+    {
+        "id": "6465109747630fdb",
+        "type": "sqlite",
+        "z": "b75ecc517daa63fb",
+        "mydb": "3f62e3c9b171abc2",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "portfolios",
+        "x": 480,
+        "y": 1000,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5f43398304953b93",
+        "type": "function",
+        "z": "b75ecc517daa63fb",
+        "name": "query portfolio table",
+        "func": "let sql = \"select sum(position) as a, sum(current_value) as b, sum(newposition) as c, benchmark_profit as d from portfolio where portfolioid = 4;\"\nmsg.topic = sql\nnode.warn(msg.topic)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 920,
+        "wires": [
+            [
+                "036a158825f73d23"
+            ]
+        ]
+    },
+    {
+        "id": "a3bf71a7201c7aa5",
+        "type": "inject",
+        "z": "b75ecc517daa63fb",
+        "name": "TEST",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 920,
+        "wires": [
+            [
+                "5f43398304953b93"
+            ]
+        ]
+    },
+    {
+        "id": "036a158825f73d23",
+        "type": "sqlite",
+        "z": "b75ecc517daa63fb",
+        "mydb": "3f62e3c9b171abc2",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "portfolios",
+        "x": 480,
+        "y": 920,
+        "wires": [
+            [
+                "b32c0419c19bbe80"
+            ]
+        ]
+    },
+    {
+        "id": "b32c0419c19bbe80",
+        "type": "debug",
+        "z": "b75ecc517daa63fb",
+        "name": "debug 146",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 630,
+        "y": 900,
+        "wires": []
+    },
+    {
+        "id": "634fa39979a11806",
+        "type": "function",
+        "z": "b75ecc517daa63fb",
+        "name": "update portfolio table",
+        "func": "//let sql = \"delete from portfolio where filled_qty is null\"\n//let sql = \"select * from portfolio where filled_qty is null\"\n//let sql = \"select * from portfolio where date like 'Mon%'\"\n//let sql = \"delete from portfolio where date like 'Mon%'\"\n//let sql = \"select * from portfolio where portfolioid = 4 and date like  'Tue Nov 01%';\"\n//let sql = \"update portfolio set benchmark_end = 384.755, current_profit = -11.28, gainlosspct = -0.0179372197309417, current_position = 94, current_price = 6.57, current_value = 617.58  where ticker = 'ACMR';\"\nlet sql = \"update portfolio SET  filled_type = 'market', filled_side = 'sell', filled_tif = 'gtc', filled_status = 'filled', filled_at = '2022-11-05T11:34:33.964914Z', filled_price = '21382', filled_qty = '0.9975', position = 21328.545000000002 where clientorderid = 'SELLBTC/USD1667648073868'\"\n\nmsg.topic = sql\nnode.warn(msg.topic)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 840,
+        "wires": [
+            [
+                "22f0937b0ff16491"
+            ]
+        ]
+    },
+    {
+        "id": "72a87867c0a5e6fb",
+        "type": "inject",
+        "z": "b75ecc517daa63fb",
+        "name": "UPDATE",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 120,
+        "y": 840,
+        "wires": [
+            [
+                "634fa39979a11806"
+            ]
+        ]
+    },
+    {
+        "id": "22f0937b0ff16491",
+        "type": "sqlite",
+        "z": "b75ecc517daa63fb",
+        "mydb": "3f62e3c9b171abc2",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "portfolios",
+        "x": 480,
+        "y": 840,
+        "wires": [
+            [
+                "d72cada36d2fc6fc"
+            ]
+        ]
+    },
+    {
+        "id": "d72cada36d2fc6fc",
+        "type": "debug",
+        "z": "b75ecc517daa63fb",
+        "name": "debug 147",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 630,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "36466fd7e0e388d5",
+        "type": "function",
+        "z": "b75ecc517daa63fb",
+        "name": "delete query",
+        "func": "//let sql = \"delete from portfolio where filled_qty is null\"\n//let sql = \"select * from portfolio where filled_qty is null\"\n//let sql = \"select * from portfolio where date like 'Mon%'\"\nlet sql = \"delete from portfolio where date like 'Fri Nov 04 2022 04:30:16 GMT-0400 (Eastern Daylight Time)'\"\n//let sql = \"select * from portfolio where portfolioid = 4 and date like  'Tue Nov 01 2022 09:29:54 GMT-0400 (Eastern Daylight Time)';\"\n//let sql = \"update portfolio set benchmark_end = 384.755, current_profit = -11.28, gainlosspct = -0.0179372197309417, current_position = 94, current_price = 6.57, current_value = 617.58  where ticker = 'ACMR';\"\n\nmsg.topic = sql\nnode.warn(msg.topic)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 960,
+        "wires": [
+            [
+                "7fb11d3c8ae91977"
+            ]
+        ]
+    },
+    {
+        "id": "efe7fc947b907490",
+        "type": "inject",
+        "z": "b75ecc517daa63fb",
+        "name": "DELETE FROM",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 140,
+        "y": 960,
+        "wires": [
+            [
+                "36466fd7e0e388d5"
+            ]
+        ]
+    },
+    {
+        "id": "7fb11d3c8ae91977",
+        "type": "sqlite",
+        "z": "b75ecc517daa63fb",
+        "mydb": "3f62e3c9b171abc2",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "portfolios",
+        "x": 480,
+        "y": 960,
+        "wires": [
+            [
+                "962db1cab5409707"
+            ]
+        ]
+    },
+    {
+        "id": "962db1cab5409707",
+        "type": "debug",
+        "z": "b75ecc517daa63fb",
+        "name": "debug 148",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 630,
+        "y": 960,
+        "wires": []
+    },
+    {
+        "id": "6490b854eb4c94a6",
+        "type": "comment",
+        "z": "b75ecc517daa63fb",
+        "name": "Close any open positions in the Paper Account ",
+        "info": "",
+        "x": 220,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "53728b47003f9caf",
+        "type": "sqlitedb",
+        "db": "/data/store/algo",
+        "mode": "RWC"
+    },
+    {
+        "id": "3f62e3c9b171abc2",
+        "type": "sqlitedb",
+        "db": "/data/store/portfolios",
+        "mode": "RWC"
+    },
+    {
+        "id": "8f654a02aea52c94",
+        "type": "sqlitedb",
+        "db": "/data/store/portfolios",
+        "mode": "RWC"
+    },
+    {
+        "id": "e535f42f1df1b25f",
+        "type": "alpaca-account",
+        "name": "paper",
+        "keyId": "PKE4YIBQZMFURBEQGC70",
+        "paper": true
+    }
+]
