@@ -21,34 +21,6 @@ Your secret key is encrypted once you enter it, so no one will be able to get ac
 
 <img width="530" alt="Screen Shot 2022-10-12 at 7 54 29 AM" src="https://user-images.githubusercontent.com/79699033/195339513-38db9d28-0fe9-4d70-bb51-08a4df3bef30.png">
 
-# Install a Utilities Flow that contains tables for storing sub portfolios, orders, and exporting to csv files
-
-Download json file "Utilities.json" and import to your instance.
-
-The "Utilities" flow contains flows that allow you to create and monitor "sub portfolios," to keep a record of orders, and to export the contents of sqlite tables to a browser, which can be stored on your local machine. 
-
-Sub Portfolio Tables
-
-The sub portfolio flows allow you to group your portfolio assets into groups based on the algo strategy. The "Create Sub Portfolio table" flow creates a sub_portfolio table in a sqlite "portfolios" database. Note that we have created fields for gain, pctgain, gain_today, and pctgain_today which will allow you to track the performance of the strategy daily (or more often if you wish). 
-
-The "Drop Sub Portfolio table" simples deletes the table, allowing you to start again if the table is flawed in any way. "Create unique index" does what is states: it creates a unique index combining the ticker and the sub portfolio id assigned to the strategy so that you can't accidently duplicate holdings in the portfolio. The last three flows allow you to display the contents of the tables so that you can review the performance of your strategies.
-
-Orders Tables
-
-The orders tables allows to store and retrieve Alpaca order information. The raw orders table stores the information that Alpacas return whenever a trade is entered. This data is not necessary the same as as the data returned when a request is made for "Open Orders" or "Closed Orders." As you decide to more precisely monitor in the information you sent to the Alapaca and the information captured in their order system, this information will be useful.
-
-The open orders can be used to store information about unfilled orders at the end of a time period, typically as the end of the day. 
-
-The closed orders table can store close order information received from Alpaca. Alpaca's sytems returns a limit of 500 orders so if your trading strategy is performing several hundred trades a day or more, you'll want to store the closed order information for future reference. 
-
-Export and save to a local csv file
-
-This is a very useful routine for downloading data from your instance to be viewed, typically, in an Excel spreadsheet. The file is downloaded by entering the named file in the node "/api/download_subportfolio" [yourinstancename.machinetrader.io/api/download_subportfolio]. The file will appear in the bottom left corner of the browser. The file is actually a json file that contains rows of comma separated fields. Simply copy and paste into an Excel spreadsheet using "Data > Text to Columns" using the comman separator.
-
-The flow can be modified to download the contents of any sqlite table in your instance.
-
-<img width="968" alt="Screen Shot 2022-10-13 at 6 48 15 AM" src="https://user-images.githubusercontent.com/79699033/195577872-551575eb-03ed-4e99-93d5-c845defca704.png">
-
 
 
 # Modifying your Default Market Indicators and Watchlist
