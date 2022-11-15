@@ -32,7 +32,6 @@
         "y": 560,
         "wires": [
             [
-                "d6328ef5f0007923",
                 "4ddbff6354ae55a6",
                 "9bc0a69cc3a17e37"
             ]
@@ -516,85 +515,6 @@
         "wires": [
             [
                 "dd6448ae8be542e7"
-            ]
-        ]
-    },
-    {
-        "id": "d6328ef5f0007923",
-        "type": "function",
-        "z": "45ad7298410082fa",
-        "name": "enter algo name to set id",
-        "func": "let sql = \"select id from algo where name = 'Buy FAANG Stocks'\"\nmsg.topic = sql\n//node.warn(msg.topic)\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 370,
-        "y": 540,
-        "wires": [
-            [
-                "8164f174a3d9bb4f"
-            ]
-        ]
-    },
-    {
-        "id": "c83ca7f8d7734f8d",
-        "type": "change",
-        "z": "45ad7298410082fa",
-        "name": "set flow portfolioid",
-        "rules": [
-            {
-                "t": "set",
-                "p": "portfolioid",
-                "pt": "flow",
-                "to": "id",
-                "tot": "msg"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 910,
-        "y": 540,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "8164f174a3d9bb4f",
-        "type": "sqlite",
-        "z": "45ad7298410082fa",
-        "mydb": "0ff8fe2630f9690e",
-        "sqlquery": "msg.topic",
-        "sql": "",
-        "name": "algos",
-        "x": 570,
-        "y": 540,
-        "wires": [
-            [
-                "fef4e7b349eba641"
-            ]
-        ]
-    },
-    {
-        "id": "fef4e7b349eba641",
-        "type": "function",
-        "z": "45ad7298410082fa",
-        "name": "set portfolioid",
-        "func": "let id = 0\n\nfor (var i = 0; i < msg.payload.length; i++) {\n    id = msg.payload[i][\"id\"]\n}\n\nmsg.id = id\n//node.warn(msg.id)\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 720,
-        "y": 540,
-        "wires": [
-            [
-                "c83ca7f8d7734f8d"
             ]
         ]
     },
@@ -1671,6 +1591,205 @@
         "wires": [
             [
                 "a2612a70713d1292"
+            ]
+        ]
+    },
+    {
+        "id": "e025cb9d7ea373a9",
+        "type": "change",
+        "z": "45ad7298410082fa",
+        "name": "set flow variable: ticker, qty,portfolioid",
+        "rules": [
+            {
+                "t": "set",
+                "p": "portfolioid",
+                "pt": "flow",
+                "to": "id",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "name",
+                "pt": "flow",
+                "to": "name",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "trades",
+                "pt": "flow",
+                "to": "trade",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "status",
+                "pt": "flow",
+                "to": "status",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "benchmark",
+                "pt": "flow",
+                "to": "benchmark",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "account",
+                "pt": "flow",
+                "to": "account",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "tickertype",
+                "pt": "flow",
+                "to": "tickertype",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "psize",
+                "pt": "flow",
+                "to": "psize",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "tickers",
+                "pt": "flow",
+                "to": "tickers",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1010,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c12e11fb46648d69",
+        "type": "inject",
+        "z": "45ad7298410082fa",
+        "name": "Reset flow variables after deploy",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 310,
+        "y": 300,
+        "wires": [
+            [
+                "4aab6287a10e1c0c",
+                "bc091691e88007ff"
+            ]
+        ]
+    },
+    {
+        "id": "4aab6287a10e1c0c",
+        "type": "function",
+        "z": "45ad7298410082fa",
+        "name": "enter algo name to set id",
+        "func": "let sql = \"select id from algo where name = 'Buy FAANG Stocks'\"\nmsg.topic = sql\nnode.warn(msg.topic)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 320,
+        "wires": [
+            [
+                "d5a65ddd7fd56733"
+            ]
+        ]
+    },
+    {
+        "id": "e2e6d85e8b59be93",
+        "type": "change",
+        "z": "45ad7298410082fa",
+        "name": "set flow portfolioid",
+        "rules": [
+            {
+                "t": "set",
+                "p": "portfolioid",
+                "pt": "flow",
+                "to": "id",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1130,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d5a65ddd7fd56733",
+        "type": "sqlite",
+        "z": "45ad7298410082fa",
+        "mydb": "0ff8fe2630f9690e",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "algos",
+        "x": 790,
+        "y": 320,
+        "wires": [
+            [
+                "1206286f404e85b0"
+            ]
+        ]
+    },
+    {
+        "id": "1206286f404e85b0",
+        "type": "function",
+        "z": "45ad7298410082fa",
+        "name": "set portfolioid",
+        "func": "let id = 0\n\nfor (var i = 0; i < msg.payload.length; i++) {\n    id = msg.payload[i][\"id\"]\n}\n\nmsg.id = id\nnode.warn(msg.id)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 940,
+        "y": 320,
+        "wires": [
+            [
+                "e2e6d85e8b59be93"
+            ]
+        ]
+    },
+    {
+        "id": "bc091691e88007ff",
+        "type": "function",
+        "z": "45ad7298410082fa",
+        "name": "set and store portfolio and ticker variables",
+        "func": "// portfolio_id is set to unixtime\nlet d = Date.now() // use to dynamically assign id\n\nlet id = d\nlet tickers = 'META,AMZN,NFLX,GOOG,AAPL'  // Meta (META) (formerly Facebook), Amazon (AMZN), Netflix (NFLX), and Alphabet/Google (GOOG).\nlet number = 5\nlet name = \"Buy FAANG Stocks\"\nlet algotype = \"interday\"\nlet status = \"running\"\nlet trade_freq = 1\nlet sharpe = 0\nlet unixtime = 0\nlet benchmark = 'SPY'\nlet tickertype = 'stocks'\nlet account = 'paper'\nlet psize = 100000 // size of portfolio\nlet starting_balance = 0\nlet balance_today = 0\nlet ending_balance_today = 0\nlet balance_end = 0\nlet benchmark_start = 0\nlet benchmark_start_today = 0\nlet benchmark_current = 0\nlet benchmark_end_today = 0\nlet benchmark_end = 0\nlet gain_today_realized = 0\nlet gain_today_unrealized = 0\nlet pctgain_today = 0\nlet gainloss_realized = 0\nlet gainloss_unrealized = 0\nlet gainlosspct = 0\nlet benchmarkgain_today = 0\nlet benchmarkgain = 0\nlet benchmarkpct_today = 0\nlet benchmarkpct = 0\n\n\n//msg.id = id\nmsg.name = name\nmsg.trade = trade_freq\nmsg.status = status\nmsg.benchmark = benchmark\nmsg.account = account\nmsg.tickertype = tickertype\nmsg.psize = psize\nmsg.tickers = tickers\nmsg.number = number\n\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 640,
+        "y": 280,
+        "wires": [
+            [
+                "e025cb9d7ea373a9"
             ]
         ]
     },

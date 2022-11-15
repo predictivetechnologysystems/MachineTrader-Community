@@ -34,7 +34,6 @@
             [
                 "81b23629f2d424b4",
                 "a9514ed4c901f3bf",
-                "dec0a2294b99ad8b",
                 "c0f95d15647a70e9"
             ]
         ]
@@ -535,85 +534,6 @@
         "wires": [
             [
                 "ad8e2b1dc5d1c421"
-            ]
-        ]
-    },
-    {
-        "id": "dec0a2294b99ad8b",
-        "type": "function",
-        "z": "a6f0d1273b4fa89a",
-        "name": "enter algo name to set id",
-        "func": "let sql = \"select id from algo where name = 'Create Crypto Portfolio'\"\nmsg.topic = sql\nnode.warn(msg.topic)\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 370,
-        "y": 540,
-        "wires": [
-            [
-                "f8df10d8747e2e48"
-            ]
-        ]
-    },
-    {
-        "id": "2c6c4e105e98a451",
-        "type": "change",
-        "z": "a6f0d1273b4fa89a",
-        "name": "set flow portfolioid",
-        "rules": [
-            {
-                "t": "set",
-                "p": "portfolioid",
-                "pt": "flow",
-                "to": "id",
-                "tot": "msg"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 910,
-        "y": 540,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "f8df10d8747e2e48",
-        "type": "sqlite",
-        "z": "a6f0d1273b4fa89a",
-        "mydb": "0ff8fe2630f9690e",
-        "sqlquery": "msg.topic",
-        "sql": "",
-        "name": "algos",
-        "x": 570,
-        "y": 540,
-        "wires": [
-            [
-                "0a03024e13026272"
-            ]
-        ]
-    },
-    {
-        "id": "0a03024e13026272",
-        "type": "function",
-        "z": "a6f0d1273b4fa89a",
-        "name": "set portfolioid",
-        "func": "let id = 0\n\nfor (var i = 0; i < msg.payload.length; i++) {\n    id = msg.payload[i][\"id\"]\n}\n\nmsg.id = id\n//node.warn(msg.id)\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 720,
-        "y": 540,
-        "wires": [
-            [
-                "2c6c4e105e98a451"
             ]
         ]
     },
@@ -1732,6 +1652,205 @@
         "wires": [
             [
                 "8f7b5cb2e30a32de"
+            ]
+        ]
+    },
+    {
+        "id": "fd9ba46d79deba3a",
+        "type": "change",
+        "z": "a6f0d1273b4fa89a",
+        "name": "set flow variable: ticker, qty,portfolioid",
+        "rules": [
+            {
+                "t": "set",
+                "p": "portfolioid",
+                "pt": "flow",
+                "to": "id",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "name",
+                "pt": "flow",
+                "to": "name",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "trades",
+                "pt": "flow",
+                "to": "trade",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "status",
+                "pt": "flow",
+                "to": "status",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "benchmark",
+                "pt": "flow",
+                "to": "benchmark",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "account",
+                "pt": "flow",
+                "to": "account",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "tickertype",
+                "pt": "flow",
+                "to": "tickertype",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "psize",
+                "pt": "flow",
+                "to": "psize",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "tickers",
+                "pt": "flow",
+                "to": "tickers",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 950,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9296cf5ea12ca042",
+        "type": "inject",
+        "z": "a6f0d1273b4fa89a",
+        "name": "Reset flow variables after deploy",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 250,
+        "y": 340,
+        "wires": [
+            [
+                "d3185e6f2e6f58a2",
+                "efb56210b991b51b"
+            ]
+        ]
+    },
+    {
+        "id": "d3185e6f2e6f58a2",
+        "type": "function",
+        "z": "a6f0d1273b4fa89a",
+        "name": "enter algo name to set id",
+        "func": "let sql = \"select id from algo where name = 'Create Crypto Portfolio'\"\nmsg.topic = sql\nnode.warn(msg.topic)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 530,
+        "y": 360,
+        "wires": [
+            [
+                "d7229fac07bdd481"
+            ]
+        ]
+    },
+    {
+        "id": "dc5565cea9895f55",
+        "type": "change",
+        "z": "a6f0d1273b4fa89a",
+        "name": "set flow portfolioid",
+        "rules": [
+            {
+                "t": "set",
+                "p": "portfolioid",
+                "pt": "flow",
+                "to": "id",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1070,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d7229fac07bdd481",
+        "type": "sqlite",
+        "z": "a6f0d1273b4fa89a",
+        "mydb": "0ff8fe2630f9690e",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "algos",
+        "x": 730,
+        "y": 360,
+        "wires": [
+            [
+                "e40d8d68fce836ad"
+            ]
+        ]
+    },
+    {
+        "id": "e40d8d68fce836ad",
+        "type": "function",
+        "z": "a6f0d1273b4fa89a",
+        "name": "set portfolioid",
+        "func": "let id = 0\n\nfor (var i = 0; i < msg.payload.length; i++) {\n    id = msg.payload[i][\"id\"]\n}\n\nmsg.id = id\nnode.warn(msg.id)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 880,
+        "y": 360,
+        "wires": [
+            [
+                "dc5565cea9895f55"
+            ]
+        ]
+    },
+    {
+        "id": "efb56210b991b51b",
+        "type": "function",
+        "z": "a6f0d1273b4fa89a",
+        "name": "set and store portfolio and ticker variables",
+        "func": "// portfolio_id is set to unixtime\nlet d = Date.now() // use to dynamically assign id\n\nlet id = d\nlet tickers = ''\nlet name = \"Create Crypto Portfolio\"\nlet algotype = \"interday\"\nlet status = \"running\"\nlet trade_freq = 20\nlet sharpe = 0\nlet unixtime = 0\nlet benchmark = 'SPY'\nlet tickertype = 'crypto'\nlet account = 'paper'\nlet psize = 100000 // size of portfolio\nlet starting_balance = 0\nlet balance_today = 0\nlet ending_balance_today = 0\nlet balance_end = 0\nlet benchmark_start = 0\nlet benchmark_start_today = 0\nlet benchmark_current = 0\nlet benchmark_end_today = 0\nlet benchmark_end = 0\nlet gain_today_realized = 0\nlet gain_today_unrealized = 0\nlet pctgain_today = 0\nlet gainloss_realized = 0\nlet gainloss_unrealized = 0\nlet gainlosspct = 0\nlet benchmarkgain_today = 0\nlet benchmarkgain = 0\nlet benchmarkpct_today = 0\nlet benchmarkpct = 0\n\n\n//msg.id = id\nmsg.name = name\nmsg.trade = trade_freq\nmsg.status = status\nmsg.benchmark = benchmark\nmsg.account = account\nmsg.tickertype = tickertype\nmsg.psize = psize\nmsg.tickers = tickers\n\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 580,
+        "y": 320,
+        "wires": [
+            [
+                "fd9ba46d79deba3a"
             ]
         ]
     },
