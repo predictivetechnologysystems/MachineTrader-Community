@@ -11,14 +11,14 @@
         "id": "240ba6dd748d1f17",
         "type": "inject",
         "z": "f6f2ca873e737c62",
-        "name": "run weekly",
+        "name": "run each night",
         "props": [],
         "repeat": "",
-        "crontab": "00 00 * * 0",
+        "crontab": "00 00 * * *",
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "x": 150,
+        "x": 140,
         "y": 120,
         "wires": [
             [
