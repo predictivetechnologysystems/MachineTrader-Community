@@ -1,0 +1,99 @@
+[
+    {
+        "id": "f6f2ca873e737c62",
+        "type": "tab",
+        "label": "Utilities",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "240ba6dd748d1f17",
+        "type": "inject",
+        "z": "f6f2ca873e737c62",
+        "name": "run weekly",
+        "props": [],
+        "repeat": "",
+        "crontab": "00 00 * * 0",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 120,
+        "wires": [
+            [
+                "cbc4a54ad4237d50"
+            ]
+        ]
+    },
+    {
+        "id": "04c13e2d31e68d43",
+        "type": "sqlite",
+        "z": "f6f2ca873e737c62",
+        "mydb": "245284f91b282761",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "live_account",
+        "x": 590,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "899d7a61b2395fce",
+        "type": "sqlite",
+        "z": "f6f2ca873e737c62",
+        "mydb": "ebdf8e53c589f083",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "paper_account",
+        "x": 600,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "cbc4a54ad4237d50",
+        "type": "function",
+        "z": "f6f2ca873e737c62",
+        "name": "delete more than one week",
+        "func": "let d = Date.now()\nd = (d - 604800000) \nlet sql = \"delete from balances where unixtime < \" +d\nmsg.topic = sql\nnode.warn(sql)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 120,
+        "wires": [
+            [
+                "04c13e2d31e68d43",
+                "899d7a61b2395fce"
+            ]
+        ]
+    },
+    {
+        "id": "3fc33f651ae3bc85",
+        "type": "comment",
+        "z": "f6f2ca873e737c62",
+        "name": "deletes balances older thns one week from account balances tables",
+        "info": "",
+        "x": 300,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "245284f91b282761",
+        "type": "sqlitedb",
+        "db": "/data/store/live_account",
+        "mode": "RWC"
+    },
+    {
+        "id": "ebdf8e53c589f083",
+        "type": "sqlitedb",
+        "db": "/data/store/paper_account",
+        "mode": "RWC"
+    }
+]
