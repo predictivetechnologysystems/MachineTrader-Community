@@ -1,0 +1,340 @@
+[
+    {
+        "id": "0a3a02e837966687",
+        "type": "tab",
+        "label": "Step 1: Define Strategy",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "4ce109b906f763b2",
+        "type": "comment",
+        "z": "0a3a02e837966687",
+        "name": "Describe the strategy in the \"set and store strategy variables\" node",
+        "info": "",
+        "x": 280,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "d4df81753661e3bb",
+        "type": "mysql",
+        "z": "0a3a02e837966687",
+        "mydb": "3564bcf07c743fdf",
+        "name": "ptsapi",
+        "x": 470,
+        "y": 240,
+        "wires": [
+            [
+                "1859a1121363f5d3"
+            ]
+        ]
+    },
+    {
+        "id": "b05465b70ed9f197",
+        "type": "function",
+        "z": "0a3a02e837966687",
+        "name": "Get crypto list",
+        "func": "let sql = \"select * from alpaca_assets where exchange = 'FTXU' and tradable = 'True';\"\nmsg.topic = sql\nnode.warn(sql)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 240,
+        "wires": [
+            [
+                "d4df81753661e3bb"
+            ]
+        ]
+    },
+    {
+        "id": "3ac671114d37af1b",
+        "type": "sqlite",
+        "z": "0a3a02e837966687",
+        "mydb": "0bff986810513a86",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "algos",
+        "x": 850,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1213708daee44120",
+        "type": "change",
+        "z": "0a3a02e837966687",
+        "name": "set tickers, number_of_tickers",
+        "rules": [
+            {
+                "t": "set",
+                "p": "number",
+                "pt": "flow",
+                "to": "count",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "tickers",
+                "pt": "flow",
+                "to": "tickers",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 930,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1859a1121363f5d3",
+        "type": "function",
+        "z": "0a3a02e837966687",
+        "name": "update algos with tickers",
+        "func": "let id = flow.get(\"portfolioid\")\n//let id = msg.id\n\nlet tickers = \"\"\n\nfor (var i = 0; i < msg.payload.length; i++) {\n\n    let ticker = msg.payload[i][\"symbol\"]\n    tickers += ticker+ \", \"\n}\n\nlet count = msg.payload.length\nnode.warn(tickers)\nlet sql = \"update algos set tickers = '\" + tickers + \"' where id = \" + id\nnode.warn(sql)\nmsg.tickers = tickers\nmsg.count = count\nmsg.topic = sql\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 650,
+        "y": 240,
+        "wires": [
+            [
+                "1213708daee44120",
+                "3ac671114d37af1b"
+            ]
+        ]
+    },
+    {
+        "id": "12a50a44357e148c",
+        "type": "inject",
+        "z": "0a3a02e837966687",
+        "name": "Store Strategy in algos table",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 240,
+        "y": 100,
+        "wires": [
+            [
+                "d2d70dd272c2c477"
+            ]
+        ]
+    },
+    {
+        "id": "d2d70dd272c2c477",
+        "type": "function",
+        "z": "0a3a02e837966687",
+        "name": "set and store strategy variables",
+        "func": "// portfolio_id is set to unixtime\nlet d = Date.now() // use to dynamically assign id\nlet startdate = new Date().toJSON().slice(0, 10);  // start date of the strategy\n\nlet id = d\nlet tickers = '' // enter at ticker or tickers here or download from Data Center \nlet name = \"Create Crypto Portfolio\" // strategy name\nlet account = 'paper' // live or paper\nlet algotype = \"interday\" // interday or intraday\nlet status = \"running\" // running or stopped\nlet trade_freq = 1 // daily trade frequency\nlet num_trades = 40 // total number of trades expected for strategy\nlet portfolio = 0 // actualy value of portfolio. Set dynamically.\nlet benchmark = 'SPY'\nlet tickertype = 'crypto'\nlet psize = 100000 // size of portfolio\nlet gain_today = 0\nlet gain = 0\nlet pctgain_today = 0\nlet pctgain = 0\nlet bench_start = 0\nlet bench_start_today = 0\nlet bench_end_today = 0\nlet info_ratio = 0\n\n\nmsg.id = id\nmsg.name = name\nmsg.trade = trade_freq\nmsg.status = status\nmsg.benchmark = benchmark\nmsg.account = account\nmsg.tickertype = tickertype\nmsg.psize = psize\nmsg.tickers = tickers\n\nlet sql = \"replace into algos (id,startdate,account,name,tickers,benchmark,algotype,status,trade_freq,num_trades,portfolio,gain_today,gain,pctgain_today,pctgain,bench_start,bench_start_today,bench_end_today,info_ratio)\"\nsql += \" values ('\" + id + \"','\" + startdate + \"','\" + account + \"','\" + name + \"','\" + tickers + \"','\" + benchmark + \"','\" + algotype + \"','\" + status + \"','\" + trade_freq + \"','\" + num_trades + \"','\" + portfolio + \"','\" + gain_today + \"','\" + gain + \"','\" + pctgain_today + \"','\" + pctgain + \"','\" + bench_start + \"','\" + bench_start_today + \"','\" + bench_end_today + \"','\" + info_ratio+ \"');\"\nmsg.topic = sql\nnode.warn(msg.topic)\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 530,
+        "y": 100,
+        "wires": [
+            [
+                "22e51677e16a25cb",
+                "d7f8dc416037bb85"
+            ]
+        ]
+    },
+    {
+        "id": "22e51677e16a25cb",
+        "type": "change",
+        "z": "0a3a02e837966687",
+        "name": "set flow variable: ticker, qty,portfolioid",
+        "rules": [
+            {
+                "t": "set",
+                "p": "portfolioid",
+                "pt": "flow",
+                "to": "id",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "name",
+                "pt": "flow",
+                "to": "name",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "trades",
+                "pt": "flow",
+                "to": "trade",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "status",
+                "pt": "flow",
+                "to": "status",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "benchmark",
+                "pt": "flow",
+                "to": "benchmark",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "account",
+                "pt": "flow",
+                "to": "account",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "tickertype",
+                "pt": "flow",
+                "to": "tickertype",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "psize",
+                "pt": "flow",
+                "to": "psize",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "tickers",
+                "pt": "flow",
+                "to": "tickers",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 950,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d7f8dc416037bb85",
+        "type": "sqlite",
+        "z": "0a3a02e837966687",
+        "mydb": "84af211eceb52712",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "algos",
+        "x": 730,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "22165aaaab0256f0",
+        "type": "inject",
+        "z": "0a3a02e837966687",
+        "name": "Display flow variables",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 160,
+        "y": 320,
+        "wires": [
+            [
+                "24e26a9cd21a319a"
+            ]
+        ]
+    },
+    {
+        "id": "24e26a9cd21a319a",
+        "type": "function",
+        "z": "0a3a02e837966687",
+        "name": "Show variables",
+        "func": "\nlet id = flow.get(\"portfolioid\")\nlet name = flow.get(\"name\")\nlet trade = flow.get(\"trades\")\nlet status = flow.get(\"status\")\nlet benchmark = flow.get(\"benchmark\")\nlet account = flow.get(\"account\")\nlet tickertype = flow.get(\"tickertype\")\nlet psize = flow.get(\"psize\")\nlet tickers = flow.get(\"tickers\")\nlet number = flow.get(\"number\")\n\nnode.warn(\"ID: \" +id+ \" Name: \" +name+ \" Trade: \" +trade+ \" Status: \" +status+ \" Benchmark: \" +benchmark+ \" Account: \" +account+ \" Tickertype: \" +tickertype+ \" Psize: \" +psize+ \" Tickers: \" +tickers+ \" Number of tickers: \" +number)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6dba3dee01985507",
+        "type": "comment",
+        "z": "0a3a02e837966687",
+        "name": "Optionally: get list of tickers from the Data Center and add to algos table",
+        "info": "",
+        "x": 300,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "c256ad242e0dcd1c",
+        "type": "inject",
+        "z": "0a3a02e837966687",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 170,
+        "y": 240,
+        "wires": [
+            [
+                "b05465b70ed9f197"
+            ]
+        ]
+    },
+    {
+        "id": "3564bcf07c743fdf",
+        "type": "MySQLdatabase",
+        "name": "ptsapi",
+        "host": "ptsapi.cax8fspskl8t.us-east-1.rds.amazonaws.com",
+        "port": "3306",
+        "db": "ptsapi",
+        "tz": "EST5EDT",
+        "charset": "UTF8"
+    },
+    {
+        "id": "0bff986810513a86",
+        "type": "sqlitedb",
+        "db": "/data/store/algo",
+        "mode": "RWC"
+    },
+    {
+        "id": "84af211eceb52712",
+        "type": "sqlitedb",
+        "db": "/data/store/algo",
+        "mode": "RWC"
+    }
+]
