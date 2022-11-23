@@ -1,0 +1,3578 @@
+[
+    {
+        "id": "0b0569b823a4a9b3",
+        "type": "tab",
+        "label": "Utilities",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "af587946b9b6b1e7",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "39 11 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 100,
+        "wires": [
+            [
+                "099c4363a71c7f21"
+            ]
+        ]
+    },
+    {
+        "id": "099c4363a71c7f21",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "display various times",
+        "func": "let est = new Date();\nnode.warn(\"EST: \" +est)\n\nconst d = new Date();\nlet day = d.getUTCDate();\n\nlet text = d.toUTCString();\n\nnode.warn(d)\nnode.warn(day)\nnode.warn(text)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7e6ae7d275d79f93",
+        "type": "comment",
+        "z": "0b0569b823a4a9b3",
+        "name": "Time Utilities",
+        "info": "",
+        "x": 110,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "49185636c81cf50d",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "create algos table",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "create table IF NOT EXISTS algos (id INTEGER PRIMARY KEY,startdate TEXT,account TEXT,name TEXT,tickers TEXT,benchmark TEXT,algotype TEXT,status TEXT,trade_freq TEXT,num_trades INTEGER,portfolio REAL,gain_today REAL,gain REAL,pctgain_today REAL,pctgain REAL,bench_start REAL,bench_current REAL,bench_start_today REAL,bench_end_today REAL,pctbench_today REAL,pctbench REAL,info_ratio REAL);",
+        "x": 150,
+        "y": 260,
+        "wires": [
+            [
+                "469f8032b0345810"
+            ]
+        ]
+    },
+    {
+        "id": "469f8032b0345810",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "0932ec07bedcc187",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "algos",
+        "x": 310,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "75b70139ec22938f",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "drop algos table",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "drop table algos",
+        "x": 520,
+        "y": 260,
+        "wires": [
+            [
+                "01c68ca2a39a28d2"
+            ]
+        ]
+    },
+    {
+        "id": "01c68ca2a39a28d2",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "0932ec07bedcc187",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "algos",
+        "x": 670,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "179a2057d1a47c43",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "display algos table",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "select * from algos",
+        "x": 150,
+        "y": 320,
+        "wires": [
+            [
+                "66796b72ca38474b"
+            ]
+        ]
+    },
+    {
+        "id": "66796b72ca38474b",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "0932ec07bedcc187",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "algos",
+        "x": 310,
+        "y": 320,
+        "wires": [
+            [
+                "b8adbb3d0276383f"
+            ]
+        ]
+    },
+    {
+        "id": "b8adbb3d0276383f",
+        "type": "debug",
+        "z": "0b0569b823a4a9b3",
+        "name": "debug 187",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 450,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "04e5723f1d6382bf",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 380,
+        "wires": [
+            [
+                "18cea8d7c498c767"
+            ]
+        ]
+    },
+    {
+        "id": "29769ccc2255f193",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "0932ec07bedcc187",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "algos",
+        "x": 450,
+        "y": 380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "18cea8d7c498c767",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "update or delete algos",
+        "func": "//let sql = \"update algos set  name = 'Buy Top Stocks', id = 1668614609811, tickers = '', algotype = 'intraday', startdate = '2022-11-16'  where id = 1668857661529\"\n//let sql = \"update algos set  id = 1668531789756  where id = 1668857725437\"\n//let sql = \"update algos set algotype = 'intraday-multi' where id = 1668614609811\"\n//let sql = \"update algos set bench_start = 397.70\"\n//let sql = \"update algos set bench_start_today = 394.11\"\nlet sql = \"delete from algos where name = 'Trade ETHUSD every hour.' and id <> 1668531789756\"\nmsg.topic = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 380,
+        "wires": [
+            [
+                "29769ccc2255f193"
+            ]
+        ]
+    },
+    {
+        "id": "fb0ae37b075f54f2",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "ALTER algos table",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "alter table algos add column pctbench REAL",
+        "x": 690,
+        "y": 320,
+        "wires": [
+            [
+                "5d9a58f23d6e0d3b"
+            ]
+        ]
+    },
+    {
+        "id": "5d9a58f23d6e0d3b",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "0932ec07bedcc187",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "algos",
+        "x": 850,
+        "y": 320,
+        "wires": [
+            [
+                "43591bf0aa54d7da"
+            ]
+        ]
+    },
+    {
+        "id": "43591bf0aa54d7da",
+        "type": "debug",
+        "z": "0b0569b823a4a9b3",
+        "name": "debug 188",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 990,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "dc4108c28d70a795",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "create portfolio table",
+        "func": "let sql = \"create table IF NOT EXISTS portfolio (account TEXT,date TEXT,portfolioid REAL,name TEXT,ticker TEXT,tickertype TEXT,tickername TEXT,price REAL,qty REAL,position TEXT,clientorderid TEXT,filled_type TEXT,filled_side TEXT,filled_tif TEXT,filled_status TEXT,filled_price REAL,filled_qty REAL,filled_at TEXT,current_position REAL,current_price REAL,current_value REAL,current_profit REAL,current_profitpct REAL,gainlosspct REAL, newprice REAL,newqty REAL,newposition REAL,newclient_order_id TEXT,trade_profit REAL,newfilled_type TEXT,newfilled_side TEXT,newfilled_tif TEXT,newfilled_status TEXT,newfilled_at TEXT,newfilled_price REAL,newfilled_qty REAL,benchmark TEXT,gain_today REAL,pctgain_today REAL,gain REAL,pctgain REAL)\"\nmsg.topic = sql\nnode.warn(msg.topic)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 540,
+        "wires": [
+            [
+                "82e6de63ad253e53"
+            ]
+        ]
+    },
+    {
+        "id": "623c7447bc07a945",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "CREATE",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 140,
+        "y": 540,
+        "wires": [
+            [
+                "dc4108c28d70a795",
+                "0c593744d907f85a"
+            ]
+        ]
+    },
+    {
+        "id": "82e6de63ad253e53",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "71e93c3b4d967265",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "portfolios",
+        "x": 500,
+        "y": 540,
+        "wires": [
+            [
+                "c355f9a4a493213d"
+            ]
+        ]
+    },
+    {
+        "id": "38565e8556d16418",
+        "type": "comment",
+        "z": "0b0569b823a4a9b3",
+        "name": "Portfolio Table",
+        "info": "",
+        "x": 110,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "26899d5c77e916c0",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "drop  portfolio table",
+        "func": "let sql = \"drop table portfolio\"\nmsg.topic = sql\nnode.warn(msg.topic)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1030,
+        "y": 660,
+        "wires": [
+            [
+                "713f86673dbcce78"
+            ]
+        ]
+    },
+    {
+        "id": "45135aca2c1cfde1",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "DROP",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 870,
+        "y": 660,
+        "wires": [
+            [
+                "26899d5c77e916c0"
+            ]
+        ]
+    },
+    {
+        "id": "713f86673dbcce78",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "71e93c3b4d967265",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "portfolios",
+        "x": 1220,
+        "y": 660,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c355f9a4a493213d",
+        "type": "debug",
+        "z": "0b0569b823a4a9b3",
+        "name": "debug 189",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "5e0c8f47a2f91451",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "query portfolio table",
+        "func": "//let sql = \"select sum(position) as a, sum(current_value) as b, sum(newposition) as c, benchmark_profit as d from portfolio where portfolioid = 4;\"\n//let sql = \"select * from portfolio order by filled_at desc limit 5;\"\nlet sql = \"select * from portfolio\"\n//let sql = \"select sum(current_profit) as a, sum(trade_profit) as b, sum(benchmark_profit) as c from portfolio where portfolioid = 1668259306192 and filled_at like '2022-11-13%';\"\nmsg.topic = sql\nnode.warn(msg.topic)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 620,
+        "wires": [
+            [
+                "73ef2c6617ed3095"
+            ]
+        ]
+    },
+    {
+        "id": "bb018848cf47fd79",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "TEST",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 620,
+        "wires": [
+            [
+                "5e0c8f47a2f91451"
+            ]
+        ]
+    },
+    {
+        "id": "73ef2c6617ed3095",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "71e93c3b4d967265",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "portfolios",
+        "x": 500,
+        "y": 620,
+        "wires": [
+            [
+                "af3679bda6f34e57"
+            ]
+        ]
+    },
+    {
+        "id": "af3679bda6f34e57",
+        "type": "debug",
+        "z": "0b0569b823a4a9b3",
+        "name": "debug 190",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "d686ab49cfcc8192",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "update portfolio table",
+        "func": "let sql = \"UPDATE portfolio set tickertype = 'crypto' \"\n//let sql = \"alter table portfolio add column TICKERTYPE TEXT\"\n//let sql = \"update portfolio set portfolioid = 1668531789756 where portfolioid = 1668531798823\"\n//let sql = \"replace into portfolio (account,name,date,portfolioid,ticker, clientorderid,price,qty,benchmark,benchmark_start) values ('paper', 'Trade ETHUSD every hour.',Sat Nov 12 2022 14:56:18 GMT-0500 (Eastern Standard Time)',1668264270965,'ETH/USD','X:ETHUSD1668282978166','1265.68',1,'SPY',398.51);\"\n//let sql = \"update portfolio set name = 'Buy Top Stocks' where portfolioid = 1668429188224\"\n//let sql = \"update portfolio set portfolioid = 1668531789756 where name = 'Trade ETHUSD every hour.'\"\n\nmsg.topic = sql\nnode.warn(msg.topic)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1060,
+        "y": 580,
+        "wires": [
+            [
+                "3e0980f3c06aaa1c"
+            ]
+        ]
+    },
+    {
+        "id": "f4735a6556938e53",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "UPDATE",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 880,
+        "y": 580,
+        "wires": [
+            [
+                "d686ab49cfcc8192"
+            ]
+        ]
+    },
+    {
+        "id": "3e0980f3c06aaa1c",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "71e93c3b4d967265",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "portfolios",
+        "x": 1240,
+        "y": 580,
+        "wires": [
+            [
+                "bac3495099b30c65"
+            ]
+        ]
+    },
+    {
+        "id": "bac3495099b30c65",
+        "type": "debug",
+        "z": "0b0569b823a4a9b3",
+        "name": "debug 191",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1390,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "f2e91bb569b4491f",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "query portfolio table",
+        "func": "//let sql = \"select sum(position) as a, sum(current_value) as b, sum(newposition) as c, benchmark_profit as d from portfolio where portfolioid = 4;\"\n//let sql = \"select * from portfolio order by filled_at desc limit 5;\"\n//let sql = \"select * from portfolio where benchmark_end is not null\"\n//let sql = \"select sum(current_profit) as a, sum(trade_profit) as b, sum(benchmark_profit) as c from portfolio where portfolioid = 1668259306192 and filled_at like '2022-11-13%';\"\nlet sql = 'select * from portfolio'\n//let sql = \"select benchmark from portfolio where filled_at like '2022-11-18%' and portfolioid = 1668531798823;\"\nmsg.topic = sql\nnode.warn(msg.topic)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 660,
+        "wires": [
+            [
+                "360e286b0924b22b"
+            ]
+        ]
+    },
+    {
+        "id": "59a5759eb91514b3",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "Display",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 660,
+        "wires": [
+            [
+                "f2e91bb569b4491f"
+            ]
+        ]
+    },
+    {
+        "id": "360e286b0924b22b",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "71e93c3b4d967265",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "portfolios",
+        "x": 500,
+        "y": 660,
+        "wires": [
+            [
+                "d14b39f1dfff46df"
+            ]
+        ]
+    },
+    {
+        "id": "d14b39f1dfff46df",
+        "type": "debug",
+        "z": "0b0569b823a4a9b3",
+        "name": "debug 192",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "0ef2a41e205244ee",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "Display portfolio",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "select * from portfolio where filled_at is not null",
+        "x": 160,
+        "y": 700,
+        "wires": [
+            [
+                "e338972a8d3b9447"
+            ]
+        ]
+    },
+    {
+        "id": "300e9ab0f3a6bcb8",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "show portfolio",
+        "func": "\nfor (let i=0;i<msg.payload.length;i++) \n{\n\n\n    let account = msg.payload[i][\"account\"]\n    let date = msg.payload[i][\"date\"]\n    let portfolioid = msg.payload[i][\"portfolioid\"]\n    let name = msg.payload[i][\"name\"]\n    let ticker = msg.payload[i][\"ticker\"]\n    let tickername = msg.payload[i][\"tickername\"]\n    let price = msg.payload[i][\"price\"]\n    let qty = msg.payload[i][\"qty\"]\n    let position = msg.payload[i][\"position\"]\n    let clientorderid = msg.payload[i][\"clientorderid\"]\n    let filled_type = msg.payload[i][\"filled_type\"]\n    let filled_side = msg.payload[i][\"filled_side\"]\n    let filled_tif = msg.payload[i][\"filled_tif\"]\n    let filled_status = msg.payload[i][\"filled_status\"]\n    let filled_price = msg.payload[i][\"filled_price\"]\n    let filled_qty = msg.payload[i][\"filled_qty\"]\n    let filled_at = msg.payload[i][\"filled_at\"]\n    let current_position = msg.payload[i][\"current_position\"]\n    let current_price = msg.payload[i][\"current_price\"]\n    let current_value = msg.payload[i][\"current_value\"]\n    let current_profit = msg.payload[i][\"current_profit\"]\n    let current_profitpct = (msg.payload[i][\"current_profitpct\"]) * 100\n    let gainlosspct = msg.payload[i][\"gainlosspct\"]\n    let newprice = msg.payload[i][\"newprice\"]\n    let newqty = msg.payload[i][\"newqty\"]\n    let newposition = msg.payload[i][\"newposition\"]\n    let newclient_order_id = msg.payload[i][\"newclient_order_id\"]\n    let trade_profit = msg.payload[i][\"trade_profit\"]\n    let newfilled_type = msg.payload[i][\"newfilled_type\"]\n    let newfilled_side = msg.payload[i][\"newfilled_side\"]\n    let newfilled_tif = msg.payload[i][\"newfilled_tif\"]\n    let newfilled_status = msg.payload[i][\"newfilled_status\"]\n    let newfilled_at = msg.payload[i][\"newfilled_at\"]\n    let newfilled_price = msg.payload[i][\"newfilled_price\"]\n    let newfilled_qty = msg.payload[i][\"newfilled_qty\"]\n    let benchmark = msg.payload[i][\"benchmark\"]\n\n    let gainlosspct_today = current_profitpct\n    \n \n    current_price = parseFloat(current_price).toFixed(2);\n    current_value = parseFloat(current_value).toFixed(2);\n    current_profit = parseFloat(current_profit).toFixed(2);\n    gainlosspct_today = parseFloat(gainlosspct_today).toFixed(2);\n\n    node.warn(\"Ticker| \" + ticker + \"|Name|\" + tickername + \" |Current Price| \" + current_price + \" |Shares| \" + filled_qty + \" |Market| \" + current_value + \" |Gainloss today| \" + current_profit + \" |Gainloss pct today| \" + gainlosspct_today)\n}\nreturn msg;\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 700,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e338972a8d3b9447",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "71e93c3b4d967265",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "portfolios",
+        "x": 320,
+        "y": 700,
+        "wires": [
+            [
+                "300e9ab0f3a6bcb8"
+            ]
+        ]
+    },
+    {
+        "id": "350d79bc31062b1d",
+        "type": "comment",
+        "z": "0b0569b823a4a9b3",
+        "name": "Display Portfolio for each Subportfolio",
+        "info": "",
+        "x": 210,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "56f2cffbfe4c0937",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "select id",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "select id,name from algos",
+        "x": 460,
+        "y": 760,
+        "wires": [
+            [
+                "98f91f5ffc9d2e93"
+            ]
+        ]
+    },
+    {
+        "id": "e5f785210794e51a",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "71e93c3b4d967265",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "portfolios",
+        "x": 1000,
+        "y": 760,
+        "wires": [
+            [
+                "4658da8e85e1b673"
+            ]
+        ]
+    },
+    {
+        "id": "98f91f5ffc9d2e93",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "9e9dded94ba34522",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "algos",
+        "x": 590,
+        "y": 760,
+        "wires": [
+            [
+                "de88d6b92d5287da"
+            ]
+        ]
+    },
+    {
+        "id": "de88d6b92d5287da",
+        "type": "split",
+        "z": "0b0569b823a4a9b3",
+        "name": "",
+        "splt": "",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 710,
+        "y": 760,
+        "wires": [
+            [
+                "14ddf048035bcda8"
+            ]
+        ]
+    },
+    {
+        "id": "14ddf048035bcda8",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "get portfolios",
+        "func": "let id = msg.payload[\"id\"]\nlet name = msg.payload[\"name\"]\nnode.warn(\"ID: \" +id+ \" Name: \" +name)\nlet sql = \"select * from portfolio where filled_at is not null and portfolioid = \" +id\nmsg.topic = sql \nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 850,
+        "y": 760,
+        "wires": [
+            [
+                "e5f785210794e51a"
+            ]
+        ]
+    },
+    {
+        "id": "f1712b8433765d76",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "update portfolio table",
+        "func": "//let sql = \"alter table portfolio add column current_profitpct REAL\"\nlet sql = \"delete from portfolio where portfolioid = 1668531789756\"\n//let sql = \"replace into portfolio (account,name,date,portfolioid,ticker, clientorderid,price,qty,benchmark,benchmark_start) values ('paper', 'Trade ETHUSD every hour.',Sat Nov 12 2022 14:56:18 GMT-0500 (Eastern Standard Time)',1668264270965,'ETH/USD','X:ETHUSD1668282978166','1265.68',1,'SPY',398.51);\"\n//let sql = \"update portfolio set name = 'Buy Top Stocks' where portfolioid = 1668429188224\"\nmsg.topic = sql\nnode.warn(msg.topic)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1060,
+        "y": 620,
+        "wires": [
+            [
+                "d8e317689d3e589c"
+            ]
+        ]
+    },
+    {
+        "id": "f65e9dee9fd4b6f6",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "DELETE",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 880,
+        "y": 620,
+        "wires": [
+            [
+                "f1712b8433765d76"
+            ]
+        ]
+    },
+    {
+        "id": "d8e317689d3e589c",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "71e93c3b4d967265",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "portfolios",
+        "x": 1240,
+        "y": 620,
+        "wires": [
+            [
+                "e6927fa95181f1ab"
+            ]
+        ]
+    },
+    {
+        "id": "e6927fa95181f1ab",
+        "type": "debug",
+        "z": "0b0569b823a4a9b3",
+        "name": "debug 193",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1390,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "54149d17642d1eec",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "create index ",
+        "func": "let sql = \"create index on portfolio(ticker)\"\nmsg.topic = sql\nnode.warn(msg.topic)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 580,
+        "wires": [
+            [
+                "ebdc23373a09e918"
+            ]
+        ]
+    },
+    {
+        "id": "ebdc23373a09e918",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "71e93c3b4d967265",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "portfolios",
+        "x": 500,
+        "y": 580,
+        "wires": [
+            [
+                "0677b5ee9a61ae9e"
+            ]
+        ]
+    },
+    {
+        "id": "0677b5ee9a61ae9e",
+        "type": "debug",
+        "z": "0b0569b823a4a9b3",
+        "name": "debug 194",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "0c593744d907f85a",
+        "type": "delay",
+        "z": "0b0569b823a4a9b3",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 200,
+        "y": 580,
+        "wires": [
+            [
+                "54149d17642d1eec"
+            ]
+        ]
+    },
+    {
+        "id": "4658da8e85e1b673",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "show portfolio",
+        "func": "\nfor (let i=0;i<msg.payload.length;i++) \n{\n\n\n    let account = msg.payload[i][\"account\"]\n    let date = msg.payload[i][\"date\"]\n    let portfolioid = msg.payload[i][\"portfolioid\"]\n    let name = msg.payload[i][\"name\"]\n    let ticker = msg.payload[i][\"ticker\"]\n    let tickername = msg.payload[i][\"tickername\"]\n    let price = msg.payload[i][\"price\"]\n    let qty = msg.payload[i][\"qty\"]\n    let position = msg.payload[i][\"position\"]\n    let clientorderid = msg.payload[i][\"clientorderid\"]\n    let filled_type = msg.payload[i][\"filled_type\"]\n    let filled_side = msg.payload[i][\"filled_side\"]\n    let filled_tif = msg.payload[i][\"filled_tif\"]\n    let filled_status = msg.payload[i][\"filled_status\"]\n    let filled_price = msg.payload[i][\"filled_price\"]\n    let filled_qty = msg.payload[i][\"filled_qty\"]\n    let filled_at = msg.payload[i][\"filled_at\"]\n    let current_position = msg.payload[i][\"current_position\"]\n    let current_price = msg.payload[i][\"current_price\"]\n    let current_value = msg.payload[i][\"current_value\"]\n    let current_profit = msg.payload[i][\"current_profit\"]\n    let current_profitpct = (msg.payload[i][\"current_profitpct\"]) * 100\n    let gainlosspct = msg.payload[i][\"gainlosspct\"]\n    let newprice = msg.payload[i][\"newprice\"]\n    let newqty = msg.payload[i][\"newqty\"]\n    let newposition = msg.payload[i][\"newposition\"]\n    let newclient_order_id = msg.payload[i][\"newclient_order_id\"]\n    let trade_profit = msg.payload[i][\"trade_profit\"]\n    let newfilled_type = msg.payload[i][\"newfilled_type\"]\n    let newfilled_side = msg.payload[i][\"newfilled_side\"]\n    let newfilled_tif = msg.payload[i][\"newfilled_tif\"]\n    let newfilled_status = msg.payload[i][\"newfilled_status\"]\n    let newfilled_at = msg.payload[i][\"newfilled_at\"]\n    let newfilled_price = msg.payload[i][\"newfilled_price\"]\n    let newfilled_qty = msg.payload[i][\"newfilled_qty\"]\n    let benchmark = msg.payload[i][\"benchmark\"]\n\n    let gainlosspct_today = current_profitpct\n    \n \n    current_price = parseFloat(current_price).toFixed(2);\n    current_value = parseFloat(current_value).toFixed(2);\n    current_profit = parseFloat(current_profit).toFixed(2);\n    gainlosspct_today = parseFloat(gainlosspct_today).toFixed(2);\n\n    node.warn(\"Ticker| \" + ticker + \"|Name|\" + tickername + \" |Current Price| \" + current_price + \" |Shares| \" + filled_qty + \" |Market| \" + current_value + \" |Gainloss today| \" + current_profit + \" |Gainloss pct today| \" + gainlosspct_today)\n}\nreturn msg;\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1160,
+        "y": 760,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "496d8c7b92d54496",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "update portfolio table",
+        "func": "let sql = \"ALTER table portfolio add column pctgain REAL\"\nmsg.topic = sql\nnode.warn(msg.topic)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1060,
+        "y": 540,
+        "wires": [
+            [
+                "e562569054c63896"
+            ]
+        ]
+    },
+    {
+        "id": "f846964b3248e1cb",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "ALTER",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 870,
+        "y": 540,
+        "wires": [
+            [
+                "496d8c7b92d54496"
+            ]
+        ]
+    },
+    {
+        "id": "e562569054c63896",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "71e93c3b4d967265",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "portfolios",
+        "x": 1240,
+        "y": 540,
+        "wires": [
+            [
+                "ec74d8c3c090689f"
+            ]
+        ]
+    },
+    {
+        "id": "ec74d8c3c090689f",
+        "type": "debug",
+        "z": "0b0569b823a4a9b3",
+        "name": "debug 195",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1390,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "240c9a9143a5cf4c",
+        "type": "comment",
+        "z": "0b0569b823a4a9b3",
+        "name": "Algos Table",
+        "info": "",
+        "x": 110,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "3c3aec1d26c84333",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "run daily at 23:000",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 1620,
+        "wires": [
+            [
+                "73bf0a8223409aa1"
+            ]
+        ]
+    },
+    {
+        "id": "99887574929be119",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "245284f91b282761",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "live_account",
+        "x": 670,
+        "y": 1380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "41d7e0315064849a",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "ebdf8e53c589f083",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "paper_account",
+        "x": 680,
+        "y": 1420,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d91479793c43b6f9",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "delete more than one week",
+        "func": "let d = Date.now()\nd = (d - 604800000) \nlet sql = \"delete from balances where unixtime < \" +d\nmsg.topic = sql\nnode.warn(sql)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 1400,
+        "wires": [
+            [
+                "99887574929be119",
+                "41d7e0315064849a"
+            ]
+        ]
+    },
+    {
+        "id": "ed7d0a8916809f1f",
+        "type": "comment",
+        "z": "0b0569b823a4a9b3",
+        "name": "Optionally, make a copy of the balances data and store in an old balance table.",
+        "info": "",
+        "x": 320,
+        "y": 1480,
+        "wires": []
+    },
+    {
+        "id": "10a1c991892c4d85",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "245284f91b282761",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "live_account",
+        "x": 610,
+        "y": 1600,
+        "wires": [
+            [
+                "529d4ae967c0ca73"
+            ]
+        ]
+    },
+    {
+        "id": "50b272407b8c1e1e",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "ebdf8e53c589f083",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "paper_account",
+        "x": 620,
+        "y": 1640,
+        "wires": [
+            [
+                "eade74b319d34089"
+            ]
+        ]
+    },
+    {
+        "id": "73bf0a8223409aa1",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "select all from balances",
+        "func": "let d = Date.now()\nd = (d - 604800000) \nlet sql = \"select * from balances limit 200\"\n\nmsg.topic = sql\nnode.warn(sql)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 1620,
+        "wires": [
+            [
+                "10a1c991892c4d85",
+                "50b272407b8c1e1e"
+            ]
+        ]
+    },
+    {
+        "id": "529d4ae967c0ca73",
+        "type": "split",
+        "z": "0b0569b823a4a9b3",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 770,
+        "y": 1600,
+        "wires": [
+            [
+                "e6c0e687db45a320"
+            ]
+        ]
+    },
+    {
+        "id": "eade74b319d34089",
+        "type": "split",
+        "z": "0b0569b823a4a9b3",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 770,
+        "y": 1640,
+        "wires": [
+            [
+                "1a59ed1209d221a4"
+            ]
+        ]
+    },
+    {
+        "id": "06dc5ac9e6a712c4",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "insert into balances_old",
+        "func": "\nlet unixtime = msg.payload[\"unixtime\"]\nlet balance = msg.payload[\"balance\"]\n//node.warn(\"Balance: \" +balance) \n\nlet sql = \"insert into balances_old (unixtime, balance) values ('\" +unixtime+ \"','\" +balance+ \"')\"\nmsg.topic = sql\nnode.warn(sql)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1130,
+        "y": 1640,
+        "wires": [
+            [
+                "4e0d8505c9d64745"
+            ]
+        ]
+    },
+    {
+        "id": "4e0d8505c9d64745",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "ebdf8e53c589f083",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "paper_account",
+        "x": 1340,
+        "y": 1640,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "02609e6f0c8c3e15",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "insert into balances_old",
+        "func": "\nlet unixtime = msg.payload[\"unixtime\"]\nlet balance = msg.payload[\"balance\"]\n//node.warn(\"Balance: \" +balance) \n\nlet sql = \"insert into balances_old (unixtime, balance) values ('\" +unixtime+ \"','\" +balance+ \"')\"\nmsg.topic = sql\nnode.warn(sql)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1130,
+        "y": 1600,
+        "wires": [
+            [
+                "3a5acada8157be6f"
+            ]
+        ]
+    },
+    {
+        "id": "3a5acada8157be6f",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "245284f91b282761",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "live_account",
+        "x": 1330,
+        "y": 1600,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e6c0e687db45a320",
+        "type": "delay",
+        "z": "0b0569b823a4a9b3",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 910,
+        "y": 1600,
+        "wires": [
+            [
+                "02609e6f0c8c3e15"
+            ]
+        ]
+    },
+    {
+        "id": "696dbf527d89c65f",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "Create balances_old table",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "create table IF NOT EXISTS balances_old  (unixtime INTEGER PRIMARY KEY, balance REAL)",
+        "x": 170,
+        "y": 1540,
+        "wires": [
+            [
+                "cfea40b5e01b217b",
+                "8a9edca1a5d60a6d"
+            ]
+        ]
+    },
+    {
+        "id": "cfea40b5e01b217b",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "245284f91b282761",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "live_account",
+        "x": 410,
+        "y": 1520,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8a9edca1a5d60a6d",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "ebdf8e53c589f083",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "paper_account",
+        "x": 420,
+        "y": 1560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "de5366eae2f4cdad",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "drop balances_old table",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "drop table balances_old",
+        "x": 180,
+        "y": 1880,
+        "wires": [
+            [
+                "73e1b638ae9f4ff1",
+                "f35f43b6530c2181"
+            ]
+        ]
+    },
+    {
+        "id": "73e1b638ae9f4ff1",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "245284f91b282761",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "live_account",
+        "x": 410,
+        "y": 1860,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f35f43b6530c2181",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "ebdf8e53c589f083",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "paper_account",
+        "x": 420,
+        "y": 1900,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5bf54fb37177a655",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "get count from balances_old",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "select count(*) from balances_old",
+        "x": 200,
+        "y": 1780,
+        "wires": [
+            [
+                "ddef1f2373c7464c",
+                "32a2b92419fdb358"
+            ]
+        ]
+    },
+    {
+        "id": "ddef1f2373c7464c",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "245284f91b282761",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "live_account",
+        "x": 430,
+        "y": 1760,
+        "wires": [
+            [
+                "22fcd00a2c3177c5"
+            ]
+        ]
+    },
+    {
+        "id": "32a2b92419fdb358",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "ebdf8e53c589f083",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "paper_account",
+        "x": 440,
+        "y": 1800,
+        "wires": [
+            [
+                "22fcd00a2c3177c5"
+            ]
+        ]
+    },
+    {
+        "id": "22fcd00a2c3177c5",
+        "type": "debug",
+        "z": "0b0569b823a4a9b3",
+        "name": "debug 181",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 1780,
+        "wires": []
+    },
+    {
+        "id": "f680f547daea011a",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "get count from balances",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "select count(*) from balances",
+        "x": 930,
+        "y": 1780,
+        "wires": [
+            [
+                "d0605f5cb4ef316e",
+                "2ccaa37ed54c6e01"
+            ]
+        ]
+    },
+    {
+        "id": "d0605f5cb4ef316e",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "245284f91b282761",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "live_account",
+        "x": 1170,
+        "y": 1760,
+        "wires": [
+            [
+                "0add9651eb150a02"
+            ]
+        ]
+    },
+    {
+        "id": "2ccaa37ed54c6e01",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "ebdf8e53c589f083",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "paper_account",
+        "x": 1180,
+        "y": 1800,
+        "wires": [
+            [
+                "0add9651eb150a02"
+            ]
+        ]
+    },
+    {
+        "id": "0add9651eb150a02",
+        "type": "debug",
+        "z": "0b0569b823a4a9b3",
+        "name": "debug 182",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1350,
+        "y": 1780,
+        "wires": []
+    },
+    {
+        "id": "5caf5f8f9c97d5b4",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "Every miniute",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 180,
+        "y": 1100,
+        "wires": [
+            [
+                "c9ed13ca2c4ec45a",
+                "0bcb2e15e5035c33"
+            ]
+        ]
+    },
+    {
+        "id": "c9ed13ca2c4ec45a",
+        "type": "alpaca-account-query",
+        "z": "0b0569b823a4a9b3",
+        "conf": "0c86a5f06a42b505",
+        "x": 400,
+        "y": 1080,
+        "wires": [
+            [
+                "513fe0ada3684483"
+            ]
+        ]
+    },
+    {
+        "id": "513fe0ada3684483",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "Insert into balances table",
+        "func": "var acct = \"balances\"\ndt = new Date();\nux = Math.floor(Date.now() / 1000)\nvar balance = msg.payload.equity;\n\ntemp = \"replace into \" +acct+ \" (unixtime, balance) values ('\" +ux+ \"', '\" +balance+ \"')\"\nmsg.topic = temp;\n//node.warn(msg.topic)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 650,
+        "y": 1080,
+        "wires": [
+            [
+                "0b13455287c89199"
+            ]
+        ]
+    },
+    {
+        "id": "85dbc7a2cc9c2aaf",
+        "type": "debug",
+        "z": "0b0569b823a4a9b3",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1050,
+        "y": 1080,
+        "wires": []
+    },
+    {
+        "id": "9f5efdd6c12e9df7",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "Daily at Midnight",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 00 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 170,
+        "y": 1240,
+        "wires": [
+            [
+                "ed780d87253fb2b9",
+                "89640acb949ef293"
+            ]
+        ]
+    },
+    {
+        "id": "ed780d87253fb2b9",
+        "type": "alpaca-account-query",
+        "z": "0b0569b823a4a9b3",
+        "conf": "0c86a5f06a42b505",
+        "x": 400,
+        "y": 1220,
+        "wires": [
+            [
+                "c473eb4e7073d7ed"
+            ]
+        ]
+    },
+    {
+        "id": "c473eb4e7073d7ed",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "Insert into daily balances table",
+        "func": "let acct = \"daily_balances\"\nlet dt = new Date();\nlet ux = Math.floor(Date.now() / 1000)\nlet balance = msg.payload.equity;\nlet temp = ''\ntemp = \"replace into \" +acct+ \" (unixtime, balance) values ('\" +ux+ \"', '\" +balance+ \"')\"\nmsg.topic = temp;\n//node.warn(msg.topic)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 650,
+        "y": 1220,
+        "wires": [
+            [
+                "496db2343553389e"
+            ]
+        ]
+    },
+    {
+        "id": "1c28775c13c56a98",
+        "type": "comment",
+        "z": "0b0569b823a4a9b3",
+        "name": "Store account balances to sqlite tables. ",
+        "info": "",
+        "x": 210,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "0bcb2e15e5035c33",
+        "type": "alpaca-account-query",
+        "z": "0b0569b823a4a9b3",
+        "conf": "e535f42f1df1b25f",
+        "x": 400,
+        "y": 1120,
+        "wires": [
+            [
+                "7e6767795124c76e"
+            ]
+        ]
+    },
+    {
+        "id": "7e6767795124c76e",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "Insert into balances table",
+        "func": "var acct = \"balances\"\ndt = new Date();\nux = Math.floor(Date.now() / 1000)\nvar balance = msg.payload.equity;\n\ntemp = \"replace into \" +acct+ \" (unixtime, balance) values ('\" +ux+ \"', '\" +balance+ \"')\"\nmsg.topic = temp;\n//node.warn(msg.topic)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 650,
+        "y": 1120,
+        "wires": [
+            [
+                "450c23f05c44ad77"
+            ]
+        ]
+    },
+    {
+        "id": "89ffb71544244515",
+        "type": "debug",
+        "z": "0b0569b823a4a9b3",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1050,
+        "y": 1120,
+        "wires": []
+    },
+    {
+        "id": "89640acb949ef293",
+        "type": "alpaca-account-query",
+        "z": "0b0569b823a4a9b3",
+        "conf": "e535f42f1df1b25f",
+        "x": 400,
+        "y": 1260,
+        "wires": [
+            [
+                "febd05dd3110a449"
+            ]
+        ]
+    },
+    {
+        "id": "febd05dd3110a449",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "Insert into daily balances table",
+        "func": "let acct = \"daily_balances\"\nlet dt = new Date();\nlet ux = Math.floor(Date.now() / 1000)\nlet balance = msg.payload.equity;\nlet temp = ''\n\ntemp = \"replace into \" +acct+ \" (unixtime, balance) values ('\" +ux+ \"', '\" +balance+ \"')\"\nmsg.topic = temp;\n//node.warn(msg.topic)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 650,
+        "y": 1260,
+        "wires": [
+            [
+                "e0af8d59968b84f1"
+            ]
+        ]
+    },
+    {
+        "id": "92a5d153295ac447",
+        "type": "debug",
+        "z": "0b0569b823a4a9b3",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1050,
+        "y": 1220,
+        "wires": []
+    },
+    {
+        "id": "cb443289be1e51db",
+        "type": "debug",
+        "z": "0b0569b823a4a9b3",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1050,
+        "y": 1260,
+        "wires": []
+    },
+    {
+        "id": "0b13455287c89199",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "245284f91b282761",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "live_account",
+        "x": 870,
+        "y": 1080,
+        "wires": [
+            [
+                "85dbc7a2cc9c2aaf"
+            ]
+        ]
+    },
+    {
+        "id": "450c23f05c44ad77",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "ebdf8e53c589f083",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "paper_account",
+        "x": 880,
+        "y": 1120,
+        "wires": [
+            [
+                "89ffb71544244515"
+            ]
+        ]
+    },
+    {
+        "id": "496db2343553389e",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "245284f91b282761",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "live_account",
+        "x": 870,
+        "y": 1220,
+        "wires": [
+            [
+                "92a5d153295ac447"
+            ]
+        ]
+    },
+    {
+        "id": "e0af8d59968b84f1",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "ebdf8e53c589f083",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "paper_account",
+        "x": 880,
+        "y": 1260,
+        "wires": [
+            [
+                "cb443289be1e51db"
+            ]
+        ]
+    },
+    {
+        "id": "d397c90ab9393845",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "display table contents",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 340,
+        "y": 2140,
+        "wires": [
+            [
+                "2657c717bbb54626"
+            ]
+        ]
+    },
+    {
+        "id": "2657c717bbb54626",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "select query",
+        "func": "symbol = msg.payload\nsql = \"select * from watchlist\"\nnode.warn(sql)\nmsg.topic = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 540,
+        "y": 2140,
+        "wires": [
+            [
+                "ed9704456a4ae110"
+            ]
+        ]
+    },
+    {
+        "id": "d7f8ab8fef5495b0",
+        "type": "debug",
+        "z": "0b0569b823a4a9b3",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 850,
+        "y": 2140,
+        "wires": []
+    },
+    {
+        "id": "e31a6e0b6badab64",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "calculate changes",
+        "func": "symbol = msg.payload.symbol\nsql = \"update watchlist set change24h =  (price24h - closing), \"\nsql += \"change7d = (closing - price7d) where symbol = '\" +symbol+ \"'\" \n//node.warn(sql)\nmsg.topic = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1130,
+        "y": 2380,
+        "wires": [
+            [
+                "bf9b8920bb42ccab"
+            ]
+        ]
+    },
+    {
+        "id": "235e5e2cf6d0a0c5",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "calculate pct changes",
+        "func": "symbol = msg.payload.symbol\nsql = \"update watchlist set pct24 =  ((change24h / closing)) * 100, \"\nsql += \"pct7d = ((change7d / closing)) * 100 where symbol = '\" +symbol+ \"'\" \n//node.warn(sql)\nmsg.topic = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1320,
+        "y": 2440,
+        "wires": [
+            [
+                "1a0a145a7bd7d049"
+            ]
+        ]
+    },
+    {
+        "id": "a1654599a123aa8f",
+        "type": "delay",
+        "z": "0b0569b823a4a9b3",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1120,
+        "y": 2440,
+        "wires": [
+            [
+                "235e5e2cf6d0a0c5"
+            ]
+        ]
+    },
+    {
+        "id": "88be52051ece5947",
+        "type": "comment",
+        "z": "0b0569b823a4a9b3",
+        "name": "Watchlist",
+        "info": "",
+        "x": 100,
+        "y": 2100,
+        "wires": []
+    },
+    {
+        "id": "6ed98fc74be6be83",
+        "type": "comment",
+        "z": "0b0569b823a4a9b3",
+        "name": "Markets",
+        "info": "",
+        "x": 120,
+        "y": 2520,
+        "wires": []
+    },
+    {
+        "id": "897f3a84ecb97249",
+        "type": "polygon-last-trade-v3",
+        "z": "0b0569b823a4a9b3",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "x": 980,
+        "y": 2220,
+        "wires": [
+            [
+                "c0b9973158af9fcc"
+            ]
+        ]
+    },
+    {
+        "id": "5e12af3dd5a71a68",
+        "type": "function-npm",
+        "z": "0b0569b823a4a9b3",
+        "name": "symbol",
+        "func": "symbol = msg.payload.symbol\ncnt = 1\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: cnt,\n}\n\nmsg.topic = symbol\n//node.warn(msg.symbol)\n//node.warn(msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 780,
+        "y": 2220,
+        "wires": [
+            [
+                "897f3a84ecb97249"
+            ]
+        ]
+    },
+    {
+        "id": "b30829425b4aaed9",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "update closing at 23:00",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 23 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 170,
+        "y": 2220,
+        "wires": [
+            [
+                "2958d675fbaa1c7c"
+            ]
+        ]
+    },
+    {
+        "id": "2958d675fbaa1c7c",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "select query",
+        "func": "symbol = msg.payload\nsql = \"select symbol from watchlist\"\n//node.warn(sql)\nmsg.topic = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 2220,
+        "wires": [
+            [
+                "5131b3af2030826e"
+            ]
+        ]
+    },
+    {
+        "id": "6762b217f11747f3",
+        "type": "split",
+        "z": "0b0569b823a4a9b3",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 650,
+        "y": 2220,
+        "wires": [
+            [
+                "5e12af3dd5a71a68"
+            ]
+        ]
+    },
+    {
+        "id": "c0b9973158af9fcc",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "update query",
+        "func": "let price = 0\n\nfor (item of msg.payload.results) {\n    price = item.price;\n}\n\nticker = msg.topic\n//node.warn(ticker)\nsql = \"update watchlist set closing = \" +price+ \" where symbol = '\" +ticker+ \"' \"\n\n\n\nnode.warn(sql)\nmsg.topic = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1170,
+        "y": 2220,
+        "wires": [
+            [
+                "faf0827b023c18d9"
+            ]
+        ]
+    },
+    {
+        "id": "92dcdaf21042c779",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "Update 7d Price at 6:00",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 06 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 170,
+        "y": 2280,
+        "wires": [
+            [
+                "5e3209d4ed1f9e4f"
+            ]
+        ]
+    },
+    {
+        "id": "fbab7d240751dd7b",
+        "type": "polygon-trades-min-agg-rest",
+        "z": "0b0569b823a4a9b3",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "multiplier": 1,
+        "timespan": "minute",
+        "from": "",
+        "to": "",
+        "x": 1020,
+        "y": 2280,
+        "wires": [
+            [
+                "c1f184029bfc0bd1"
+            ]
+        ]
+    },
+    {
+        "id": "5e3209d4ed1f9e4f",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "select query",
+        "func": "symbol = msg.payload\nsql = \"select symbol from watchlist\"\nnode.warn(sql)\nmsg.topic = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 2280,
+        "wires": [
+            [
+                "16bf98558772ab3a"
+            ]
+        ]
+    },
+    {
+        "id": "17d993e5586af2bf",
+        "type": "split",
+        "z": "0b0569b823a4a9b3",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 650,
+        "y": 2280,
+        "wires": [
+            [
+                "8729f466ae76b16a"
+            ]
+        ]
+    },
+    {
+        "id": "cbf150d81460bb97",
+        "type": "polygon-last-trade-v3",
+        "z": "0b0569b823a4a9b3",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "x": 1120,
+        "y": 2340,
+        "wires": [
+            [
+                "75d070cfcfc2b8bd"
+            ]
+        ]
+    },
+    {
+        "id": "7751ac4b48d41faa",
+        "type": "function-npm",
+        "z": "0b0569b823a4a9b3",
+        "name": "SPY",
+        "func": "symbol = msg.payload.symbol\ncnt = 1\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: cnt,\n}\n\nmsg.topic = symbol\n//node.warn(msg.symbol)\n//node.warn(msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 950,
+        "y": 2340,
+        "wires": [
+            [
+                "cbf150d81460bb97",
+                "e31a6e0b6badab64",
+                "a1654599a123aa8f"
+            ]
+        ]
+    },
+    {
+        "id": "a479b72c478a3a30",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "update price 24h, calculate changes each Minute",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 250,
+        "y": 2340,
+        "wires": [
+            [
+                "f90bfb3bd6ea1aad"
+            ]
+        ]
+    },
+    {
+        "id": "f90bfb3bd6ea1aad",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "select query",
+        "func": "symbol = msg.payload\nsql = \"select symbol from watchlist\"\n//node.warn(sql)\nmsg.topic = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 550,
+        "y": 2340,
+        "wires": [
+            [
+                "db13dfa22eb0a2b1"
+            ]
+        ]
+    },
+    {
+        "id": "63f42c7aeffe2e0b",
+        "type": "split",
+        "z": "0b0569b823a4a9b3",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 830,
+        "y": 2340,
+        "wires": [
+            [
+                "7751ac4b48d41faa"
+            ]
+        ]
+    },
+    {
+        "id": "75d070cfcfc2b8bd",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "update query",
+        "func": "let price = 0\n\nfor (item of msg.payload.results) {\n    price = item.price;\n}\n\nticker = msg.topic\n//node.warn(ticker)\nsql = \"update watchlist set price24h = \" +price+ \" where symbol = '\" +ticker+ \"' \"\n\n\n\n//node.warn(sql)\nmsg.topic = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1310,
+        "y": 2340,
+        "wires": [
+            [
+                "0eb956e431508137"
+            ]
+        ]
+    },
+    {
+        "id": "8729f466ae76b16a",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "",
+        "func": "let symbol = ''\nsymbol = msg.payload.symbol\nnode.warn(\"Symbol: \" +symbol)\n\n\nvar date = new Date();\n\n// this gets the day before yesterday\ndate.setDate(date.getDate() - 7);\n\nconst fromDt = date\n\n// toDt is today\nconst toDt = new Date(); // Today\n\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    from: fromDt.toLocaleDateString('en-CA'),\n    to: toDt.toLocaleDateString('en-CA'),\n    symbol: symbol\n}\n\nmsg.timespan = 'day';\nmsg.topic = symbol\n\nnode.warn(msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 800,
+        "y": 2280,
+        "wires": [
+            [
+                "fbab7d240751dd7b"
+            ]
+        ]
+    },
+    {
+        "id": "c1f184029bfc0bd1",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "get first value",
+        "func": "const account = { name: 'One Minute Bars', data: [] };\n\nfor (const item of msg.payload.results) {\n    const { c, t } = item;\n    const dateEpoch = +(new Date(t));\n\n//    account.data.push([ dateEpoch, +c ]);\n    account.data.push([ c ]);\n\n    \n}\n\nlet price = account.data[0];\n\nprice = price.toString()\nnode.warn(price)\n\n\nticker = msg.topic\n//node.warn(ticker)\nsql = \"update watchlist set price7d = \" +price+ \" where symbol = '\" +ticker+ \"' \"\n\n//node.warn(sql)\nmsg.topic = sql\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1240,
+        "y": 2280,
+        "wires": [
+            [
+                "44be612075750336"
+            ]
+        ]
+    },
+    {
+        "id": "6b69d7f53bd20b69",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "display table contents",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 780,
+        "y": 2520,
+        "wires": [
+            [
+                "20b93bda79ae2d38"
+            ]
+        ]
+    },
+    {
+        "id": "20b93bda79ae2d38",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "select query",
+        "func": "symbol = msg.payload\nsql = \"select * from markets\"\nnode.warn(sql)\nmsg.topic = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 980,
+        "y": 2520,
+        "wires": [
+            [
+                "50a0d74256597c47"
+            ]
+        ]
+    },
+    {
+        "id": "23c7136e77326495",
+        "type": "debug",
+        "z": "0b0569b823a4a9b3",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1290,
+        "y": 2520,
+        "wires": []
+    },
+    {
+        "id": "e3a17b913793bd47",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "calculate changes",
+        "func": "symbol = msg.payload.symbol\nsql = \"update markets set change24h =  (price24h - closing), \"\nsql += \"change7d = (closing - price7d) where symbol = '\" +symbol+ \"'\" \n//node.warn(sql)\nmsg.topic = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1110,
+        "y": 2740,
+        "wires": [
+            [
+                "c1d72b6be37c68c7"
+            ]
+        ]
+    },
+    {
+        "id": "37765a2b5db3b3c3",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "calculate pct changes",
+        "func": "symbol = msg.payload.symbol\nsql = \"update markets set pct24 =  ((change24h / closing) * 100), \"\nsql += \"pct7d = ((change7d / closing) * 100) where symbol = '\" +symbol+ \"'\" \n//node.warn(sql)\nmsg.topic = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1300,
+        "y": 2800,
+        "wires": [
+            [
+                "679022ae1957337d"
+            ]
+        ]
+    },
+    {
+        "id": "85938756c04b89eb",
+        "type": "delay",
+        "z": "0b0569b823a4a9b3",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1100,
+        "y": 2800,
+        "wires": [
+            [
+                "37765a2b5db3b3c3"
+            ]
+        ]
+    },
+    {
+        "id": "532d7c1bf222a9fa",
+        "type": "polygon-last-trade-v3",
+        "z": "0b0569b823a4a9b3",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "x": 960,
+        "y": 2580,
+        "wires": [
+            [
+                "9e246fc8b30d9930"
+            ]
+        ]
+    },
+    {
+        "id": "63f4595e126bda3e",
+        "type": "function-npm",
+        "z": "0b0569b823a4a9b3",
+        "name": "SPY",
+        "func": "symbol = msg.payload.symbol\ncnt = 1\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: cnt,\n}\n\nmsg.topic = symbol\n//node.warn(msg.symbol)\n//node.warn(msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 790,
+        "y": 2580,
+        "wires": [
+            [
+                "532d7c1bf222a9fa"
+            ]
+        ]
+    },
+    {
+        "id": "82d9503c89a5907a",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "update closing at 23:00",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 23 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 170,
+        "y": 2580,
+        "wires": [
+            [
+                "50fce0c5edb5570e"
+            ]
+        ]
+    },
+    {
+        "id": "50fce0c5edb5570e",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "select query",
+        "func": "symbol = msg.payload\nsql = \"select symbol from markets\"\n//node.warn(sql)\nmsg.topic = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 2580,
+        "wires": [
+            [
+                "976c70d6b5c86fae"
+            ]
+        ]
+    },
+    {
+        "id": "bccfd91c11bf5bca",
+        "type": "split",
+        "z": "0b0569b823a4a9b3",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 670,
+        "y": 2580,
+        "wires": [
+            [
+                "63f4595e126bda3e"
+            ]
+        ]
+    },
+    {
+        "id": "9e246fc8b30d9930",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "update query",
+        "func": "let price = 0\n\nfor (item of msg.payload.results) {\n    price = item.price;\n}\n\nticker = msg.topic\n//node.warn(ticker)\nsql = \"update markets set closing = \" +price+ \" where symbol = '\" +ticker+ \"' \"\n\n\n\nnode.warn(sql)\nmsg.topic = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1150,
+        "y": 2580,
+        "wires": [
+            [
+                "ccfddacdb181960e"
+            ]
+        ]
+    },
+    {
+        "id": "d71b6f8fc75fc4ac",
+        "type": "polygon-trades-min-agg-rest",
+        "z": "0b0569b823a4a9b3",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "multiplier": 1,
+        "timespan": "minute",
+        "from": "",
+        "to": "",
+        "x": 1020,
+        "y": 2640,
+        "wires": [
+            [
+                "01e9c5cbb7b8803b"
+            ]
+        ]
+    },
+    {
+        "id": "03789cbb174ca558",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "select query",
+        "func": "symbol = msg.payload\nsql = \"select symbol from markets\"\nnode.warn(sql)\nmsg.topic = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 2640,
+        "wires": [
+            [
+                "3b8beccbf06340bb"
+            ]
+        ]
+    },
+    {
+        "id": "fd6f2f5a79a52fc1",
+        "type": "split",
+        "z": "0b0569b823a4a9b3",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 650,
+        "y": 2640,
+        "wires": [
+            [
+                "f01a26c06b32b5a7"
+            ]
+        ]
+    },
+    {
+        "id": "ae8039789d34c7df",
+        "type": "polygon-last-trade-v3",
+        "z": "0b0569b823a4a9b3",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "x": 1100,
+        "y": 2700,
+        "wires": [
+            [
+                "c6f7c8aa3e486a02"
+            ]
+        ]
+    },
+    {
+        "id": "5b46eac9b4c643e2",
+        "type": "function-npm",
+        "z": "0b0569b823a4a9b3",
+        "name": "SPY",
+        "func": "symbol = msg.payload.symbol\ncnt = 1\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: cnt,\n}\n\nmsg.topic = symbol\n//node.warn(msg.symbol)\n//node.warn(msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 930,
+        "y": 2700,
+        "wires": [
+            [
+                "ae8039789d34c7df",
+                "e3a17b913793bd47",
+                "85938756c04b89eb"
+            ]
+        ]
+    },
+    {
+        "id": "912442b30fc8ca5b",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "select query",
+        "func": "symbol = msg.payload\nsql = \"select symbol from markets\"\n//node.warn(sql)\nmsg.topic = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 530,
+        "y": 2700,
+        "wires": [
+            [
+                "8aae7809af982f4a"
+            ]
+        ]
+    },
+    {
+        "id": "b1faa494a70eaf31",
+        "type": "split",
+        "z": "0b0569b823a4a9b3",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 810,
+        "y": 2700,
+        "wires": [
+            [
+                "5b46eac9b4c643e2"
+            ]
+        ]
+    },
+    {
+        "id": "c6f7c8aa3e486a02",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "update query",
+        "func": "let price = 0\n\nfor (item of msg.payload.results) {\n    price = item.price;\n}\n\nticker = msg.topic\n//node.warn(ticker)\nsql = \"update markets set price24h = \" +price+ \" where symbol = '\" +ticker+ \"' \"\n\n\n\n//node.warn(sql)\nmsg.topic = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1290,
+        "y": 2700,
+        "wires": [
+            [
+                "282b625ade4464ef"
+            ]
+        ]
+    },
+    {
+        "id": "f01a26c06b32b5a7",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "",
+        "func": "let symbol = ''\nsymbol = msg.payload.symbol\nnode.warn(\"Symbol: \" +symbol)\n\n\nvar date = new Date();\n\n// this gets the day before yesterday\ndate.setDate(date.getDate() - 7);\n\nconst fromDt = date\n\n// toDt is today\nconst toDt = new Date(); // Today\n\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    from: fromDt.toLocaleDateString('en-CA'),\n    to: toDt.toLocaleDateString('en-CA'),\n    symbol: symbol\n}\n\nmsg.timespan = 'day';\nmsg.topic = symbol\n\nnode.warn(msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 800,
+        "y": 2640,
+        "wires": [
+            [
+                "d71b6f8fc75fc4ac"
+            ]
+        ]
+    },
+    {
+        "id": "01e9c5cbb7b8803b",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "get first value",
+        "func": "const account = { name: 'One Minute Bars', data: [] };\n\nfor (const item of msg.payload.results) {\n    const { c, t } = item;\n    const dateEpoch = +(new Date(t));\n\n//    account.data.push([ dateEpoch, +c ]);\n    account.data.push([ c ]);\n\n    \n}\n\nlet price = account.data[0];\n\nprice = price.toString()\nnode.warn(price)\n\n\nticker = msg.topic\n//node.warn(ticker)\nsql = \"update markets set price7d = \" +price+ \" where symbol = '\" +ticker+ \"' \"\n\n//node.warn(sql)\nmsg.topic = sql\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1240,
+        "y": 2640,
+        "wires": [
+            [
+                "38f62015657bfc07"
+            ]
+        ]
+    },
+    {
+        "id": "50a0d74256597c47",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "9c897ceae3d2854f",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "markets",
+        "x": 1140,
+        "y": 2520,
+        "wires": [
+            [
+                "23c7136e77326495"
+            ]
+        ]
+    },
+    {
+        "id": "976c70d6b5c86fae",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "9c897ceae3d2854f",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "markets",
+        "x": 540,
+        "y": 2580,
+        "wires": [
+            [
+                "bccfd91c11bf5bca"
+            ]
+        ]
+    },
+    {
+        "id": "ccfddacdb181960e",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "9c897ceae3d2854f",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "markets",
+        "x": 1300,
+        "y": 2580,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "38f62015657bfc07",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "9c897ceae3d2854f",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "markets",
+        "x": 1400,
+        "y": 2640,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3b8beccbf06340bb",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "9c897ceae3d2854f",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "markets",
+        "x": 520,
+        "y": 2640,
+        "wires": [
+            [
+                "fd6f2f5a79a52fc1"
+            ]
+        ]
+    },
+    {
+        "id": "8aae7809af982f4a",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "9c897ceae3d2854f",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "markets",
+        "x": 680,
+        "y": 2700,
+        "wires": [
+            [
+                "b1faa494a70eaf31"
+            ]
+        ]
+    },
+    {
+        "id": "282b625ade4464ef",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "9c897ceae3d2854f",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "markets",
+        "x": 1440,
+        "y": 2700,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c1d72b6be37c68c7",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "9c897ceae3d2854f",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "markets",
+        "x": 1280,
+        "y": 2740,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "679022ae1957337d",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "9c897ceae3d2854f",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "markets",
+        "x": 1491.4285888671875,
+        "y": 2797.1429443359375,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ffe7c1a766f43ce2",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "Update 7d Price at 6:00",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 06 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 170,
+        "y": 2640,
+        "wires": [
+            [
+                "03789cbb174ca558"
+            ]
+        ]
+    },
+    {
+        "id": "568b42ffeda34aad",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "update price 24h, calculate changes each Minute",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 250,
+        "y": 2700,
+        "wires": [
+            [
+                "912442b30fc8ca5b"
+            ]
+        ]
+    },
+    {
+        "id": "faf0827b023c18d9",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "7b31b45c69655be9",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "watchlist",
+        "x": 1320,
+        "y": 2220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "44be612075750336",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "7b31b45c69655be9",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "watchlist",
+        "x": 1400,
+        "y": 2280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0eb956e431508137",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "7b31b45c69655be9",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "watchlist",
+        "x": 1460,
+        "y": 2340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "bf9b8920bb42ccab",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "7b31b45c69655be9",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "watchlist",
+        "x": 1300,
+        "y": 2380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1a0a145a7bd7d049",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "7b31b45c69655be9",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "watchlist",
+        "x": 1500,
+        "y": 2440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ed9704456a4ae110",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "7b31b45c69655be9",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "watchlist",
+        "x": 695,
+        "y": 2139.3333129882812,
+        "wires": [
+            [
+                "d7f8ab8fef5495b0"
+            ]
+        ]
+    },
+    {
+        "id": "5131b3af2030826e",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "7b31b45c69655be9",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "watchlist",
+        "x": 520,
+        "y": 2220,
+        "wires": [
+            [
+                "6762b217f11747f3"
+            ]
+        ]
+    },
+    {
+        "id": "16bf98558772ab3a",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "7b31b45c69655be9",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "watchlist",
+        "x": 520,
+        "y": 2280,
+        "wires": [
+            [
+                "17d993e5586af2bf"
+            ]
+        ]
+    },
+    {
+        "id": "db13dfa22eb0a2b1",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "7b31b45c69655be9",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "watchlist",
+        "x": 700,
+        "y": 2340,
+        "wires": [
+            [
+                "63f42c7aeffe2e0b"
+            ]
+        ]
+    },
+    {
+        "id": "0d613c7685d54d76",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "display table contents",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 180,
+        "y": 2980,
+        "wires": [
+            [
+                "8256516edfd4ba5c"
+            ]
+        ]
+    },
+    {
+        "id": "8256516edfd4ba5c",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "select query",
+        "func": "let symbol = msg.payload\nlet sql = \"select * from profile\"\nnode.warn(sql)\nmsg.topic = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 2980,
+        "wires": [
+            [
+                "e1426bf29654b1d0"
+            ]
+        ]
+    },
+    {
+        "id": "69d642362151cf89",
+        "type": "debug",
+        "z": "0b0569b823a4a9b3",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 2980,
+        "wires": []
+    },
+    {
+        "id": "6567cdd1c4d34fe7",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "Create sqlite \"profile\"",
+        "func": "var acct = \"profile\"\nmsg.topic= \"create table IF NOT EXISTS \" +acct+ \" (live_key TEXT, live_secret_key TEXT,paper_key TEXT, paper_secret_key TEXT)\"\nnode.warn(msg.topic)\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 160,
+        "y": 2920,
+        "wires": [
+            [
+                "af893d003d52e4ee"
+            ]
+        ]
+    },
+    {
+        "id": "af893d003d52e4ee",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "ebdf8e53c589f083",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "profile",
+        "x": 410,
+        "y": 2920,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e1426bf29654b1d0",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "ebdf8e53c589f083",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "profile",
+        "x": 510,
+        "y": 2980,
+        "wires": [
+            [
+                "69d642362151cf89"
+            ]
+        ]
+    },
+    {
+        "id": "2fbf456dccc2ce86",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "245284f91b282761",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "live_account",
+        "x": 410,
+        "y": 900,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3df37de084215502",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "Create sqlite watchlist table",
+        "func": "sql = \"create table IF NOT EXISTS watchlist (symbol TEXT PRIMARY KEY,name TEXT,closing REAL\"\nsql += \",price24h REAL,price7d REAL, date TEXT,change24h REAL,change7d REAL,\"\nsql += \"marketcap REAL,volume REAL,pct24 REAL,pct7d REAL)\" ;\nmsg.topic = sql\nnode.warn(msg.topic)\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 2100,
+        "wires": [
+            [
+                "009d23a64ad6c5ae"
+            ]
+        ]
+    },
+    {
+        "id": "009d23a64ad6c5ae",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "7b31b45c69655be9",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "watchlist",
+        "x": 580,
+        "y": 2100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c7e38637157da62e",
+        "type": "function",
+        "z": "0b0569b823a4a9b3",
+        "name": "Create sqlite markets table",
+        "func": "sql = \"create table IF NOT EXISTS markets (symbol TEXT PRIMARY KEY,name TEXT,closing REAL\"\nsql += \",price24h REAL,price7d REAL, date TEXT,change24h REAL,change7d REAL,\"\nsql += \"marketcap REAL,volume REAL,pct24 REAL,pct7d REAL)\" ;\nmsg.topic = sql\nnode.warn(msg.topic)\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 2520,
+        "wires": [
+            [
+                "a30de90b23b9481d"
+            ]
+        ]
+    },
+    {
+        "id": "a30de90b23b9481d",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "9c897ceae3d2854f",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "markets",
+        "x": 560,
+        "y": 2520,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9c6a0ff16220de20",
+        "type": "comment",
+        "z": "0b0569b823a4a9b3",
+        "name": "Profile",
+        "info": "",
+        "x": 110,
+        "y": 2860,
+        "wires": []
+    },
+    {
+        "id": "3627d0e8d1d95a30",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "Create balances table",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "create table IF NOT EXISTS balances  (unixtime INTEGER PRIMARY KEY, balance REAL)",
+        "x": 180,
+        "y": 920,
+        "wires": [
+            [
+                "2fbf456dccc2ce86",
+                "f190f9ba81800fdf"
+            ]
+        ]
+    },
+    {
+        "id": "f190f9ba81800fdf",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "ebdf8e53c589f083",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "paper_account",
+        "x": 420,
+        "y": 940,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d9e70ea33f57472f",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "245284f91b282761",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "live_account",
+        "x": 910,
+        "y": 900,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "abf77f9a7680dc96",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "Create daily_balances table",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "create table IF NOT EXISTS daily_balances  (unixtime INTEGER PRIMARY KEY, balance REAL)",
+        "x": 700,
+        "y": 920,
+        "wires": [
+            [
+                "d9e70ea33f57472f",
+                "9c87b3bd0e558398"
+            ]
+        ]
+    },
+    {
+        "id": "9c87b3bd0e558398",
+        "type": "sqlite",
+        "z": "0b0569b823a4a9b3",
+        "mydb": "ebdf8e53c589f083",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "paper_account",
+        "x": 920,
+        "y": 940,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a507f0415bc7d6be",
+        "type": "comment",
+        "z": "0b0569b823a4a9b3",
+        "name": "This flow stores account balance values each minute and is used to display charts for fewer than 7 days of data. ",
+        "info": "",
+        "x": 440,
+        "y": 1020,
+        "wires": []
+    },
+    {
+        "id": "6469ff2490ac09d6",
+        "type": "comment",
+        "z": "0b0569b823a4a9b3",
+        "name": "This flow stores account balance values at the end of each day (one valae per day) and is used to display charts for more than 7 days of data. ",
+        "info": "",
+        "x": 530,
+        "y": 1180,
+        "wires": []
+    },
+    {
+        "id": "51d828658852d7d4",
+        "type": "inject",
+        "z": "0b0569b823a4a9b3",
+        "name": "Run daily at midnight",
+        "props": [],
+        "repeat": "",
+        "crontab": "00 00 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 180,
+        "y": 1400,
+        "wires": [
+            [
+                "d91479793c43b6f9"
+            ]
+        ]
+    },
+    {
+        "id": "c0bf795c6f76b2ca",
+        "type": "comment",
+        "z": "0b0569b823a4a9b3",
+        "name": "This flow deletes any balance data from the balances tables where that data is more than one week old",
+        "info": "",
+        "x": 410,
+        "y": 1340,
+        "wires": []
+    },
+    {
+        "id": "1a59ed1209d221a4",
+        "type": "delay",
+        "z": "0b0569b823a4a9b3",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 910,
+        "y": 1640,
+        "wires": [
+            [
+                "06dc5ac9e6a712c4"
+            ]
+        ]
+    },
+    {
+        "id": "f2016dce4a1ad922",
+        "type": "comment",
+        "z": "0b0569b823a4a9b3",
+        "name": "Utility flows for the balances tables",
+        "info": "",
+        "x": 180,
+        "y": 1720,
+        "wires": []
+    },
+    {
+        "id": "0932ec07bedcc187",
+        "type": "sqlitedb",
+        "db": "/data/store/algo",
+        "mode": "RWC"
+    },
+    {
+        "id": "71e93c3b4d967265",
+        "type": "sqlitedb",
+        "db": "/data/store/portfolios",
+        "mode": "RWC"
+    },
+    {
+        "id": "9e9dded94ba34522",
+        "type": "sqlitedb",
+        "db": "/data/store/algo",
+        "mode": "RWC"
+    },
+    {
+        "id": "245284f91b282761",
+        "type": "sqlitedb",
+        "db": "/data/store/live_account",
+        "mode": "RWC"
+    },
+    {
+        "id": "ebdf8e53c589f083",
+        "type": "sqlitedb",
+        "db": "/data/store/paper_account",
+        "mode": "RWC"
+    },
+    {
+        "id": "0c86a5f06a42b505",
+        "type": "alpaca-account",
+        "name": "live",
+        "keyId": "AK3KM08YWSB3QN84KQ64",
+        "paper": false
+    },
+    {
+        "id": "e535f42f1df1b25f",
+        "type": "alpaca-account",
+        "name": "paper",
+        "keyId": "PKJ2C0D69I05F8OOFZB0",
+        "paper": true
+    },
+    {
+        "id": "651f0aab10dc1632",
+        "type": "polygon-account",
+        "name": "Polygon Key"
+    },
+    {
+        "id": "9c897ceae3d2854f",
+        "type": "sqlitedb",
+        "db": "/data/store/markets",
+        "mode": "RWC"
+    },
+    {
+        "id": "7b31b45c69655be9",
+        "type": "sqlitedb",
+        "db": "/data/store/watchlist",
+        "mode": "RWC"
+    }
+]
