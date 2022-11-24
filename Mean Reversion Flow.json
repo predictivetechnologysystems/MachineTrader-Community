@@ -1,0 +1,261 @@
+[
+    {
+        "id": "89a807808799108e",
+        "type": "tab",
+        "label": "Mean Reversion Flow",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "06f459996f853331",
+        "type": "comment",
+        "z": "89a807808799108e",
+        "name": "Get moving average and current price each second",
+        "info": "",
+        "x": 210,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "b0490eed8cdb489e",
+        "type": "inject",
+        "z": "89a807808799108e",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 160,
+        "wires": [
+            [
+                "0ac2fc85dab56ed4"
+            ]
+        ]
+    },
+    {
+        "id": "0ac2fc85dab56ed4",
+        "type": "function-npm",
+        "z": "89a807808799108e",
+        "name": "Get past 100 trades",
+        "func": "let symbol = 'X:ETHUSD'\n\nlet cnt = 100 // set count here\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: cnt,\n}\n\n\n//node.warn(symbol)\n//node.warn(msg.payload)\nmsg.symbol = symbol\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 220,
+        "y": 260,
+        "wires": [
+            [
+                "6ab9c7f794e8d808"
+            ]
+        ]
+    },
+    {
+        "id": "6ab9c7f794e8d808",
+        "type": "polygon-last-trade-v3",
+        "z": "89a807808799108e",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "x": 440,
+        "y": 260,
+        "wires": [
+            [
+                "0e0cf36196279676"
+            ]
+        ]
+    },
+    {
+        "id": "1d7c0f5c53d1fcc7",
+        "type": "calculator",
+        "z": "89a807808799108e",
+        "name": "",
+        "inputMsgField": "payload",
+        "outputMsgField": "moving_avg",
+        "operation": "avg",
+        "constant": "",
+        "round": false,
+        "decimals": "0",
+        "x": 900,
+        "y": 260,
+        "wires": [
+            [
+                "799aca0ee8fa52f7"
+            ]
+        ]
+    },
+    {
+        "id": "0e0cf36196279676",
+        "type": "function",
+        "z": "89a807808799108e",
+        "name": "create array for average",
+        "func": "const prices = [];\nlet item = ''\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    prices.push(price);  \n//    node.warn(price)\n\n}\n\n//node.warn(prices)\nmsg.payload = prices\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 260,
+        "wires": [
+            [
+                "1d7c0f5c53d1fcc7"
+            ]
+        ]
+    },
+    {
+        "id": "799aca0ee8fa52f7",
+        "type": "function",
+        "z": "89a807808799108e",
+        "name": "display avg",
+        "func": "let avg = msg.moving_avg\navg = avg.toFixed(2)\nlet symbol = msg.symbol\n//node.warn(\"Ticker: \" +symbol+ \" Moving Avg: \" +avg)\nmsg.moving_avg = avg\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1070,
+        "y": 260,
+        "wires": [
+            [
+                "7883f181473a92c6"
+            ]
+        ]
+    },
+    {
+        "id": "7883f181473a92c6",
+        "type": "function-npm",
+        "z": "89a807808799108e",
+        "name": "Get last trade",
+        "func": "let symbol = 'X:ETHUSD'\n\nlet cnt = 1\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: cnt,\n}\n\n\n//node.warn(symbol)\n//node.warn(msg.payload)\nmsg.symbol = symbol\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 200,
+        "y": 360,
+        "wires": [
+            [
+                "fcd1e3384bdb1cce"
+            ]
+        ]
+    },
+    {
+        "id": "fcd1e3384bdb1cce",
+        "type": "polygon-last-trade-v3",
+        "z": "89a807808799108e",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "x": 420,
+        "y": 360,
+        "wires": [
+            [
+                "aeebf0f32e4f2bbf"
+            ]
+        ]
+    },
+    {
+        "id": "aeebf0f32e4f2bbf",
+        "type": "function",
+        "z": "89a807808799108e",
+        "name": "display diff",
+        "func": "const prices = [];\nlet item = ''\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload.results) {\n    price = item.price; // this is the price of the last trade\n\n}\n\n\nlet avg = msg.moving_avg\nlet ticker = msg.symbol\n\nlet diff = price - avg\ndiff = diff.toFixed(2)\n\nnode.warn(\"Ticker: \" + ticker + \" Current Price: \" + price + \" Avg Price: \" + avg + \" Diff: \" + diff)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 610,
+        "y": 360,
+        "wires": [
+            [
+                "347320e109fe6b89"
+            ]
+        ]
+    },
+    {
+        "id": "9d421582a6e41840",
+        "type": "loop",
+        "z": "89a807808799108e",
+        "name": "",
+        "kind": "fcnt",
+        "count": "60",
+        "initial": "1",
+        "step": "1",
+        "condition": "",
+        "conditionType": "js",
+        "when": "before",
+        "enumeration": "enum",
+        "enumerationType": "msg",
+        "limit": "",
+        "loopPayload": "loop-index",
+        "finalPayload": "final-count",
+        "x": 410,
+        "y": 460,
+        "wires": [
+            [],
+            [
+                "0ac2fc85dab56ed4"
+            ]
+        ]
+    },
+    {
+        "id": "347320e109fe6b89",
+        "type": "delay",
+        "z": "89a807808799108e",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 230,
+        "y": 460,
+        "wires": [
+            [
+                "9d421582a6e41840"
+            ]
+        ]
+    },
+    {
+        "id": "98a7c46b6c80a180",
+        "type": "comment",
+        "z": "89a807808799108e",
+        "name": "Chsnge cnt in,line 3 to modify the number of moving average lok back",
+        "info": "",
+        "x": 370,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "f145b360be8fca1a",
+        "type": "comment",
+        "z": "89a807808799108e",
+        "name": "This can be set to run every minute",
+        "info": "",
+        "x": 340,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "f0f0589e65e7e375",
+        "type": "comment",
+        "z": "89a807808799108e",
+        "name": "Optionally add a fixed loop with a pass count of 60  to run every second",
+        "info": "",
+        "x": 390,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "651f0aab10dc1632",
+        "type": "polygon-account",
+        "name": "Polygon Key"
+    }
+]
