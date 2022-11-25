@@ -1,0 +1,284 @@
+[
+    {
+        "id": "349bb064ec8cb749",
+        "type": "tab",
+        "label": "News signals",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "be247a80d97d16b9",
+        "type": "comment",
+        "z": "349bb064ec8cb749",
+        "name": " select avg(sent) from  headlines order by time_pub desc limit 100;",
+        "info": "",
+        "x": 270,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "1d1f0b6dc2517420",
+        "type": "calculator",
+        "z": "349bb064ec8cb749",
+        "name": "",
+        "inputMsgField": "payload",
+        "outputMsgField": "moving_avg",
+        "operation": "avg",
+        "constant": "",
+        "round": false,
+        "decimals": "0",
+        "x": 720,
+        "y": 180,
+        "wires": [
+            [
+                "af80a51a269fcc4f"
+            ]
+        ]
+    },
+    {
+        "id": "13073963e4e3ece7",
+        "type": "function",
+        "z": "349bb064ec8cb749",
+        "name": "create array for average",
+        "func": "const prices = [];\nlet item = 0\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload) {\n    price = item.sent;\n    prices.push(price);  \n//    node.warn(price)\n\n}\n\n//node.warn(prices)\nmsg.payload = prices\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 530,
+        "y": 180,
+        "wires": [
+            [
+                "1d1f0b6dc2517420"
+            ]
+        ]
+    },
+    {
+        "id": "af80a51a269fcc4f",
+        "type": "function",
+        "z": "349bb064ec8cb749",
+        "name": "display avg",
+        "func": "let avg = msg.moving_avg\navg = avg.toFixed(3)\nnode.warn(\" Moving Avg: \" +avg)\nmsg.moving_avg = avg\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 180,
+        "wires": [
+            [
+                "0db80aab3d52d470"
+            ]
+        ]
+    },
+    {
+        "id": "a49e882d1d08c3ae",
+        "type": "mysql",
+        "z": "349bb064ec8cb749",
+        "mydb": "f8ca5a41.3e1448",
+        "name": "news",
+        "x": 350,
+        "y": 180,
+        "wires": [
+            [
+                "13073963e4e3ece7"
+            ]
+        ]
+    },
+    {
+        "id": "2c42f913c74dae6e",
+        "type": "inject",
+        "z": "349bb064ec8cb749",
+        "name": "select sent from  headlines ",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "select sent from headlines where sent is not null order by time_pub desc limit 1000;",
+        "x": 170,
+        "y": 180,
+        "wires": [
+            [
+                "a49e882d1d08c3ae"
+            ]
+        ]
+    },
+    {
+        "id": "47aa54e50a0f837e",
+        "type": "comment",
+        "z": "349bb064ec8cb749",
+        "name": "avg sentinment for all headlines = 0.19. Sent scored between -1 and +1",
+        "info": "",
+        "x": 810,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "0db80aab3d52d470",
+        "type": "function",
+        "z": "349bb064ec8cb749",
+        "name": "relative sentiment",
+        "func": "let avg = msg.moving_avg\nlet alltime = 0.19\nlet rel = avg - alltime\nrel = rel.toFixed(3)\nnode.warn(rel)\n\nif (rel > 0 && rel < .10){\n    node.warn(\"positive\")}\n\nelse if (rel > .10){\n  node.warn(\"strongly positive\")}\n\nelse if  (rel < 0) {\n    node.warn(\"negative\")\n\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1050,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e87adddf4a462860",
+        "type": "comment",
+        "z": "349bb064ec8cb749",
+        "name": "Avg Sentiment on new headlines.  Set' look back' - approx. 1,000 news items a day",
+        "info": "",
+        "x": 350,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "38d149c07da4462e",
+        "type": "inject",
+        "z": "349bb064ec8cb749",
+        "name": "select sent from headlines with ticker",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "select sent from headlines as a, company_mentions as b where a.headline_id = b.headline_id and company_ticker = 'AAPL' order by time_pub desc limit 10;",
+        "x": 210,
+        "y": 300,
+        "wires": [
+            [
+                "c351fa7a2be70867"
+            ]
+        ]
+    },
+    {
+        "id": "cdb5ab0c92e1afda",
+        "type": "calculator",
+        "z": "349bb064ec8cb749",
+        "name": "",
+        "inputMsgField": "payload",
+        "outputMsgField": "moving_avg",
+        "operation": "avg",
+        "constant": "",
+        "round": false,
+        "decimals": "0",
+        "x": 800,
+        "y": 300,
+        "wires": [
+            [
+                "b63be9701a2a54d4"
+            ]
+        ]
+    },
+    {
+        "id": "b63be9701a2a54d4",
+        "type": "function",
+        "z": "349bb064ec8cb749",
+        "name": "display avg",
+        "func": "let avg = msg.moving_avg\navg = avg.toFixed(3)\nnode.warn(\" Moving Avg: \" +avg)\nmsg.moving_avg = avg\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 950,
+        "y": 300,
+        "wires": [
+            [
+                "a168c024493d2710"
+            ]
+        ]
+    },
+    {
+        "id": "c351fa7a2be70867",
+        "type": "mysql",
+        "z": "349bb064ec8cb749",
+        "mydb": "f8ca5a41.3e1448",
+        "name": "news",
+        "x": 430,
+        "y": 300,
+        "wires": [
+            [
+                "9170a5d6d994a65f"
+            ]
+        ]
+    },
+    {
+        "id": "a168c024493d2710",
+        "type": "function",
+        "z": "349bb064ec8cb749",
+        "name": "relative sentiment",
+        "func": "let avg = msg.moving_avg\nlet alltime = 0.19\nlet rel = avg - alltime\nrel = rel.toFixed(3)\nnode.warn(rel)\n\nif (rel > 0 && rel < .10){\n    node.warn(\"positive\")}\n\nelse if (rel > .10){\n  node.warn(\"strongly positive\")}\n\nelse if  (rel < 0) {\n    node.warn(\"negative\")\n\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1130,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9170a5d6d994a65f",
+        "type": "function",
+        "z": "349bb064ec8cb749",
+        "name": "create array for average",
+        "func": "const prices = [];\nlet item = 0\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload) {\n    price = item.sent;\n    prices.push(price);  \n//    node.warn(price)\n\n}\n\n//node.warn(prices)\nmsg.payload = prices\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 610,
+        "y": 300,
+        "wires": [
+            [
+                "cdb5ab0c92e1afda"
+            ]
+        ]
+    },
+    {
+        "id": "c16a808c72d7462c",
+        "type": "comment",
+        "z": "349bb064ec8cb749",
+        "name": "Avg Sentiment for specific ticker.  Set' look back' - approx. 10 news items a day",
+        "info": "",
+        "x": 320,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "f8ca5a41.3e1448",
+        "type": "MySQLdatabase",
+        "name": "news",
+        "host": "ptsapi.cax8fspskl8t.us-east-1.rds.amazonaws.com",
+        "port": "3306",
+        "db": "news",
+        "tz": "EST5EDT",
+        "charset": "UTF8"
+    }
+]
