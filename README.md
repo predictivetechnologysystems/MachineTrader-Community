@@ -1,17 +1,17 @@
 # MachineTrader-Community
-This is a community repository for MachineTrader users who want to upload or share json files in their MachineTrader instances that can be used implement and execute algorithmic trading strategies. The easiest method for downloading the json files you'll need is to click the green "Code" to the right and then download zip files. You'll then be able to "Import" the json files into your instance as you need them.
+This is a community repository for MachineTrader users who want to upload or share json files to be used in MachineTrader instances.  Json files can be used to implement and execute algorithmic trading strategies. The easiest method for downloading the json files you'll need is to click the green "Code"  button to the right, and then download zip files. You'll then be able to "Import" the json files into your instance as you need them.
 
-Before attempting to upload any of these json scripts, we highly recommend reviewing the MachineTrader "Intro to Nodes and Flows in the video training library" by clicking here: https://drive.google.com/file/d/1sZTaXBhRjyAKSIIaxdYJ8Lh2xVoUtV_8/view?usp=sharing
+Before attempting to upload any of these json scripts, we highly recommend reviewing the MachineTrader "Intro to Nodes and Flows" video in the video training library by clicking here: https://drive.google.com/file/d/1sZTaXBhRjyAKSIIaxdYJ8Lh2xVoUtV_8/view?usp=sharing
 
-Many of the procedures described below have corresponding instructional videos so if you prefer video learning, go to the MachineTrader YouTube channel.
+Many of the procedures described below have corresponding instructional videos, so if you prefer video learning, go to the MachineTrader YouTube channel.
 
 # Adding Your Alpaca Keys to Your Instance
 
 Download json file "Alpaca Account Management.json" and import to your instance. To view the instructional video, click here: https://drive.google.com/file/d/1Kz-h77E0QO-SEA_qbdGFgaBQUwJ2V1mk/view?usp=sharing
 
-When you first login into your trading instance, everything is ready to go except the flows that are powered by your Alpaca account keys which you will have to enter manually. To add your keys, click the customize button in the upper right which will bring you to your MachineTrader instance backend or admin. We will assume that you have retrieved your Alpaca keys from your Alpaca account and are ready to install. If you haven't done that yet, follow the instructions here: https://www.machinetrader.io/learn-articles/adding-alpaca-keys-to-your-machinetrader-instance.
+When you first log in to your trading instance, everything is ready to go except for the flows which are powered by your Alpaca account keys, which you will have to enter manually. To add your keys, click the "Customize View" button on the upper right corner, which will bring you to your MachineTrader instance backend or "admin". We will assume that you have retrieved your Alpaca keys from your Alpaca account, and are ready to install. If you haven't done that yet, follow the instructions here: https://www.machinetrader.io/learn-articles/adding-alpaca-keys-to-your-machinetrader-instance.
 
-Be careful when you're using the admin because any changes you make will affect the operation of your instance. Notice that the admin consists of a series of tabs each containing a grouping of flows. Go to the far right tab labeled "Add Alpaca Account Keys." 
+Be careful when you're using the admin because any changes you make will affect the operation of your instance. Notice that the admin consists of a series of tabs, each containing a grouping of flows. Go to the tab labeled "Add Alpaca Account Keys." 
 
 Your secret key is encrypted once you enter it, so no one will be able to get access to your Alpaca account.  
 
@@ -23,27 +23,27 @@ Your secret key is encrypted once you enter it, so no one will be able to get ac
 
 
 
-# Modifying your Default Market Indicators and Watchlist
+# Modifying Your Default Market Indicators and Watchlist
 
 Download json file "Customize Market Indicators.json" and import to your instance. To view the instructional video, click here: https://drive.google.com/file/d/1Kz-h77E0QO-SEA_qbdGFgaBQUwJ2V1mk/view?usp=sharing
 
-One of the first things you may decide to do once your personal MachineTrader instance is up and running is to modify the default tickers that are used in the Watchlist and as market Indicators. The "Customize Market Indicators" json allows you to do just that.  
+One of the first things you may decide to do once your personal MachineTrader instance is up and running, is to modify the default tickers that are used in the Watchlist and as Market Indicators. The "Customize Market Indicators" json allows you to do just that.  
 
 <img width="1595" alt="Screen Shot 2022-09-23 at 8 03 22 AM" src="https://user-images.githubusercontent.com/79699033/191956976-be772e82-b8de-4082-a837-41e7ff0b634c.png">
 
-Executing the "modify market indicators" node will start a flow that deletes the current sqlite table, where the indicators are stored, and creates a new one. The second flow will insert the tickers you'd like to use.  Simply paste a comma-separated list of tickers in the "Add Market Symbols" Node and once you've deployed, they will be your new Market Indicators.  One caveat for add crypto pairs: make sure you use the Polygon.io syntax for cryptos which start with an "X:" For example, Bitcoin uses the ticker "X:BTCUSD".  The full list of Polygon cryptos is shown in the file "crypto list.txt".  
+Executing the "modify market indicators" node will start a flow that deletes the current sqlite table, where the indicators are stored, and creates a new one. The second flow will insert the tickers you'd like to use.  Simply paste a comma-separated list of tickers in the "Add Market Symbols" Node, and once you've deployed, they will be your new Market Indicators.  One caveat for adding crypto pairs: make sure you use the Polygon.io syntax for cryptos, which start with an "X:" For example, Bitcoin uses the ticker "X:BTCUSD".  The full list of Polygon cryptos is shown in the file "crypto list.txt".  
 
 The steps for changing the Watchlist tickers are similar. 
  
 <img width="791" alt="Screen Shot 2022-09-23 at 8 03 47 AM" src="https://user-images.githubusercontent.com/79699033/191956901-aded4117-61cb-4a0b-8a35-6fb76d1e91ef.png">
 
-Once you have changed the Market Indicators and/or the Watchlist, you'll need to kick start the flows that update the prices and changes. Click the three "Update"  inject nodes under Watchlist and the three "Update" Nodes under Markets to activate the scripts.
+Once you have changed the Market Indicators and/or the Watchlist, you'll need to kick start the flows that update the prices and changes. Click the three "Update" inject nodes under Watchlist, and the three "Update" nodes under Markets to activate the scripts.
 
 <img width="1333" alt="Screen Shot 2022-10-14 at 3 42 34 PM" src="https://user-images.githubusercontent.com/79699033/195928988-0068ead4-4839-4098-88d6-78a19a7ac247.png">
 
-# Adding Missing Nodes to Your Instance (i.e. "Loop") 
+# Adding Missing Nodes to Your Instance (e.g. "Loop" and "Calc") 
 
-When importing certain JSON files, you may find that you do not have a particular node in your instance.  At this time, the only node that should be missing is the “Loop” node.  If that is the case, you will see the missing node and connections as red dotted lines, as shown below:
+When importing certain JSON files, you may find that you do not have a particular node in your instance.  At this time, the only nodes that should be missing are the “Loop” and "Calc" nodes.  If that is the case, you will see the missing nodes and connections as red dotted lines, as shown below:
 
 
 <img width="828" alt="Screen Shot 2022-10-18 at 8 01 51 AM" src="https://user-images.githubusercontent.com/79699033/196424007-4cb18946-550b-40d1-9095-912616dd70e9.png">
