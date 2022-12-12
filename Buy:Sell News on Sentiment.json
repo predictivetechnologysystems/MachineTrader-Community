@@ -1,0 +1,910 @@
+[
+    {
+        "id": "fed55e07d88daccd",
+        "type": "tab",
+        "label": "Buy/Sell SPY on news ",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "a8bf2d08eae83357",
+        "type": "comment",
+        "z": "fed55e07d88daccd",
+        "name": "The name of this strategy is \"Buy/Short SPY on News\"",
+        "info": "",
+        "x": 260,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "e2fd4948d781bbea",
+        "type": "comment",
+        "z": "fed55e07d88daccd",
+        "name": "This calculates current moving average of the news (last 100 items) and determins the sentiment score relative to the average sentiiment of all headlines (.1935)",
+        "info": "",
+        "x": 590,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "f2e58ea99a41af40",
+        "type": "function",
+        "z": "fed55e07d88daccd",
+        "name": "create array for average",
+        "func": "// this function reuses old variable names from time seeries arrays.  You can rename if you like.\n\nconst prices = [];\nlet item = 0\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload) {\n    price = item.sent;\n    prices.push(price);  \n//    node.warn(price)\n\n}\n\n//node.warn(prices)\nmsg.payload = prices\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 140,
+        "wires": [
+            [
+                "e8c70c9fca3e6c3a"
+            ]
+        ]
+    },
+    {
+        "id": "31e479e9ef2e4a81",
+        "type": "function",
+        "z": "fed55e07d88daccd",
+        "name": "display avg",
+        "func": "let avg = msg.moving_avg\navg = avg.toFixed(3)\nnode.warn(\" Moving Avg: \" +avg)\nmsg.moving_avg = avg\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 910,
+        "y": 140,
+        "wires": [
+            [
+                "5320ebea68c0995f"
+            ]
+        ]
+    },
+    {
+        "id": "59aac1e577f97747",
+        "type": "mysql",
+        "z": "fed55e07d88daccd",
+        "mydb": "f8ca5a41.3e1448",
+        "name": "news",
+        "x": 390,
+        "y": 140,
+        "wires": [
+            [
+                "f2e58ea99a41af40"
+            ]
+        ]
+    },
+    {
+        "id": "135fcfbddd7655fb",
+        "type": "inject",
+        "z": "fed55e07d88daccd",
+        "name": "select sent from  headlines ",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 06 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "select sent from headlines where sent is not null order by time_pub desc limit 1000;",
+        "x": 200,
+        "y": 140,
+        "wires": [
+            [
+                "59aac1e577f97747"
+            ]
+        ]
+    },
+    {
+        "id": "5320ebea68c0995f",
+        "type": "function",
+        "z": "fed55e07d88daccd",
+        "name": "relative sentiment",
+        "func": "let avg = msg.moving_avg\n//node.warn(\"Moving Avg: \" +avg)\nlet alltime = 0.19\nlet rel = avg - alltime\nrel = rel.toFixed(3)\nnode.warn(rel)\n\nif (rel > 0 && rel < .10){\n//    node.warn(\"positive\")\n}\n\nelse if (rel > .10){\n//  node.warn(\"strongly positive\")\n}\n\nelse if  (rel < 0) {\n//    node.warn(\"negative\")\n\n}\n\nmsg.sentiment = rel\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1090,
+        "y": 140,
+        "wires": [
+            [
+                "a6b92ecf46280581"
+            ]
+        ]
+    },
+    {
+        "id": "e8c70c9fca3e6c3a",
+        "type": "calculator",
+        "z": "fed55e07d88daccd",
+        "name": "",
+        "inputMsgField": "payload",
+        "outputMsgField": "moving_avg",
+        "operation": "avg",
+        "constant": "",
+        "round": false,
+        "decimals": "0",
+        "x": 760,
+        "y": 140,
+        "wires": [
+            [
+                "31e479e9ef2e4a81"
+            ]
+        ]
+    },
+    {
+        "id": "a6b92ecf46280581",
+        "type": "change",
+        "z": "fed55e07d88daccd",
+        "name": "sentiment",
+        "rules": [
+            {
+                "t": "set",
+                "p": "sentiment",
+                "pt": "flow",
+                "to": "sentiment",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1260,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d7dc1207a3b0b830",
+        "type": "comment",
+        "z": "fed55e07d88daccd",
+        "name": "AT START -- Set values for portfoio and algos tables and launch strategy",
+        "info": "",
+        "x": 320,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "bb6f989c9a50c8b3",
+        "type": "function",
+        "z": "fed55e07d88daccd",
+        "name": "define values required creating new algo strategy",
+        "func": "// portfolio_id is set to unixtime\n\nlet d = Date.now() // use to dynamically assign id\nlet id = d\nlet login = 'pta4'\nlet tickers = 'SPY' \nlet name = \"Buy/Short SPY on News\"\nlet asset_class = 'stocks' // stocks or crypto\nlet number = 1 // number of tickers in portfolio\nlet account = 'paper'\nlet psize = 25000 // size of portfolio\nlet status = 'running'\nlet algo_type = 'intraday'\nlet benchmark = 'SPY'\nlet algo_name = name\nlet trade_trigger = flow.get(\"sentiment\") // this is sentiment score. \nlet profit_trigger = 0.010 // this is the value of the profit required to liquidate the position\n\nmsg.id = id\nmsg.login = login\nmsg.account = account\nmsg.tickers = tickers\nmsg.name = name\nmsg.asset_class = asset_class\nmsg.number = number\nmsg.psize = psize\nmsg.status = status\nmsg.algo_type = algo_type\nmsg.benchmark = benchmark\nmsg.algo_name = algo_name\nmsg.trade_trigger = trade_trigger\nmsg.profit_trigger = profit_trigger\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 260,
+        "wires": [
+            [
+                "e17753d74e074c39",
+                "eab6a7b75de83ed0"
+            ]
+        ]
+    },
+    {
+        "id": "400637dd1c22f308",
+        "type": "inject",
+        "z": "fed55e07d88daccd",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 190,
+        "y": 260,
+        "wires": [
+            [
+                "bb6f989c9a50c8b3"
+            ]
+        ]
+    },
+    {
+        "id": "e17753d74e074c39",
+        "type": "change",
+        "z": "fed55e07d88daccd",
+        "name": "store flow vars",
+        "rules": [
+            {
+                "t": "set",
+                "p": "algo_id",
+                "pt": "flow",
+                "to": "id",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "tickers",
+                "pt": "flow",
+                "to": "tickers",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "login",
+                "pt": "flow",
+                "to": "login",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "account",
+                "pt": "flow",
+                "to": "account",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "name",
+                "pt": "flow",
+                "to": "name",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "asset_class",
+                "pt": "flow",
+                "to": "asset_class",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "number",
+                "pt": "flow",
+                "to": "number",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "psize",
+                "pt": "flow",
+                "to": "psize",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "status",
+                "pt": "flow",
+                "to": "status",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "algo_type",
+                "pt": "flow",
+                "to": "algo_type",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "benchmark",
+                "pt": "flow",
+                "to": "benchmark",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "algo_name",
+                "pt": "flow",
+                "to": "algo_name",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "trade_trigger",
+                "pt": "flow",
+                "to": "trade_trigger",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "profit_trigger",
+                "pt": "flow",
+                "to": "profit_trigger",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 760,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1c4d5a0e9efd5758",
+        "type": "function",
+        "z": "fed55e07d88daccd",
+        "name": "display flow vars",
+        "func": "let id = flow.get(\"algo_id\")\nlet login = flow.get(\"login\")\nlet account = flow.get(\"account\")\nlet tickers = flow.get(\"tickers\")\nlet name = flow.get(\"name\")\nlet asset_class = flow.get(\"asset_class\")\nlet number = flow.get(\"number\")\nlet psize = flow.get(\"psize\")\nlet status = flow.get(\"status\")\nlet algo_type = flow.get(\"algo_type\")\nlet benchmark = flow.get(\"benchmark\")\nlet algo_name = flow.get(\"algo_name\")\nlet trigger = flow.get(\"trade_trigger\")\nlet profit_trigger = flow.get(\"profit_trigger\")\nlet open_pos = flow.get(\"open_pos\")\nlet profit = flow.get(\"profit\")\nlet profitpct = flow.get(\"profitpct\")\nlet clientorderid = flow.get(\"clientorderid\")\nlet diff = flow.get(\"diff\")\nprofit = parseFloat(profit).toFixed(2);\nprofitpct = parseFloat(profitpct).toFixed(2);\n\n\nnode.warn(\"id: \" + id + \"  login: \" + login + \"  account: \" + account + \"  tickers: \" + tickers + \"  name: \" + name + \"  asset_class: \" + asset_class + \"  number: \" + number + \"  psize: \" + psize + \"  status: \" + status + \"  algo_type: \" + algo_type + \"  benchmark: \" + benchmark + \"  algo_name: \" + algo_name + \"  trigger: \" + trigger + \"  profit_trigger: \" + profit_trigger + \" open_pos: \" + open_pos + \" profit: \" + profit + \" profitpct: \" + profitpct + \" Client Order ID: \" + clientorderid+ \" Diff: \" +diff)\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8d147988cda3e9dd",
+        "type": "inject",
+        "z": "fed55e07d88daccd",
+        "name": "GO",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 190,
+        "y": 300,
+        "wires": [
+            [
+                "1c4d5a0e9efd5758"
+            ]
+        ]
+    },
+    {
+        "id": "065e2a0e4171b5ed",
+        "type": "comment",
+        "z": "fed55e07d88daccd",
+        "name": "FLOW 1: Trade for the day based on new sentiment",
+        "info": "",
+        "x": 250,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "eab6a7b75de83ed0",
+        "type": "function",
+        "z": "fed55e07d88daccd",
+        "name": "add values to algos table",
+        "func": "let login = msg.login\nlet id = msg.id\nlet algo_name = msg.algo_name \nlet algo_type = msg.algo_type\nlet asset_class = msg.asset_class\nlet tickers = msg.tickers\nlet status = msg.status\nlet number = msg.number\nlet portfolio_size = msg.psize \nlet benchmark =  msg.benchmark\nlet benchmark_start = global.get(\"spy_current\")\n\nmsg.query = \"insert into algos (login,id,algo_name,algo_type,tickers,asset_class,number,status,portfolio_size,benchmark,benchmark_start) values ('\" + login + \"','\" + id + \"','\" + algo_name + \"','\" + algo_type + \"','\" + tickers + \"','\" + asset_class + \"','\" + number + \"','\" +status+ \"','\" +portfolio_size+ \"','\" +benchmark+ \"','\" +benchmark_start+ \"');\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 300,
+        "wires": [
+            [
+                "0836d4786d68fef1"
+            ]
+        ]
+    },
+    {
+        "id": "0836d4786d68fef1",
+        "type": "postgresql",
+        "z": "fed55e07d88daccd",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 980,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d856ae1ef2b54fec",
+        "type": "function",
+        "z": "fed55e07d88daccd",
+        "name": " last trade",
+        "func": "let price = 0\nlet item = 0\n\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    \n}\n\nprice = price.toFixed(2)\nmsg.price = price\n//node.warn(price)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 780,
+        "y": 520,
+        "wires": [
+            [
+                "68f35d4cfe26b20d"
+            ]
+        ]
+    },
+    {
+        "id": "552ae5b29b1498aa",
+        "type": "polygon-last-trade-v3",
+        "z": "fed55e07d88daccd",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "x": 600,
+        "y": 520,
+        "wires": [
+            [
+                "d856ae1ef2b54fec"
+            ]
+        ]
+    },
+    {
+        "id": "debbe83055cc489d",
+        "type": "function-npm",
+        "z": "fed55e07d88daccd",
+        "name": "Get price of trade trade",
+        "func": "let asset_class = flow.get(\"asset_class\")\n//node.warn(asset_class)\n\nlet polygon_symbol = flow.get(\"tickers\")\n\n\nif (asset_class == 'crypto'){\n    polygon_symbol = polygon_symbol.replace(\"/\",\"\")\n    polygon_symbol = \"X:\" +polygon_symbol\n}\n\nlet cnt = 1 // gets last trade\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: polygon_symbol,\n    cnt: cnt,\n}\n\n\n//node.warn(symbol)\n//node.warn(msg.payload)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 350,
+        "y": 520,
+        "wires": [
+            [
+                "552ae5b29b1498aa"
+            ]
+        ]
+    },
+    {
+        "id": "c79648ce932bf8c1",
+        "type": "function",
+        "z": "fed55e07d88daccd",
+        "name": "display trading vars ",
+        "func": "let d = Date.now()\nlet id = d\n\nlet algo_id = flow.get(\"algo_id\")\nlet login = flow.get(\"login\")\nlet account = flow.get(\"account\")\nlet tickers = flow.get(\"tickers\")\nlet name = flow.get(\"name\")\nlet asset_class = flow.get(\"asset_class\")\nlet number = flow.get(\"number\")\nlet psize = flow.get(\"psize\")\nlet status = flow.get(\"status\")\nlet algo_type = flow.get(\"algo_type\")\nlet benchmark = flow.get(\"benchmark\")\nlet algo_name = flow.get(\"algo_name\")\nlet trigger = flow.get(\"trade_trigger\")\nlet profit_trigger = flow.get(\"profit_trigger\")\nlet profit = flow.get(\"profit\")\nlet profitpct = flow.get(\"profitpct\")\nlet clientorderid = flow.get(\"clientorderid\")\nprofit = parseFloat(profit).toFixed(2);\nprofitpct = parseFloat(profitpct).toFixed(2);\n\nlet price = msg.price\n\nlet diff_ticker = flow.get(\"diff_ticker\")\n\nlet open_pos = 0\nopen_pos = flow.get(\"open_pos\")\nif (open_pos == undefined) { open_pos = 0 }\n\n\nlet open_qty = 0\nopen_qty = flow.get(\"open_qty\")\nif (open_qty == undefined) { open_qty = 0 }\n\n\n// use this to balance the portfolio equally\nlet qty = (psize / number) / price\nqty = Math.round(qty) // to get whole numbers \n\nlet order_value = price * qty\n\nlet localtime = new Date();\n\n// create a unique clientid with unixtime\nlet client_order_id = tickers + d\n\nnode.warn(\"id: \" + id + \"  login: \" + login + \"  account: \" + account + \"  tickers: \" + tickers + \"  asset_class: \" + asset_class + \"  number: \" + number + \"  psize: \" + psize + \"  status: \" + status + \"  algo_type: \" + algo_type + \"  benchmark: \" + benchmark + \"  algo_name: \" + algo_name + \"  trigger: \" + trigger + \"  profit_trigger: \" + profit_trigger + \" open_pos\" + open_pos + \" profit: \" + profit + \" profitpct: \" + profitpct + \" Client Order ID: \" + clientorderid)\n\n\n\nmsg.login = login\nmsg.algo_name = name\nmsg.asset_class = asset_class\nmsg.account = account\nmsg.id = d  // create new portfolio id each cycle\nmsg.clientorderid = client_order_id\nmsg.localtime = localtime\n\nmsg.ticker = tickers\nmsg.qty = qty\nmsg.price = price\nmsg.open_qty = open_qty\nmsg.open_pos = open_pos\nmsg.order_value = (qty * price)\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1110,
+        "y": 520,
+        "wires": [
+            [
+                "1e1394a53f38ee55"
+            ]
+        ]
+    },
+    {
+        "id": "68f35d4cfe26b20d",
+        "type": "delay",
+        "z": "fed55e07d88daccd",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 920,
+        "y": 520,
+        "wires": [
+            [
+                "c79648ce932bf8c1"
+            ]
+        ]
+    },
+    {
+        "id": "1e1394a53f38ee55",
+        "type": "function",
+        "z": "fed55e07d88daccd",
+        "name": "Trading Logic - buy only",
+        "func": "let ticker = msg.ticker\nlet qty = msg.qty\nlet price = msg.price\nlet open_qty = msg.open_qty\nlet open_pos = msg.open_pos\n\nlet login = msg.login\nlet portfolioname = msg.algo_name\nlet asset_class = msg.asset_class\nlet account = msg.account\nlet id = msg.id\nlet client_order_id = msg.clientorderid\nlet localtime = msg.localtime\n\nlet order_value = msg.order_value\nlet order_type = 'limit'\nlet trade_trigger = flow.get(\"sentiment\")\n\n\n// buy signal\nif ( trade_trigger > 0.20 )  {\n\n    let side = 'buy'\n\n    // create a order for Alpaca\n    let temp = ''\n    temp = {\n        \"symbol\": ticker,\n        \"qty\": qty,\n        \"side\": side,\n        \"type\": order_type,\n        \"limit_price\": price,\n        \"client_order_id\": client_order_id,\n        \"time_in_force\": \"gtc\"\n    };\n\n    msg.payload = temp\n    node.warn(msg.payload)\n    msg.symbol = ticker\n    msg.order_qty = qty\n\n    //node.warn(\"These are the trading values. Ticker: \" + ticker + \" Qty:\" + qty + \" Price: \" + price + \" Diff: \" + diff + \" Open Qty: \" + open_qty + \" Open Pos: \" + open_pos)\n    msg.query = \"insert into portfolio (account,id,login,symbol,asset_class,portfolioname,order_time,order_qty,order_price,order_type,order_value,clientorderid) values ('\"\n        + account + \"', '\" + id + \"','\" + login + \"','\" + ticker + \"','\" + asset_class + \"','\" + portfolioname + \"','\" + localtime + \"','\" + qty + \"','\" + price + \"','\" + order_type + \"','\" + order_value + \"','\" + client_order_id + \"');\"\n    node.warn(msg.query)\n\n    return msg;\n}\n\n// buy signal\nelse if (trade_trigger < 0.10) {\n\n    let side = 'sell'\n\n    // create a order for Alpaca\n    let temp = ''\n    temp = {\n        \"symbol\": ticker,\n        \"qty\": qty,\n        \"side\": side,\n        \"type\": order_type,\n        \"limit_price\": price,\n        \"client_order_id\": client_order_id,\n        \"time_in_force\": \"gtc\"\n    };\n\n    msg.payload = temp\n    node.warn(msg.payload)\n    msg.symbol = ticker\n    msg.order_qty = qty\n\n    //node.warn(\"These are the trading values. Ticker: \" + ticker + \" Qty:\" + qty + \" Price: \" + price + \" Diff: \" + diff + \" Open Qty: \" + open_qty + \" Open Pos: \" + open_pos)\n    msg.query = \"insert into portfolio (account,id,login,symbol,asset_class,portfolioname,order_time,order_qty,order_price,order_type,order_value,clientorderid) values ('\"\n        + account + \"', '\" + id + \"','\" + login + \"','\" + ticker + \"','\" + asset_class + \"','\" + portfolioname + \"','\" + localtime + \"','\" + qty + \"','\" + price + \"','\" + order_type + \"','\" + order_value + \"','\" + client_order_id + \"');\"\n    node.warn(msg.query)\n\n    return msg;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 550,
+        "y": 620,
+        "wires": [
+            [
+                "1ea2fbf32e72562c",
+                "beda1884a27c6da3",
+                "1c152cc06f568cac"
+            ]
+        ]
+    },
+    {
+        "id": "bfbb4eba4fc8fc78",
+        "type": "comment",
+        "z": "fed55e07d88daccd",
+        "name": "Retrieve values from algos table for use in the Trading Logic Flow. Current Price field is stored using \"Last Trade v3\" from Polygon",
+        "info": "",
+        "x": 670,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "6737faad7eb22183",
+        "type": "comment",
+        "z": "fed55e07d88daccd",
+        "name": "FLOW #2:  Place Sell Orders when profit target reached",
+        "info": "",
+        "x": 260,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "5c8ab834fa102533",
+        "type": "function",
+        "z": "fed55e07d88daccd",
+        "name": "place market sell order",
+        "func": "let id = flow.get(\"algo_id\")\nlet ticker = flow.get(\"ticker\")\nlet qty = flow.get(\"open_pos\")\nlet price = flow.get(\"price\")\nlet profit = flow.get(\"profit\")\nlet profitpct = flow.get(\"profitpct\")\nlet profit_trigger = flow.get(\"profit_trigger\")\n\nlet clientid = flow.get(\"clientorderid\")\n\nlet side = ''\n\n//node.warn(\"Profit: \" +profit)\n\n\nif (profitpct > profit_trigger){\n\n    let d = Date.now()\n    let newclient_order_id = \"SELL\" + ticker + d\n    msg.newclientid = newclient_order_id\n    \n    msg.query = \"update portfolio set newclient_order_id = '\" + newclient_order_id + \"' where clientorderid '\" + clientid + \"';\" \nnode.warn(msg.query)\n\nif (qty < 0){\n    qty = (qty * -1)\n    side = 'buy' }\n\nelse {\n    side = 'sell' }\n\nlet temp = ''\ntemp = {\n    \"symbol\": ticker,\n    \"qty\": qty,\n    \"side\": side,\n    \"type\": \"market\",\n //   \"limit_price\": price,\n    \"client_order_id\": newclient_order_id,\n    \"time_in_force\": \"gtc\"\n}\n\n\nmsg.payload = temp\nnode.warn(msg.payload)\nreturn msg\n\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 580,
+        "y": 840,
+        "wires": [
+            [
+                "653d21b65459a7fa",
+                "32b31ccabcb7bd74",
+                "3b8c6cc817c5cb3f"
+            ]
+        ]
+    },
+    {
+        "id": "46edd416ff639755",
+        "type": "inject",
+        "z": "fed55e07d88daccd",
+        "name": "Every Min",
+        "props": [],
+        "repeat": "",
+        "crontab": "*/1 10-19 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 190,
+        "y": 820,
+        "wires": [
+            [
+                "afa383b9d407a21f",
+                "0ca4d99cadd45010"
+            ]
+        ]
+    },
+    {
+        "id": "afa383b9d407a21f",
+        "type": "alpaca-position-query",
+        "z": "fed55e07d88daccd",
+        "conf": "e535f42f1df1b25f",
+        "x": 450,
+        "y": 780,
+        "wires": [
+            [
+                "f8daa6e035cd725d"
+            ]
+        ]
+    },
+    {
+        "id": "7f3ac2a09188841e",
+        "type": "function",
+        "z": "fed55e07d88daccd",
+        "name": "select fields",
+        "func": "let ticker = flow.get(\"tickers\")\n//node.warn(\"Ticker: \" +ticker)\n\nlet asset_id = msg.payload[\"asset_id\"]\nlet symbol = msg.payload[\"symbol\"]\nlet exchange = msg.payload[\"exchange\"]\nlet asset_class = msg.payload[\"asset_class\"]\nlet asset_marginable = msg.payload[\"asset_marginable\"]\nlet qty = msg.payload[\"qty\"]\nlet avg_entry_price = msg.payload[\"avg_entry_price\"]\nlet side = msg.payload[\"side\"]\nlet market_value = msg.payload[\"market_value\"]\nlet cost_basis = msg.payload[\"cost_basis\"]\nlet unrealized_pl = msg.payload[\"unrealized_pl\"]\nlet unrealized_plpc = msg.payload[\"unrealized_plpc\"]\nlet unrealized_intraday_pl = msg.payload[\"unrealized_intraday_pl\"]\nlet unrealized_intraday_plpc = msg.payload[\"unrealized_intraday_plpc\"]\nlet current_price = msg.payload[\"current_price\"]\nlet lastday_price = msg.payload[\"lastday_price\"]\nlet change_today = msg.payload[\"change_today\"]\nlet qty_available = msg.payload[\"qty_available\"]\n\nif (asset_class == 'crypto'){\n    symbol = symbol.replace(\"USD\",\"/USD\")\n}\n\nif (symbol == ticker) {\n    node.warn(\"Open_pos = \" + qty + \" Current Profit: \" + unrealized_pl + \" Profit PCT: \" + unrealized_plpc)\n    msg.open_pos = qty\n    msg.profit = unrealized_pl\n    msg.profitpct = unrealized_plpc\n    return msg;\n}\n\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 780,
+        "wires": [
+            [
+                "ae2db31c90041a6a"
+            ]
+        ]
+    },
+    {
+        "id": "f8daa6e035cd725d",
+        "type": "split",
+        "z": "fed55e07d88daccd",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 630,
+        "y": 780,
+        "wires": [
+            [
+                "7f3ac2a09188841e"
+            ]
+        ]
+    },
+    {
+        "id": "ae2db31c90041a6a",
+        "type": "change",
+        "z": "fed55e07d88daccd",
+        "name": "store flow.open_pos",
+        "rules": [
+            {
+                "t": "set",
+                "p": "open_pos",
+                "pt": "flow",
+                "to": "open_pos",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "profit",
+                "pt": "flow",
+                "to": "profit",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "profitpct",
+                "pt": "flow",
+                "to": "profitpct",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 980,
+        "y": 780,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0ca4d99cadd45010",
+        "type": "delay",
+        "z": "fed55e07d88daccd",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 400,
+        "y": 840,
+        "wires": [
+            [
+                "5c8ab834fa102533"
+            ]
+        ]
+    },
+    {
+        "id": "a63228fddc4ff44b",
+        "type": "inject",
+        "z": "fed55e07d88daccd",
+        "name": "GO",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 06 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 460,
+        "wires": [
+            [
+                "1f4e392b32c916a3"
+            ]
+        ]
+    },
+    {
+        "id": "1f4e392b32c916a3",
+        "type": "delay",
+        "z": "fed55e07d88daccd",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 140,
+        "y": 520,
+        "wires": [
+            [
+                "debbe83055cc489d"
+            ]
+        ]
+    },
+    {
+        "id": "beda1884a27c6da3",
+        "type": "alpaca-order",
+        "z": "fed55e07d88daccd",
+        "conf": "e535f42f1df1b25f",
+        "x": 790,
+        "y": 620,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1ea2fbf32e72562c",
+        "type": "postgresql",
+        "z": "fed55e07d88daccd",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 780,
+        "y": 580,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1c152cc06f568cac",
+        "type": "change",
+        "z": "fed55e07d88daccd",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "clientorderid",
+                "pt": "flow",
+                "to": "clientorderid",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 820,
+        "y": 660,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "653d21b65459a7fa",
+        "type": "alpaca-order",
+        "z": "fed55e07d88daccd",
+        "conf": "e535f42f1df1b25f",
+        "x": 810,
+        "y": 840,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "32b31ccabcb7bd74",
+        "type": "postgresql",
+        "z": "fed55e07d88daccd",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 800,
+        "y": 880,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3b8c6cc817c5cb3f",
+        "type": "change",
+        "z": "fed55e07d88daccd",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "newclientid",
+                "pt": "flow",
+                "to": "newclientid",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 830,
+        "y": 920,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f8ca5a41.3e1448",
+        "type": "MySQLdatabase",
+        "name": "news",
+        "host": "ptsapi.cax8fspskl8t.us-east-1.rds.amazonaws.com",
+        "port": "3306",
+        "db": "news",
+        "tz": "EST5EDT",
+        "charset": "UTF8"
+    },
+    {
+        "id": "7455395cf269fb2b",
+        "type": "postgreSQLConfig",
+        "name": "",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "postgres",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "docker",
+        "userFieldType": "str",
+        "password": "docker",
+        "passwordFieldType": "str"
+    },
+    {
+        "id": "651f0aab10dc1632",
+        "type": "polygon-account",
+        "name": "Polygon Key"
+    },
+    {
+        "id": "e535f42f1df1b25f",
+        "type": "alpaca-account",
+        "name": "paper",
+        "keyId": "PKQFY449K0DJQN3QF3WE",
+        "paper": true
+    }
+]
