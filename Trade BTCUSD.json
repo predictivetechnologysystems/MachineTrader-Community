@@ -12,8 +12,8 @@
         "type": "alpaca-position-query",
         "z": "ec4ada66ec0cc1cb",
         "conf": "e535f42f1df1b25f",
-        "x": 390,
-        "y": 720,
+        "x": 370,
+        "y": 780,
         "wires": [
             [
                 "046bdfead3483723"
@@ -24,15 +24,15 @@
         "id": "f2bb1527a4f0ecd0",
         "type": "function",
         "z": "ec4ada66ec0cc1cb",
-        "name": "insert into positions if symbol = BTCUSD",
-        "func": "let symbol = flow.get(\"ticker\")\n\n\nlet asset_id = msg.payload[\"asset_id\"]\nlet ticker = msg.payload[\"symbol\"]\nlet exchange = msg.payload[\"exchange\"]\nlet asset_class = msg.payload[\"asset_class\"]\nlet asset_marginable = msg.payload[\"asset_marginable\"]\nlet qty = msg.payload[\"qty\"]\nlet avg_entry_price = msg.payload[\"avg_entry_price\"]\nlet side = msg.payload[\"side\"]\nlet market_value = msg.payload[\"market_value\"]\nlet cost_basis = msg.payload[\"cost_basis\"]\nlet unrealized_pl = msg.payload[\"unrealized_pl\"]\nlet unrealized_plpc = msg.payload[\"unrealized_plpc\"]\nlet unrealized_intraday_pl = msg.payload[\"unrealized_intraday_pl\"]\nlet unrealized_intraday_plpc = msg.payload[\"unrealized_intraday_plpc\"]\nlet current_price = msg.payload[\"current_price\"]\nlet lastday_price = msg.payload[\"lastday_price\"]\nlet change_today = msg.payload[\"change_today\"]\nlet qty_available = msg.payload[\"qty_available\"]\n\n//qty = parseFloat(qty) \n//qty = qty.toFixed(2)\n\nlet profit = parseFloat(unrealized_pl) \nprofit = profit.toFixed(2)\n\nlet profitpct = parseFloat(unrealized_plpc)\nprofitpct = profitpct.toFixed(2)\nprofitpct = profitpct * 100   \n\nlet result = ticker.includes(symbol);\n//node.warn(result)\n\nif ( result == true ){\n    node.warn(\"Ticker:\" + symbol + \" Qty Held:\" + qty + \" Current Price: \" + current_price + \" Profit: \" + profit+ \" Profit %: \" +profitpct)\nmsg.ticker = symbol\nmsg.qty = qty\nmsg.price = current_price\nmsg.profit = profit\nmsg.profitpct - profitpct\nreturn msg;\n\n}\n\n",
+        "name": "get values from alpaca positions if symbol = BTCUSD",
+        "func": "let symbol = flow.get(\"ticker\")\n\n\nlet asset_id = msg.payload[\"asset_id\"]\nlet ticker = msg.payload[\"symbol\"]\nlet exchange = msg.payload[\"exchange\"]\nlet asset_class = msg.payload[\"asset_class\"]\nlet asset_marginable = msg.payload[\"asset_marginable\"]\nlet qty = msg.payload[\"qty\"]\nlet avg_entry_price = msg.payload[\"avg_entry_price\"]\nlet side = msg.payload[\"side\"]\nlet market_value = msg.payload[\"market_value\"]\nlet cost_basis = msg.payload[\"cost_basis\"]\nlet unrealized_pl = msg.payload[\"unrealized_pl\"]\nlet unrealized_plpc = msg.payload[\"unrealized_plpc\"]\nlet unrealized_intraday_pl = msg.payload[\"unrealized_intraday_pl\"]\nlet unrealized_intraday_plpc = msg.payload[\"unrealized_intraday_plpc\"]\nlet current_price = msg.payload[\"current_price\"]\nlet lastday_price = msg.payload[\"lastday_price\"]\nlet change_today = msg.payload[\"change_today\"]\nlet qty_available = msg.payload[\"qty_available\"]\n\n//qty = parseFloat(qty) \n//qty = qty.toFixed(2)\n\nlet profit = parseFloat(unrealized_pl) \nprofit = profit.toFixed(2)\n\nlet profitpct = parseFloat(unrealized_plpc)\nprofitpct = profitpct.toFixed(2)\nprofitpct = profitpct * 100   \n\nlet result = ticker.includes(symbol);\n//node.warn(result)\n\nif ( result == true ){\n//    node.warn(\"Ticker:\" + symbol + \" Qty Held:\" + qty + \" Current Price: \" + current_price + \" Profit: \" + profit+ \" Profit %: \" +profitpct)\nmsg.ticker = symbol\nmsg.qty = qty\nmsg.price = current_price\nmsg.profit = profit\nmsg.profitpct - profitpct\nreturn msg;\n\n}\n\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 800,
-        "y": 720,
+        "x": 820,
+        "y": 780,
         "wires": [
             [
                 "69e0e0dc01ae43c4"
@@ -50,8 +50,8 @@
         "arraySpltType": "len",
         "stream": false,
         "addname": "",
-        "x": 570,
-        "y": 720,
+        "x": 550,
+        "y": 780,
         "wires": [
             [
                 "f2bb1527a4f0ecd0"
@@ -69,8 +69,8 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "x": 210,
-        "y": 720,
+        "x": 190,
+        "y": 780,
         "wires": [
             [
                 "1357da31f7d4d203"
@@ -754,8 +754,8 @@
         "z": "ec4ada66ec0cc1cb",
         "name": "Flow 4: Sell once profit target reached",
         "info": "",
-        "x": 210,
-        "y": 660,
+        "x": 190,
+        "y": 720,
         "wires": []
     },
     {
@@ -769,8 +769,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 310,
-        "y": 780,
+        "x": 290,
+        "y": 840,
         "wires": [
             [
                 "a46885c8b17fa30a"
@@ -782,8 +782,8 @@
         "type": "alpaca-order",
         "z": "ec4ada66ec0cc1cb",
         "conf": "e535f42f1df1b25f",
-        "x": 530,
-        "y": 780,
+        "x": 510,
+        "y": 840,
         "wires": [
             [
                 "6b8a04885e43d1db"
@@ -801,8 +801,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 750,
-        "y": 780,
+        "x": 730,
+        "y": 840,
         "wires": [
             [
                 "ebd83659c727f271"
@@ -819,8 +819,8 @@
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 960,
-        "y": 780,
+        "x": 940,
+        "y": 840,
         "wires": [
             []
         ]
@@ -836,8 +836,8 @@
         "arraySpltType": "len",
         "stream": false,
         "addname": "",
-        "x": 1010,
-        "y": 840,
+        "x": 990,
+        "y": 900,
         "wires": [
             [
                 "c0a5bfa369b8e9f8"
@@ -849,8 +849,8 @@
         "type": "alpaca-query-order",
         "z": "ec4ada66ec0cc1cb",
         "conf": "e535f42f1df1b25f",
-        "x": 840,
-        "y": 840,
+        "x": 820,
+        "y": 900,
         "wires": [
             [
                 "ca44b25ec4de086a"
@@ -868,8 +868,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 600,
-        "y": 840,
+        "x": 580,
+        "y": 900,
         "wires": [
             [
                 "eaaa2bf5be4f1a0c"
@@ -887,8 +887,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 510,
-        "y": 900,
+        "x": 490,
+        "y": 960,
         "wires": [
             [
                 "5ba2f92b62de1482"
@@ -905,8 +905,8 @@
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 700,
-        "y": 900,
+        "x": 680,
+        "y": 960,
         "wires": [
             []
         ]
@@ -928,12 +928,108 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 380,
-        "y": 840,
+        "x": 360,
+        "y": 900,
         "wires": [
             [
                 "976e4b7b97823ec7"
             ]
+        ]
+    },
+    {
+        "id": "b4ef2850ddfb2dbe",
+        "type": "alpaca-position-query",
+        "z": "ec4ada66ec0cc1cb",
+        "conf": "e535f42f1df1b25f",
+        "x": 350,
+        "y": 1080,
+        "wires": [
+            [
+                "0fee10cb4ddcebec"
+            ]
+        ]
+    },
+    {
+        "id": "a136d8bd81c875b3",
+        "type": "function",
+        "z": "ec4ada66ec0cc1cb",
+        "name": "update algos table with values from alpaca positions if symbol = BTCUSD",
+        "func": "let symbol = flow.get(\"ticker\")\nlet algo_name = flow.get(\"algo_name\")\n\n\nlet asset_id = msg.payload[\"asset_id\"]\nlet ticker = msg.payload[\"symbol\"]\nlet exchange = msg.payload[\"exchange\"]\nlet asset_class = msg.payload[\"asset_class\"]\nlet asset_marginable = msg.payload[\"asset_marginable\"]\nlet qty = msg.payload[\"qty\"]\nlet avg_entry_price = msg.payload[\"avg_entry_price\"]\nlet side = msg.payload[\"side\"]\nlet market_value = msg.payload[\"market_value\"]\nlet cost_basis = msg.payload[\"cost_basis\"]\nlet unrealized_pl = msg.payload[\"unrealized_pl\"]\nlet unrealized_plpc = msg.payload[\"unrealized_plpc\"]\nlet unrealized_intraday_pl = msg.payload[\"unrealized_intraday_pl\"]\nlet unrealized_intraday_plpc = msg.payload[\"unrealized_intraday_plpc\"]\nlet current_price = msg.payload[\"current_price\"]\nlet lastday_price = msg.payload[\"lastday_price\"]\nlet change_today = msg.payload[\"change_today\"]\nlet qty_available = msg.payload[\"qty_available\"]\n\nqty = parseFloat(qty)\ncurrent_price = parseFloat(current_price)\nlet market = (qty * current_price)\n\nlet profittoday = parseFloat(unrealized_intraday_pl)\nprofittoday = profittoday.toFixed(2)\nlet profittodaypct = (profittoday / market) \n\nlet profit = parseFloat(unrealized_pl) \nprofit = profit.toFixed(2)\n\nlet profitpct = parseFloat(unrealized_plpc)\nprofitpct = profitpct.toFixed(2)\nprofitpct = profitpct * 100   \n\nlet profitpcttoday = parseFloat(unrealized_intraday_plpc)\nprofitpcttoday = profitpcttoday.toFixed(2)\nprofitpcttoday = profitpcttoday * 100\n\n\nlet result = ticker.includes(symbol);\n\n\nif ( result == true ){\n    msg.query = \"update algos set gain_today = \" + unrealized_intraday_pl + \", gain_alltime = \" + unrealized_pl + \", pctgain_today = \" + profitpcttoday + \", pctgain_alltime = \" + profitpct + \" where algo_name = '\" +algo_name+ \"';\"\n    //node.warn(msg.query)\nreturn msg;\n\n}\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 860,
+        "y": 1080,
+        "wires": [
+            [
+                "097e7dfc2d867a76"
+            ]
+        ]
+    },
+    {
+        "id": "0fee10cb4ddcebec",
+        "type": "split",
+        "z": "ec4ada66ec0cc1cb",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 530,
+        "y": 1080,
+        "wires": [
+            [
+                "a136d8bd81c875b3"
+            ]
+        ]
+    },
+    {
+        "id": "58bf8859bba38ee9",
+        "type": "inject",
+        "z": "ec4ada66ec0cc1cb",
+        "name": "GO",
+        "props": [],
+        "repeat": "60",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 170,
+        "y": 1080,
+        "wires": [
+            [
+                "b4ef2850ddfb2dbe"
+            ]
+        ]
+    },
+    {
+        "id": "7e05a278c06e147a",
+        "type": "comment",
+        "z": "ec4ada66ec0cc1cb",
+        "name": "Flow 5: Update Algos table with current performance",
+        "info": "",
+        "x": 240,
+        "y": 1020,
+        "wires": []
+    },
+    {
+        "id": "097e7dfc2d867a76",
+        "type": "postgresql",
+        "z": "ec4ada66ec0cc1cb",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1200,
+        "y": 1080,
+        "wires": [
+            []
         ]
     },
     {
