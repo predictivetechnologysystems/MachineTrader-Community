@@ -25,7 +25,7 @@
         "type": "function",
         "z": "ec4ada66ec0cc1cb",
         "name": "insert into positions if symbol = BTCUSD",
-        "func": "let symbol = flow.get(\"ticker\")\n\n\nlet asset_id = msg.payload[\"asset_id\"]\nlet ticker = msg.payload[\"symbol\"]\nlet exchange = msg.payload[\"exchange\"]\nlet asset_class = msg.payload[\"asset_class\"]\nlet asset_marginable = msg.payload[\"asset_marginable\"]\nlet qty = msg.payload[\"qty\"]\nlet avg_entry_price = msg.payload[\"avg_entry_price\"]\nlet side = msg.payload[\"side\"]\nlet market_value = msg.payload[\"market_value\"]\nlet cost_basis = msg.payload[\"cost_basis\"]\nlet unrealized_pl = msg.payload[\"unrealized_pl\"]\nlet unrealized_plpc = msg.payload[\"unrealized_plpc\"]\nlet unrealized_intraday_pl = msg.payload[\"unrealized_intraday_pl\"]\nlet unrealized_intraday_plpc = msg.payload[\"unrealized_intraday_plpc\"]\nlet current_price = msg.payload[\"current_price\"]\nlet lastday_price = msg.payload[\"lastday_price\"]\nlet change_today = msg.payload[\"change_today\"]\nlet qty_available = msg.payload[\"qty_available\"]\n\nqty = parseFloat(qty) \nqty = qty.toFixed(2)\n\nlet profit = parseFloat(unrealized_pl) \nprofit = profit.toFixed(2)\n\nlet profitpct = parseFloat(unrealized_plpc)\nprofitpct = profitpct.toFixed(2)\nprofitpct = profitpct * 100   \n\nlet result = ticker.includes(symbol);\n//node.warn(result)\n\nif ( result == true ){\n    node.warn(\"Ticker:\" + symbol + \" Qty Held:\" + qty + \" Current Price: \" + current_price + \" Profit: \" + profit+ \" Profit %: \" +profitpct)\nmsg.ticker = symbol\nmsg.qty = qty\nmsg.price = current_price\nmsg.profit = profit\nmsg.profitpct - profitpct\nreturn msg;\n\n}\n\n",
+        "func": "let symbol = flow.get(\"ticker\")\n\n\nlet asset_id = msg.payload[\"asset_id\"]\nlet ticker = msg.payload[\"symbol\"]\nlet exchange = msg.payload[\"exchange\"]\nlet asset_class = msg.payload[\"asset_class\"]\nlet asset_marginable = msg.payload[\"asset_marginable\"]\nlet qty = msg.payload[\"qty\"]\nlet avg_entry_price = msg.payload[\"avg_entry_price\"]\nlet side = msg.payload[\"side\"]\nlet market_value = msg.payload[\"market_value\"]\nlet cost_basis = msg.payload[\"cost_basis\"]\nlet unrealized_pl = msg.payload[\"unrealized_pl\"]\nlet unrealized_plpc = msg.payload[\"unrealized_plpc\"]\nlet unrealized_intraday_pl = msg.payload[\"unrealized_intraday_pl\"]\nlet unrealized_intraday_plpc = msg.payload[\"unrealized_intraday_plpc\"]\nlet current_price = msg.payload[\"current_price\"]\nlet lastday_price = msg.payload[\"lastday_price\"]\nlet change_today = msg.payload[\"change_today\"]\nlet qty_available = msg.payload[\"qty_available\"]\n\n//qty = parseFloat(qty) \n//qty = qty.toFixed(2)\n\nlet profit = parseFloat(unrealized_pl) \nprofit = profit.toFixed(2)\n\nlet profitpct = parseFloat(unrealized_plpc)\nprofitpct = profitpct.toFixed(2)\nprofitpct = profitpct * 100   \n\nlet result = ticker.includes(symbol);\n//node.warn(result)\n\nif ( result == true ){\n    node.warn(\"Ticker:\" + symbol + \" Qty Held:\" + qty + \" Current Price: \" + current_price + \" Profit: \" + profit+ \" Profit %: \" +profitpct)\nmsg.ticker = symbol\nmsg.qty = qty\nmsg.price = current_price\nmsg.profit = profit\nmsg.profitpct - profitpct\nreturn msg;\n\n}\n\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -301,9 +301,7 @@
         "x": 390,
         "y": 260,
         "wires": [
-            [
-                "3c02524013c04de2"
-            ]
+            []
         ]
     },
     {
@@ -316,7 +314,7 @@
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 580,
+        "x": 600,
         "y": 260,
         "wires": [
             []
@@ -365,6 +363,11 @@
             {
                 "p": "query1",
                 "v": "delete from algos where id = 1671796944540",
+                "vt": "str"
+            },
+            {
+                "p": "query2",
+                "v": "update algos set login = 'pta19'",
                 "vt": "str"
             }
         ],
@@ -577,7 +580,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 390,
+        "x": 370,
         "y": 460,
         "wires": [
             [
@@ -591,7 +594,7 @@
         "type": "alpaca-order",
         "z": "ec4ada66ec0cc1cb",
         "conf": "e535f42f1df1b25f",
-        "x": 590,
+        "x": 570,
         "y": 460,
         "wires": [
             [
@@ -671,7 +674,7 @@
         "type": "function",
         "z": "ec4ada66ec0cc1cb",
         "name": "get last closed order paper",
-        "func": "/* Get Flow variables */\n\nlet ordertype = flow.get(\"orders\")\n//let limit  = flow.get(\"cnt\")\nordertype = \"closed\"\n\n/* Setup alpaca request arguments */\n\nmsg.payload = {\n    status: ordertype, // \"open or closed\"\n    limit: \"1\", // default is 500\n\tdirection: \"desc\" //  \"asc or desc\"\n\n}\n\n//node.warn(msg.payload)\n\nreturn msg;",
+        "func": "/* Get Flow variables */\n\nlet ordertype = flow.get(\"orders\")\n//let limit  = flow.get(\"cnt\")\nordertype = \"closed\"\n\n/* Setup alpaca request arguments */\n\nmsg.payload = {\n    status: ordertype, // \"open or closed\"\n    limit: \"10\", // default is 500\n\tdirection: \"desc\" //  \"asc or desc\"\n\n}\n\n//node.warn(msg.payload)\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -760,18 +763,17 @@
         "type": "function",
         "z": "ec4ada66ec0cc1cb",
         "name": "create Alpaca order ",
-        "func": "let ticker = msg.ticker\nlet qty = msg.qty\nlet price = msg.price\nlet profit = msg.profit\nlet profitpct = msg.profitpct\nlet target = flow.get(\"target\")\nlet algo_name = flow.get(\"algo_name\")\nlet subtag = algo_name\n\n//if ( profitpct > target) {\n// create a order for Alpaca\nlet temp = ''\ntemp = {\n    \"symbol\": ticker,\n    \"qty\": qty,\n    \"side\": 'sell',\n    \"type\": 'market',\n//    \"subtag\": subtag,\n    \"time_in_force\": \"gtc\"\n};\n\nmsg.payload = temp\nnode.warn(msg.payload)\nreturn msg;\n//}\n",
+        "func": "let ticker = flow.get(\"alpaca_symbol\")\nlet qty = msg.qty\nlet price = msg.price\nlet profit = msg.profit\nlet profitpct = msg.profitpct\nlet target = flow.get(\"target\")\nlet algo_name = flow.get(\"algo_name\")\nlet subtag = algo_name\n\n//if ( profitpct > target) {\n// create a order for Alpaca\nlet temp = ''\ntemp = {\n    \"symbol\": ticker,\n    \"qty\": qty,\n    \"side\": 'sell',\n    \"type\": 'market',\n//    \"subtag\": subtag,\n    \"time_in_force\": \"gtc\"\n};\n\nmsg.payload = temp\nnode.warn(msg.payload)\nreturn msg;\n//}\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 330,
+        "x": 310,
         "y": 780,
         "wires": [
             [
-                "a46885c8b17fa30a",
-                "71e077a9d5d99969"
+                "a46885c8b17fa30a"
             ]
         ]
     },
