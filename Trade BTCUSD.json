@@ -895,11 +895,12 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 490,
+        "x": 450,
         "y": 960,
         "wires": [
             [
-                "5fff43bf386dbe64"
+                "5fff43bf386dbe64",
+                "07f9a21a9e9d2ddc"
             ]
         ]
     },
@@ -913,7 +914,7 @@
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 680,
+        "x": 660,
         "y": 960,
         "wires": [
             []
@@ -942,6 +943,41 @@
             [
                 "0a331f84eb66ae58"
             ]
+        ]
+    },
+    {
+        "id": "07f9a21a9e9d2ddc",
+        "type": "function",
+        "z": "43137519c421d0f9",
+        "name": "delete from positions",
+        "func": "let ticker = msg.ticker\n\n\nmsg.query = \"delete from positions where symbol = '\" +ticker+ \"';'\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 1020,
+        "wires": [
+            [
+                "b3ca60bc1dcb86a2"
+            ]
+        ]
+    },
+    {
+        "id": "b3ca60bc1dcb86a2",
+        "type": "postgresql",
+        "z": "43137519c421d0f9",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 660,
+        "y": 1020,
+        "wires": [
+            []
         ]
     },
     {
