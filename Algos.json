@@ -1,0 +1,442 @@
+[
+    {
+        "id": "929b487e2a9d3efc",
+        "type": "tab",
+        "label": "Algos",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "6457ab54587379c5",
+        "type": "comment",
+        "z": "929b487e2a9d3efc",
+        "name": "Update from algos able",
+        "info": "",
+        "x": 120,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "1b184041f8763a7c",
+        "type": "inject",
+        "z": "929b487e2a9d3efc",
+        "name": "GO",
+        "props": [],
+        "repeat": "60",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 120,
+        "wires": [
+            [
+                "222179dc3c21ad47"
+            ]
+        ]
+    },
+    {
+        "id": "6ff5183f4b81be7e",
+        "type": "function",
+        "z": "929b487e2a9d3efc",
+        "name": "get totals from positions",
+        "func": "let name = msg.name\nmsg.query = \"select sum(unrealized_intraday_pl) as a, sum(unrealized_pl) as b, sum(market_value) as c from positions where portfolioname = '\" +name+ \"';\"\n//node.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 890,
+        "y": 120,
+        "wires": [
+            [
+                "9be316cea4ebe12c"
+            ]
+        ]
+    },
+    {
+        "id": "a67c375004923c57",
+        "type": "function",
+        "z": "929b487e2a9d3efc",
+        "name": "store sums",
+        "func": "let gain_alltime = msg.payload[\"a\"]\nlet gain_today = msg.payload[\"b\"]\nlet total_value = msg.payload[\"c\"]\nmsg.totalvalue = total_value\nmsg.gainalltime = gain_alltime\nmsg.gaintoday = gain_today\nlet id = msg.name\n//node.warn(\"Gain Today: \" + gain_today + \" Gain Alltime: \" + gain_alltime)\nmsg.query = \"update algos set portfolio_size = \" +total_value+ \", gain_today = \" +gain_today+ \", gain_alltime = \" +gain_alltime+ \" where algo_name = '\" +id+ \"';\"\n//node.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 200,
+        "wires": [
+            [
+                "673da7f4fe3a92e3",
+                "bd6904ceb8678748"
+            ]
+        ]
+    },
+    {
+        "id": "f177fd0f5559605d",
+        "type": "split",
+        "z": "929b487e2a9d3efc",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 290,
+        "y": 200,
+        "wires": [
+            [
+                "a67c375004923c57"
+            ]
+        ]
+    },
+    {
+        "id": "9be316cea4ebe12c",
+        "type": "postgresql",
+        "z": "929b487e2a9d3efc",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 160,
+        "y": 200,
+        "wires": [
+            [
+                "f177fd0f5559605d"
+            ]
+        ]
+    },
+    {
+        "id": "673da7f4fe3a92e3",
+        "type": "postgresql",
+        "z": "929b487e2a9d3efc",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 580,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "bd6904ceb8678748",
+        "type": "function",
+        "z": "929b487e2a9d3efc",
+        "name": "update algos table",
+        "func": "let gain_alltime = msg.gainalltime\nlet gain_today = msg.gaintoday\nlet total_value = msg.totalvalue\nlet id = msg.name\nlet pctgainalltime = 0\nlet pctgaintoday = 0\n\nif (total_value > 0){\n     pctgainalltime = (gain_alltime / total_value) * 100\n     pctgaintoday = (gain_today / total_value) * 100\n}\n\n\nmsg.query = \"update algos set pctgain_today = \" + pctgaintoday + \", pctgain_alltime  = \" + pctgainalltime + \" where algo_name = '\" + id + \"';\"\n//node.warn(msg.query)\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 260,
+        "wires": [
+            [
+                "7b64f27e80a236d3"
+            ]
+        ]
+    },
+    {
+        "id": "7b64f27e80a236d3",
+        "type": "postgresql",
+        "z": "929b487e2a9d3efc",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 480,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "222179dc3c21ad47",
+        "type": "function",
+        "z": "929b487e2a9d3efc",
+        "name": "get algo name",
+        "func": "msg.query = \"select algo_name from algos\"\n//node.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 260,
+        "y": 120,
+        "wires": [
+            [
+                "ab5b4f46d9b834ea"
+            ]
+        ]
+    },
+    {
+        "id": "ab5b4f46d9b834ea",
+        "type": "postgresql",
+        "z": "929b487e2a9d3efc",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 420,
+        "y": 120,
+        "wires": [
+            [
+                "07fcd5d3a884db21"
+            ]
+        ]
+    },
+    {
+        "id": "07fcd5d3a884db21",
+        "type": "split",
+        "z": "929b487e2a9d3efc",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 550,
+        "y": 120,
+        "wires": [
+            [
+                "f0556f326e438955"
+            ]
+        ]
+    },
+    {
+        "id": "f0556f326e438955",
+        "type": "function",
+        "z": "929b487e2a9d3efc",
+        "name": "store sums",
+        "func": "let name  = msg.payload[\"algo_name\"]\n//node.warn(\"Algo name: \" +name)\nmsg.name = name\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 120,
+        "wires": [
+            [
+                "6ff5183f4b81be7e"
+            ]
+        ]
+    },
+    {
+        "id": "6287c14b0a9a7016",
+        "type": "postgresql",
+        "z": "929b487e2a9d3efc",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 840,
+        "y": 460,
+        "wires": [
+            [
+                "5fa928a384d8369c"
+            ]
+        ]
+    },
+    {
+        "id": "f80e9321720854d1",
+        "type": "function",
+        "z": "929b487e2a9d3efc",
+        "name": "calculate benchmark changes",
+        "func": "let start = msg.payload[\"benchmark_start\"]\nlet close = global.get(\"spy_close\")\nlet current = global.get(\"spy_current\")\n//node.warn(\"Start: \" +start+ \" Close: \" +close+ \" Current: \" +current) \n\nlet gain_alltime = (current - start)\nlet gain_today = (current - close)\n\nlet pctbench_today = (gain_today / start) * 100\nlet pctbench_alltime = (gain_alltime / start) * 100\n\n\nmsg.query = \"update algos set pctbench_today = \" + pctbench_today + \", pctbench_alltime = \" + pctbench_alltime+ \", info_ratio = (pctgain_alltime - pctbench_alltime);\"\n//node.warn(msg.query)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 290,
+        "y": 520,
+        "wires": [
+            [
+                "070f2adb4184e041"
+            ]
+        ]
+    },
+    {
+        "id": "5fa928a384d8369c",
+        "type": "split",
+        "z": "929b487e2a9d3efc",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 970,
+        "y": 460,
+        "wires": [
+            [
+                "f80e9321720854d1"
+            ]
+        ]
+    },
+    {
+        "id": "bc33a47edce2f3a7",
+        "type": "comment",
+        "z": "929b487e2a9d3efc",
+        "name": "Update becnhamrks",
+        "info": "",
+        "x": 130,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "1d6105557c8abe96",
+        "type": "inject",
+        "z": "929b487e2a9d3efc",
+        "name": "GO",
+        "props": [],
+        "repeat": "60",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 460,
+        "wires": [
+            [
+                "ccc31c34dd2b701a"
+            ]
+        ]
+    },
+    {
+        "id": "ccc31c34dd2b701a",
+        "type": "function",
+        "z": "929b487e2a9d3efc",
+        "name": "get algo name",
+        "func": "msg.query = \"select algo_name from algos\"\n//node.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 260,
+        "y": 460,
+        "wires": [
+            [
+                "25546530d7c035ed"
+            ]
+        ]
+    },
+    {
+        "id": "25546530d7c035ed",
+        "type": "postgresql",
+        "z": "929b487e2a9d3efc",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 420,
+        "y": 460,
+        "wires": [
+            [
+                "fa88c1c47b1d4817"
+            ]
+        ]
+    },
+    {
+        "id": "fa88c1c47b1d4817",
+        "type": "split",
+        "z": "929b487e2a9d3efc",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 550,
+        "y": 460,
+        "wires": [
+            [
+                "3dae54f3cce36f20"
+            ]
+        ]
+    },
+    {
+        "id": "3dae54f3cce36f20",
+        "type": "function",
+        "z": "929b487e2a9d3efc",
+        "name": "store sums",
+        "func": "let name  = msg.payload[\"algo_name\"]\n//node.warn(\"Algo name: \" +name)\nmsg.query = \"select benchmark_start from algos where algo_name = '\" + name + \"';\"\nmsg.name = name\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 460,
+        "wires": [
+            [
+                "6287c14b0a9a7016"
+            ]
+        ]
+    },
+    {
+        "id": "070f2adb4184e041",
+        "type": "postgresql",
+        "z": "929b487e2a9d3efc",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 500,
+        "y": 520,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7455395cf269fb2b",
+        "type": "postgreSQLConfig",
+        "name": "",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "postgres",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "docker",
+        "userFieldType": "str",
+        "password": "docker",
+        "passwordFieldType": "str"
+    }
+]

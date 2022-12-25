@@ -1,0 +1,619 @@
+[
+    {
+        "id": "89897d77a92ca45b",
+        "type": "tab",
+        "label": "Positions",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "c937461cae11a5b5",
+        "type": "function",
+        "z": "89897d77a92ca45b",
+        "name": "get list of portfolionames from order_confirms",
+        "func": "let sql = \"select distinct subtag from order_confirms\"\nmsg.query = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 120,
+        "wires": [
+            [
+                "94278a2d722019e6"
+            ]
+        ]
+    },
+    {
+        "id": "a5c8591dd6323598",
+        "type": "inject",
+        "z": "89897d77a92ca45b",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 120,
+        "wires": [
+            [
+                "c937461cae11a5b5"
+            ]
+        ]
+    },
+    {
+        "id": "bc4481865f98ca08",
+        "type": "split",
+        "z": "89897d77a92ca45b",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 770,
+        "y": 120,
+        "wires": [
+            [
+                "a43c9e5dd8e72855"
+            ]
+        ]
+    },
+    {
+        "id": "a43c9e5dd8e72855",
+        "type": "function",
+        "z": "89897d77a92ca45b",
+        "name": "get list of tickers to buy",
+        "func": "let subtag = msg.payload[\"subtag\"]\nlet sql = \"select distinct symbol from order_confirms where subtag = '\" +subtag+ \"';\"\nmsg.query = sql\n//node.warn(msg.query)\nmsg.subtag = subtag\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 950,
+        "y": 120,
+        "wires": [
+            [
+                "b1d8aec27b6de6eb"
+            ]
+        ]
+    },
+    {
+        "id": "94278a2d722019e6",
+        "type": "postgresql",
+        "z": "89897d77a92ca45b",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 640,
+        "y": 120,
+        "wires": [
+            [
+                "bc4481865f98ca08"
+            ]
+        ]
+    },
+    {
+        "id": "b1d8aec27b6de6eb",
+        "type": "postgresql",
+        "z": "89897d77a92ca45b",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1140,
+        "y": 120,
+        "wires": [
+            [
+                "c6f64b4ef67789e6"
+            ]
+        ]
+    },
+    {
+        "id": "c6f64b4ef67789e6",
+        "type": "delay",
+        "z": "89897d77a92ca45b",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 150,
+        "y": 180,
+        "wires": [
+            [
+                "4c8a407d26ecda1c"
+            ]
+        ]
+    },
+    {
+        "id": "c2f3c46fd04e352f",
+        "type": "function",
+        "z": "89897d77a92ca45b",
+        "name": "get list of tickers to buy",
+        "func": "let symbol = msg.payload[\"symbol\"]\n//node.warn(symbol)\nmsg.symbol = symbol\nlet sql = \"select symbol from positions where symbol = '\" +symbol+ \"';\"\nmsg.sql = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 180,
+        "wires": [
+            [
+                "dfb1a7540461993a"
+            ]
+        ]
+    },
+    {
+        "id": "4c8a407d26ecda1c",
+        "type": "split",
+        "z": "89897d77a92ca45b",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 290,
+        "y": 180,
+        "wires": [
+            [
+                "c2f3c46fd04e352f"
+            ]
+        ]
+    },
+    {
+        "id": "f2b6cd4fb85bba76",
+        "type": "alpaca-position-query",
+        "z": "89897d77a92ca45b",
+        "conf": "e535f42f1df1b25f",
+        "x": 230,
+        "y": 300,
+        "wires": [
+            [
+                "f28c8101ddf0b8c9"
+            ]
+        ]
+    },
+    {
+        "id": "f28c8101ddf0b8c9",
+        "type": "split",
+        "z": "89897d77a92ca45b",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 410,
+        "y": 300,
+        "wires": [
+            [
+                "efd63c2642b0add0"
+            ]
+        ]
+    },
+    {
+        "id": "2f19d1150862955b",
+        "type": "postgresql",
+        "z": "89897d77a92ca45b",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 900,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "efd63c2642b0add0",
+        "type": "function",
+        "z": "89897d77a92ca45b",
+        "name": "insert into portfolios from order_confirms",
+        "func": "let symbol = msg.symbol\nlet algo_name = flow.get(\"algo_name\")\n\n\nlet asset_id = msg.payload[\"asset_id\"]\nlet ticker = msg.payload[\"symbol\"]\nlet exchange = msg.payload[\"exchange\"]\nlet asset_class = msg.payload[\"asset_class\"]\nlet asset_marginable = msg.payload[\"asset_marginable\"]\nlet qty = msg.payload[\"qty\"]\nlet avg_entry_price = msg.payload[\"avg_entry_price\"]\nlet side = msg.payload[\"side\"]\nlet market_value = msg.payload[\"market_value\"]\nlet cost_basis = msg.payload[\"cost_basis\"]\nlet unrealized_pl = msg.payload[\"unrealized_pl\"]\nlet unrealized_plpc = msg.payload[\"unrealized_plpc\"]\nlet unrealized_intraday_pl = msg.payload[\"unrealized_intraday_pl\"]\nlet unrealized_intraday_plpc = msg.payload[\"unrealized_intraday_plpc\"]\nlet current_price = msg.payload[\"current_price\"]\nlet lastday_price = msg.payload[\"lastday_price\"]\nlet change_today = msg.payload[\"change_today\"]\nlet qty_available = msg.payload[\"qty_available\"]\n\nqty = parseFloat(qty)\ncurrent_price = parseFloat(current_price)\nlet market = (qty * current_price)\n\nlet profittoday = parseFloat(unrealized_intraday_pl)\nprofittoday = profittoday.toFixed(2)\n\nlet profit = parseFloat(unrealized_pl) \nprofit = profit.toFixed(2)\n\n\nlet profittodaypct = (profittoday / market) * 100 \n\nlet profitpct = (profit / market) * 100 \n\n//node.warn(\"Symbol: \" +symbol+ \" Ticker: \" +ticker)\n\nlet result = ticker.includes(symbol);\n\n\nif ( result == true ){\n    msg.query = \"insert into positions (asset_id, account, symbol, exchange, asset_class, asset_marginable, qty, avg_entry_price, side, market_value, cost_basis, unrealized_pl, unrealized_plpc, unrealized_intraday_pl, unrealized_intraday_plpc, current_price, lastday_price, change_today, qty_available, status) values ('\" + asset_id + \"', 'paper', '\" + symbol + \"', '\" + exchange + \"', '\" + asset_class + \"', '\" + asset_marginable + \"', '\" + qty + \"', '\" + avg_entry_price + \"', '\" + side + \"', '\" + market_value + \"', '\" + cost_basis + \"', '\" + unrealized_pl + \"', '\" + unrealized_plpc + \"', '\" + unrealized_intraday_pl + \"', '\" + unrealized_intraday_plpc + \"', '\" + current_price + \"', '\" + lastday_price + \"', '\" + change_today + \"', '\" + qty_available + \"', 'live'); \"\n    node.warn(msg.query)\n    return msg;\n\n}\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 640,
+        "y": 300,
+        "wires": [
+            [
+                "2f19d1150862955b"
+            ]
+        ]
+    },
+    {
+        "id": "03a92b061ca9ec50",
+        "type": "postgresql",
+        "z": "89897d77a92ca45b",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 780,
+        "y": 380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e28185af33d663b5",
+        "type": "function",
+        "z": "89897d77a92ca45b",
+        "name": "update ticker names from alpaca_assets",
+        "func": "msg.query = \"UPDATE positions SET name = alpaca_assets.name FROM alpaca_assets where positions.symbol = alpaca_assets.symbol\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 380,
+        "wires": [
+            [
+                "03a92b061ca9ec50"
+            ]
+        ]
+    },
+    {
+        "id": "968408de7022b8e0",
+        "type": "postgresql",
+        "z": "89897d77a92ca45b",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 780,
+        "y": 420,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d8704954208f2264",
+        "type": "function",
+        "z": "89897d77a92ca45b",
+        "name": "update portfolio names from order_confirms",
+        "func": "msg.query = \"UPDATE positions SET portfolioname = order_confirms.subtag, orderid = order_confirms.client_order_id FROM order_confirms where positions.symbol = order_confirms.symbol\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 530,
+        "y": 420,
+        "wires": [
+            [
+                "968408de7022b8e0"
+            ]
+        ]
+    },
+    {
+        "id": "b4b6a9e8ac52d847",
+        "type": "postgresql",
+        "z": "89897d77a92ca45b",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 780,
+        "y": 460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "faf70800eef7a4b7",
+        "type": "function",
+        "z": "89897d77a92ca45b",
+        "name": "update portfolio names from order_confirms",
+        "func": "msg.query = \"UPDATE positions SET id = algos.id FROM algos where algos.algo_name = positions.portfolioname\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 530,
+        "y": 460,
+        "wires": [
+            [
+                "b4b6a9e8ac52d847"
+            ]
+        ]
+    },
+    {
+        "id": "327ff05148425158",
+        "type": "inject",
+        "z": "89897d77a92ca45b",
+        "name": "GO",
+        "props": [],
+        "repeat": "60",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 420,
+        "wires": [
+            [
+                "b2ba717f385f7de9",
+                "9f047c4de0c8dbf7",
+                "654395ed9b28b7d7"
+            ]
+        ]
+    },
+    {
+        "id": "02acf116b26de725",
+        "type": "inject",
+        "z": "89897d77a92ca45b",
+        "name": "display positiions",
+        "props": [
+            {
+                "p": "query",
+                "v": "select * from positions",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 120,
+        "y": 40,
+        "wires": [
+            [
+                "3b5f8a6331713102"
+            ]
+        ]
+    },
+    {
+        "id": "3b5f8a6331713102",
+        "type": "postgresql",
+        "z": "89897d77a92ca45b",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 280,
+        "y": 40,
+        "wires": [
+            [
+                "34c0389f3fad145f"
+            ]
+        ]
+    },
+    {
+        "id": "34c0389f3fad145f",
+        "type": "debug",
+        "z": "89897d77a92ca45b",
+        "name": "debug 227",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 430,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "b2ba717f385f7de9",
+        "type": "delay",
+        "z": "89897d77a92ca45b",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 280,
+        "y": 380,
+        "wires": [
+            [
+                "e28185af33d663b5"
+            ]
+        ]
+    },
+    {
+        "id": "9f047c4de0c8dbf7",
+        "type": "delay",
+        "z": "89897d77a92ca45b",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "2",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 280,
+        "y": 420,
+        "wires": [
+            [
+                "d8704954208f2264"
+            ]
+        ]
+    },
+    {
+        "id": "654395ed9b28b7d7",
+        "type": "delay",
+        "z": "89897d77a92ca45b",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "3",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 280,
+        "y": 460,
+        "wires": [
+            [
+                "faf70800eef7a4b7"
+            ]
+        ]
+    },
+    {
+        "id": "dfb1a7540461993a",
+        "type": "function",
+        "z": "89897d77a92ca45b",
+        "name": "get list of tickers to buy",
+        "func": "let sql = msg.sql\n//node.warn(sql)\nmsg.query = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
+        "y": 180,
+        "wires": [
+            [
+                "e41ed1e9cd9b56c3"
+            ]
+        ]
+    },
+    {
+        "id": "e41ed1e9cd9b56c3",
+        "type": "postgresql",
+        "z": "89897d77a92ca45b",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 900,
+        "y": 180,
+        "wires": [
+            [
+                "a6fd81ad7ceb1cbe"
+            ]
+        ]
+    },
+    {
+        "id": "fc88ca0224167576",
+        "type": "function",
+        "z": "89897d77a92ca45b",
+        "name": "continue only if symbol is new",
+        "func": "let ticker = msg.payload[\"symbol\"]\nlet symbol = msg.symbol\n\nlet result = ticker.includes(symbol);\n\n\nif (result == false) {\n    node.warn(\"symbol doesn't exist in position table\")\n    return msg;\n\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 240,
+        "wires": [
+            [
+                "f2b6cd4fb85bba76"
+            ]
+        ]
+    },
+    {
+        "id": "a6fd81ad7ceb1cbe",
+        "type": "split",
+        "z": "89897d77a92ca45b",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 270,
+        "y": 240,
+        "wires": [
+            [
+                "fc88ca0224167576"
+            ]
+        ]
+    },
+    {
+        "id": "7455395cf269fb2b",
+        "type": "postgreSQLConfig",
+        "name": "",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "postgres",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "docker",
+        "userFieldType": "str",
+        "password": "docker",
+        "passwordFieldType": "str"
+    },
+    {
+        "id": "e535f42f1df1b25f",
+        "type": "alpaca-account",
+        "name": "paper",
+        "keyId": "PKH06YB3E5D1CK3M6M8Q",
+        "paper": true
+    }
+]
