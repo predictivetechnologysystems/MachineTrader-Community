@@ -1,0 +1,555 @@
+[
+    {
+        "id": "74c9bacbaab10ee1",
+        "type": "comment",
+        "z": "2923e96769e4646a",
+        "name": "RUN ONCE AT START: Create alpaca_assets table",
+        "info": "",
+        "x": 210,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "a1b5172889fec805",
+        "type": "inject",
+        "z": "2923e96769e4646a",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 680,
+        "wires": [
+            [
+                "4a99fbcfc19ff85c"
+            ]
+        ]
+    },
+    {
+        "id": "4a99fbcfc19ff85c",
+        "type": "function",
+        "z": "2923e96769e4646a",
+        "name": "get symbols from alpaca_assets",
+        "func": "msg.query = \"select symbol from alpaca_assets\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 680,
+        "wires": [
+            [
+                "23803706a1647dc0"
+            ]
+        ]
+    },
+    {
+        "id": "38018774923466fa",
+        "type": "function",
+        "z": "2923e96769e4646a",
+        "name": "update polygon_symbol",
+        "func": "let symbol = msg.payload[\"symbol\"]\n//node.warn(\"Symbol: \" +symbol)\n\n//let polygon_symbol = \"X:\" +symbol\nlet polygon_symbol = symbol\nmsg.query = \"update alpaca_assets set polygon_symbol = '\" +polygon_symbol+ \"' where symbol = '\" +symbol+ \"' and status = 'active';\"\n//node.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 850,
+        "y": 680,
+        "wires": [
+            [
+                "302cba71944b9638"
+            ]
+        ]
+    },
+    {
+        "id": "302cba71944b9638",
+        "type": "postgresql",
+        "z": "2923e96769e4646a",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1040,
+        "y": 680,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6ce0a34f5ba58c0f",
+        "type": "split",
+        "z": "2923e96769e4646a",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 670,
+        "y": 680,
+        "wires": [
+            [
+                "38018774923466fa"
+            ]
+        ]
+    },
+    {
+        "id": "23803706a1647dc0",
+        "type": "postgresql",
+        "z": "2923e96769e4646a",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 540,
+        "y": 680,
+        "wires": [
+            [
+                "6ce0a34f5ba58c0f"
+            ]
+        ]
+    },
+    {
+        "id": "f2e2cd12f4d65286",
+        "type": "inject",
+        "z": "2923e96769e4646a",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 720,
+        "wires": [
+            [
+                "549764d852f9fea1"
+            ]
+        ]
+    },
+    {
+        "id": "549764d852f9fea1",
+        "type": "function",
+        "z": "2923e96769e4646a",
+        "name": "get crypto symbols from alpaca_assets",
+        "func": "msg.query = \"select symbol from alpaca_assets where exchange = 'FTXU'\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 720,
+        "wires": [
+            [
+                "757f9d4e4c5c98b3"
+            ]
+        ]
+    },
+    {
+        "id": "8e4ed6fdfb9def68",
+        "type": "function",
+        "z": "2923e96769e4646a",
+        "name": "update polygon_symbol",
+        "func": "let symbol = msg.payload[\"symbol\"]\n//node.warn(\"Symbol: \" +symbol)\n\nlet alpaca_symbol = symbol.replace(\"USD\",\"/USD\")\nlet polygon_symbol = \"X:\" +symbol\n\nmsg.query = \"update alpaca_assets set alpaca_symbol = '\" +alpaca_symbol+ \"', polygon_symbol = '\" +polygon_symbol+ \"' where symbol = '\" +symbol+ \"' and status = 'active';\"\n//node.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 910,
+        "y": 720,
+        "wires": [
+            [
+                "84f0b51f26ca1e4c"
+            ]
+        ]
+    },
+    {
+        "id": "84f0b51f26ca1e4c",
+        "type": "postgresql",
+        "z": "2923e96769e4646a",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1100,
+        "y": 720,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "19b474724cf8279a",
+        "type": "split",
+        "z": "2923e96769e4646a",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 730,
+        "y": 720,
+        "wires": [
+            [
+                "8e4ed6fdfb9def68"
+            ]
+        ]
+    },
+    {
+        "id": "757f9d4e4c5c98b3",
+        "type": "postgresql",
+        "z": "2923e96769e4646a",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 600,
+        "y": 720,
+        "wires": [
+            [
+                "19b474724cf8279a"
+            ]
+        ]
+    },
+    {
+        "id": "5db782d3ba296671",
+        "type": "inject",
+        "z": "2923e96769e4646a",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 560,
+        "wires": [
+            [
+                "1e8fe84fce7a761b",
+                "c67ef362a6566c99"
+            ]
+        ]
+    },
+    {
+        "id": "e56339b050007461",
+        "type": "alpaca-asset-query",
+        "z": "2923e96769e4646a",
+        "conf": "e535f42f1df1b25f",
+        "x": 310,
+        "y": 640,
+        "wires": [
+            [
+                "d05ce006009a9817"
+            ]
+        ]
+    },
+    {
+        "id": "1e8fe84fce7a761b",
+        "type": "function",
+        "z": "2923e96769e4646a",
+        "name": "drop alpaca_assets",
+        "func": "msg.query = \"drop table alpaca_assets\"\n//msg.query = \"CREATE TABLE IF NOT EXISTS alpaca_assets(id VARCHAR(100), symbol varchar(10) PRIMARY KEY, name VARCHAR(200), alpaca_symbol VARCHAR(10), polygon_symbol VARCHAR(10), easy_to_borrow BOOLEAN, exchange VARCHAR(10), fractionable BOOLEAN, marginable BOOLEAN, status VARCHAR(10), tradeable BOOLEAN)\"\nnode.warn(msg.query)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 560,
+        "wires": [
+            [
+                "f686a20e633bb325"
+            ]
+        ]
+    },
+    {
+        "id": "f686a20e633bb325",
+        "type": "postgresql",
+        "z": "2923e96769e4646a",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 500,
+        "y": 560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c67ef362a6566c99",
+        "type": "delay",
+        "z": "2923e96769e4646a",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 140,
+        "y": 600,
+        "wires": [
+            [
+                "7b5479ca5f70fd0e",
+                "ef35789ee9904608"
+            ]
+        ]
+    },
+    {
+        "id": "7b5479ca5f70fd0e",
+        "type": "function",
+        "z": "2923e96769e4646a",
+        "name": "create alpaca_assets",
+        "func": "msg.query = \"CREATE TABLE IF NOT EXISTS alpaca_assets(id VARCHAR(100), symbol varchar(20) PRIMARY KEY, name VARCHAR(5000), alpaca_symbol VARCHAR(40), polygon_symbol VARCHAR(40), easy_to_borrow BOOLEAN, exchange VARCHAR(40), shortable BOOLEAN, fractionable BOOLEAN, marginable BOOLEAN, status VARCHAR(20), tradable BOOLEAN)\"\nnode.warn(msg.query)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 600,
+        "wires": [
+            [
+                "9c4978c0eddefd84"
+            ]
+        ]
+    },
+    {
+        "id": "9c4978c0eddefd84",
+        "type": "postgresql",
+        "z": "2923e96769e4646a",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 520,
+        "y": 600,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ef35789ee9904608",
+        "type": "delay",
+        "z": "2923e96769e4646a",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "2",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 120,
+        "y": 640,
+        "wires": [
+            [
+                "e56339b050007461"
+            ]
+        ]
+    },
+    {
+        "id": "9c14a7afa1f954c2",
+        "type": "function",
+        "z": "2923e96769e4646a",
+        "name": "create index",
+        "func": "msg.query = \"CREATE index status on alpaca_assets (status)\"\nnode.warn(msg.query)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 830,
+        "y": 560,
+        "wires": [
+            [
+                "6f4a1b3b81bbbad9"
+            ]
+        ]
+    },
+    {
+        "id": "6f4a1b3b81bbbad9",
+        "type": "postgresql",
+        "z": "2923e96769e4646a",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 980,
+        "y": 560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0b858b1335d66a24",
+        "type": "inject",
+        "z": "2923e96769e4646a",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 690,
+        "y": 560,
+        "wires": [
+            [
+                "9c14a7afa1f954c2"
+            ]
+        ]
+    },
+    {
+        "id": "a564b9d5c5747b26",
+        "type": "function",
+        "z": "2923e96769e4646a",
+        "name": "insert into alpaca_assets",
+        "func": "let symbol = msg.payload[\"symbol\"]\nlet name = msg.payload[\"name\"]\nlet exchange = msg.payload[\"exchange\"]\nlet status = msg.payload[\"status\"]\nlet shortable = msg.payload[\"shortable\"]\nlet tradable = msg.payload[\"tradable\"]\nlet fractionable = msg.payload[\"fractionable\"]\nlet marginable = msg.payload[\"marginable\"]\nlet easy = msg.payload[\"easy_to_borrow\"]\nname = name.replace(\"'\",\"\")\nsymbol = symbol.replace(\"/\",\"\")\n\nmsg.query = \"insert into alpaca_assets (symbol, name, exchange, tradable, shortable, fractionable, marginable, easy_to_borrow, status)  values ('\" + symbol + \"','\" + name + \"','\" + exchange + \"','\" + tradable + \"','\" + shortable + \"','\" +fractionable+ \"','\" +marginable+ \"','\" +easy+ \"','\" +status+ \"');\"\n\n//node.warn(msg.query)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 640,
+        "wires": [
+            [
+                "b021f654860938f8"
+            ]
+        ]
+    },
+    {
+        "id": "b021f654860938f8",
+        "type": "postgresql",
+        "z": "2923e96769e4646a",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1000,
+        "y": 640,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "415a8f6bfb46b110",
+        "type": "switch",
+        "z": "2923e96769e4646a",
+        "name": "active only",
+        "property": "payload[\"status\"]",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "active",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 610,
+        "y": 640,
+        "wires": [
+            [
+                "a564b9d5c5747b26"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "d05ce006009a9817",
+        "type": "split",
+        "z": "2923e96769e4646a",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 470,
+        "y": 640,
+        "wires": [
+            [
+                "415a8f6bfb46b110"
+            ]
+        ]
+    },
+    {
+        "id": "7455395cf269fb2b",
+        "type": "postgreSQLConfig",
+        "name": "",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "postgres",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "docker",
+        "userFieldType": "str",
+        "password": "docker",
+        "passwordFieldType": "str"
+    },
+    {
+        "id": "e535f42f1df1b25f",
+        "type": "alpaca-account",
+        "name": "paper",
+        "keyId": "PK4TI6GDJ7NN146CF8YA",
+        "paper": true
+    }
+]
