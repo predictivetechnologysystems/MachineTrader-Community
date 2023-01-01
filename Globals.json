@@ -1,0 +1,470 @@
+[
+    {
+        "id": "ddd254ede54bb562",
+        "type": "tab",
+        "label": "Globals",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "7c4d99924aaa2ae0",
+        "type": "comment",
+        "z": "ddd254ede54bb562",
+        "name": "Get benchmark SPY",
+        "info": "",
+        "x": 150,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "b67b7523d56f5537",
+        "type": "polygon-last-trade-v3",
+        "z": "ddd254ede54bb562",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "x": 560,
+        "y": 120,
+        "wires": [
+            [
+                "f807a5ee994ad125"
+            ]
+        ]
+    },
+    {
+        "id": "5eaf70e9c50d1846",
+        "type": "function-npm",
+        "z": "ddd254ede54bb562",
+        "name": "Symbol",
+        "func": "let symbol = 'SPY'\nlet cnt = 1\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: cnt,\n}\n\nmsg.topic = symbol\n//node.warn(msg.symbol)\n//node.warn(msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 360,
+        "y": 120,
+        "wires": [
+            [
+                "b67b7523d56f5537"
+            ]
+        ]
+    },
+    {
+        "id": "f807a5ee994ad125",
+        "type": "function",
+        "z": "ddd254ede54bb562",
+        "name": "update query",
+        "func": "let price = 0\n\nfor (let item of msg.payload.results) {\n    price = item.price;\n}\n\nmsg.price = price\n\nnode.warn(price)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 120,
+        "wires": [
+            [
+                "ee55ed3076ddace7"
+            ]
+        ]
+    },
+    {
+        "id": "63cbc0631b4d0cc6",
+        "type": "inject",
+        "z": "ddd254ede54bb562",
+        "name": "Get SPY at 6 AM",
+        "props": [],
+        "repeat": "",
+        "crontab": "00 06 * * 1,2,3,4,5,6",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 170,
+        "y": 120,
+        "wires": [
+            [
+                "5eaf70e9c50d1846"
+            ]
+        ]
+    },
+    {
+        "id": "ee55ed3076ddace7",
+        "type": "change",
+        "z": "ddd254ede54bb562",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "spy_start",
+                "pt": "global",
+                "to": "price",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 930,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2e1b93b56612d7a5",
+        "type": "polygon-last-trade-v3",
+        "z": "ddd254ede54bb562",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "x": 560,
+        "y": 160,
+        "wires": [
+            [
+                "c8f7875b1ed6371f"
+            ]
+        ]
+    },
+    {
+        "id": "f6dc96d091a41784",
+        "type": "function-npm",
+        "z": "ddd254ede54bb562",
+        "name": "Symbol",
+        "func": "let symbol = 'SPY'\nlet cnt = 1\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: cnt,\n}\n\nmsg.topic = symbol\n//node.warn(msg.symbol)\n//node.warn(msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 360,
+        "y": 160,
+        "wires": [
+            [
+                "2e1b93b56612d7a5"
+            ]
+        ]
+    },
+    {
+        "id": "c8f7875b1ed6371f",
+        "type": "function",
+        "z": "ddd254ede54bb562",
+        "name": "update query",
+        "func": "let price = 0\n\nfor (let item of msg.payload.results) {\n    price = item.price;\n}\n\nmsg.price = price\n\nnode.warn(price)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 160,
+        "wires": [
+            [
+                "d179b965fb15a841"
+            ]
+        ]
+    },
+    {
+        "id": "08f1bf0c9df9aa02",
+        "type": "inject",
+        "z": "ddd254ede54bb562",
+        "name": "Get SPY at 8 pm AM",
+        "props": [],
+        "repeat": "",
+        "crontab": "00 04 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 180,
+        "y": 160,
+        "wires": [
+            [
+                "f6dc96d091a41784"
+            ]
+        ]
+    },
+    {
+        "id": "d179b965fb15a841",
+        "type": "change",
+        "z": "ddd254ede54bb562",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "spy_close",
+                "pt": "global",
+                "to": "price",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 940,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "02d45bee228ffbb0",
+        "type": "polygon-last-trade-v3",
+        "z": "ddd254ede54bb562",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "x": 560,
+        "y": 200,
+        "wires": [
+            [
+                "480c51eb5d7a32e1"
+            ]
+        ]
+    },
+    {
+        "id": "0fd2c53f46ae78f6",
+        "type": "function-npm",
+        "z": "ddd254ede54bb562",
+        "name": "Symbol",
+        "func": "let symbol = 'SPY'\nlet cnt = 1\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: cnt,\n}\n\nmsg.topic = symbol\n//node.warn(msg.symbol)\n//node.warn(msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 360,
+        "y": 200,
+        "wires": [
+            [
+                "02d45bee228ffbb0"
+            ]
+        ]
+    },
+    {
+        "id": "480c51eb5d7a32e1",
+        "type": "function",
+        "z": "ddd254ede54bb562",
+        "name": "update query",
+        "func": "let price = 0\n\nfor (let item of msg.payload.results) {\n    price = item.price;\n}\n\nmsg.price = price\n\n//node.warn(price)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 200,
+        "wires": [
+            [
+                "9ac882bdba0c7fd0"
+            ]
+        ]
+    },
+    {
+        "id": "d0e3478b318668b8",
+        "type": "inject",
+        "z": "ddd254ede54bb562",
+        "name": "Get current SPY ",
+        "props": [],
+        "repeat": "60",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 170,
+        "y": 200,
+        "wires": [
+            [
+                "0fd2c53f46ae78f6"
+            ]
+        ]
+    },
+    {
+        "id": "9ac882bdba0c7fd0",
+        "type": "change",
+        "z": "ddd254ede54bb562",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "spy_current",
+                "pt": "global",
+                "to": "price",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 940,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c12c5ec3ec79abb7",
+        "type": "function",
+        "z": "ddd254ede54bb562",
+        "name": "create array for average",
+        "func": "// this function reuses old variable names from time seeries arrays.  You can rename if you like.\n\nconst prices = [];\nlet item = 0\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload) {\n    price = item.sent;\n    prices.push(price);  \n//    node.warn(price)\n\n}\n\n//node.warn(prices)\nmsg.payload = prices\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 400,
+        "wires": [
+            [
+                "e36c6bd1a978b432"
+            ]
+        ]
+    },
+    {
+        "id": "905f93a3092d654a",
+        "type": "function",
+        "z": "ddd254ede54bb562",
+        "name": "display avg",
+        "func": "let avg = msg.moving_avg\navg = avg.toFixed(3)\n//node.warn(\" Moving Avg: \" +avg)\nmsg.moving_avg = avg\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 910,
+        "y": 400,
+        "wires": [
+            [
+                "31a9db2b98d193f3"
+            ]
+        ]
+    },
+    {
+        "id": "8c44159cddab4781",
+        "type": "mysql",
+        "z": "ddd254ede54bb562",
+        "mydb": "f8ca5a41.3e1448",
+        "name": "news",
+        "x": 390,
+        "y": 400,
+        "wires": [
+            [
+                "c12c5ec3ec79abb7"
+            ]
+        ]
+    },
+    {
+        "id": "368b51148ccf13d1",
+        "type": "inject",
+        "z": "ddd254ede54bb562",
+        "name": "select sent from  headlines ",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "select sent from headlines where sent is not null order by time_pub desc limit 1000;",
+        "x": 200,
+        "y": 400,
+        "wires": [
+            [
+                "8c44159cddab4781"
+            ]
+        ]
+    },
+    {
+        "id": "31a9db2b98d193f3",
+        "type": "function",
+        "z": "ddd254ede54bb562",
+        "name": "relative sentiment",
+        "func": "let avg = msg.moving_avg\n//node.warn(\"Moving Avg: \" +avg)\nlet alltime = 0.19\nlet rel = avg - alltime\nrel = rel.toFixed(3)\n//node.warn(rel)\n\nif (rel > 0 && rel < .10){\n//    node.warn(\"positive\")\n}\n\nelse if (rel > .10){\n//  node.warn(\"strongly positive\")\n}\n\nelse if  (rel < 0) {\n//    node.warn(\"negative\")\n\n}\n\nmsg.sentiment = rel\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1090,
+        "y": 400,
+        "wires": [
+            [
+                "f7a5f8d6e24bb2ab"
+            ]
+        ]
+    },
+    {
+        "id": "52d69302ca8d5415",
+        "type": "comment",
+        "z": "ddd254ede54bb562",
+        "name": "Avg Sentiment on new headlines.  Set' look back' - 100 items . Avg sentiment for 100 items is 0.14.  Median = 0.09. Stddev = 13.0.  Max is 50.  Min is -.07. ",
+        "info": "",
+        "x": 570,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "e36c6bd1a978b432",
+        "type": "calculator",
+        "z": "ddd254ede54bb562",
+        "name": "",
+        "inputMsgField": "payload",
+        "outputMsgField": "moving_avg",
+        "operation": "avg",
+        "constant": "",
+        "round": false,
+        "decimals": "0",
+        "x": 760,
+        "y": 400,
+        "wires": [
+            [
+                "905f93a3092d654a"
+            ]
+        ]
+    },
+    {
+        "id": "f7a5f8d6e24bb2ab",
+        "type": "change",
+        "z": "ddd254ede54bb562",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "sentiment",
+                "pt": "global",
+                "to": "sentiment",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "avg_sentiment",
+                "pt": "global",
+                "to": "moving_avg",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1280,
+        "y": 400,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "651f0aab10dc1632",
+        "type": "polygon-account",
+        "name": "Polygon Key"
+    },
+    {
+        "id": "f8ca5a41.3e1448",
+        "type": "MySQLdatabase",
+        "name": "news",
+        "host": "ptsapi.cax8fspskl8t.us-east-1.rds.amazonaws.com",
+        "port": "3306",
+        "db": "news",
+        "tz": "EST5EDT",
+        "charset": "UTF8"
+    }
+]
