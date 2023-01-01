@@ -1,0 +1,927 @@
+[
+    {
+        "id": "49c2a636ffe58181",
+        "type": "tab",
+        "label": "Research Ticker",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "7bddcc6669f0a212",
+        "type": "inject",
+        "z": "49c2a636ffe58181",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 140,
+        "wires": [
+            [
+                "3e15aad2591d1b6f"
+            ]
+        ]
+    },
+    {
+        "id": "3e15aad2591d1b6f",
+        "type": "function-npm",
+        "z": "49c2a636ffe58181",
+        "name": "Get past 1000 trades",
+        "func": "let symbol = 'TQQQ'\n\n// use polygon format for cryptos\n//let symbol = \"X:BTCUSD\"\n\n\n\nlet cnt = 1000 // set count here\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: cnt,\n}\n\n\n//node.warn(symbol)\n//node.warn(msg.payload)\nmsg.symbol = symbol\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 300,
+        "y": 140,
+        "wires": [
+            [
+                "561377179a6e5b50"
+            ]
+        ]
+    },
+    {
+        "id": "561377179a6e5b50",
+        "type": "polygon-last-trade-v3",
+        "z": "49c2a636ffe58181",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "x": 540,
+        "y": 140,
+        "wires": [
+            [
+                "5fd4701273cdd345"
+            ]
+        ]
+    },
+    {
+        "id": "5fd4701273cdd345",
+        "type": "function",
+        "z": "49c2a636ffe58181",
+        "name": "create array for average",
+        "func": "const prices = [];\nlet item = ''\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    prices.push(price);  \n//    node.warn(price)\n\n}\n\n//node.warn(prices)\nmsg.payload = prices\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 770,
+        "y": 140,
+        "wires": [
+            [
+                "f12a0b116935d635"
+            ]
+        ]
+    },
+    {
+        "id": "45253f5e3fc09638",
+        "type": "function",
+        "z": "49c2a636ffe58181",
+        "name": "display avg",
+        "func": "let avg = msg.moving_avg\navg = avg.toFixed(2)\nlet symbol = msg.symbol\nnode.warn(\"Ticker: \" +symbol+ \" Moving Avg: \" +avg)\nmsg.moving_avg = avg\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1150,
+        "y": 140,
+        "wires": [
+            [
+                "7157a9b29790ef44"
+            ]
+        ]
+    },
+    {
+        "id": "7157a9b29790ef44",
+        "type": "function-npm",
+        "z": "49c2a636ffe58181",
+        "name": "Get last trade",
+        "func": "let symbol = msg.symbol\n\nlet cnt = 1\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: cnt,\n}\n\n\n//node.warn(symbol)\n//node.warn(msg.payload)\nmsg.symbol = symbol\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 300,
+        "y": 200,
+        "wires": [
+            [
+                "60d85ea140a94905"
+            ]
+        ]
+    },
+    {
+        "id": "60d85ea140a94905",
+        "type": "polygon-last-trade-v3",
+        "z": "49c2a636ffe58181",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "x": 520,
+        "y": 200,
+        "wires": [
+            [
+                "5d186b9a822631fa"
+            ]
+        ]
+    },
+    {
+        "id": "5d186b9a822631fa",
+        "type": "function",
+        "z": "49c2a636ffe58181",
+        "name": "display diff",
+        "func": "const prices = [];\nlet item = ''\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload.results) {\n    price = item.price; // this is the price of the last trade\n\n}\n\n\nlet avg = msg.moving_avg\nlet ticker = msg.symbol\n\nlet diff = price - avg\ndiff = diff.toFixed(2)\n\nnode.warn(\"Ticker: \" + ticker + \" Current Price: \" + price + \" Avg Price: \" + avg + \" Diff: \" + diff)\nmsg.diff = diff\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
+        "y": 200,
+        "wires": [
+            [
+                "a49cbbb49b375d80"
+            ]
+        ]
+    },
+    {
+        "id": "a49cbbb49b375d80",
+        "type": "change",
+        "z": "49c2a636ffe58181",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "diff",
+                "pt": "flow",
+                "to": "diff",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "ticker",
+                "pt": "flow",
+                "to": "symbol",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 880,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f12a0b116935d635",
+        "type": "calculator",
+        "z": "49c2a636ffe58181",
+        "name": "",
+        "inputMsgField": "payload",
+        "outputMsgField": "moving_avg",
+        "operation": "avg",
+        "constant": "",
+        "round": false,
+        "decimals": "0",
+        "x": 980,
+        "y": 140,
+        "wires": [
+            [
+                "45253f5e3fc09638"
+            ]
+        ]
+    },
+    {
+        "id": "afe5ce698b344c5c",
+        "type": "comment",
+        "z": "49c2a636ffe58181",
+        "name": "FLOW 1: Calculate the difference between the current price and the moving average and store as flow variable",
+        "info": "",
+        "x": 390,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "6df3bf6f7053e717",
+        "type": "inject",
+        "z": "49c2a636ffe58181",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 90,
+        "y": 360,
+        "wires": [
+            [
+                "70d860eb5dc4ea3f"
+            ]
+        ]
+    },
+    {
+        "id": "70d860eb5dc4ea3f",
+        "type": "function-npm",
+        "z": "49c2a636ffe58181",
+        "name": "Get past 1000 trades",
+        "func": "let symbol = flow.get(\"ticker\")\n\nlet cnt = 10000 // set count here\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: cnt,\n}\n\n\n//node.warn(symbol)\n//node.warn(msg.payload)\nmsg.symbol = symbol\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 260,
+        "y": 360,
+        "wires": [
+            [
+                "f74c5b140d76387e"
+            ]
+        ]
+    },
+    {
+        "id": "f74c5b140d76387e",
+        "type": "polygon-last-trade-v3",
+        "z": "49c2a636ffe58181",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "x": 480,
+        "y": 360,
+        "wires": [
+            [
+                "4950e7a59dadadfe",
+                "e1f9346f38ba73ef"
+            ]
+        ]
+    },
+    {
+        "id": "4950e7a59dadadfe",
+        "type": "function",
+        "z": "49c2a636ffe58181",
+        "name": "create array for average",
+        "func": "const prices = [];\nlet item = ''\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    prices.push(price);  \n//    node.warn(price)\n\n}\n\n//node.warn(prices)\nmsg.payload = prices\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 360,
+        "wires": [
+            [
+                "85048ebf221a23c9",
+                "08a75514f284b33c",
+                "6f718bc9d38191b2"
+            ]
+        ]
+    },
+    {
+        "id": "f990046b7f1ebc8d",
+        "type": "function",
+        "z": "49c2a636ffe58181",
+        "name": "display avg",
+        "func": "let avg = msg.moving_avg\navg = avg.toFixed(2)\nlet symbol = msg.symbol\nnode.warn(\"Ticker: \" +symbol+ \" Maximum: \" +avg)\nmsg.moving_avg = avg\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1110,
+        "y": 300,
+        "wires": [
+            [
+                "6b2db565cf305fc3"
+            ]
+        ]
+    },
+    {
+        "id": "85048ebf221a23c9",
+        "type": "calculator",
+        "z": "49c2a636ffe58181",
+        "name": "",
+        "inputMsgField": "payload",
+        "outputMsgField": "moving_avg",
+        "operation": "max",
+        "constant": "",
+        "round": false,
+        "decimals": "0",
+        "x": 940,
+        "y": 300,
+        "wires": [
+            [
+                "f990046b7f1ebc8d"
+            ]
+        ]
+    },
+    {
+        "id": "fdb86613267f7853",
+        "type": "function",
+        "z": "49c2a636ffe58181",
+        "name": "display avg",
+        "func": "let avg = msg.moving_avg\navg = avg.toFixed(2)\nlet symbol = msg.symbol\nnode.warn(\"Ticker: \" +symbol+ \" Minimum: \" +avg)\nmsg.moving_avg = avg\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1110,
+        "y": 360,
+        "wires": [
+            [
+                "4e07834afd558627"
+            ]
+        ]
+    },
+    {
+        "id": "08a75514f284b33c",
+        "type": "calculator",
+        "z": "49c2a636ffe58181",
+        "name": "",
+        "inputMsgField": "payload",
+        "outputMsgField": "moving_avg",
+        "operation": "min",
+        "constant": "",
+        "round": false,
+        "decimals": "0",
+        "x": 940,
+        "y": 360,
+        "wires": [
+            [
+                "fdb86613267f7853"
+            ]
+        ]
+    },
+    {
+        "id": "547de41eef6bc63a",
+        "type": "function",
+        "z": "49c2a636ffe58181",
+        "name": "display avg",
+        "func": "let avg = msg.moving_avg\navg = avg.toFixed(2)\nlet symbol = msg.symbol\nnode.warn(\"Ticker: \" +symbol+ \" Average: \" +avg)\nmsg.moving_avg = avg\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1110,
+        "y": 420,
+        "wires": [
+            [
+                "d29ff33b28dc619b"
+            ]
+        ]
+    },
+    {
+        "id": "6f718bc9d38191b2",
+        "type": "calculator",
+        "z": "49c2a636ffe58181",
+        "name": "",
+        "inputMsgField": "payload",
+        "outputMsgField": "moving_avg",
+        "operation": "avg",
+        "constant": "",
+        "round": false,
+        "decimals": "0",
+        "x": 940,
+        "y": 420,
+        "wires": [
+            [
+                "547de41eef6bc63a"
+            ]
+        ]
+    },
+    {
+        "id": "6b2db565cf305fc3",
+        "type": "change",
+        "z": "49c2a636ffe58181",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "max",
+                "pt": "flow",
+                "to": "moving_avg",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1270,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4e07834afd558627",
+        "type": "change",
+        "z": "49c2a636ffe58181",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "min",
+                "pt": "flow",
+                "to": "moving_avg",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1270,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d29ff33b28dc619b",
+        "type": "change",
+        "z": "49c2a636ffe58181",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "avg",
+                "pt": "flow",
+                "to": "moving_avg",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1270,
+        "y": 420,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "55573f1169e6c29f",
+        "type": "inject",
+        "z": "49c2a636ffe58181",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 540,
+        "wires": [
+            [
+                "9de0234aef62a1a3"
+            ]
+        ]
+    },
+    {
+        "id": "9de0234aef62a1a3",
+        "type": "function",
+        "z": "49c2a636ffe58181",
+        "name": "Display calculated values",
+        "func": "let max = flow.get(\"max\")\nlet min = flow.get(\"min\")\nlet avg = flow.get(\"avg\")\nlet first = flow.get(\"first\")\nlet last = flow.get(\"last\")\nlet num = flow.get(\"number\")\n\n\nlet change = (last - first)\nlet pctchange = (change / avg) * 100\nlet spread = (max - min)\nlet pctspread = (spread / avg) * 100\n\nspread = spread.toFixed(4)\npctspread = pctspread.toFixed(4)\nchange = change.toFixed(4)\npctchange = pctchange.toFixed(4)\n\nnode.warn(\"Sample: \" +num+ \" Spread: \" +spread+ \" Pct Spread: \" +pctspread+ \"% Change: \" +change+ \" Pct Change: \" +pctchange)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 540,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e1f9346f38ba73ef",
+        "type": "function",
+        "z": "49c2a636ffe58181",
+        "name": "get first and last values",
+        "func": "const prices = [];\nlet item = ''\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    prices.push(price);\n    //    node.warn(price)\n\n}\n\nlet len = prices.length\nlet f = prices[0]\nlet l = prices[prices.length - 1];\n\nnode.warn(\"Length: \" +len+ \" First: \" +f+ \" Last: \" +l)\nmsg.first = f\nmsg.last = l\nmsg.num = len\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 480,
+        "wires": [
+            [
+                "93686d10f80c68f7"
+            ]
+        ]
+    },
+    {
+        "id": "93686d10f80c68f7",
+        "type": "change",
+        "z": "49c2a636ffe58181",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "first",
+                "pt": "flow",
+                "to": "first",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "last",
+                "pt": "flow",
+                "to": "last",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "number",
+                "pt": "flow",
+                "to": "num",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 960,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5930983d08fb3870",
+        "type": "inject",
+        "z": "49c2a636ffe58181",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 760,
+        "wires": [
+            [
+                "1287ba1022edb6b7"
+            ]
+        ]
+    },
+    {
+        "id": "1287ba1022edb6b7",
+        "type": "function-npm",
+        "z": "49c2a636ffe58181",
+        "name": "Get past 10000 trades",
+        "func": "let symbol = flow.get(\"ticker\")\n\nlet cnt = 10000 // set count here\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: cnt,\n}\n\n\n//node.warn(symbol)\n//node.warn(msg.payload)\nmsg.symbol = symbol\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 300,
+        "y": 760,
+        "wires": [
+            [
+                "eb9c312890d3c195"
+            ]
+        ]
+    },
+    {
+        "id": "eb9c312890d3c195",
+        "type": "polygon-last-trade-v3",
+        "z": "49c2a636ffe58181",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "x": 520,
+        "y": 760,
+        "wires": [
+            [
+                "31397bf0074a79fd"
+            ]
+        ]
+    },
+    {
+        "id": "ac930ae12a229242",
+        "type": "comment",
+        "z": "49c2a636ffe58181",
+        "name": "Store in Postgres table",
+        "info": "",
+        "x": 160,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "31397bf0074a79fd",
+        "type": "function",
+        "z": "49c2a636ffe58181",
+        "name": "insert into table",
+        "func": "let symbol = flow.get(\"ticker\")\n\nlet item = ''\nlet ux = 0\nlet price = 0\nlet size = 0\nlet exchange = 0\nlet sql = ''\n\nfor (item of msg.payload.results) {\n    ux = item.participant_timestamp;\n    price = item.price;\n    size = item.size;\n    exchange = item.exchange;\n    sql += \"insert into \" +symbol+ \" (ux, price, size, exchange)  values (\" + ux + \", \" + price + \", \" + size + \", \" + exchange + \");\\n\"\n}\n\nmsg.payload = sql\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 720,
+        "y": 760,
+        "wires": [
+            [
+                "19417e6279dfb54c"
+            ]
+        ]
+    },
+    {
+        "id": "19417e6279dfb54c",
+        "type": "split",
+        "z": "49c2a636ffe58181",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 870,
+        "y": 760,
+        "wires": [
+            [
+                "0e257e45667f8e04"
+            ]
+        ]
+    },
+    {
+        "id": "a1740ac2403e7855",
+        "type": "postgresql",
+        "z": "49c2a636ffe58181",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1180,
+        "y": 760,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0e257e45667f8e04",
+        "type": "function",
+        "z": "49c2a636ffe58181",
+        "name": "insert into table",
+        "func": "msg.query = msg.payload\n//node.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1020,
+        "y": 760,
+        "wires": [
+            [
+                "a1740ac2403e7855"
+            ]
+        ]
+    },
+    {
+        "id": "6e1479b0efe0264f",
+        "type": "http in",
+        "z": "49c2a636ffe58181",
+        "name": "/api/download_output",
+        "url": "/api/download_output",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 160,
+        "y": 900,
+        "wires": [
+            [
+                "d95ec2d2744a11e8"
+            ]
+        ]
+    },
+    {
+        "id": "3150ae3bfab730ed",
+        "type": "http response",
+        "z": "49c2a636ffe58181",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"outfile.csv\""
+        },
+        "x": 1010,
+        "y": 900,
+        "wires": []
+    },
+    {
+        "id": "faa21843e173cf95",
+        "type": "csv",
+        "z": "49c2a636ffe58181",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 690,
+        "y": 900,
+        "wires": [
+            [
+                "788075dcb109fb63"
+            ]
+        ]
+    },
+    {
+        "id": "d95ec2d2744a11e8",
+        "type": "function",
+        "z": "49c2a636ffe58181",
+        "name": "export query",
+        "func": "let ticker = flow.get(\"ticker\") \nmsg.query= \"select * from \" +ticker+ \";\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 900,
+        "wires": [
+            [
+                "42a51281f9065877"
+            ]
+        ]
+    },
+    {
+        "id": "788075dcb109fb63",
+        "type": "file",
+        "z": "49c2a636ffe58181",
+        "name": "write report",
+        "filename": "/data/store/output.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 850,
+        "y": 900,
+        "wires": [
+            [
+                "3150ae3bfab730ed"
+            ]
+        ]
+    },
+    {
+        "id": "50b2bac3a1a71fc6",
+        "type": "comment",
+        "z": "49c2a636ffe58181",
+        "name": "This flow downloads the portfolio table ",
+        "info": "",
+        "x": 210,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "42a51281f9065877",
+        "type": "postgresql",
+        "z": "49c2a636ffe58181",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 540,
+        "y": 900,
+        "wires": [
+            [
+                "faa21843e173cf95"
+            ]
+        ]
+    },
+    {
+        "id": "9ae856a67a4aba63",
+        "type": "comment",
+        "z": "49c2a636ffe58181",
+        "name": "FLOW 2: Calculate and store other useful statistics",
+        "info": "",
+        "x": 210,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "17642a6a6385446e",
+        "type": "comment",
+        "z": "49c2a636ffe58181",
+        "name": "FLOW 3: Display the statistics",
+        "info": "",
+        "x": 140,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "95427ae1e97e2cbe",
+        "type": "comment",
+        "z": "49c2a636ffe58181",
+        "name": "Modify line 1 to change the ticker. Line 3 to change the size of the data set.",
+        "info": "",
+        "x": 460,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "2dfebfc7cca31231",
+        "type": "function",
+        "z": "49c2a636ffe58181",
+        "name": "create table to store ticker values",
+        "func": "let ticker = flow.get(\"ticker\")\nmsg.query = \"create table IF NOT EXISTS \" +ticker+ \" (ux BIGINT, price FLOAT, size FLOAT, exchange FLOAT, datetime VARCHAR(40))\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 640,
+        "wires": [
+            [
+                "f2ad6b8ea1216165"
+            ]
+        ]
+    },
+    {
+        "id": "202ca5b74cf2a3d8",
+        "type": "inject",
+        "z": "49c2a636ffe58181",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 170,
+        "y": 640,
+        "wires": [
+            [
+                "2dfebfc7cca31231"
+            ]
+        ]
+    },
+    {
+        "id": "f2ad6b8ea1216165",
+        "type": "postgresql",
+        "z": "49c2a636ffe58181",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 600,
+        "y": 640,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "651f0aab10dc1632",
+        "type": "polygon-account",
+        "name": "Polygon Key"
+    },
+    {
+        "id": "7455395cf269fb2b",
+        "type": "postgreSQLConfig",
+        "name": "",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "postgres",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "docker",
+        "userFieldType": "str",
+        "password": "docker",
+        "passwordFieldType": "str"
+    }
+]
