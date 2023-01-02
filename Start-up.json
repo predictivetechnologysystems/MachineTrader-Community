@@ -510,7 +510,7 @@
         "type": "function",
         "z": "a98905521bc25559",
         "name": "update polygon_symbol",
-        "func": "let symbol = msg.payload[\"symbol\"]\n//node.warn(\"Symbol: \" +symbol)\n\n//let polygon_symbol = \"X:\" +symbol\nlet polygon_symbol = symbol\nmsg.query = \"update alpaca_assets set polygon_symbol = '\" +polygon_symbol+ \"' where symbol = '\" +symbol+ \"' and status = 'active';\"\n//node.warn(msg.query)\nreturn msg;",
+        "func": "let symbol = msg.payload[\"symbol\"]\n//node.warn(\"Symbol: \" +symbol)\n\nlet polygon_symbol = \"X:\" +symbol\npolygon_symbol = symbol\nmsg.query = \"update alpaca_assets set polygon_symbol = '\" +polygon_symbol+ \"' where symbol = '\" +symbol+ \"' and status = 'active';\"\n//node.warn(msg.query)\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -3018,7 +3018,7 @@
         "id": "0c86a5f06a42b505",
         "type": "alpaca-account",
         "name": "live",
-        "keyId": "PKOIFRK9YAW33QVWKM8C",
+        "keyId": "PKD328H1U7TSKC5HP2RP",
         "paper": true
     },
     {
