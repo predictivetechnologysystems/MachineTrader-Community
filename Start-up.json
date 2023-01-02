@@ -1,15 +1,15 @@
 [
     {
-        "id": "2923e96769e4646a",
+        "id": "a98905521bc25559",
         "type": "tab",
         "label": "Start-up",
         "disabled": false,
         "info": ""
     },
     {
-        "id": "5130b976ea12c5a0",
+        "id": "e8b9e763270630f4",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "Create table \"balances\"",
         "func": "let acct = \"balances\"\nmsg.query = \"create table IF NOT EXISTS \" +acct+ \" (account VARCHAR(10), unixtime BIGINT, balance FLOAT)\"\n//node.warn(msg.query)\nreturn msg;\n",
         "outputs": 1,
@@ -18,17 +18,17 @@
         "finalize": "",
         "libs": [],
         "x": 510,
-        "y": 60,
+        "y": 20,
         "wires": [
             [
-                "c73a75b44e088a24"
+                "de3f384d659ec928"
             ]
         ]
     },
     {
-        "id": "a41f1d4b10d42aa8",
+        "id": "0a101b70db83ad81",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "Create  \"balances_daily\"",
         "func": "let acct = \"balances_daily\"\nmsg.query= \"create table IF NOT EXISTS \" +acct+ \" (account VARCHAR(10), unixtime BIGINT, balance FLOAT)\"\n//node.warn(msg.query)\nreturn msg;\n",
         "outputs": 1,
@@ -37,17 +37,17 @@
         "finalize": "",
         "libs": [],
         "x": 510,
-        "y": 100,
+        "y": 60,
         "wires": [
             [
-                "74f0e699b47713e4"
+                "0195bed12e4f2a96"
             ]
         ]
     },
     {
-        "id": "c73a75b44e088a24",
+        "id": "de3f384d659ec928",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
@@ -55,17 +55,17 @@
         "rowsPerMsg": 1,
         "outputs": 1,
         "x": 700,
-        "y": 60,
+        "y": 20,
         "wires": [
             [
-                "2e211b9598800603"
+                "bd76d0daf70ad424"
             ]
         ]
     },
     {
-        "id": "f01444e102193672",
+        "id": "1f1af4820c32cb7e",
         "type": "inject",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "Create tables on start up",
         "props": [
             {
@@ -81,35 +81,44 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
+        "payload": "",
         "payloadType": "date",
         "x": 170,
-        "y": 200,
+        "y": 240,
         "wires": [
             [
-                "5130b976ea12c5a0",
-                "a41f1d4b10d42aa8",
-                "7cb9c4a9171deaa1",
-                "8fcc99a743474e1c",
-                "0cdb87e57bcc4a59",
-                "08f02226b3012dc5",
-                "05de33f6ffc4d0f9",
-                "f93f5b4a67085d19",
-                "279c7088941f31b8",
-                "75e25fcaebee6e3c",
-                "5911a70feb6e4456",
-                "61a3692c2692ed68",
-                "60d4f89ca96cfc02",
-                "b59629fe75e68664",
-                "bad961977d11f05c",
-                "ec124c4fa80f74ce",
-                "75087e90a046cb48"
+                "e8b9e763270630f4",
+                "0a101b70db83ad81",
+                "e99adfb4f178c48f",
+                "e9a75d5bdf89128e",
+                "6b0db678e650dfe5",
+                "993bc7840b2a0a89",
+                "e3e43534f45587a8",
+                "8994f017ac40e60b",
+                "aab0e7aa8e56a853",
+                "62eaf01e4d3701d2",
+                "b58b970c4c93d3a2",
+                "4a97d49c229f982c",
+                "e2218a0a12aa551c",
+                "79fd66da9829d727",
+                "d86546a7f1d451d8",
+                "d80cb90f3b2bb0e6",
+                "cdad10a4f5b740e0",
+                "63a0cee952c9f462",
+                "18370e0f3ad61584",
+                "95c9255c2631a7e4",
+                "89693505620736a2",
+                "39577a2d18c8729c",
+                "bb80e1c5f7d9d4fc",
+                "53cbbfd934b86b0f",
+                "2d24c69f7d79fd7e"
             ]
         ]
     },
     {
-        "id": "74f0e699b47713e4",
+        "id": "0195bed12e4f2a96",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
@@ -117,33 +126,33 @@
         "rowsPerMsg": 1,
         "outputs": 1,
         "x": 700,
+        "y": 60,
+        "wires": [
+            [
+                "555015a1b7b9825f"
+            ]
+        ]
+    },
+    {
+        "id": "193763dc70b5161d",
+        "type": "postgresql",
+        "z": "a98905521bc25559",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 680,
         "y": 100,
-        "wires": [
-            [
-                "9cfb1a93593cfafb"
-            ]
-        ]
-    },
-    {
-        "id": "cdcf51d01e6755fc",
-        "type": "postgresql",
-        "z": "2923e96769e4646a",
-        "name": "postgres",
-        "query": "",
-        "postgreSQLConfig": "7455395cf269fb2b",
-        "split": false,
-        "rowsPerMsg": 1,
-        "outputs": 1,
-        "x": 700,
-        "y": 140,
         "wires": [
             []
         ]
     },
     {
-        "id": "05e874a5e8a1530b",
+        "id": "2f690a9880d103a0",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
@@ -157,28 +166,28 @@
         ]
     },
     {
-        "id": "7cb9c4a9171deaa1",
+        "id": "e99adfb4f178c48f",
         "type": "function",
-        "z": "2923e96769e4646a",
-        "name": "Create markets table",
-        "func": "msg.query = \"create table IF NOT EXISTS markets (symbol VARCHAR(10) PRIMARY KEY,name VARCHAR(100),polygon_symbol VARCHAR(10), alpaca_symbol VARCHAR(10), closing FLOAT,price24h FLOAT,price7d FLOAT, change24h FLOAT,change7d FLOAT,pct24 FLOAT,pct7d FLOAT)\"\n//msg.query = \"delete from markets\"\nnode.warn(msg.query)\nreturn msg;\n",
+        "z": "a98905521bc25559",
+        "name": "Drop markets table",
+        "func": "//msg.query = \"create table IF NOT EXISTS markets (symbol VARCHAR(10) PRIMARY KEY,name VARCHAR(100),polygon_symbol VARCHAR(10), alpaca_symbol VARCHAR(10), closing FLOAT,price24h FLOAT,price7d FLOAT, change24h FLOAT,change7d FLOAT,pct24 FLOAT,pct7d FLOAT)\"\nmsg.query = \"drop table markets\"\nnode.warn(msg.query)\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 500,
-        "y": 140,
+        "x": 490,
+        "y": 100,
         "wires": [
             [
-                "cdcf51d01e6755fc"
+                "193763dc70b5161d"
             ]
         ]
     },
     {
-        "id": "e632c954dc5fa5df",
+        "id": "52285fc34062e566",
         "type": "comment",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "RUN ONCE AT START: ",
         "info": "",
         "x": 160,
@@ -186,9 +195,9 @@
         "wires": []
     },
     {
-        "id": "8fcc99a743474e1c",
+        "id": "e9a75d5bdf89128e",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "drop portfolio table",
         "func": "msg.query = \"drop table portfolio\"\nnode.warn(msg.query)\nreturn msg;\n",
         "outputs": 1,
@@ -197,17 +206,17 @@
         "finalize": "",
         "libs": [],
         "x": 490,
-        "y": 320,
+        "y": 340,
         "wires": [
             [
-                "0cf5d8a92d4b51f2"
+                "ce55e3c637f90295"
             ]
         ]
     },
     {
-        "id": "0cdb87e57bcc4a59",
+        "id": "6b0db678e650dfe5",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "drop algos table",
         "func": "msg.query = \"drop table algos\"\nnode.warn(msg.query)\nreturn msg;\n",
         "outputs": 1,
@@ -216,17 +225,17 @@
         "finalize": "",
         "libs": [],
         "x": 480,
-        "y": 360,
+        "y": 420,
         "wires": [
             [
-                "4de7f52536bbadca"
+                "ad0e188e1fac9929"
             ]
         ]
     },
     {
-        "id": "07dd4be10a2e7a29",
+        "id": "ed429b2d3bdb3257",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
@@ -234,15 +243,15 @@
         "rowsPerMsg": 1,
         "outputs": 1,
         "x": 680,
-        "y": 400,
+        "y": 500,
         "wires": [
             []
         ]
     },
     {
-        "id": "08f02226b3012dc5",
+        "id": "993bc7840b2a0a89",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "drop positions table",
         "func": "msg.query = \"drop table positions\"\nnode.warn(msg.query)\nreturn msg;",
         "outputs": 1,
@@ -251,17 +260,17 @@
         "finalize": "",
         "libs": [],
         "x": 500,
-        "y": 400,
+        "y": 500,
         "wires": [
             [
-                "07dd4be10a2e7a29"
+                "ed429b2d3bdb3257"
             ]
         ]
     },
     {
-        "id": "0cf5d8a92d4b51f2",
+        "id": "ce55e3c637f90295",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
@@ -269,15 +278,15 @@
         "rowsPerMsg": 1,
         "outputs": 1,
         "x": 680,
-        "y": 320,
+        "y": 340,
         "wires": [
             []
         ]
     },
     {
-        "id": "4de7f52536bbadca",
+        "id": "ad0e188e1fac9929",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
@@ -285,15 +294,15 @@
         "rowsPerMsg": 1,
         "outputs": 1,
         "x": 680,
-        "y": 360,
+        "y": 420,
         "wires": [
             []
         ]
     },
     {
-        "id": "205173c4458f28dc",
+        "id": "4ae2cbc9801466c1",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "market tickers",
         "func": "msg.payload = \"SPY,QQQ,TSLA,VXX,BTCUSD,ETHUSD\"\nreturn msg;",
         "outputs": 1,
@@ -305,17 +314,17 @@
         "y": 180,
         "wires": [
             [
-                "816663529dc331ef"
+                "1bfe65a128995ab1"
             ]
         ]
     },
     {
-        "id": "05de33f6ffc4d0f9",
+        "id": "e3e43534f45587a8",
         "type": "delay",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "",
         "pauseType": "delay",
-        "timeout": "1",
+        "timeout": "5",
         "timeoutUnits": "seconds",
         "rate": "1",
         "nbRateUnits": "1",
@@ -330,14 +339,14 @@
         "y": 180,
         "wires": [
             [
-                "205173c4458f28dc"
+                "4ae2cbc9801466c1"
             ]
         ]
     },
     {
-        "id": "816663529dc331ef",
+        "id": "1bfe65a128995ab1",
         "type": "split",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "",
         "splt": ",",
         "spltType": "str",
@@ -349,14 +358,14 @@
         "y": 180,
         "wires": [
             [
-                "59ce44ce1e4b80cc"
+                "497d0158421da1fb"
             ]
         ]
     },
     {
-        "id": "59ce44ce1e4b80cc",
+        "id": "497d0158421da1fb",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "insert markets query",
         "func": "let symbol = msg.payload\nmsg.query = \"insert into markets (symbol) values ('\" +symbol+ \"');\"\nnode.warn(msg.query)\nreturn msg;",
         "outputs": 1,
@@ -368,30 +377,30 @@
         "y": 180,
         "wires": [
             [
-                "8bc595c737e75052"
+                "e1815ce00b01162b"
             ]
         ]
     },
     {
-        "id": "8bc595c737e75052",
+        "id": "e1815ce00b01162b",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 1260,
+        "x": 1200,
         "y": 180,
         "wires": [
             []
         ]
     },
     {
-        "id": "10f73e2ece4d57c6",
+        "id": "3b20cb102c2cb1dd",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "watchlist tickers",
         "func": "msg.payload = \"AAPL,JPM,BAC,GLD\"\nreturn msg;",
         "outputs": 1,
@@ -400,20 +409,20 @@
         "finalize": "",
         "libs": [],
         "x": 660,
-        "y": 280,
+        "y": 300,
         "wires": [
             [
-                "a60801d019c790e6"
+                "a7c553328e0bb528"
             ]
         ]
     },
     {
-        "id": "f93f5b4a67085d19",
+        "id": "8994f017ac40e60b",
         "type": "delay",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "",
         "pauseType": "delay",
-        "timeout": "2",
+        "timeout": "6",
         "timeoutUnits": "seconds",
         "rate": "1",
         "nbRateUnits": "1",
@@ -424,18 +433,18 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 500,
-        "y": 280,
+        "x": 480,
+        "y": 300,
         "wires": [
             [
-                "10f73e2ece4d57c6"
+                "3b20cb102c2cb1dd"
             ]
         ]
     },
     {
-        "id": "a60801d019c790e6",
+        "id": "a7c553328e0bb528",
         "type": "split",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "",
         "splt": ",",
         "spltType": "str",
@@ -443,44 +452,44 @@
         "arraySpltType": "len",
         "stream": false,
         "addname": "",
-        "x": 830,
-        "y": 280,
+        "x": 810,
+        "y": 300,
         "wires": [
             [
-                "6cd390703697a106"
+                "c9882f8446f666d5"
             ]
         ]
     },
     {
-        "id": "240e5f8e6f03e89e",
+        "id": "0597ae0143212305",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 1260,
-        "y": 280,
+        "x": 1180,
+        "y": 300,
         "wires": [
             []
         ]
     },
     {
-        "id": "74c9bacbaab10ee1",
+        "id": "704d1a69cb78282f",
         "type": "comment",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "RUN ONCE AT START: Create alpaca_assets table",
         "info": "",
-        "x": 250,
-        "y": 660,
+        "x": 230,
+        "y": 1200,
         "wires": []
     },
     {
-        "id": "4a99fbcfc19ff85c",
+        "id": "fb4b1c5d65d1ee55",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "get symbols from alpaca_assets",
         "func": "msg.query = \"select symbol from alpaca_assets\"\nreturn msg;",
         "outputs": 1,
@@ -488,18 +497,18 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 510,
-        "y": 800,
+        "x": 490,
+        "y": 1360,
         "wires": [
             [
-                "23803706a1647dc0"
+                "f73b2cc91690c9a5"
             ]
         ]
     },
     {
-        "id": "38018774923466fa",
+        "id": "76a1f3882f823837",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "update polygon_symbol",
         "func": "let symbol = msg.payload[\"symbol\"]\n//node.warn(\"Symbol: \" +symbol)\n\n//let polygon_symbol = \"X:\" +symbol\nlet polygon_symbol = symbol\nmsg.query = \"update alpaca_assets set polygon_symbol = '\" +polygon_symbol+ \"' where symbol = '\" +symbol+ \"' and status = 'active';\"\n//node.warn(msg.query)\nreturn msg;",
         "outputs": 1,
@@ -507,34 +516,34 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1090,
-        "y": 800,
+        "x": 1070,
+        "y": 1360,
         "wires": [
             [
-                "302cba71944b9638"
+                "5559a3ec0b40b4bf"
             ]
         ]
     },
     {
-        "id": "302cba71944b9638",
+        "id": "5559a3ec0b40b4bf",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 1280,
-        "y": 800,
+        "x": 1260,
+        "y": 1360,
         "wires": [
             []
         ]
     },
     {
-        "id": "6ce0a34f5ba58c0f",
+        "id": "729f14fede1ae73d",
         "type": "split",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "",
         "splt": "\\n",
         "spltType": "str",
@@ -542,36 +551,36 @@
         "arraySpltType": "len",
         "stream": false,
         "addname": "",
-        "x": 910,
-        "y": 800,
+        "x": 890,
+        "y": 1360,
         "wires": [
             [
-                "38018774923466fa"
+                "76a1f3882f823837"
             ]
         ]
     },
     {
-        "id": "23803706a1647dc0",
+        "id": "f73b2cc91690c9a5",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 780,
-        "y": 800,
+        "x": 760,
+        "y": 1360,
         "wires": [
             [
-                "6ce0a34f5ba58c0f"
+                "729f14fede1ae73d"
             ]
         ]
     },
     {
-        "id": "549764d852f9fea1",
+        "id": "50b0e526c8aa0ddf",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "get crypto symbols from alpaca_assets",
         "func": "msg.query = \"select symbol from alpaca_assets where exchange = 'FTXU'\"\nreturn msg;",
         "outputs": 1,
@@ -579,53 +588,18 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 540,
-        "y": 840,
+        "x": 520,
+        "y": 1400,
         "wires": [
             [
-                "757f9d4e4c5c98b3"
+                "ed8f22f66ca26fdc"
             ]
         ]
     },
     {
-        "id": "8e4ed6fdfb9def68",
-        "type": "function",
-        "z": "2923e96769e4646a",
-        "name": "update alpaca_symbol",
-        "func": "let symbol = msg.payload[\"symbol\"]\n//node.warn(\"Symbol: \" +symbol)\n\nlet alpaca_symbol = symbol.replace(\"USD\",\"/USD\")\nlet polygon_symbol = \"X:\" +symbol\n\nmsg.query = \"update alpaca_assets set alpaca_symbol = '\" +alpaca_symbol+ \"', polygon_symbol = '\" +polygon_symbol+ \"' where symbol = '\" +symbol+ \"' and status = 'active';\"\n//node.warn(msg.query)\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 1080,
-        "y": 840,
-        "wires": [
-            [
-                "84f0b51f26ca1e4c"
-            ]
-        ]
-    },
-    {
-        "id": "84f0b51f26ca1e4c",
-        "type": "postgresql",
-        "z": "2923e96769e4646a",
-        "name": "postgres",
-        "query": "",
-        "postgreSQLConfig": "7455395cf269fb2b",
-        "split": false,
-        "rowsPerMsg": 1,
-        "outputs": 1,
-        "x": 1280,
-        "y": 840,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "19b474724cf8279a",
+        "id": "890ce189c146a698",
         "type": "split",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "",
         "splt": "\\n",
         "spltType": "str",
@@ -633,36 +607,36 @@
         "arraySpltType": "len",
         "stream": false,
         "addname": "",
-        "x": 910,
-        "y": 840,
+        "x": 890,
+        "y": 1400,
         "wires": [
             [
-                "8e4ed6fdfb9def68"
+                "dbb2aa5329fa48c0"
             ]
         ]
     },
     {
-        "id": "757f9d4e4c5c98b3",
+        "id": "ed8f22f66ca26fdc",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 780,
-        "y": 840,
+        "x": 760,
+        "y": 1400,
         "wires": [
             [
-                "19b474724cf8279a"
+                "890ce189c146a698"
             ]
         ]
     },
     {
-        "id": "6cd390703697a106",
+        "id": "c9882f8446f666d5",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "insert watchlist query",
         "func": "let symbol = msg.payload\nmsg.query = \"insert into watchlist (symbol) values ('\" +symbol+ \"');\"\nnode.warn(msg.query)\nreturn msg;",
         "outputs": 1,
@@ -670,20 +644,20 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1020,
-        "y": 280,
+        "x": 1000,
+        "y": 300,
         "wires": [
             [
-                "240e5f8e6f03e89e"
+                "0597ae0143212305"
             ]
         ]
     },
     {
-        "id": "279c7088941f31b8",
+        "id": "aab0e7aa8e56a853",
         "type": "function",
-        "z": "2923e96769e4646a",
-        "name": "Create watchlist table",
-        "func": "msg.query = \"create table IF NOT EXISTS watchlist (symbol VARCHAR(10) PRIMARY KEY,name VARCHAR(100),polygon_symbol VARCHAR(10), alpaca_symbol VARCHAR(10), closing FLOAT,price24h FLOAT,price7d FLOAT, change24h FLOAT,change7d FLOAT,pct24 FLOAT,pct7d FLOAT)\"\n//msg.query = \"delete from watchlist\"\n//msg.query = \"drop table watchlist\"\nnode.warn(msg.query)\nreturn msg;\n",
+        "z": "a98905521bc25559",
+        "name": "Drop watchlist table",
+        "func": "//msg.query = \"create table IF NOT EXISTS watchlist (symbol VARCHAR(10) PRIMARY KEY,name VARCHAR(100),polygon_symbol VARCHAR(10), alpaca_symbol VARCHAR(10), closing FLOAT,price24h FLOAT,price7d FLOAT, change24h FLOAT,change7d FLOAT,pct24 FLOAT,pct7d FLOAT)\"\n//msg.query = \"delete from watchlist\"\nmsg.query = \"drop table watchlist\"\nnode.warn(msg.query)\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -693,94 +667,94 @@
         "y": 220,
         "wires": [
             [
-                "05e874a5e8a1530b"
+                "2f690a9880d103a0"
             ]
         ]
     },
     {
-        "id": "0855696978ed4837",
+        "id": "2dc4b545fc2b2703",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "update markets from alpaca_assets",
-        "func": "msg.query = \"UPDATE markets SET name = alpaca_assets.name, polygon_symbol = alpaca_assets.polygon_symbol, alpaca_symbol = alpaca_assets.alpaca_symbol  FROM alpaca_assets where markets.symbol = alpaca_assets.symbol\"\nreturn msg;",
+        "func": "msg.query = \"UPDATE markets SET name = alpaca_assets.name, polygon_symbol = alpaca_assets.polygon_symbol, alpaca_symbol = alpaca_assets.alpaca_symbol  FROM alpaca_assets where markets.symbol = alpaca_assets.symbol\"\nnode.warn(msg.query)\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 520,
-        "y": 880,
+        "x": 500,
+        "y": 1440,
         "wires": [
             [
-                "c19f9e4608414162"
+                "cfc334f57bb42f9e"
             ]
         ]
     },
     {
-        "id": "c19f9e4608414162",
+        "id": "cfc334f57bb42f9e",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 780,
-        "y": 880,
+        "x": 760,
+        "y": 1440,
         "wires": [
             []
         ]
     },
     {
-        "id": "08862891b67a174c",
+        "id": "967e3b10512d09a3",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 780,
-        "y": 920,
+        "x": 760,
+        "y": 1480,
         "wires": [
             []
         ]
     },
     {
-        "id": "71ee1fd17a28e7c7",
+        "id": "20e43344bae2ca8a",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "update watchlist from alpaca_assets",
-        "func": "msg.query = \"UPDATE watchlist SET name = alpaca_assets.name, polygon_symbol = alpaca_assets.polygon_symbol, alpaca_symbol = alpaca_assets.alpaca_symbol  FROM alpaca_assets where watchlist.symbol = alpaca_assets.symbol\"\nreturn msg;",
+        "func": "msg.query = \"UPDATE watchlist SET name = alpaca_assets.name, polygon_symbol = alpaca_assets.polygon_symbol, alpaca_symbol = alpaca_assets.alpaca_symbol  FROM alpaca_assets where watchlist.symbol = alpaca_assets.symbol\"\nnode.warn(msg.query)\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 530,
-        "y": 920,
+        "x": 510,
+        "y": 1480,
         "wires": [
             [
-                "08862891b67a174c"
+                "967e3b10512d09a3"
             ]
         ]
     },
     {
-        "id": "0a65cd0bfcd0f526",
+        "id": "4b8a1d9aaf95475b",
         "type": "comment",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "Orders Table",
         "info": "",
         "x": 110,
-        "y": 1060,
+        "y": 1560,
         "wires": []
     },
     {
-        "id": "211804ad5f088585",
+        "id": "12f646464ff4e6f0",
         "type": "split",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "",
         "splt": "\\n",
         "spltType": "str",
@@ -789,17 +763,17 @@
         "stream": false,
         "addname": "",
         "x": 770,
-        "y": 1320,
+        "y": 1820,
         "wires": [
             [
-                "103b8ad8591a7af3"
+                "703d9b8902e96600"
             ]
         ]
     },
     {
-        "id": "f0717dba3a63ccac",
+        "id": "e245c9b113bdfb73",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
@@ -807,15 +781,15 @@
         "rowsPerMsg": 1,
         "outputs": 1,
         "x": 1140,
-        "y": 1320,
+        "y": 1820,
         "wires": [
             []
         ]
     },
     {
-        "id": "3d15fb1fbab7c480",
+        "id": "2bbea831cda536e8",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "get closed orders - live",
         "func": "/* Get Flow variables */\n\nlet ordertype = flow.get(\"orders\")\n//let limit  = flow.get(\"cnt\")\nordertype = \"closed\"\n\n/* Setup alpaca request arguments */\n\nmsg.payload = {\n    status: ordertype, // \"open or closed\"\n    limit: \"500\", // default is 500\n\tdirection: \"desc\" //  \"asc or desc\"\n\n}\n\n//node.warn(msg.payload)\n\nreturn msg;",
         "outputs": 1,
@@ -824,30 +798,30 @@
         "finalize": "",
         "libs": [],
         "x": 400,
-        "y": 1320,
+        "y": 1820,
         "wires": [
             [
-                "02c13eeccc6dbf96"
+                "3264e1fb34808b03"
             ]
         ]
     },
     {
-        "id": "02c13eeccc6dbf96",
+        "id": "3264e1fb34808b03",
         "type": "alpaca-query-order",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "conf": "0c86a5f06a42b505",
         "x": 620,
-        "y": 1320,
+        "y": 1820,
         "wires": [
             [
-                "211804ad5f088585"
+                "12f646464ff4e6f0"
             ]
         ]
     },
     {
-        "id": "103b8ad8591a7af3",
+        "id": "703d9b8902e96600",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "insert into orders live",
         "func": "let id = msg.payload[\"id\"]\nlet client_order_id = msg.payload[\"client_order_id\"]\nlet created_at = msg.payload[\"created_at\"]\nlet updated_at = msg.payload[\"updated_at\"]\nlet submitted_at = msg.payload[\"submitted_at\"]\nlet filled_at = msg.payload[\"filled_at\"]\nlet expired_at = msg.payload[\"expired_at\"]\nlet canceled_at = msg.payload[\"canceled_at\"]\nlet failed_at = msg.payload[\"failed_at\"]\nlet replaced_at = msg.payload[\"replaced_at\"]\nlet replaced_by = msg.payload[\"replaced_by\"]\nlet replaces = msg.payload[\"replaces\"]\nlet asset_id = msg.payload[\"asset_id\"]\nlet symbol = msg.payload[\"symbol\"]\nlet asset_class = msg.payload[\"asset_class\"]\nlet notional = msg.payload[\"notional\"]\nlet qty = msg.payload[\"qty\"]\nif (qty === null) { qty = 0 }\n\n\nlet filled_qty = msg.payload[\"filled_qty\"]\nif (filled_qty === null) { filled_qty = 0 }\n\nlet filled_avg_price = msg.payload[\"filled_avg_price\"]\nif (filled_avg_price === null) { filled_avg_price = 0 }\n\n\nlet order_class = msg.payload[\"order_class\"]\nlet order_type = msg.payload[\"order_type\"]\nlet type = msg.payload[\"type\"]\nlet side = msg.payload[\"side\"]\nlet time_in_force = msg.payload[\"time_in_force\"]\n\nlet limit_price = msg.payload[\"limit_price\"]\nif (limit_price === null) { limit_price = 0 }\n\nlet stop_price = msg.payload[\"stop_price\"]\nif (stop_price === null ){ stop_price = 0}\n\nlet status = msg.payload[\"status\"]\nlet extended_hours = msg.payload[\"extended_hours\"]\nlet legs = msg.payload[\"legs\"]\n\nlet trail_percent = msg.payload[\"trail_percent\"]\nif (trail_percent === null) { trail_percent = 0 }\n\nlet trail_price = msg.payload[\"trail_price\"]\nif (trail_price === null) { trail_price = 0 }\n\nlet hwm = msg.payload[\"hwm\"]\nlet subtag = msg.payload[\"subtag\"]\nlet source = msg.payload[\"source\"]\n\nmsg.query = \"insert into orders (id,client_order_id,created_at,updated_at,submitted_at,filled_at,expired_at,canceled_at,failed_at,replaced_at,replaced_by,extended_hours,replaces,asset_id,symbol,asset_class,notional,qty,filled_qty,filled_avg_price,order_class,order_type,type,side,time_in_force,limit_price,stop_price,status,legs,trail_percent,trail_price,hwm,subtag,source, order_status, account) values ('\" + id + \"','\" + client_order_id + \"','\" + created_at + \"','\" + updated_at + \"','\" + submitted_at + \"','\" + filled_at + \"','\" + expired_at + \"','\" + canceled_at + \"','\" + failed_at + \"','\" + replaced_at + \"','\" + replaced_by + \"','\" + extended_hours + \"','\" + replaces + \"','\" + asset_id + \"','\" + symbol + \"','\" + asset_class + \"','\" + notional + \"','\" + qty + \"','\" + filled_qty + \"','\" + filled_avg_price + \"','\" + order_class + \"','\" + order_type + \"','\" + type + \"','\" + side + \"','\" + time_in_force + \"','\" + limit_price + \"','\" + stop_price + \"','\" + status + \"','\" + legs + \"','\" + trail_percent + \"','\" + trail_price + \"','\" + hwm + \"','\" + subtag + \"','\" + source+ \"', 'closed', 'live');\"\n//node.warn(symbol)\nreturn msg;",
         "outputs": 1,
@@ -856,17 +830,17 @@
         "finalize": "",
         "libs": [],
         "x": 940,
-        "y": 1320,
+        "y": 1820,
         "wires": [
             [
-                "f0717dba3a63ccac"
+                "e245c9b113bdfb73"
             ]
         ]
     },
     {
-        "id": "c4e06ace8a0a43d5",
+        "id": "65690798f6d53ba6",
         "type": "split",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "",
         "splt": "\\n",
         "spltType": "str",
@@ -875,17 +849,17 @@
         "stream": false,
         "addname": "",
         "x": 770,
-        "y": 1360,
+        "y": 1860,
         "wires": [
             [
-                "82a68207770dde04"
+                "76d9942efa50ed53"
             ]
         ]
     },
     {
-        "id": "166fc4176e308616",
+        "id": "fdf57de7c1b68e0b",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
@@ -893,28 +867,28 @@
         "rowsPerMsg": 1,
         "outputs": 1,
         "x": 1140,
-        "y": 1360,
+        "y": 1860,
         "wires": [
             []
         ]
     },
     {
-        "id": "4dcafb6670f51756",
+        "id": "9207e225bce9a33f",
         "type": "alpaca-query-order",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "conf": "e535f42f1df1b25f",
         "x": 620,
-        "y": 1360,
+        "y": 1860,
         "wires": [
             [
-                "c4e06ace8a0a43d5"
+                "65690798f6d53ba6"
             ]
         ]
     },
     {
-        "id": "8f4d70b062f2feb0",
+        "id": "9f60ddca38abc6a2",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "truncate orders table",
         "func": "//msg.query = \"create table IF NOT EXISTS orders (id VARCHAR(100) PRIMARY KEY, client_order_id VARCHAR(100), created_at VARCHAR(100), updated_at VARCHAR(100), submitted_at VARCHAR(100), filled_at VARCHAR(100), expired_at VARCHAR(100), canceled_at VARCHAR(100), failed_at VARCHAR(100), replaced_at VARCHAR(100), replaced_by VARCHAR(100), replaces VARCHAR(100), asset_id VARCHAR(100), symbol VARCHAR(10), asset_class VARCHAR(10), notional VARCHAR(100), qty FLOAT, filled_qty FLOAT, filled_avg_price FLOAT, order_class VARCHAR(100), order_type VARCHAR(10), type VARCHAR(100), side VARCHAR(10), time_in_force VARCHAR(10), limit_price FLOAT, stop_price FLOAT, status VARCHAR(100), extended_hours BOOLEAN NOT NULL, legs VARCHAR(100), trail_percent FLOAT, trail_price FLOAT, hwm VARCHAR(100), subtag VARCHAR(100), source varchar(100), order_status VARCHAR(10), account VARCHAR(10)) \"\nmsg.query = \"truncate table orders\"\n//msg.query = \"select * from orders order by created_at desc limit 25 \"\n//msg.query = \"delete from orders\"\n//msg.query = \"update orders set id = 1671452659911, portfolioname = 'Buy Crypto Portfolio' where exchange = 'FTXU'\"\n//msg.query = \"update orders set id = 1671453742321, portfolioname = 'Buy/Short SPY on News Sentiment Daily' where symbol = 'SPY'\"\n//node.warn(msg.query)\nreturn msg;\n",
         "outputs": 1,
@@ -923,17 +897,17 @@
         "finalize": "",
         "libs": [],
         "x": 320,
-        "y": 1100,
+        "y": 1600,
         "wires": [
             [
-                "f1121bed9692b1de"
+                "e509a72f6deff121"
             ]
         ]
     },
     {
-        "id": "f1121bed9692b1de",
+        "id": "e509a72f6deff121",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
@@ -941,15 +915,15 @@
         "rowsPerMsg": 1,
         "outputs": 1,
         "x": 500,
-        "y": 1100,
+        "y": 1600,
         "wires": [
             []
         ]
     },
     {
-        "id": "b29932b55cd58413",
+        "id": "faab07d2eeddce72",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "get closed orders - paper",
         "func": "/* Get Flow variables */\n\nlet ordertype = flow.get(\"orders\")\n//let limit  = flow.get(\"cnt\")\nordertype = \"closed\"\n\n/* Setup alpaca request arguments */\n\nmsg.payload = {\n    status: ordertype, // \"open or closed\"\n    limit: \"500\", // default is 500\n\tdirection: \"desc\" //  \"asc or desc\"\n\n}\n\n//node.warn(msg.payload)\n\nreturn msg;",
         "outputs": 1,
@@ -958,17 +932,17 @@
         "finalize": "",
         "libs": [],
         "x": 410,
-        "y": 1360,
+        "y": 1860,
         "wires": [
             [
-                "4dcafb6670f51756"
+                "9207e225bce9a33f"
             ]
         ]
     },
     {
-        "id": "82a68207770dde04",
+        "id": "76d9942efa50ed53",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "insert into orders paper",
         "func": "let id = msg.payload[\"id\"]\nlet client_order_id = msg.payload[\"client_order_id\"]\nlet created_at = msg.payload[\"created_at\"]\nlet updated_at = msg.payload[\"updated_at\"]\nlet submitted_at = msg.payload[\"submitted_at\"]\nlet filled_at = msg.payload[\"filled_at\"]\nlet expired_at = msg.payload[\"expired_at\"]\nlet canceled_at = msg.payload[\"canceled_at\"]\nlet failed_at = msg.payload[\"failed_at\"]\nlet replaced_at = msg.payload[\"replaced_at\"]\nlet replaced_by = msg.payload[\"replaced_by\"]\nlet replaces = msg.payload[\"replaces\"]\nlet asset_id = msg.payload[\"asset_id\"]\nlet symbol = msg.payload[\"symbol\"]\nlet asset_class = msg.payload[\"asset_class\"]\nlet notional = msg.payload[\"notional\"]\nlet qty = msg.payload[\"qty\"]\nif (qty === null) { qty = 0 }\n\n\nlet filled_qty = msg.payload[\"filled_qty\"]\nif (filled_qty === null) { filled_qty = 0 }\n\nlet filled_avg_price = msg.payload[\"filled_avg_price\"]\nif (filled_avg_price === null) { filled_avg_price = 0 }\n\n\nlet order_class = msg.payload[\"order_class\"]\nlet order_type = msg.payload[\"order_type\"]\nlet type = msg.payload[\"type\"]\nlet side = msg.payload[\"side\"]\nlet time_in_force = msg.payload[\"time_in_force\"]\n\nlet limit_price = msg.payload[\"limit_price\"]\nif (limit_price === null) { limit_price = 0 }\n\nlet stop_price = msg.payload[\"stop_price\"]\nif (stop_price === null ){ stop_price = 0}\n\nlet status = msg.payload[\"status\"]\nlet extended_hours = msg.payload[\"extended_hours\"]\nlet legs = msg.payload[\"legs\"]\n\nlet trail_percent = msg.payload[\"trail_percent\"]\nif (trail_percent === null) { trail_percent = 0 }\n\nlet trail_price = msg.payload[\"trail_price\"]\nif (trail_price === null) { trail_price = 0 }\n\nlet hwm = msg.payload[\"hwm\"]\nlet subtag = msg.payload[\"subtag\"]\nlet source = msg.payload[\"source\"]\n\nmsg.query = \"insert into orders (id,client_order_id,created_at,updated_at,submitted_at,filled_at,expired_at,canceled_at,failed_at,replaced_at,replaced_by,extended_hours,replaces,asset_id,symbol,asset_class,notional,qty,filled_qty,filled_avg_price,order_class,order_type,type,side,time_in_force,limit_price,stop_price,status,legs,trail_percent,trail_price,hwm,subtag,source, order_status, account) values ('\" + id + \"','\" + client_order_id + \"','\" + created_at + \"','\" + updated_at + \"','\" + submitted_at + \"','\" + filled_at + \"','\" + expired_at + \"','\" + canceled_at + \"','\" + failed_at + \"','\" + replaced_at + \"','\" + replaced_by + \"','\" + extended_hours + \"','\" + replaces + \"','\" + asset_id + \"','\" + symbol + \"','\" + asset_class + \"','\" + notional + \"','\" + qty + \"','\" + filled_qty + \"','\" + filled_avg_price + \"','\" + order_class + \"','\" + order_type + \"','\" + type + \"','\" + side + \"','\" + time_in_force + \"','\" + limit_price + \"','\" + stop_price + \"','\" + status + \"','\" + legs + \"','\" + trail_percent + \"','\" + trail_price + \"','\" + hwm + \"','\" + subtag + \"','\" + source+ \"', 'closed', 'paper');\"\n//node.warn(symbol)\nreturn msg;",
         "outputs": 1,
@@ -977,17 +951,17 @@
         "finalize": "",
         "libs": [],
         "x": 950,
-        "y": 1360,
+        "y": 1860,
         "wires": [
             [
-                "166fc4176e308616"
+                "fdf57de7c1b68e0b"
             ]
         ]
     },
     {
-        "id": "cbd6b974c2bc1919",
+        "id": "912d71abadc576ad",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
@@ -995,15 +969,15 @@
         "rowsPerMsg": 1,
         "outputs": 1,
         "x": 660,
-        "y": 1400,
+        "y": 1900,
         "wires": [
             []
         ]
     },
     {
-        "id": "3d678b1ebaaf60ac",
+        "id": "dfa7b881fcca9eba",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "update symbol from alpaca_assets",
         "func": "msg.query = \"UPDATE orders SET symbol = alpaca_assets.symbol FROM alpaca_assets where orders.symbol = alpaca_assets.alpaca_symbol\"\nreturn msg;",
         "outputs": 1,
@@ -1012,17 +986,17 @@
         "finalize": "",
         "libs": [],
         "x": 440,
-        "y": 1400,
+        "y": 1900,
         "wires": [
             [
-                "cbd6b974c2bc1919"
+                "912d71abadc576ad"
             ]
         ]
     },
     {
-        "id": "12f31a5df6a569bb",
+        "id": "f1763e9d54f0154f",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "Create portfolio table",
         "func": "msg.query = \"CREATE table IF NOT EXISTS portfolio (login VARCHAR(20), id BIGINT, account VARCHAR(10), portfolioname VARCHAR(100), asset_id VARCHAR(50), symbol VARCHAR(10), name VARCHAR(100), exchange VARCHAR(10), asset_class VARCHAR(10), asset_marginable VARCHAR(10), order_time VARCHAR(100), order_price FLOAT, order_qty FLOAT,order_value float, order_type VARCHAR(10), filled_at VARCHAR(100), qty FLOAT, avg_entry_price FLOAT, side VARCHAR(10), market_value FLOAT, market_value_today FLOAT,cost_basis FLOAT, unrealized_pl FLOAT, unrealized_plpc FLOAT, unrealized_intraday_pl FLOAT, unrealized_intraday_plpc FLOAT, current_price FLOAT, lastday_price FLOAT, change_today FLOAT, clientorderid VARCHAR(100), newqty FLOAT, newside VARCHAR(10), newfilled_at VARCHAR(100), newavg_entry_price FLOAT, newcost_basis FLOAT, newclient_order_id VARCHAR(100))\"\nnode.warn(msg.query)\nreturn msg;\n",
         "outputs": 1,
@@ -1030,18 +1004,18 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1020,
-        "y": 320,
+        "x": 760,
+        "y": 380,
         "wires": [
             [
-                "b8c21bc252a94ba7"
+                "4ef0f76c07199123"
             ]
         ]
     },
     {
-        "id": "c6ed89621cc3f25f",
+        "id": "c80317f9d91110e2",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "Create algos table",
         "func": "msg.query = \"create table IF NOT EXISTS algos (login varchar(20), id BIGINT, algo_name VARCHAR(100), algo_type VARCHAR(10), status VARCHAR(10), benchmark VARCHAR(10), benchmark_start FLOAT,portfolio_size FLOAT, gain_today FLOAT, pctgain_today FLOAT, gain_alltime FLOAT, pctgain_alltime FLOAT,pctbench_today FLOAT, pctbench_alltime FLOAT, info_ratio FLOAT, tickers VARCHAR(5000),asset_class VARCHAR(10), number INT );\"\nnode.warn(msg.query)\nreturn msg;\n",
         "outputs": 1,
@@ -1049,18 +1023,18 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1010,
-        "y": 360,
+        "x": 730,
+        "y": 460,
         "wires": [
             [
-                "8bdad1c41ba6be53"
+                "c9979f48dd8a52f2"
             ]
         ]
     },
     {
-        "id": "44e9863ee5b4acf5",
+        "id": "a48a6d0aa2a06eaa",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "create positions table",
         "func": "msg.query = \"create table IF NOT EXISTS positions (id BIGINT, asset_id VARCHAR(100), portfolioname VARCHAR(100), symbol VARCHAR(10) PRIMARY KEY, name VARCHAR(500), account VARCHAR(10), exchange VARCHAR(100), asset_class VARCHAR(100), asset_marginable VARCHAR(100), qty FLOAT, avg_entry_price FLOAT, side VARCHAR(100), market_value FLOAT, cost_basis FLOAT, unrealized_pl FLOAT, unrealized_plpc FLOAT, unrealized_intraday_pl FLOAT, unrealized_intraday_plpc FLOAT, current_price FLOAT, lastday_price FLOAT, change_today FLOAT, qty_available FLOAT, status VARCHAR(10), orderid VARCHAR(100))\"\nnode.warn(msg.query)\nreturn msg;",
         "outputs": 1,
@@ -1068,18 +1042,18 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1020,
-        "y": 400,
+        "x": 740,
+        "y": 540,
         "wires": [
             [
-                "1ee63de6e1dce0cc"
+                "96143ef2ef2a5d7f"
             ]
         ]
     },
     {
-        "id": "75e25fcaebee6e3c",
+        "id": "62eaf01e4d3701d2",
         "type": "delay",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "",
         "pauseType": "delay",
         "timeout": "1",
@@ -1093,66 +1067,66 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 840,
-        "y": 320,
+        "x": 580,
+        "y": 380,
         "wires": [
             [
-                "12f31a5df6a569bb"
+                "f1763e9d54f0154f"
             ]
         ]
     },
     {
-        "id": "1ee63de6e1dce0cc",
+        "id": "96143ef2ef2a5d7f",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 1260,
-        "y": 400,
+        "x": 920,
+        "y": 540,
         "wires": [
             []
         ]
     },
     {
-        "id": "b8c21bc252a94ba7",
+        "id": "4ef0f76c07199123",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 1260,
-        "y": 320,
+        "x": 940,
+        "y": 380,
         "wires": [
             []
         ]
     },
     {
-        "id": "8bdad1c41ba6be53",
+        "id": "c9979f48dd8a52f2",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 1260,
-        "y": 360,
+        "x": 900,
+        "y": 460,
         "wires": [
             []
         ]
     },
     {
-        "id": "5911a70feb6e4456",
+        "id": "b58b970c4c93d3a2",
         "type": "delay",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "",
         "pauseType": "delay",
         "timeout": "1",
@@ -1166,18 +1140,18 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 840,
-        "y": 360,
+        "x": 560,
+        "y": 460,
         "wires": [
             [
-                "c6ed89621cc3f25f"
+                "c80317f9d91110e2"
             ]
         ]
     },
     {
-        "id": "61a3692c2692ed68",
+        "id": "4a97d49c229f982c",
         "type": "delay",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "",
         "pauseType": "delay",
         "timeout": "1",
@@ -1191,18 +1165,18 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 840,
-        "y": 400,
+        "x": 560,
+        "y": 540,
         "wires": [
             [
-                "44e9863ee5b4acf5"
+                "a48a6d0aa2a06eaa"
             ]
         ]
     },
     {
-        "id": "dfad69ad307f7551",
+        "id": "071174bf8913c7cf",
         "type": "delay",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "",
         "pauseType": "delay",
         "timeout": "10",
@@ -1217,17 +1191,17 @@
         "allowrate": false,
         "outputs": 1,
         "x": 330,
-        "y": 1140,
+        "y": 1640,
         "wires": [
             [
-                "48635e24e34cdedb"
+                "2fb60c319b390110"
             ]
         ]
     },
     {
-        "id": "48635e24e34cdedb",
+        "id": "2fb60c319b390110",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "create orders table ",
         "func": "msg.query = \"create table IF NOT EXISTS orders (id VARCHAR(100) PRIMARY KEY, client_order_id VARCHAR(100), created_at VARCHAR(100), updated_at VARCHAR(100), submitted_at VARCHAR(100), filled_at VARCHAR(100), expired_at VARCHAR(100), canceled_at VARCHAR(100), failed_at VARCHAR(100), replaced_at VARCHAR(100), replaced_by VARCHAR(100), replaces VARCHAR(100), asset_id VARCHAR(100), symbol VARCHAR(10), asset_class VARCHAR(10), notional VARCHAR(100), qty FLOAT, filled_qty FLOAT, filled_avg_price FLOAT, order_class VARCHAR(100), order_type VARCHAR(10), type VARCHAR(100), side VARCHAR(10), time_in_force VARCHAR(10), limit_price FLOAT, stop_price FLOAT, status VARCHAR(100), extended_hours BOOLEAN NOT NULL, legs VARCHAR(100), trail_percent FLOAT, trail_price FLOAT, hwm VARCHAR(100), subtag VARCHAR(100), source varchar(100), order_status VARCHAR(10), account VARCHAR(10)) \"\n//msg.query = \"drop table orders\"\n//msg.query = \"select * from orders order by created_at desc limit 25 \"\n//msg.query = \"delete from orders\"\n//msg.query = \"update orders set id = 1671452659911, portfolioname = 'Buy Crypto Portfolio' where exchange = 'FTXU'\"\n//msg.query = \"update orders set id = 1671453742321, portfolioname = 'Buy/Short SPY on News Sentiment Daily' where symbol = 'SPY'\"\n//node.warn(msg.query)\nreturn msg;\n",
         "outputs": 1,
@@ -1236,17 +1210,17 @@
         "finalize": "",
         "libs": [],
         "x": 510,
-        "y": 1140,
+        "y": 1640,
         "wires": [
             [
-                "fa4467fdeb077ed3"
+                "c4d85b9ed4fe35f4"
             ]
         ]
     },
     {
-        "id": "fa4467fdeb077ed3",
+        "id": "c4d85b9ed4fe35f4",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
@@ -1254,17 +1228,17 @@
         "rowsPerMsg": 1,
         "outputs": 1,
         "x": 680,
-        "y": 1140,
+        "y": 1640,
         "wires": [
             [
-                "89363cc4f7f087a3"
+                "600f99e4fcec8c76"
             ]
         ]
     },
     {
-        "id": "89363cc4f7f087a3",
+        "id": "600f99e4fcec8c76",
         "type": "debug",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "debug 170",
         "active": true,
         "tosidebar": true,
@@ -1274,13 +1248,13 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 830,
-        "y": 1140,
+        "y": 1640,
         "wires": []
     },
     {
-        "id": "3a48eae92178e119",
+        "id": "5add734d04383205",
         "type": "delay",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "",
         "pauseType": "delay",
         "timeout": "10",
@@ -1295,17 +1269,17 @@
         "allowrate": false,
         "outputs": 1,
         "x": 220,
-        "y": 1400,
+        "y": 1900,
         "wires": [
             [
-                "3d678b1ebaaf60ac"
+                "dfa7b881fcca9eba"
             ]
         ]
     },
     {
-        "id": "787a72dccfc499a3",
+        "id": "442d4eb3a0178fc4",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "delete from balances",
         "func": "msg.query = \"delete from balances\"\n//node.warn(msg.query)\nreturn msg;\n",
         "outputs": 1,
@@ -1314,17 +1288,17 @@
         "finalize": "",
         "libs": [],
         "x": 1020,
-        "y": 60,
+        "y": 20,
         "wires": [
             [
-                "f07d28332134aa65"
+                "a6450d89fcc59558"
             ]
         ]
     },
     {
-        "id": "f07d28332134aa65",
+        "id": "a6450d89fcc59558",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
@@ -1332,15 +1306,15 @@
         "rowsPerMsg": 1,
         "outputs": 1,
         "x": 1260,
-        "y": 60,
+        "y": 20,
         "wires": [
             []
         ]
     },
     {
-        "id": "2e211b9598800603",
+        "id": "bd76d0daf70ad424",
         "type": "delay",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "",
         "pauseType": "delay",
         "timeout": "1",
@@ -1355,17 +1329,17 @@
         "allowrate": false,
         "outputs": 1,
         "x": 840,
-        "y": 60,
+        "y": 20,
         "wires": [
             [
-                "787a72dccfc499a3"
+                "442d4eb3a0178fc4"
             ]
         ]
     },
     {
-        "id": "d6fc3efc1ba10cd8",
+        "id": "5ce3e5e230948772",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "delete from balances_daily",
         "func": "msg.query = \"delete from balances_daily\"\n//node.warn(msg.query)\nreturn msg;\n",
         "outputs": 1,
@@ -1374,17 +1348,17 @@
         "finalize": "",
         "libs": [],
         "x": 1040,
-        "y": 100,
+        "y": 60,
         "wires": [
             [
-                "ac1bbcef9cccada2"
+                "ac42844234cbb9f8"
             ]
         ]
     },
     {
-        "id": "ac1bbcef9cccada2",
+        "id": "ac42844234cbb9f8",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
@@ -1392,15 +1366,15 @@
         "rowsPerMsg": 1,
         "outputs": 1,
         "x": 1260,
-        "y": 100,
+        "y": 60,
         "wires": [
             []
         ]
     },
     {
-        "id": "9cfb1a93593cfafb",
+        "id": "555015a1b7b9825f",
         "type": "delay",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "",
         "pauseType": "delay",
         "timeout": "1",
@@ -1415,17 +1389,17 @@
         "allowrate": false,
         "outputs": 1,
         "x": 840,
-        "y": 100,
+        "y": 60,
         "wires": [
             [
-                "d6fc3efc1ba10cd8"
+                "5ce3e5e230948772"
             ]
         ]
     },
     {
-        "id": "f62f16a141db6fd1",
+        "id": "bd78d60abc0fa5d3",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "create order_confirms table",
         "func": "//msg.query = \"DROP TABLE order_confirms\"\nmsg.query = \"create table IF NOT EXISTS order_confirms (id VARCHAR(200), client_order_id VARCHAR(200), created_at VARCHAR(200), updated_at VARCHAR(200), submitted_at VARCHAR(200), filled_at VARCHAR(200), expired_at VARCHAR(200), canceled_at VARCHAR(200), failed_at VARCHAR(200), replaced_at VARCHAR(200), replaced_by VARCHAR(200), replaces VARCHAR(200), asset_id VARCHAR(200), symbol VARCHAR(40), asset_class VARCHAR(40), notional FLOAT, qty FLOAT, filled_qty FLOAT, filled_avg_price FLOAT, order_class VARCHAR(40), order_type VARCHAR(40), type VARCHAR(40), side VARCHAR(40),  time_in_force VARCHAR(40), limit_price FLOAT, stop_price FLOAT, status VARCHAR(40), extended_hours BOOLEAN, legs BOOLEAN, trail_percent FLOAT, trail_price FLOAT, hwm VARCHAR(40), subtag VARCHAR(200), source VARCHAR(40))\"\n\nreturn msg;",
         "outputs": 1,
@@ -1433,34 +1407,34 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1060,
-        "y": 440,
+        "x": 760,
+        "y": 620,
         "wires": [
             [
-                "b9b8c9c3f54d5360"
+                "8b7b097663df1714"
             ]
         ]
     },
     {
-        "id": "b9b8c9c3f54d5360",
+        "id": "8b7b097663df1714",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 1260,
-        "y": 440,
+        "x": 960,
+        "y": 620,
         "wires": [
             []
         ]
     },
     {
-        "id": "60d4f89ca96cfc02",
+        "id": "e2218a0a12aa551c",
         "type": "delay",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "",
         "pauseType": "delay",
         "timeout": "1",
@@ -1474,18 +1448,18 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 860,
-        "y": 440,
+        "x": 560,
+        "y": 620,
         "wires": [
             [
-                "f62f16a141db6fd1"
+                "bd78d60abc0fa5d3"
             ]
         ]
     },
     {
-        "id": "b59629fe75e68664",
+        "id": "79fd66da9829d727",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "drop orders_confirms table",
         "func": "msg.query = \"drop table orders_confirms\"\nnode.warn(msg.query)\nreturn msg;\n",
         "outputs": 1,
@@ -1493,34 +1467,34 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 520,
-        "y": 440,
+        "x": 500,
+        "y": 580,
         "wires": [
             [
-                "12291c2a5beef075"
+                "84ef451e453c0f49"
             ]
         ]
     },
     {
-        "id": "12291c2a5beef075",
+        "id": "84ef451e453c0f49",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 720,
-        "y": 440,
+        "x": 700,
+        "y": 580,
         "wires": [
             []
         ]
     },
     {
-        "id": "5db782d3ba296671",
+        "id": "cdd2226b1036c012",
         "type": "inject",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "GO",
         "props": [],
         "repeat": "",
@@ -1528,71 +1502,72 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "x": 150,
-        "y": 700,
+        "x": 110,
+        "y": 1240,
         "wires": [
             [
-                "1e8fe84fce7a761b",
-                "ecb3bd384d2bfbe2",
-                "500f5d5744b6c9f1",
-                "ef35789ee9904608",
-                "8b07fb34792361eb",
-                "ca4dfbba72e85259"
+                "084154d78021ea77",
+                "3e25babd338cec21",
+                "6da7f65671800f35",
+                "b3550c7c5347a0ef",
+                "f51fb80add96fc9e",
+                "a754bb1bdb4a3678",
+                "de8441baa9f8883e"
             ]
         ]
     },
     {
-        "id": "e56339b050007461",
+        "id": "c98a0bde26c6ba63",
         "type": "alpaca-asset-query",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "conf": "e535f42f1df1b25f",
-        "x": 490,
-        "y": 760,
+        "x": 470,
+        "y": 1280,
         "wires": [
             [
-                "d05ce006009a9817"
+                "0461951535575aa0"
             ]
         ]
     },
     {
-        "id": "1e8fe84fce7a761b",
+        "id": "084154d78021ea77",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "truncate alpaca_assets",
-        "func": "msg.query = \"truncate table alpaca_assets\"\n//msg.query = \"CREATE TABLE IF NOT EXISTS alpaca_assets(id VARCHAR(100), symbol varchar(10) PRIMARY KEY, name VARCHAR(200), alpaca_symbol VARCHAR(10), polygon_symbol VARCHAR(10), easy_to_borrow BOOLEAN, exchange VARCHAR(10), fractionable BOOLEAN, marginable BOOLEAN, status VARCHAR(10), tradeable BOOLEAN)\"\nnode.warn(msg.query)\n\nreturn msg;",
+        "func": "msg.query = \"truncate table alpaca_assets\"\n//msg.query = \"CREATE TABLE IF NOT EXISTS alpaca_assets (id VARCHAR(100), symbol varchar(10) PRIMARY KEY, name VARCHAR(200), alpaca_symbol VARCHAR(10), polygon_symbol VARCHAR(10), easy_to_borrow BOOLEAN, exchange VARCHAR(10), shortable BOOLEAN, fractionable BOOLEAN, marginable BOOLEAN, status VARCHAR(10), tradable BOOLEAN)\"\nnode.warn(msg.query)\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 370,
-        "y": 700,
+        "x": 330,
+        "y": 1240,
         "wires": [
             [
-                "f686a20e633bb325"
+                "2e084ecf240ef456"
             ]
         ]
     },
     {
-        "id": "f686a20e633bb325",
+        "id": "2e084ecf240ef456",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 560,
-        "y": 700,
+        "x": 540,
+        "y": 1240,
         "wires": [
             []
         ]
     },
     {
-        "id": "ef35789ee9904608",
+        "id": "3e25babd338cec21",
         "type": "delay",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "",
         "pauseType": "delay",
         "timeout": "2",
@@ -1606,18 +1581,18 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 300,
-        "y": 760,
+        "x": 280,
+        "y": 1280,
         "wires": [
             [
-                "e56339b050007461"
+                "c98a0bde26c6ba63"
             ]
         ]
     },
     {
-        "id": "d05ce006009a9817",
+        "id": "0461951535575aa0",
         "type": "split",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "",
         "splt": "\\n",
         "spltType": "str",
@@ -1625,18 +1600,18 @@
         "arraySpltType": "len",
         "stream": false,
         "addname": "",
-        "x": 650,
-        "y": 760,
+        "x": 630,
+        "y": 1280,
         "wires": [
             [
-                "415a8f6bfb46b110"
+                "6c15256dee4b094c"
             ]
         ]
     },
     {
-        "id": "718f5f937016dbbf",
+        "id": "cfbdd275041b3c6e",
         "type": "split",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "",
         "splt": "\\n",
         "spltType": "str",
@@ -1645,17 +1620,17 @@
         "stream": false,
         "addname": "",
         "x": 770,
-        "y": 1240,
+        "y": 1740,
         "wires": [
             [
-                "e7cbaa9e3faba596"
+                "a230122c48dc5ccf"
             ]
         ]
     },
     {
-        "id": "b23621c5c78f6102",
+        "id": "b20da93a9093a622",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
@@ -1663,15 +1638,15 @@
         "rowsPerMsg": 1,
         "outputs": 1,
         "x": 1140,
-        "y": 1240,
+        "y": 1740,
         "wires": [
             []
         ]
     },
     {
-        "id": "b03cb305e6abdd22",
+        "id": "4285a86395594a70",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "get open orders - live",
         "func": "/* Get Flow variables */\n\nlet ordertype = flow.get(\"orders\")\n//let limit  = flow.get(\"cnt\")\nordertype = \"open\"\n\n/* Setup alpaca request arguments */\n\nmsg.payload = {\n    status: ordertype, // \"open or closed\"\n    limit: \"500\", // default is 500\n\tdirection: \"desc\" //  \"asc or desc\"\n\n}\n\n//node.warn(msg.payload)\n\nreturn msg;",
         "outputs": 1,
@@ -1680,30 +1655,30 @@
         "finalize": "",
         "libs": [],
         "x": 400,
-        "y": 1240,
+        "y": 1740,
         "wires": [
             [
-                "031e50f64673aa64"
+                "57b58fb9d1bbf150"
             ]
         ]
     },
     {
-        "id": "031e50f64673aa64",
+        "id": "57b58fb9d1bbf150",
         "type": "alpaca-query-order",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "conf": "0c86a5f06a42b505",
         "x": 620,
-        "y": 1240,
+        "y": 1740,
         "wires": [
             [
-                "718f5f937016dbbf"
+                "cfbdd275041b3c6e"
             ]
         ]
     },
     {
-        "id": "e7cbaa9e3faba596",
+        "id": "a230122c48dc5ccf",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "insert into orders live",
         "func": "let id = msg.payload[\"id\"]\nlet client_order_id = msg.payload[\"client_order_id\"]\nlet created_at = msg.payload[\"created_at\"]\nlet updated_at = msg.payload[\"updated_at\"]\nlet submitted_at = msg.payload[\"submitted_at\"]\nlet filled_at = msg.payload[\"filled_at\"]\nlet expired_at = msg.payload[\"expired_at\"]\nlet canceled_at = msg.payload[\"canceled_at\"]\nlet failed_at = msg.payload[\"failed_at\"]\nlet replaced_at = msg.payload[\"replaced_at\"]\nlet replaced_by = msg.payload[\"replaced_by\"]\nlet replaces = msg.payload[\"replaces\"]\nlet asset_id = msg.payload[\"asset_id\"]\nlet symbol = msg.payload[\"symbol\"]\nlet asset_class = msg.payload[\"asset_class\"]\nlet notional = msg.payload[\"notional\"]\nlet qty = msg.payload[\"qty\"]\nif (qty === null) { qty = 0 }\n\n\nlet filled_qty = msg.payload[\"filled_qty\"]\nif (filled_qty === null) { filled_qty = 0 }\n\nlet filled_avg_price = msg.payload[\"filled_avg_price\"]\nif (filled_avg_price === null) { filled_avg_price = 0 }\n\n\nlet order_class = msg.payload[\"order_class\"]\nlet order_type = msg.payload[\"order_type\"]\nlet type = msg.payload[\"type\"]\nlet side = msg.payload[\"side\"]\nlet time_in_force = msg.payload[\"time_in_force\"]\n\nlet limit_price = msg.payload[\"limit_price\"]\nif (limit_price === null) { limit_price = 0 }\n\nlet stop_price = msg.payload[\"stop_price\"]\nif (stop_price === null ){ stop_price = 0}\n\nlet status = msg.payload[\"status\"]\nlet extended_hours = msg.payload[\"extended_hours\"]\nlet legs = msg.payload[\"legs\"]\n\nlet trail_percent = msg.payload[\"trail_percent\"]\nif (trail_percent === null) { trail_percent = 0 }\n\nlet trail_price = msg.payload[\"trail_price\"]\nif (trail_price === null) { trail_price = 0 }\n\nlet hwm = msg.payload[\"hwm\"]\nlet subtag = msg.payload[\"subtag\"]\nlet source = msg.payload[\"source\"]\n\nmsg.query = \"insert into orders (id,client_order_id,created_at,updated_at,submitted_at,filled_at,expired_at,canceled_at,failed_at,replaced_at,replaced_by,extended_hours,replaces,asset_id,symbol,asset_class,notional,qty,filled_qty,filled_avg_price,order_class,order_type,type,side,time_in_force,limit_price,stop_price,status,legs,trail_percent,trail_price,hwm,subtag,source, order_status, account) values ('\" + id + \"','\" + client_order_id + \"','\" + created_at + \"','\" + updated_at + \"','\" + submitted_at + \"','\" + filled_at + \"','\" + expired_at + \"','\" + canceled_at + \"','\" + failed_at + \"','\" + replaced_at + \"','\" + replaced_by + \"','\" + extended_hours + \"','\" + replaces + \"','\" + asset_id + \"','\" + symbol + \"','\" + asset_class + \"','\" + notional + \"','\" + qty + \"','\" + filled_qty + \"','\" + filled_avg_price + \"','\" + order_class + \"','\" + order_type + \"','\" + type + \"','\" + side + \"','\" + time_in_force + \"','\" + limit_price + \"','\" + stop_price + \"','\" + status + \"','\" + legs + \"','\" + trail_percent + \"','\" + trail_price + \"','\" + hwm + \"','\" + subtag + \"','\" + source+ \"', 'open', 'live');\"\n//node.warn(symbol)\nreturn msg;",
         "outputs": 1,
@@ -1712,17 +1687,17 @@
         "finalize": "",
         "libs": [],
         "x": 940,
-        "y": 1240,
+        "y": 1740,
         "wires": [
             [
-                "b23621c5c78f6102"
+                "b20da93a9093a622"
             ]
         ]
     },
     {
-        "id": "57d569cda399e497",
+        "id": "9a1a5de35c3a10a8",
         "type": "split",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "",
         "splt": "\\n",
         "spltType": "str",
@@ -1731,17 +1706,17 @@
         "stream": false,
         "addname": "",
         "x": 770,
-        "y": 1280,
+        "y": 1780,
         "wires": [
             [
-                "1338edc8385cf384"
+                "8116f6bc87851dbc"
             ]
         ]
     },
     {
-        "id": "2c11e0e757bf7fc0",
+        "id": "e95c6cf4abe4b42f",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
@@ -1749,15 +1724,15 @@
         "rowsPerMsg": 1,
         "outputs": 1,
         "x": 1140,
-        "y": 1280,
+        "y": 1780,
         "wires": [
             []
         ]
     },
     {
-        "id": "b0febf285105b3ae",
+        "id": "ac9d572f7194ec0e",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "get open orders - paper",
         "func": "/* Get Flow variables */\n\nlet ordertype = flow.get(\"orders\")\n//let limit  = flow.get(\"cnt\")\nordertype = \"open\"\n\n/* Setup alpaca request arguments */\n\nmsg.payload = {\n    status: ordertype, // \"open or closed\"\n    limit: \"500\", // default is 500\n\tdirection: \"desc\" //  \"asc or desc\"\n\n}\n\n//node.warn(msg.payload)\n\nreturn msg;",
         "outputs": 1,
@@ -1766,30 +1741,30 @@
         "finalize": "",
         "libs": [],
         "x": 410,
-        "y": 1280,
+        "y": 1780,
         "wires": [
             [
-                "9f751da03ca3b080"
+                "9a726c40c5f00665"
             ]
         ]
     },
     {
-        "id": "9f751da03ca3b080",
+        "id": "9a726c40c5f00665",
         "type": "alpaca-query-order",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "conf": "e535f42f1df1b25f",
         "x": 620,
-        "y": 1280,
+        "y": 1780,
         "wires": [
             [
-                "57d569cda399e497"
+                "9a1a5de35c3a10a8"
             ]
         ]
     },
     {
-        "id": "1338edc8385cf384",
+        "id": "8116f6bc87851dbc",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "insert into orders paper",
         "func": "let id = msg.payload[\"id\"]\nlet client_order_id = msg.payload[\"client_order_id\"]\nlet created_at = msg.payload[\"created_at\"]\nlet updated_at = msg.payload[\"updated_at\"]\nlet submitted_at = msg.payload[\"submitted_at\"]\nlet filled_at = msg.payload[\"filled_at\"]\nlet expired_at = msg.payload[\"expired_at\"]\nlet canceled_at = msg.payload[\"canceled_at\"]\nlet failed_at = msg.payload[\"failed_at\"]\nlet replaced_at = msg.payload[\"replaced_at\"]\nlet replaced_by = msg.payload[\"replaced_by\"]\nlet replaces = msg.payload[\"replaces\"]\nlet asset_id = msg.payload[\"asset_id\"]\nlet symbol = msg.payload[\"symbol\"]\nlet asset_class = msg.payload[\"asset_class\"]\nlet notional = msg.payload[\"notional\"]\nlet qty = msg.payload[\"qty\"]\nif (qty === null) { qty = 0 }\n\n\nlet filled_qty = msg.payload[\"filled_qty\"]\nif (filled_qty === null) { filled_qty = 0 }\n\nlet filled_avg_price = msg.payload[\"filled_avg_price\"]\nif (filled_avg_price === null) { filled_avg_price = 0 }\n\n\nlet order_class = msg.payload[\"order_class\"]\nlet order_type = msg.payload[\"order_type\"]\nlet type = msg.payload[\"type\"]\nlet side = msg.payload[\"side\"]\nlet time_in_force = msg.payload[\"time_in_force\"]\n\nlet limit_price = msg.payload[\"limit_price\"]\nif (limit_price === null) { limit_price = 0 }\n\nlet stop_price = msg.payload[\"stop_price\"]\nif (stop_price === null ){ stop_price = 0}\n\nlet status = msg.payload[\"status\"]\nlet extended_hours = msg.payload[\"extended_hours\"]\nlet legs = msg.payload[\"legs\"]\n\nlet trail_percent = msg.payload[\"trail_percent\"]\nif (trail_percent === null) { trail_percent = 0 }\n\nlet trail_price = msg.payload[\"trail_price\"]\nif (trail_price === null) { trail_price = 0 }\n\nlet hwm = msg.payload[\"hwm\"]\nlet subtag = msg.payload[\"subtag\"]\nlet source = msg.payload[\"source\"]\n\nmsg.query = \"insert into orders (id,client_order_id,created_at,updated_at,submitted_at,filled_at,expired_at,canceled_at,failed_at,replaced_at,replaced_by,extended_hours,replaces,asset_id,symbol,asset_class,notional,qty,filled_qty,filled_avg_price,order_class,order_type,type,side,time_in_force,limit_price,stop_price,status,legs,trail_percent,trail_price,hwm,subtag,source, order_status, account) values ('\" + id + \"','\" + client_order_id + \"','\" + created_at + \"','\" + updated_at + \"','\" + submitted_at + \"','\" + filled_at + \"','\" + expired_at + \"','\" + canceled_at + \"','\" + failed_at + \"','\" + replaced_at + \"','\" + replaced_by + \"','\" + extended_hours + \"','\" + replaces + \"','\" + asset_id + \"','\" + symbol + \"','\" + asset_class + \"','\" + notional + \"','\" + qty + \"','\" + filled_qty + \"','\" + filled_avg_price + \"','\" + order_class + \"','\" + order_type + \"','\" + type + \"','\" + side + \"','\" + time_in_force + \"','\" + limit_price + \"','\" + stop_price + \"','\" + status + \"','\" + legs + \"','\" + trail_percent + \"','\" + trail_price + \"','\" + hwm + \"','\" + subtag + \"','\" + source+ \"', 'open', 'paper');\"\n//node.warn(symbol)\nreturn msg;",
         "outputs": 1,
@@ -1798,17 +1773,17 @@
         "finalize": "",
         "libs": [],
         "x": 950,
-        "y": 1280,
+        "y": 1780,
         "wires": [
             [
-                "2c11e0e757bf7fc0"
+                "e95c6cf4abe4b42f"
             ]
         ]
     },
     {
-        "id": "9baa45e94b56aca7",
+        "id": "9f6c18abde306f58",
         "type": "delay",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "",
         "pauseType": "delay",
         "timeout": "2",
@@ -1823,17 +1798,17 @@
         "allowrate": false,
         "outputs": 1,
         "x": 220,
-        "y": 1240,
+        "y": 1740,
         "wires": [
             [
-                "b03cb305e6abdd22"
+                "4285a86395594a70"
             ]
         ]
     },
     {
-        "id": "5c7bc6ead4e8d8cb",
+        "id": "160cfd25d0060e88",
         "type": "delay",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "",
         "pauseType": "delay",
         "timeout": "3",
@@ -1848,17 +1823,17 @@
         "allowrate": false,
         "outputs": 1,
         "x": 220,
-        "y": 1280,
+        "y": 1780,
         "wires": [
             [
-                "b0febf285105b3ae"
+                "ac9d572f7194ec0e"
             ]
         ]
     },
     {
-        "id": "5d16163b25c1c3e9",
+        "id": "b09a7793853a14e9",
         "type": "delay",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "",
         "pauseType": "delay",
         "timeout": "4",
@@ -1873,17 +1848,17 @@
         "allowrate": false,
         "outputs": 1,
         "x": 220,
-        "y": 1320,
+        "y": 1820,
         "wires": [
             [
-                "3d15fb1fbab7c480"
+                "2bbea831cda536e8"
             ]
         ]
     },
     {
-        "id": "1274c718a896169d",
+        "id": "e0d3283dc1957814",
         "type": "delay",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "",
         "pauseType": "delay",
         "timeout": "5",
@@ -1898,17 +1873,17 @@
         "allowrate": false,
         "outputs": 1,
         "x": 220,
-        "y": 1360,
+        "y": 1860,
         "wires": [
             [
-                "b29932b55cd58413"
+                "faab07d2eeddce72"
             ]
         ]
     },
     {
-        "id": "fe52638890d28f92",
+        "id": "ebd0297e9bfa5c65",
         "type": "inject",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "GO",
         "props": [],
         "repeat": "",
@@ -1917,24 +1892,24 @@
         "onceDelay": 0.1,
         "topic": "",
         "x": 130,
-        "y": 1100,
+        "y": 1600,
         "wires": [
             [
-                "8f4d70b062f2feb0",
-                "dfad69ad307f7551",
-                "83ade54f5903b462",
-                "9baa45e94b56aca7",
-                "5c7bc6ead4e8d8cb",
-                "5d16163b25c1c3e9",
-                "1274c718a896169d",
-                "3a48eae92178e119"
+                "9f60ddca38abc6a2",
+                "071174bf8913c7cf",
+                "19e90e185c5db216",
+                "9f6c18abde306f58",
+                "160cfd25d0060e88",
+                "b09a7793853a14e9",
+                "e0d3283dc1957814",
+                "5add734d04383205"
             ]
         ]
     },
     {
-        "id": "83ade54f5903b462",
+        "id": "19e90e185c5db216",
         "type": "delay",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "",
         "pauseType": "delay",
         "timeout": "1",
@@ -1949,17 +1924,17 @@
         "allowrate": false,
         "outputs": 1,
         "x": 320,
-        "y": 1180,
+        "y": 1680,
         "wires": [
             [
-                "909a8f6758f8779a"
+                "6f6b3ab5d34cab3e"
             ]
         ]
     },
     {
-        "id": "909a8f6758f8779a",
+        "id": "6f6b3ab5d34cab3e",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "create index",
         "func": "msg.query = \"create index type on orders(status)\"\nreturn msg;\n",
         "outputs": 1,
@@ -1968,17 +1943,17 @@
         "finalize": "",
         "libs": [],
         "x": 490,
-        "y": 1180,
+        "y": 1680,
         "wires": [
             [
-                "d2900eeb8cb43e7b"
+                "d5c323e2261893d3"
             ]
         ]
     },
     {
-        "id": "d2900eeb8cb43e7b",
+        "id": "d5c323e2261893d3",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
@@ -1986,17 +1961,17 @@
         "rowsPerMsg": 1,
         "outputs": 1,
         "x": 680,
-        "y": 1180,
+        "y": 1680,
         "wires": [
             [
-                "8092c696796f065e"
+                "0a8fe15cd87aaad4"
             ]
         ]
     },
     {
-        "id": "8092c696796f065e",
+        "id": "0a8fe15cd87aaad4",
         "type": "debug",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "debug 260",
         "active": true,
         "tosidebar": true,
@@ -2006,63 +1981,13 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 830,
-        "y": 1180,
+        "y": 1680,
         "wires": []
     },
     {
-        "id": "ecb3bd384d2bfbe2",
-        "type": "delay",
-        "z": "2923e96769e4646a",
-        "name": "",
-        "pauseType": "delay",
-        "timeout": "10",
-        "timeoutUnits": "seconds",
-        "rate": "1",
-        "nbRateUnits": "1",
-        "rateUnits": "second",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": false,
-        "allowrate": false,
-        "outputs": 1,
-        "x": 300,
-        "y": 800,
-        "wires": [
-            [
-                "4a99fbcfc19ff85c"
-            ]
-        ]
-    },
-    {
-        "id": "500f5d5744b6c9f1",
-        "type": "delay",
-        "z": "2923e96769e4646a",
-        "name": "",
-        "pauseType": "delay",
-        "timeout": "20",
-        "timeoutUnits": "seconds",
-        "rate": "1",
-        "nbRateUnits": "1",
-        "rateUnits": "second",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": false,
-        "allowrate": false,
-        "outputs": 1,
-        "x": 300,
-        "y": 840,
-        "wires": [
-            [
-                "549764d852f9fea1"
-            ]
-        ]
-    },
-    {
-        "id": "5b510ea69b9419be",
+        "id": "feafe6259fe35de0",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "create index",
         "func": "msg.query = \"create index type on orders(status)\"\nreturn msg;\n",
         "outputs": 1,
@@ -2070,84 +1995,34 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1010,
-        "y": 520,
+        "x": 690,
+        "y": 740,
         "wires": [
             [
-                "d6d47e543077952d"
+                "ebf5acc6b58855c9"
             ]
         ]
     },
     {
-        "id": "d6d47e543077952d",
+        "id": "ebf5acc6b58855c9",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 1260,
-        "y": 520,
+        "x": 880,
+        "y": 740,
         "wires": [
             []
         ]
     },
     {
-        "id": "8b07fb34792361eb",
-        "type": "delay",
-        "z": "2923e96769e4646a",
-        "name": "",
-        "pauseType": "delay",
-        "timeout": "30",
-        "timeoutUnits": "seconds",
-        "rate": "1",
-        "nbRateUnits": "1",
-        "rateUnits": "second",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": false,
-        "allowrate": false,
-        "outputs": 1,
-        "x": 300,
-        "y": 880,
-        "wires": [
-            [
-                "0855696978ed4837"
-            ]
-        ]
-    },
-    {
-        "id": "ca4dfbba72e85259",
-        "type": "delay",
-        "z": "2923e96769e4646a",
-        "name": "",
-        "pauseType": "delay",
-        "timeout": "35",
-        "timeoutUnits": "seconds",
-        "rate": "1",
-        "nbRateUnits": "1",
-        "rateUnits": "second",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": false,
-        "allowrate": false,
-        "outputs": 1,
-        "x": 300,
-        "y": 920,
-        "wires": [
-            [
-                "71ee1fd17a28e7c7"
-            ]
-        ]
-    },
-    {
-        "id": "33ac90acee408dc7",
+        "id": "9b11ba7a2708a209",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "create orders table ",
         "func": "msg.query = \"create table IF NOT EXISTS orders (id VARCHAR(100) PRIMARY KEY, client_order_id VARCHAR(100), created_at VARCHAR(100), updated_at VARCHAR(100), submitted_at VARCHAR(100), filled_at VARCHAR(100), expired_at VARCHAR(100), canceled_at VARCHAR(100), failed_at VARCHAR(100), replaced_at VARCHAR(100), replaced_by VARCHAR(100), replaces VARCHAR(100), asset_id VARCHAR(100), symbol VARCHAR(10), asset_class VARCHAR(10), notional VARCHAR(100), qty FLOAT, filled_qty FLOAT, filled_avg_price FLOAT, order_class VARCHAR(100), order_type VARCHAR(10), type VARCHAR(100), side VARCHAR(10), time_in_force VARCHAR(10), limit_price FLOAT, stop_price FLOAT, status VARCHAR(100), extended_hours BOOLEAN NOT NULL, legs VARCHAR(100), trail_percent FLOAT, trail_price FLOAT, hwm VARCHAR(100), subtag VARCHAR(100), source varchar(100), order_status VARCHAR(10), account VARCHAR(10)) \"\n//msg.query = \"drop table orders\"\n//msg.query = \"select * from orders order by created_at desc limit 25 \"\n//msg.query = \"delete from orders\"\n//msg.query = \"update orders set id = 1671452659911, portfolioname = 'Buy Crypto Portfolio' where exchange = 'FTXU'\"\n//msg.query = \"update orders set id = 1671453742321, portfolioname = 'Buy/Short SPY on News Sentiment Daily' where symbol = 'SPY'\"\n//node.warn(msg.query)\nreturn msg;\n",
         "outputs": 1,
@@ -2155,34 +2030,34 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1030,
-        "y": 480,
+        "x": 710,
+        "y": 700,
         "wires": [
             [
-                "85ad5d739688ca10"
+                "68d8b3d7e4841254"
             ]
         ]
     },
     {
-        "id": "85ad5d739688ca10",
+        "id": "68d8b3d7e4841254",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 1260,
-        "y": 480,
+        "x": 880,
+        "y": 700,
         "wires": [
             []
         ]
     },
     {
-        "id": "0b88996ee452f557",
+        "id": "89693505620736a2",
         "type": "delay",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "",
         "pauseType": "delay",
         "timeout": "1",
@@ -2196,18 +2071,19 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 860,
-        "y": 480,
+        "x": 540,
+        "y": 700,
         "wires": [
             [
-                "33ac90acee408dc7"
+                "9b11ba7a2708a209",
+                "d0e9f094007ad879"
             ]
         ]
     },
     {
-        "id": "bad961977d11f05c",
+        "id": "d86546a7f1d451d8",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "drop orders table",
         "func": "msg.query = \"drop table orders\"\nnode.warn(msg.query)\nreturn msg;\n",
         "outputs": 1,
@@ -2215,40 +2091,37 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 490,
-        "y": 480,
+        "x": 470,
+        "y": 660,
         "wires": [
             [
-                "e92b683beae71011"
+                "782c47e964ef96f4"
             ]
         ]
     },
     {
-        "id": "e92b683beae71011",
+        "id": "782c47e964ef96f4",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 700,
-        "y": 480,
+        "x": 680,
+        "y": 660,
         "wires": [
-            [
-                "0b88996ee452f557",
-                "835c84afacde4490"
-            ]
+            []
         ]
     },
     {
-        "id": "835c84afacde4490",
+        "id": "d0e9f094007ad879",
         "type": "delay",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "",
         "pauseType": "delay",
-        "timeout": "2",
+        "timeout": "1",
         "timeoutUnits": "seconds",
         "rate": "1",
         "nbRateUnits": "1",
@@ -2259,18 +2132,18 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 860,
-        "y": 520,
+        "x": 540,
+        "y": 740,
         "wires": [
             [
-                "5b510ea69b9419be"
+                "feafe6259fe35de0"
             ]
         ]
     },
     {
-        "id": "0a6d3a7a47bc6f68",
+        "id": "8be6ba9bd6198f68",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "create orders_open table ",
         "func": "msg.query = \"create table IF NOT EXISTS orders_open (id VARCHAR(100) PRIMARY KEY, client_order_id VARCHAR(100), created_at VARCHAR(100), updated_at VARCHAR(100), submitted_at VARCHAR(100), filled_at VARCHAR(100), expired_at VARCHAR(100), canceled_at VARCHAR(100), failed_at VARCHAR(100), replaced_at VARCHAR(100), replaced_by VARCHAR(100), replaces VARCHAR(100), asset_id VARCHAR(100), symbol VARCHAR(10), asset_class VARCHAR(10), notional VARCHAR(100), qty FLOAT, filled_qty FLOAT, filled_avg_price FLOAT, order_class VARCHAR(100), order_type VARCHAR(10), type VARCHAR(100), side VARCHAR(10), time_in_force VARCHAR(10), limit_price FLOAT, stop_price FLOAT, status VARCHAR(100), extended_hours BOOLEAN NOT NULL, legs VARCHAR(100), trail_percent FLOAT, trail_price FLOAT, hwm VARCHAR(100), subtag VARCHAR(100), source varchar(100), order_status VARCHAR(10), account VARCHAR(10)) \"\n//msg.query = \"drop table orders\"\n//msg.query = \"select * from orders order by created_at desc limit 25 \"\n//msg.query = \"delete from orders\"\n//msg.query = \"update orders set id = 1671452659911, portfolioname = 'Buy Crypto Portfolio' where exchange = 'FTXU'\"\n//msg.query = \"update orders set id = 1671453742321, portfolioname = 'Buy/Short SPY on News Sentiment Daily' where symbol = 'SPY'\"\n//node.warn(msg.query)\nreturn msg;\n",
         "outputs": 1,
@@ -2278,34 +2151,34 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1050,
-        "y": 560,
+        "x": 730,
+        "y": 840,
         "wires": [
             [
-                "86b425712b6e024e"
+                "cc55d0c310cb8eca"
             ]
         ]
     },
     {
-        "id": "86b425712b6e024e",
+        "id": "cc55d0c310cb8eca",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 1260,
-        "y": 560,
+        "x": 940,
+        "y": 840,
         "wires": [
             []
         ]
     },
     {
-        "id": "a314f13ab70495f4",
+        "id": "39577a2d18c8729c",
         "type": "delay",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "",
         "pauseType": "delay",
         "timeout": "1",
@@ -2319,18 +2192,18 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 860,
-        "y": 560,
+        "x": 540,
+        "y": 840,
         "wires": [
             [
-                "0a6d3a7a47bc6f68"
+                "8be6ba9bd6198f68"
             ]
         ]
     },
     {
-        "id": "ec124c4fa80f74ce",
+        "id": "d80cb90f3b2bb0e6",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "drop orders table",
         "func": "msg.query = \"drop table orders_open\"\nnode.warn(msg.query)\nreturn msg;\n",
         "outputs": 1,
@@ -2338,36 +2211,34 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 490,
-        "y": 560,
+        "x": 470,
+        "y": 800,
         "wires": [
             [
-                "3d8b920c2d688483"
+                "c071baa0b93bdf67"
             ]
         ]
     },
     {
-        "id": "3d8b920c2d688483",
+        "id": "c071baa0b93bdf67",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 700,
-        "y": 560,
+        "x": 680,
+        "y": 800,
         "wires": [
-            [
-                "a314f13ab70495f4"
-            ]
+            []
         ]
     },
     {
-        "id": "e391d0a4707ca1f8",
+        "id": "7cc5e4630a3a18a9",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "create temp_orders table ",
         "func": "msg.query = \"create table IF NOT EXISTS temp_orders (symbol VARCHAR(10) PRIMARY KEY, open Boolean)\"\nreturn msg;\n",
         "outputs": 1,
@@ -2375,34 +2246,34 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1050,
-        "y": 600,
+        "x": 710,
+        "y": 920,
         "wires": [
             [
-                "da64b040f04b9fbd"
+                "d833dee80113ed1e"
             ]
         ]
     },
     {
-        "id": "da64b040f04b9fbd",
+        "id": "d833dee80113ed1e",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 1260,
-        "y": 600,
+        "x": 920,
+        "y": 920,
         "wires": [
             []
         ]
     },
     {
-        "id": "987f21fe02dcbda3",
+        "id": "bb80e1c5f7d9d4fc",
         "type": "delay",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "",
         "pauseType": "delay",
         "timeout": "1",
@@ -2416,18 +2287,18 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 860,
-        "y": 600,
+        "x": 520,
+        "y": 920,
         "wires": [
             [
-                "e391d0a4707ca1f8"
+                "7cc5e4630a3a18a9"
             ]
         ]
     },
     {
-        "id": "75087e90a046cb48",
+        "id": "cdad10a4f5b740e0",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "drop temp_orders table",
         "func": "msg.query = \"drop table temp_orders\"\nnode.warn(msg.query)\nreturn msg;\n",
         "outputs": 1,
@@ -2435,36 +2306,34 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 510,
-        "y": 600,
+        "x": 490,
+        "y": 880,
         "wires": [
             [
-                "43aec76a5c4d0144"
+                "bdfc7ff935fbc932"
             ]
         ]
     },
     {
-        "id": "43aec76a5c4d0144",
+        "id": "bdfc7ff935fbc932",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 700,
-        "y": 600,
+        "x": 680,
+        "y": 880,
         "wires": [
-            [
-                "987f21fe02dcbda3"
-            ]
+            []
         ]
     },
     {
-        "id": "415a8f6bfb46b110",
+        "id": "6c15256dee4b094c",
         "type": "switch",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "active only",
         "property": "payload[\"status\"]",
         "propertyType": "msg",
@@ -2481,46 +2350,641 @@
         "checkall": "false",
         "repair": false,
         "outputs": 2,
-        "x": 790,
-        "y": 760,
+        "x": 770,
+        "y": 1280,
         "wires": [
             [
-                "a564b9d5c5747b26"
+                "b9e23238b5741090"
             ],
             []
         ]
     },
     {
-        "id": "a564b9d5c5747b26",
+        "id": "b9e23238b5741090",
         "type": "function",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "insert into alpaca_assets",
-        "func": "let symbol = msg.payload[\"symbol\"]\nlet name = msg.payload[\"name\"]\nlet exchange = msg.payload[\"exchange\"]\nlet status = msg.payload[\"status\"]\nlet shortable = msg.payload[\"shortable\"]\nlet tradable = msg.payload[\"tradable\"]\nlet fractionable = msg.payload[\"fractionable\"]\nlet marginable = msg.payload[\"marginable\"]\nlet easy = msg.payload[\"easy_to_borrow\"]\nname = name.replace(\"'\",\"\")\nsymbol = symbol.replace(\"/\",\"\")\n\nmsg.query = \"insert into alpaca_assets (symbol, name, exchange, tradable, shortable, fractionable, marginable, easy_to_borrow, status)  values ('\" + symbol + \"','\" + name + \"','\" + exchange + \"','\" + tradable + \"','\" + shortable + \"','\" +fractionable+ \"','\" +marginable+ \"','\" +easy+ \"','\" +status+ \"');\"\n\n//node.warn(msg.query)\n\nreturn msg;",
+        "func": "let symbol = msg.payload[\"symbol\"]\nlet name = msg.payload[\"name\"]\nlet exchange = msg.payload[\"exchange\"]\nlet status = msg.payload[\"status\"]\nlet shortable = msg.payload[\"shortable\"]\nlet tradable = msg.payload[\"tradable\"]\nlet fractionable = msg.payload[\"fractionable\"]\nlet marginable = msg.payload[\"marginable\"]\nlet easy = msg.payload[\"easy_to_borrow\"]\nname = name.replace(\"'\",\"\")\nsymbol = symbol.replace(\"/\",\"\")\n\n//msg.query = \"insert into alpaca_assets (symbol, name, exchange, tradable, shortable, fractionable, marginable, easy_to_borrow, status)  values ('\" + symbol + \"','\" + name + \"','\" + exchange + \"','\" + tradable + \"','\" + shortable + \"','\" +fractionable+ \"','\" +marginable+ \"','\" +easy+ \"','\" +status+ \"');\"\nmsg.query = \"insert into alpaca_assets (symbol, exchange, tradable, shortable, fractionable, marginable, easy_to_borrow, status)  values ('\" + symbol + \"','\" + exchange + \"','\" + tradable + \"','\" + shortable + \"','\" + fractionable + \"','\" + marginable + \"','\" + easy + \"','\" + status + \"');\"\n\n//node.warn(msg.query)\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 990,
-        "y": 760,
+        "x": 970,
+        "y": 1280,
         "wires": [
             [
-                "b021f654860938f8"
+                "d6f3021a3733c0ae"
             ]
         ]
     },
     {
-        "id": "b021f654860938f8",
+        "id": "d6f3021a3733c0ae",
         "type": "postgresql",
-        "z": "2923e96769e4646a",
+        "z": "a98905521bc25559",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 1180,
-        "y": 760,
+        "x": 1160,
+        "y": 1280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "af28187de78c50ad",
+        "type": "function",
+        "z": "a98905521bc25559",
+        "name": "drop alpaca_assets",
+        "func": "msg.query = \"drop table alpaca_assets\"\n//msg.query = \"CREATE TABLE IF NOT EXISTS alpaca_assets (id VARCHAR(100), symbol varchar(10) PRIMARY KEY, name VARCHAR(200), alpaca_symbol VARCHAR(10), polygon_symbol VARCHAR(10), easy_to_borrow BOOLEAN, exchange VARCHAR(10), shortable BOOLEAN, fractionable BOOLEAN, marginable BOOLEAN, status VARCHAR(10), tradable BOOLEAN)\"\nnode.warn(msg.query)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 960,
+        "wires": [
+            [
+                "e97752083825f609"
+            ]
+        ]
+    },
+    {
+        "id": "e97752083825f609",
+        "type": "postgresql",
+        "z": "a98905521bc25559",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 680,
+        "y": 960,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2368807b542d80cf",
+        "type": "function",
+        "z": "a98905521bc25559",
+        "name": "create alpaca_assets",
+        "func": "//msg.query = \"truncate table alpaca_assets\"\nmsg.query = \"CREATE TABLE IF NOT EXISTS alpaca_assets (id VARCHAR(100), symbol varchar(20) PRIMARY KEY, name VARCHAR(200), alpaca_symbol VARCHAR(20), polygon_symbol VARCHAR(20), easy_to_borrow BOOLEAN, exchange VARCHAR(10), shortable BOOLEAN, fractionable BOOLEAN, marginable BOOLEAN, status VARCHAR(10), tradable BOOLEAN)\"\nnode.warn(msg.query)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 680,
+        "y": 1000,
+        "wires": [
+            [
+                "276f2b5c0fa9c19c"
+            ]
+        ]
+    },
+    {
+        "id": "276f2b5c0fa9c19c",
+        "type": "postgresql",
+        "z": "a98905521bc25559",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 880,
+        "y": 1000,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "53cbbfd934b86b0f",
+        "type": "delay",
+        "z": "a98905521bc25559",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 500,
+        "y": 1000,
+        "wires": [
+            [
+                "2368807b542d80cf"
+            ]
+        ]
+    },
+    {
+        "id": "b3550c7c5347a0ef",
+        "type": "delay",
+        "z": "a98905521bc25559",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "20",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 260,
+        "y": 1360,
+        "wires": [
+            [
+                "fb4b1c5d65d1ee55"
+            ]
+        ]
+    },
+    {
+        "id": "a754bb1bdb4a3678",
+        "type": "delay",
+        "z": "a98905521bc25559",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "35",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 260,
+        "y": 1440,
+        "wires": [
+            [
+                "2dc4b545fc2b2703"
+            ]
+        ]
+    },
+    {
+        "id": "de8441baa9f8883e",
+        "type": "delay",
+        "z": "a98905521bc25559",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "40",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 260,
+        "y": 1480,
+        "wires": [
+            [
+                "20e43344bae2ca8a"
+            ]
+        ]
+    },
+    {
+        "id": "6396a5ebcf6fc91a",
+        "type": "alpaca-asset-query",
+        "z": "a98905521bc25559",
+        "conf": "e535f42f1df1b25f",
+        "x": 470,
+        "y": 1320,
+        "wires": [
+            [
+                "25e80cfecaee58a1"
+            ]
+        ]
+    },
+    {
+        "id": "6da7f65671800f35",
+        "type": "delay",
+        "z": "a98905521bc25559",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "10",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 280,
+        "y": 1320,
+        "wires": [
+            [
+                "6396a5ebcf6fc91a"
+            ]
+        ]
+    },
+    {
+        "id": "25e80cfecaee58a1",
+        "type": "split",
+        "z": "a98905521bc25559",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 630,
+        "y": 1320,
+        "wires": [
+            [
+                "171f7e69f86be57a"
+            ]
+        ]
+    },
+    {
+        "id": "171f7e69f86be57a",
+        "type": "switch",
+        "z": "a98905521bc25559",
+        "name": "active only",
+        "property": "payload[\"status\"]",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "active",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 770,
+        "y": 1320,
+        "wires": [
+            [
+                "2069649ff74413e9"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "2069649ff74413e9",
+        "type": "function",
+        "z": "a98905521bc25559",
+        "name": "insert into alpaca_assets",
+        "func": "let symbol = msg.payload[\"symbol\"]\nlet name = msg.payload[\"name\"]\n\nname = name.substring(0, 100);\nname = name.replace(\"'\",\"\")\nsymbol = symbol.replace(\"/\",\"\")\n\nmsg.query = \"update alpaca_assets set name = '\" + name + \"' where symbol = '\" +symbol+ \"';\"\n//msg.query = \"insert into alpaca_assets (symbol, exchange, tradable, shortable, fractionable, marginable, easy_to_borrow, status)  values ('\" + symbol + \"','\" + exchange + \"','\" + tradable + \"','\" + shortable + \"','\" + fractionable + \"','\" + marginable + \"','\" + easy + \"','\" + status + \"');\"\n//node.warn(msg.query)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 970,
+        "y": 1320,
+        "wires": [
+            [
+                "057b4497093527bb"
+            ]
+        ]
+    },
+    {
+        "id": "057b4497093527bb",
+        "type": "postgresql",
+        "z": "a98905521bc25559",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1160,
+        "y": 1320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0d37c43a81842de7",
+        "type": "function",
+        "z": "a98905521bc25559",
+        "name": "update alpaca_symbol",
+        "func": "let symbol = msg.payload[\"symbol\"]\nsymbol = symbol.substring(0, 19);\n//node.warn(\"Symbol: \" +symbol)\n\nlet alpaca_symbol = symbol.replace(\"USD\",\"/USD\")\nlet polygon_symbol = \"X:\" +symbol\n\n\nalpaca_symbol = alpaca_symbol.substring(0, 19);\npolygon_symbol = polygon_symbol.substring(0, 19);\n\n\nmsg.query = \"update alpaca_assets set alpaca_symbol = '\" +alpaca_symbol+ \"', polygon_symbol = '\" +polygon_symbol+ \"' where symbol = '\" +symbol+ \"' and status = 'active';\"\n//node.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1220,
+        "y": 1400,
+        "wires": [
+            [
+                "dd5bab3529e28a11"
+            ]
+        ]
+    },
+    {
+        "id": "dd5bab3529e28a11",
+        "type": "postgresql",
+        "z": "a98905521bc25559",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1400,
+        "y": 1400,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "dbb2aa5329fa48c0",
+        "type": "switch",
+        "z": "a98905521bc25559",
+        "name": "FTXU only",
+        "property": "payload[\"exchange\"]",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "FTXU",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 1030,
+        "y": 1400,
+        "wires": [
+            [
+                "0d37c43a81842de7"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "f51fb80add96fc9e",
+        "type": "delay",
+        "z": "a98905521bc25559",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "30",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 260,
+        "y": 1400,
+        "wires": [
+            [
+                "50b0e526c8aa0ddf"
+            ]
+        ]
+    },
+    {
+        "id": "1410558ab7e7b5e4",
+        "type": "function",
+        "z": "a98905521bc25559",
+        "name": "Create markets table",
+        "func": "msg.query = \"create table IF NOT EXISTS markets (symbol VARCHAR(20) PRIMARY KEY,name VARCHAR(100),polygon_symbol VARCHAR(20), alpaca_symbol VARCHAR(20), closing FLOAT,price24h FLOAT,price7d FLOAT, change24h FLOAT,change7d FLOAT,pct24 FLOAT,pct7d FLOAT)\"\n//msg.query = \"drop table markets\"\nnode.warn(msg.query)\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 700,
+        "y": 140,
+        "wires": [
+            [
+                "a9697b5c2b21ec0f"
+            ]
+        ]
+    },
+    {
+        "id": "18370e0f3ad61584",
+        "type": "delay",
+        "z": "a98905521bc25559",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 500,
+        "y": 140,
+        "wires": [
+            [
+                "1410558ab7e7b5e4"
+            ]
+        ]
+    },
+    {
+        "id": "a9697b5c2b21ec0f",
+        "type": "postgresql",
+        "z": "a98905521bc25559",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 880,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "63a0cee952c9f462",
+        "type": "function",
+        "z": "a98905521bc25559",
+        "name": "drop tickers",
+        "func": "msg.query = \"drop table tickers\"\nnode.warn(msg.query)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 1060,
+        "wires": [
+            [
+                "acd0064033d3ec37"
+            ]
+        ]
+    },
+    {
+        "id": "acd0064033d3ec37",
+        "type": "postgresql",
+        "z": "a98905521bc25559",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 680,
+        "y": 1060,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ee13b0970156f995",
+        "type": "function",
+        "z": "a98905521bc25559",
+        "name": "create tickers",
+        "func": "//msg.query = \"truncate table alpaca_assets\"\nmsg.query = \"CREATE TABLE IF NOT EXISTS tickers (id BIGINT, symbol varchar(20) PRIMARY KEY, name VARCHAR(200), portfolioname VARCHAR(100), orderid VARCHAR(100) )\"\nnode.warn(msg.query)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 1120,
+        "wires": [
+            [
+                "5b8e0d1e285ac3b4"
+            ]
+        ]
+    },
+    {
+        "id": "5b8e0d1e285ac3b4",
+        "type": "postgresql",
+        "z": "a98905521bc25559",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 880,
+        "y": 1120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2d24c69f7d79fd7e",
+        "type": "delay",
+        "z": "a98905521bc25559",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 500,
+        "y": 1120,
+        "wires": [
+            [
+                "ee13b0970156f995"
+            ]
+        ]
+    },
+    {
+        "id": "f0f68c3748413704",
+        "type": "function",
+        "z": "a98905521bc25559",
+        "name": "Create watchlist table",
+        "func": "msg.query = \"create table IF NOT EXISTS watchlist (symbol VARCHAR(20) PRIMARY KEY,name VARCHAR(100),polygon_symbol VARCHAR(20), alpaca_symbol VARCHAR(20), closing FLOAT,price24h FLOAT,price7d FLOAT, change24h FLOAT,change7d FLOAT,pct24 FLOAT,pct7d FLOAT)\"\n//msg.query = \"delete from watchlist\"\n//msg.query = \"drop table watchlist\"\nnode.warn(msg.query)\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 680,
+        "y": 260,
+        "wires": [
+            [
+                "a28d775b6753b164"
+            ]
+        ]
+    },
+    {
+        "id": "95c9255c2631a7e4",
+        "type": "delay",
+        "z": "a98905521bc25559",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 480,
+        "y": 260,
+        "wires": [
+            [
+                "f0f68c3748413704"
+            ]
+        ]
+    },
+    {
+        "id": "a28d775b6753b164",
+        "type": "postgresql",
+        "z": "a98905521bc25559",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 860,
+        "y": 260,
         "wires": [
             []
         ]
@@ -2554,14 +3018,14 @@
         "id": "0c86a5f06a42b505",
         "type": "alpaca-account",
         "name": "live",
-        "keyId": "AKHGVWA9MGB4CX40J5X6",
-        "paper": false
+        "keyId": "PKOIFRK9YAW33QVWKM8C",
+        "paper": true
     },
     {
         "id": "e535f42f1df1b25f",
         "type": "alpaca-account",
         "name": "paper",
-        "keyId": "PK4TI6GDJ7NN146CF8YA",
+        "keyId": "PKO1UVTXWI9XQXHAW14V",
         "paper": true
     }
 ]
