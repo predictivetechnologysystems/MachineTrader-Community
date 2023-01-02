@@ -487,97 +487,6 @@
         "wires": []
     },
     {
-        "id": "fb4b1c5d65d1ee55",
-        "type": "function",
-        "z": "a98905521bc25559",
-        "name": "get symbols from alpaca_assets",
-        "func": "msg.query = \"select symbol from alpaca_assets\"\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 490,
-        "y": 1360,
-        "wires": [
-            [
-                "f73b2cc91690c9a5"
-            ]
-        ]
-    },
-    {
-        "id": "76a1f3882f823837",
-        "type": "function",
-        "z": "a98905521bc25559",
-        "name": "update polygon_symbol",
-        "func": "let symbol = msg.payload[\"symbol\"]\n//node.warn(\"Symbol: \" +symbol)\n\nlet polygon_symbol = \"X:\" +symbol\npolygon_symbol = symbol\nmsg.query = \"update alpaca_assets set polygon_symbol = '\" +polygon_symbol+ \"' where symbol = '\" +symbol+ \"' and status = 'active';\"\n//node.warn(msg.query)\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 1070,
-        "y": 1360,
-        "wires": [
-            [
-                "5559a3ec0b40b4bf"
-            ]
-        ]
-    },
-    {
-        "id": "5559a3ec0b40b4bf",
-        "type": "postgresql",
-        "z": "a98905521bc25559",
-        "name": "postgres",
-        "query": "",
-        "postgreSQLConfig": "7455395cf269fb2b",
-        "split": false,
-        "rowsPerMsg": 1,
-        "outputs": 1,
-        "x": 1260,
-        "y": 1360,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "729f14fede1ae73d",
-        "type": "split",
-        "z": "a98905521bc25559",
-        "name": "",
-        "splt": "\\n",
-        "spltType": "str",
-        "arraySplt": 1,
-        "arraySpltType": "len",
-        "stream": false,
-        "addname": "",
-        "x": 890,
-        "y": 1360,
-        "wires": [
-            [
-                "76a1f3882f823837"
-            ]
-        ]
-    },
-    {
-        "id": "f73b2cc91690c9a5",
-        "type": "postgresql",
-        "z": "a98905521bc25559",
-        "name": "postgres",
-        "query": "",
-        "postgreSQLConfig": "7455395cf269fb2b",
-        "split": false,
-        "rowsPerMsg": 1,
-        "outputs": 1,
-        "x": 760,
-        "y": 1360,
-        "wires": [
-            [
-                "729f14fede1ae73d"
-            ]
-        ]
-    },
-    {
         "id": "50b0e526c8aa0ddf",
         "type": "function",
         "z": "a98905521bc25559",
@@ -588,8 +497,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 520,
-        "y": 1400,
+        "x": 540,
+        "y": 1360,
         "wires": [
             [
                 "ed8f22f66ca26fdc"
@@ -607,11 +516,11 @@
         "arraySpltType": "len",
         "stream": false,
         "addname": "",
-        "x": 890,
-        "y": 1400,
+        "x": 910,
+        "y": 1360,
         "wires": [
             [
-                "dbb2aa5329fa48c0"
+                "0d37c43a81842de7"
             ]
         ]
     },
@@ -625,8 +534,8 @@
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 760,
-        "y": 1400,
+        "x": 780,
+        "y": 1360,
         "wires": [
             [
                 "890ce189c146a698"
@@ -682,8 +591,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 500,
-        "y": 1440,
+        "x": 520,
+        "y": 1400,
         "wires": [
             [
                 "cfc334f57bb42f9e"
@@ -700,8 +609,8 @@
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 760,
-        "y": 1440,
+        "x": 780,
+        "y": 1400,
         "wires": [
             []
         ]
@@ -716,8 +625,8 @@
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 760,
-        "y": 1480,
+        "x": 780,
+        "y": 1440,
         "wires": [
             []
         ]
@@ -733,8 +642,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 510,
-        "y": 1480,
+        "x": 530,
+        "y": 1440,
         "wires": [
             [
                 "967e3b10512d09a3"
@@ -1509,7 +1418,6 @@
                 "084154d78021ea77",
                 "3e25babd338cec21",
                 "6da7f65671800f35",
-                "b3550c7c5347a0ef",
                 "f51fb80add96fc9e",
                 "a754bb1bdb4a3678",
                 "de8441baa9f8883e"
@@ -2490,31 +2398,6 @@
         ]
     },
     {
-        "id": "b3550c7c5347a0ef",
-        "type": "delay",
-        "z": "a98905521bc25559",
-        "name": "",
-        "pauseType": "delay",
-        "timeout": "20",
-        "timeoutUnits": "seconds",
-        "rate": "1",
-        "nbRateUnits": "1",
-        "rateUnits": "second",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": false,
-        "allowrate": false,
-        "outputs": 1,
-        "x": 260,
-        "y": 1360,
-        "wires": [
-            [
-                "fb4b1c5d65d1ee55"
-            ]
-        ]
-    },
-    {
         "id": "a754bb1bdb4a3678",
         "type": "delay",
         "z": "a98905521bc25559",
@@ -2531,8 +2414,8 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 260,
-        "y": 1440,
+        "x": 280,
+        "y": 1400,
         "wires": [
             [
                 "2dc4b545fc2b2703"
@@ -2556,8 +2439,8 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 260,
-        "y": 1480,
+        "x": 280,
+        "y": 1440,
         "wires": [
             [
                 "20e43344bae2ca8a"
@@ -2690,14 +2573,14 @@
         "type": "function",
         "z": "a98905521bc25559",
         "name": "update alpaca_symbol",
-        "func": "let symbol = msg.payload[\"symbol\"]\nsymbol = symbol.substring(0, 19);\n//node.warn(\"Symbol: \" +symbol)\n\nlet alpaca_symbol = symbol.replace(\"USD\",\"/USD\")\nlet polygon_symbol = \"X:\" +symbol\n\n\nalpaca_symbol = alpaca_symbol.substring(0, 19);\npolygon_symbol = polygon_symbol.substring(0, 19);\n\n\nmsg.query = \"update alpaca_assets set alpaca_symbol = '\" +alpaca_symbol+ \"', polygon_symbol = '\" +polygon_symbol+ \"' where symbol = '\" +symbol+ \"' and status = 'active';\"\n//node.warn(msg.query)\nreturn msg;",
+        "func": "let symbol = msg.payload[\"symbol\"]\nsymbol = symbol.substring(0, 19);\n//node.warn(\"Symbol: \" +symbol)\n\nlet polygon_symbol = \"X:\" + symbol\nlet alpaca_symbol = symbol.replace(\"USD\",\"/USD\")\n\n\nalpaca_symbol = alpaca_symbol.substring(0, 19);\npolygon_symbol = polygon_symbol.substring(0, 19);\n\n\nmsg.query = \"update alpaca_assets set alpaca_symbol = '\" +alpaca_symbol+ \"', polygon_symbol = '\" +polygon_symbol+ \"' where symbol = '\" +symbol+ \"' and status = 'active';\"\nnode.warn(msg.query)\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1220,
-        "y": 1400,
+        "x": 1080,
+        "y": 1360,
         "wires": [
             [
                 "dd5bab3529e28a11"
@@ -2714,38 +2597,9 @@
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 1400,
-        "y": 1400,
+        "x": 1260,
+        "y": 1360,
         "wires": [
-            []
-        ]
-    },
-    {
-        "id": "dbb2aa5329fa48c0",
-        "type": "switch",
-        "z": "a98905521bc25559",
-        "name": "FTXU only",
-        "property": "payload[\"exchange\"]",
-        "propertyType": "msg",
-        "rules": [
-            {
-                "t": "eq",
-                "v": "FTXU",
-                "vt": "str"
-            },
-            {
-                "t": "else"
-            }
-        ],
-        "checkall": "false",
-        "repair": false,
-        "outputs": 2,
-        "x": 1030,
-        "y": 1400,
-        "wires": [
-            [
-                "0d37c43a81842de7"
-            ],
             []
         ]
     },
@@ -2766,8 +2620,8 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 260,
-        "y": 1400,
+        "x": 280,
+        "y": 1360,
         "wires": [
             [
                 "50b0e526c8aa0ddf"
