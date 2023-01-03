@@ -1,0 +1,252 @@
+[
+    {
+        "id": "4764f5a20f85bb47",
+        "type": "tab",
+        "label": "Manage Limit Trade Offers",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "2a2b715920301f03",
+        "type": "inject",
+        "z": "4764f5a20f85bb47",
+        "name": "select open orders from orders",
+        "props": [
+            {
+                "p": "query",
+                "v": "select * from orders where order_status = 'open'",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 270,
+        "y": 60,
+        "wires": [
+            [
+                "0e254bf7205f96bc"
+            ]
+        ]
+    },
+    {
+        "id": "0e254bf7205f96bc",
+        "type": "postgresql",
+        "z": "4764f5a20f85bb47",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 220,
+        "y": 120,
+        "wires": [
+            [
+                "e39ffb9653a7abb9"
+            ]
+        ]
+    },
+    {
+        "id": "e39ffb9653a7abb9",
+        "type": "split",
+        "z": "4764f5a20f85bb47",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 350,
+        "y": 120,
+        "wires": [
+            [
+                "8bd0c466a798e10f"
+            ]
+        ]
+    },
+    {
+        "id": "8bd0c466a798e10f",
+        "type": "function",
+        "z": "4764f5a20f85bb47",
+        "name": "values from open orders",
+        "func": "let ticker = msg.payload[\"symbol\"]\nlet qty = msg.payload[\"qty\"]\nlet side = msg.payload[\"side\"]\nlet limit_price = +msg.payload[\"limit_price\"]\nlimit_price = limit_price.toFixed(2)\n\nmsg.ticker = ticker\nmsg.qty = qty\nmsg.side = side\nmsg.limit_price = limit_price\n\n\n//node.warn(\"Ticker: \" + ticker + \" Qty: \" + qty + \" Limit Price: \" + limit_price+ \" Side: \" + side)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 530,
+        "y": 120,
+        "wires": [
+            [
+                "f7a7d0f451cb7b54"
+            ]
+        ]
+    },
+    {
+        "id": "f7a7d0f451cb7b54",
+        "type": "function-npm",
+        "z": "4764f5a20f85bb47",
+        "name": "Get price of trade trade",
+        "func": "let symbol = msg.ticker\n//let symbol = flow.get(\"polygon_symbol\")\n\nlet cnt = 1 // gets last trade\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: cnt,\n}\n\n\n//node.warn(symbol)\n//node.warn(msg.payload)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 370,
+        "y": 180,
+        "wires": [
+            [
+                "e03420f002198f3b"
+            ]
+        ]
+    },
+    {
+        "id": "772933238a04150a",
+        "type": "function",
+        "z": "4764f5a20f85bb47",
+        "name": " manage offers",
+        "func": "let price = 0\nlet item = 0\n\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    \n}\n\n\nlet ticker = msg.ticker\nlet qty = msg.qty\nlet limit_price = msg.limit_price\nlet side = msg.side\n\nif (side == 'buy'){\n    let newoffer = (price - limit_price) \n    newoffer = +newoffer\n    newoffer = newoffer.toFixed(2)\n    msg.newoffer = (price + .01) \n    node.warn(\"increase buy offer by \" +newoffer)\n\n}\n\nif (side == 'sell') {\n    let newoffer = (limit_price - price)\n    newoffer = +newoffer\n    newoffer = newoffer.toFixed(2)\n    node.warn(\"increase sell offer by \" + newoffer)\n    msg.newoffer = (price - .01) \n}\n\nprice = price.toFixed(2)\nmsg.price = price\n//node.warn(\"Ticker: \" + ticker + \" Qty: \" + qty + \" Price: \" +price+ \" Limit Price: \" + limit_price + \" Side: \" + side)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 800,
+        "y": 180,
+        "wires": [
+            [
+                "f5c28d094ce59edf"
+            ]
+        ]
+    },
+    {
+        "id": "e03420f002198f3b",
+        "type": "polygon-last-trade-v3",
+        "z": "4764f5a20f85bb47",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "x": 600,
+        "y": 180,
+        "wires": [
+            [
+                "772933238a04150a"
+            ]
+        ]
+    },
+    {
+        "id": "f5c28d094ce59edf",
+        "type": "function",
+        "z": "4764f5a20f85bb47",
+        "name": "create Alpaca order ",
+        "func": "let ticker = msg.ticker\nlet qty = msg.qty\nlet side = msg.side\nlet algo_name = ''\nlet limit_price = msg.newoffer\n\nnode.warn(\"Ticker: \" + ticker + \" Qty: \" + qty + \" Limit Price: \" + limit_price + \" Side: \" + side)\n\n\n// create a unique clientid with unixtime\nlet d = Date.now()\nlet client_order_id = ticker + d\nmsg.clientorderid = client_order_id // passes this variable in the flow \n\nlet subtag = algo_name\nlet temp = ''\n\n\n// logic for buy order\n\nif ( side == \"buy\"){\n\n// create a order for Alpaca\nlet temp = ''\ntemp = {\n    \"symbol\": ticker,\n    \"qty\": qty,\n    \"side\": 'buy',\n    \"type\": 'limit',\n    \"client_order_id\": client_order_id,\n    \"limit_price\": limit_price,  \n//    \"subtag\": subtag,\n    \"time_in_force\": \"gtc\"\n};\n}\n\n// logic for sell order\n\nif ( side == \"sell\" ){\n\nqty = msg.qty\n\n\n        // create a order for Alpaca\n        let temp = ''\n        temp = {\n            \"symbol\": ticker,\n            \"qty\": qty,\n            \"side\": 'sell',\n            \"type\": 'limit',\n            \"client_order_id\": client_order_id,\n            \"limit_price\": limit_price,  // limit orders only\n            //    \"subtag\": subtag,\n            \"time_in_force\": \"gtc\"\n        };\n\n}\n\nmsg.payload = temp\nnode.warn(msg.payload)\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 210,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "346c8a8d8d78bac0",
+        "type": "alpaca-order",
+        "z": "4764f5a20f85bb47",
+        "conf": "e535f42f1df1b25f",
+        "x": 430,
+        "y": 300,
+        "wires": [
+            [
+                "dd09fafd804faa99"
+            ]
+        ]
+    },
+    {
+        "id": "f8a17045a2d5cdf1",
+        "type": "postgresql",
+        "z": "4764f5a20f85bb47",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 880,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "dd09fafd804faa99",
+        "type": "function",
+        "z": "4764f5a20f85bb47",
+        "name": "insert into order_confirms table",
+        "func": "let id = msg.payload[\"id\"]\nlet client_order_id = msg.payload[\"client_order_id\"]\nlet created_at = msg.payload[\"created_at\"]\nlet updated_at = msg.payload[\"updated_at\"]\nlet submitted_at = msg.payload[\"submitted_at\"]\nlet filled_at = msg.payload[\"filled_at\"]\nlet expired_at = msg.payload[\"expired_at\"]\nlet canceled_at = msg.payload[\"canceled_at\"]\nlet failed_at = msg.payload[\"failed_at\"]\nlet replaced_at = msg.payload[\"replaced_at\"]\nlet replaced_by = msg.payload[\"replaced_by\"]\nlet replaces = msg.payload[\"replaces\"]\nlet asset_id = msg.payload[\"asset_id\"]\nlet symbol = msg.payload[\"symbol\"]\nlet asset_class = msg.payload[\"asset_class\"]\nlet notional = msg.payload[\"notional\"]\nlet qty = msg.payload[\"qty\"]\nlet filled_qty = msg.payload[\"filled_qty\"]\nlet filled_avg_price = msg.payload[\"filled_avg_price\"]\nlet order_class = msg.payload[\"order_class\"]\nlet order_type = msg.payload[\"order_type\"]\nlet type = msg.payload[\"type\"]\nlet side = msg.payload[\"side\"]\nlet time_in_force = msg.payload[\"time_in_force\"]\nlet limit_price = msg.payload[\"limit_price\"]\nlet stop_price = msg.payload[\"stop_price\"]\nlet status = msg.payload[\"status\"]\nlet extended_hours = msg.payload[\"extended_hours\"]\nlet legs = msg.payload[\"legs\"]\nlet trail_percent = msg.payload[\"trail_percent\"]\nlet trail_price = msg.payload[\"trail_price\"]\nlet hwm = msg.payload[\"hwm\"]\nlet subtag = msg.payload[\"subtag\"]\nlet source = msg.payload[\"source\"]\n\nsubtag = flow.get(\"algo_name\")\n\nlet result = symbol.includes(\"/\");\nif (result == true) {\n    symbol = symbol.replace(\"/\",\"\")\n}\n\nlet sql = \"insert into order_confirms(id, client_order_id, created_at, updated_at, submitted_at, asset_id, symbol, asset_class, qty, order_type, type, side, time_in_force, status, subtag, source,extended_hours) values \"\nsql += \"('\" + id + \"', '\" + client_order_id + \"', '\" + created_at + \"', '\" + updated_at + \"', '\" + submitted_at + \"', '\" + asset_id + \"', '\" + symbol + \"', '\" + asset_class + \"', '\" + qty + \"', '\" + order_type + \"', '\" + type + \"', '\" + side + \"', '\" + time_in_force + \"', '\" + status + \"', '\" + subtag + \"', '\" + source + \"', '\" + extended_hours+ \"'); \" \n\nmsg.query = sql\nnode.warn(msg.query)\nmsg.id = id\n//msg.sql = \"truncate table temp_ids\"\n//node.warn(msg.sql)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 300,
+        "wires": [
+            [
+                "f8a17045a2d5cdf1"
+            ]
+        ]
+    },
+    {
+        "id": "b3c28dbcfdd5d3e4",
+        "type": "comment",
+        "z": "4764f5a20f85bb47",
+        "name": "This node contains the trading logic. ",
+        "info": "",
+        "x": 200,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "7455395cf269fb2b",
+        "type": "postgreSQLConfig",
+        "name": "",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "postgres",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "docker",
+        "userFieldType": "str",
+        "password": "docker",
+        "passwordFieldType": "str"
+    },
+    {
+        "id": "651f0aab10dc1632",
+        "type": "polygon-account",
+        "name": "Polygon Key"
+    },
+    {
+        "id": "e535f42f1df1b25f",
+        "type": "alpaca-account",
+        "name": "paper",
+        "keyId": "PK4TI6GDJ7NN146CF8YA",
+        "paper": true
+    }
+]
