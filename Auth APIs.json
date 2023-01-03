@@ -1,0 +1,128 @@
+[
+    {
+        "id": "a157817f6b461a3c",
+        "type": "tab",
+        "label": "Auth APIs",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "d09915a2d8a0b996",
+        "type": "inject",
+        "z": "a157817f6b461a3c",
+        "name": "Change Password payload",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"oldPassword\":\"deploy402\",\"newPassword\":\"deploy402n\",\"confirmPassword\":\"deploy402n\"}",
+        "payloadType": "json",
+        "x": 150,
+        "y": 100,
+        "wires": [
+            [
+                "aa6922b21b370cac"
+            ]
+        ]
+    },
+    {
+        "id": "5d7b529f7c33981c",
+        "type": "debug",
+        "z": "a157817f6b461a3c",
+        "name": "Change Password Resposne",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "073981f5e2e2e0a4",
+        "type": "http in",
+        "z": "a157817f6b461a3c",
+        "name": "Change Password",
+        "url": "/api/change-password",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 130,
+        "y": 140,
+        "wires": [
+            [
+                "aa6922b21b370cac"
+            ]
+        ]
+    },
+    {
+        "id": "58613ddf2a8481d4",
+        "type": "http response",
+        "z": "a157817f6b461a3c",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 970,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "cec0a16dba83d94a",
+        "type": "function",
+        "z": "a157817f6b461a3c",
+        "name": "Change Password Formatter",
+        "func": "console.log(msg);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 740,
+        "y": 140,
+        "wires": [
+            [
+                "58613ddf2a8481d4"
+            ]
+        ]
+    },
+    {
+        "id": "8949502da2b65d9b",
+        "type": "comment",
+        "z": "a157817f6b461a3c",
+        "name": "Insert auth token to validate auth api access",
+        "info": "arkgz9vzze",
+        "x": 210,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "aa6922b21b370cac",
+        "type": "change-password",
+        "z": "a157817f6b461a3c",
+        "conf": "84bee360eed4f3ac",
+        "x": 470,
+        "y": 140,
+        "wires": [
+            [
+                "5d7b529f7c33981c",
+                "cec0a16dba83d94a"
+            ]
+        ]
+    },
+    {
+        "id": "84bee360eed4f3ac",
+        "type": "auth-database",
+        "token": "arkgz9vzze"
+    }
+]
