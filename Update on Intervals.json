@@ -119,7 +119,7 @@
         "name": "Store account balances to sqlite tables",
         "info": "",
         "x": 190,
-        "y": 80,
+        "y": 40,
         "wires": []
     },
     {
@@ -1765,7 +1765,7 @@
         "name": "Update Orders Table ",
         "info": "",
         "x": 110,
-        "y": 1880,
+        "y": 1840,
         "wires": []
     },
     {
@@ -1780,7 +1780,7 @@
         "stream": false,
         "addname": "",
         "x": 790,
-        "y": 1980,
+        "y": 1940,
         "wires": [
             [
                 "5f8f7d2ee41ac71b"
@@ -1798,7 +1798,7 @@
         "rowsPerMsg": 1,
         "outputs": 1,
         "x": 1160,
-        "y": 1980,
+        "y": 1940,
         "wires": [
             []
         ]
@@ -1809,7 +1809,7 @@
         "z": "da9fb362a36014db",
         "conf": "e535f42f1df1b25f",
         "x": 640,
-        "y": 1980,
+        "y": 1940,
         "wires": [
             [
                 "e9bdf818fa2d2645"
@@ -1828,7 +1828,7 @@
         "finalize": "",
         "libs": [],
         "x": 390,
-        "y": 1980,
+        "y": 1940,
         "wires": [
             [
                 "b751759a5f71e87d"
@@ -1847,7 +1847,7 @@
         "finalize": "",
         "libs": [],
         "x": 970,
-        "y": 1980,
+        "y": 1940,
         "wires": [
             [
                 "0335539542a3f33e"
@@ -1872,7 +1872,7 @@
         "allowrate": false,
         "outputs": 1,
         "x": 150,
-        "y": 1980,
+        "y": 1940,
         "wires": [
             [
                 "64a0466c6c90bd71"
@@ -1891,10 +1891,11 @@
         "onceDelay": 0.1,
         "topic": "",
         "x": 130,
-        "y": 1920,
+        "y": 1880,
         "wires": [
             [
-                "d78796acbfaf1b03"
+                "d78796acbfaf1b03",
+                "004a8861e401bf65"
             ]
         ]
     },
@@ -1910,7 +1911,7 @@
         "finalize": "",
         "libs": [],
         "x": 380,
-        "y": 2020,
+        "y": 2000,
         "wires": [
             [
                 "0822b264ef9df4c8"
@@ -1928,7 +1929,7 @@
         "rowsPerMsg": 1,
         "outputs": 1,
         "x": 600,
-        "y": 2020,
+        "y": 2000,
         "wires": [
             []
         ]
@@ -1945,7 +1946,7 @@
         "finalize": "",
         "libs": [],
         "x": 480,
-        "y": 1920,
+        "y": 1880,
         "wires": [
             [
                 "79ecab57d7e2b31b"
@@ -1963,7 +1964,7 @@
         "rowsPerMsg": 1,
         "outputs": 1,
         "x": 680,
-        "y": 1920,
+        "y": 1880,
         "wires": [
             []
         ]
@@ -1986,13 +1987,14 @@
         "allowrate": false,
         "outputs": 1,
         "x": 280,
-        "y": 1920,
+        "y": 1880,
         "wires": [
             [
                 "9be77c47aa02b50e",
                 "0cd00cc9d06592f2",
                 "b62e6f833519e04d",
-                "b36df0d10aa55228"
+                "b36df0d10aa55228",
+                "2e53351de8a7794c"
             ]
         ]
     },
@@ -2014,7 +2016,7 @@
         "allowrate": false,
         "outputs": 1,
         "x": 140,
-        "y": 2020,
+        "y": 2000,
         "wires": [
             [
                 "c5fa51600bbad3fc"
@@ -2027,8 +2029,8 @@
         "z": "da9fb362a36014db",
         "name": "Update from algos table current day performance",
         "info": "",
-        "x": 200,
-        "y": 2160,
+        "x": 220,
+        "y": 2200,
         "wires": []
     },
     {
@@ -2037,13 +2039,13 @@
         "z": "da9fb362a36014db",
         "name": "Every min",
         "props": [],
-        "repeat": "60",
-        "crontab": "",
+        "repeat": "",
+        "crontab": "*/1 10-15 * * 1,2,3,4,5",
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "x": 110,
-        "y": 2220,
+        "x": 130,
+        "y": 2240,
         "wires": [
             [
                 "c9a84fa45468b7a8"
@@ -2061,8 +2063,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1050,
-        "y": 2220,
+        "x": 1070,
+        "y": 2240,
         "wires": [
             [
                 "18b2c56fc5124ecd"
@@ -2074,14 +2076,14 @@
         "type": "function",
         "z": "da9fb362a36014db",
         "name": "store sums",
-        "func": "let gain_alltime = msg.payload[\"a\"]\nlet gain_today = msg.payload[\"b\"]\nlet total_value = msg.payload[\"c\"]\nmsg.totalvalue = total_value\nmsg.gainalltime = gain_alltime\nmsg.gaintoday = gain_today\nlet id = msg.name\n//node.warn(\"Gain Today: \" + gain_today + \" Gain Alltime: \" + gain_alltime)\nmsg.query = \"update algos set portfolio_size = \" +total_value+ \", gain_today = \" +gain_today+ \", gain_alltime = \" +gain_alltime+ \" where algo_name = '\" +id+ \"';\"\n//node.warn(msg.query)\nreturn msg;",
+        "func": "let gain_alltime = msg.payload[\"a\"]\nlet gain_today = msg.payload[\"b\"]\nlet total_value = msg.payload[\"c\"]\nmsg.totalvalue = total_value\nmsg.gainalltime = gain_alltime\nmsg.gaintoday = gain_today\nlet id = msg.name\n//node.warn(\"Gain Today: \" + gain_today + \" Gain Alltime: \" + gain_alltime)\nmsg.query = \"update algos set portfolio_size = \" +total_value+ \", gain_today = \" +gain_today+ \" where algo_name = '\" +id+ \"';\"\n//node.warn(msg.query)\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 490,
-        "y": 2280,
+        "x": 510,
+        "y": 2300,
         "wires": [
             [
                 "0880c02d42ba5e0d",
@@ -2100,8 +2102,8 @@
         "arraySpltType": "len",
         "stream": false,
         "addname": "",
-        "x": 350,
-        "y": 2280,
+        "x": 370,
+        "y": 2300,
         "wires": [
             [
                 "82c65df5ddfdd40b"
@@ -2118,8 +2120,8 @@
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 220,
-        "y": 2280,
+        "x": 240,
+        "y": 2300,
         "wires": [
             [
                 "daab5cd0539cbc23"
@@ -2136,8 +2138,8 @@
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 680,
-        "y": 2280,
+        "x": 700,
+        "y": 2300,
         "wires": [
             []
         ]
@@ -2147,14 +2149,14 @@
         "type": "function",
         "z": "da9fb362a36014db",
         "name": "update algos table",
-        "func": "let gain_alltime = msg.gainalltime\nlet gain_today = msg.gaintoday\nlet total_value = msg.totalvalue\nlet id = msg.name\nlet pctgainalltime = 0\nlet pctgaintoday = 0\n\nif (total_value > 0){\n     pctgainalltime = (gain_alltime / total_value) * 100\n     pctgaintoday = (gain_today / total_value) * 100\n}\n\n\nmsg.query = \"update algos set pctgain_today = \" + pctgaintoday + \", pctgain_alltime  = \" + pctgainalltime + \" where algo_name = '\" + id + \"';\"\n//node.warn(msg.query)\nreturn msg;\n",
+        "func": "let gain_alltime = msg.gainalltime\nlet gain_today = msg.gaintoday\nlet total_value = msg.totalvalue\nlet id = msg.name\nlet pctgainalltime = 0\nlet pctgaintoday = 0\n\nif (total_value > 0){\n     pctgainalltime = (gain_alltime / total_value) * 100\n     pctgaintoday = (gain_today / total_value) * 100\n}\n\n\nmsg.query = \"update algos set pctgain_today = \" + pctgaintoday + \" where algo_name = '\" + id + \"';\"\n//node.warn(msg.query)\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 370,
-        "y": 2340,
+        "x": 390,
+        "y": 2360,
         "wires": [
             [
                 "2e5b75afe2355e00"
@@ -2171,8 +2173,8 @@
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 540,
-        "y": 2340,
+        "x": 560,
+        "y": 2360,
         "wires": [
             []
         ]
@@ -2188,8 +2190,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 420,
-        "y": 2220,
+        "x": 440,
+        "y": 2240,
         "wires": [
             [
                 "1df11bcb8ca3de9d"
@@ -2206,8 +2208,8 @@
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 580,
-        "y": 2220,
+        "x": 600,
+        "y": 2240,
         "wires": [
             [
                 "6ec504386045d79d"
@@ -2225,8 +2227,8 @@
         "arraySpltType": "len",
         "stream": false,
         "addname": "",
-        "x": 710,
-        "y": 2220,
+        "x": 730,
+        "y": 2240,
         "wires": [
             [
                 "dfa0998557b622b3"
@@ -2244,8 +2246,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 850,
-        "y": 2220,
+        "x": 870,
+        "y": 2240,
         "wires": [
             [
                 "1333fdcb0e33be8e"
@@ -2262,8 +2264,8 @@
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 980,
-        "y": 2660,
+        "x": 1000,
+        "y": 3200,
         "wires": [
             [
                 "17763d354aaf2073"
@@ -2281,8 +2283,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 430,
-        "y": 2720,
+        "x": 410,
+        "y": 3260,
         "wires": [
             [
                 "fe97c1b2ac826508"
@@ -2300,8 +2302,8 @@
         "arraySpltType": "len",
         "stream": false,
         "addname": "",
-        "x": 1110,
-        "y": 2660,
+        "x": 1130,
+        "y": 3200,
         "wires": [
             [
                 "a12f421d304f3012"
@@ -2314,8 +2316,8 @@
         "z": "da9fb362a36014db",
         "name": "Update benchmarks",
         "info": "",
-        "x": 110,
-        "y": 2600,
+        "x": 130,
+        "y": 3140,
         "wires": []
     },
     {
@@ -2329,8 +2331,8 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "x": 90,
-        "y": 2660,
+        "x": 110,
+        "y": 3200,
         "wires": [
             [
                 "2e7eb10b9baaacfc"
@@ -2348,8 +2350,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 400,
-        "y": 2660,
+        "x": 420,
+        "y": 3200,
         "wires": [
             [
                 "60945518dcf7e8be"
@@ -2366,8 +2368,8 @@
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 560,
-        "y": 2660,
+        "x": 580,
+        "y": 3200,
         "wires": [
             [
                 "c0aeb8294f65d198"
@@ -2385,8 +2387,8 @@
         "arraySpltType": "len",
         "stream": false,
         "addname": "",
-        "x": 690,
-        "y": 2660,
+        "x": 710,
+        "y": 3200,
         "wires": [
             [
                 "a4680a292eebf2a1"
@@ -2404,8 +2406,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 830,
-        "y": 2660,
+        "x": 850,
+        "y": 3200,
         "wires": [
             [
                 "8fbaefafb062b9fb"
@@ -2422,8 +2424,8 @@
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 640,
-        "y": 2720,
+        "x": 620,
+        "y": 3260,
         "wires": [
             []
         ]
@@ -2445,8 +2447,8 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 240,
-        "y": 2660,
+        "x": 260,
+        "y": 3200,
         "wires": [
             [
                 "ca23212659e7faab"
@@ -2459,34 +2461,17 @@
         "z": "da9fb362a36014db",
         "name": "Every Min",
         "props": [],
-        "repeat": "60",
-        "crontab": "",
+        "repeat": "",
+        "crontab": "*/1 10-15 * * 1,2,3,4,5",
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "x": 90,
-        "y": 2440,
+        "x": 110,
+        "y": 2640,
         "wires": [
             [
                 "a07039b1516c89c3"
             ]
-        ]
-    },
-    {
-        "id": "1d2a82cc4b0e2252",
-        "type": "function",
-        "z": "da9fb362a36014db",
-        "name": "store sums",
-        "func": "let gain_alltime = msg.payload[\"a\"]\nlet gain_today = msg.payload[\"b\"]\nlet total_value = msg.payload[\"c\"]\nmsg.totalvalue = total_value\nmsg.gainalltime = gain_alltime\nmsg.gaintoday = gain_today\nlet id = msg.name\n//node.warn(\"Gain Today: \" + gain_today + \" Gain Alltime: \" + gain_alltime)\nmsg.query = \"update algos set portfolio_size = \" +total_value+ \", gain_today = \" +gain_today+ \", gain_alltime = \" +gain_alltime+ \" where algo_name = '\" +id+ \"';\"\nnode.warn(msg.query)\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 510,
-        "y": 2500,
-        "wires": [
-            []
         ]
     },
     {
@@ -2500,11 +2485,11 @@
         "arraySpltType": "len",
         "stream": false,
         "addname": "",
-        "x": 370,
-        "y": 2500,
+        "x": 790,
+        "y": 2700,
         "wires": [
             [
-                "1d2a82cc4b0e2252"
+                "05b476b43eb59c30"
             ]
         ]
     },
@@ -2518,8 +2503,8 @@
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 240,
-        "y": 2500,
+        "x": 660,
+        "y": 2700,
         "wires": [
             [
                 "be0482af694e016a"
@@ -2536,45 +2521,12 @@
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 700,
-        "y": 2500,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "c7527d8875c3ffe6",
-        "type": "function",
-        "z": "da9fb362a36014db",
-        "name": "update algos table",
-        "func": "let gain_alltime = msg.gainalltime\nlet gain_today = msg.gaintoday\nlet total_value = msg.totalvalue\nlet id = msg.name\nlet pctgainalltime = 0\nlet pctgaintoday = 0\n\nif (total_value > 0){\n     pctgainalltime = (gain_alltime / total_value) * 100\n     pctgaintoday = (gain_today / total_value) * 100\n}\n\n\nmsg.query = \"update algos set pctgain_today = \" + pctgaintoday + \", pctgain_alltime  = \" + pctgainalltime + \" where algo_name = '\" + id + \"';\"\n//node.warn(msg.query)\nreturn msg;\n",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 390,
-        "y": 2560,
+        "x": 360,
+        "y": 2880,
         "wires": [
             [
-                "b086e5a754c005af"
+                "e074e1ddf2f02d55"
             ]
-        ]
-    },
-    {
-        "id": "b086e5a754c005af",
-        "type": "postgresql",
-        "z": "da9fb362a36014db",
-        "name": "postgres",
-        "query": "",
-        "postgreSQLConfig": "7455395cf269fb2b",
-        "split": false,
-        "rowsPerMsg": 1,
-        "outputs": 1,
-        "x": 560,
-        "y": 2560,
-        "wires": [
-            []
         ]
     },
     {
@@ -2594,8 +2546,8 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 260,
-        "y": 2220,
+        "x": 280,
+        "y": 2240,
         "wires": [
             [
                 "e28ce6ca8678a540"
@@ -2609,24 +2561,26 @@
         "name": "Update from \"interday\" algos table all time performance",
         "info": "",
         "x": 220,
-        "y": 2400,
+        "y": 2600,
         "wires": []
     },
     {
         "id": "93958b967783aa18",
         "type": "function",
         "z": "da9fb362a36014db",
-        "name": "get totals from order_confirms",
-        "func": "let name = msg.name\nmsg.query = \"select sum(unrealized_intraday_pl) as a, sum(unrealized_pl) as b, sum(market_value) as c from order_confirms where portfolioname = '\" +name+ \"';\"\n//node.warn(msg.query)\nreturn msg;",
+        "name": "get total_buys from order_confirms",
+        "func": "let name = msg.name\n//msg.query = \"select *  from order_confirms where subtag = '\" +name+ \"';\"\n//msg.query = \"select sum(unrealized_intraday_pl) as a, sum(unrealized_pl) as b, sum(market_value) as c from order_confirms where subtag = '\" + name + \"';\"\nmsg.query = \"select sum(filled_qty * filled_avg_price) as a from order_confirms where side = 'buy' and status = 'filled'  and subtag = '\" + name + \"';\"\n//node.warn(msg.query)\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1070,
-        "y": 2440,
+        "x": 420,
+        "y": 2700,
         "wires": [
-            []
+            [
+                "e60b677806909050"
+            ]
         ]
     },
     {
@@ -2634,14 +2588,14 @@
         "type": "function",
         "z": "da9fb362a36014db",
         "name": "get algo name",
-        "func": "msg.query = \"select algo_name from algos where algo_type = 'interday'\"\n//node.warn(msg.query)\nreturn msg;",
+        "func": "msg.query = \"select algo_name from algos where algo_type = 'intraday'\"\n//node.warn(msg.query)\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 420,
-        "y": 2440,
+        "y": 2640,
         "wires": [
             [
                 "1e554b2f5c9a9867"
@@ -2659,7 +2613,7 @@
         "rowsPerMsg": 1,
         "outputs": 1,
         "x": 580,
-        "y": 2440,
+        "y": 2640,
         "wires": [
             [
                 "b7a52148bb8e3e70"
@@ -2678,7 +2632,7 @@
         "stream": false,
         "addname": "",
         "x": 710,
-        "y": 2440,
+        "y": 2640,
         "wires": [
             [
                 "a110c79031a8dc44"
@@ -2690,17 +2644,18 @@
         "type": "function",
         "z": "da9fb362a36014db",
         "name": "store sums",
-        "func": "let name  = msg.payload[\"algo_name\"]\nnode.warn(\"Algo name: \" +name)\nmsg.name = name\nreturn msg;",
+        "func": "let name  = msg.payload[\"algo_name\"]\n//node.warn(\"Algo name: \" +name)\nmsg.name = name\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 850,
-        "y": 2440,
+        "y": 2640,
         "wires": [
             [
-                "93958b967783aa18"
+                "93958b967783aa18",
+                "95aacff6081a24ca"
             ]
         ]
     },
@@ -2721,8 +2676,8 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 240,
-        "y": 2440,
+        "x": 260,
+        "y": 2640,
         "wires": [
             [
                 "5c5d2d2e8e050188"
@@ -2885,7 +2840,7 @@
         "z": "da9fb362a36014db",
         "conf": "e535f42f1df1b25f",
         "x": 600,
-        "y": 2060,
+        "y": 2040,
         "wires": [
             [
                 "6654a2d57e688a0f"
@@ -2904,7 +2859,7 @@
         "finalize": "",
         "libs": [],
         "x": 370,
-        "y": 2060,
+        "y": 2040,
         "wires": [
             [
                 "b06fa61f84ebfb49"
@@ -2923,7 +2878,7 @@
         "stream": false,
         "addname": "",
         "x": 750,
-        "y": 2060,
+        "y": 2040,
         "wires": [
             [
                 "7e3c084336b885ce"
@@ -2941,7 +2896,7 @@
         "rowsPerMsg": 1,
         "outputs": 1,
         "x": 1120,
-        "y": 2060,
+        "y": 2040,
         "wires": [
             []
         ]
@@ -2951,14 +2906,14 @@
         "type": "function",
         "z": "da9fb362a36014db",
         "name": "insert into orders paper",
-        "func": "let id = msg.payload[\"id\"]\nlet client_order_id = msg.payload[\"client_order_id\"]\nlet created_at = msg.payload[\"created_at\"]\nlet updated_at = msg.payload[\"updated_at\"]\nlet submitted_at = msg.payload[\"submitted_at\"]\nlet filled_at = msg.payload[\"filled_at\"]\nlet expired_at = msg.payload[\"expired_at\"]\nlet canceled_at = msg.payload[\"canceled_at\"]\nlet failed_at = msg.payload[\"failed_at\"]\nlet replaced_at = msg.payload[\"replaced_at\"]\nlet replaced_by = msg.payload[\"replaced_by\"]\nlet replaces = msg.payload[\"replaces\"]\nlet asset_id = msg.payload[\"asset_id\"]\nlet symbol = msg.payload[\"symbol\"]\nlet asset_class = msg.payload[\"asset_class\"]\nlet notional = msg.payload[\"notional\"]\nlet qty = msg.payload[\"qty\"]\nif (qty === null) { qty = 0 }\n\n\nlet filled_qty = msg.payload[\"filled_qty\"]\nif (filled_qty === null) { filled_qty = 0 }\n\nlet filled_avg_price = msg.payload[\"filled_avg_price\"]\nif (filled_avg_price === null) { filled_avg_price = 0 }\n\n\nlet order_class = msg.payload[\"order_class\"]\nlet order_type = msg.payload[\"order_type\"]\nlet type = msg.payload[\"type\"]\nlet side = msg.payload[\"side\"]\nlet time_in_force = msg.payload[\"time_in_force\"]\n\nlet limit_price = msg.payload[\"limit_price\"]\nif (limit_price === null) { limit_price = 0 }\n\nlet stop_price = msg.payload[\"stop_price\"]\nif (stop_price === null ){ stop_price = 0}\n\nlet status = msg.payload[\"status\"]\nlet extended_hours = msg.payload[\"extended_hours\"]\nlet legs = msg.payload[\"legs\"]\n\nlet trail_percent = msg.payload[\"trail_percent\"]\nif (trail_percent === null) { trail_percent = 0 }\n\nlet trail_price = msg.payload[\"trail_price\"]\nif (trail_price === null) { trail_price = 0 }\n\nlet hwm = msg.payload[\"hwm\"]\nlet subtag = msg.payload[\"subtag\"]\nlet source = msg.payload[\"source\"]\n\nmsg.query = \"insert into orders (id,client_order_id,created_at,updated_at,submitted_at,filled_at,expired_at,canceled_at,failed_at,replaced_at,replaced_by,extended_hours,replaces,asset_id,symbol,asset_class,notional,qty,filled_qty,filled_avg_price,order_class,order_type,type,side,time_in_force,limit_price,stop_price,status,legs,trail_percent,trail_price,hwm,subtag,source, order_status, account) values ('\" + id + \"','\" + client_order_id + \"','\" + created_at + \"','\" + updated_at + \"','\" + submitted_at + \"','\" + filled_at + \"','\" + expired_at + \"','\" + canceled_at + \"','\" + failed_at + \"','\" + replaced_at + \"','\" + replaced_by + \"','\" + extended_hours + \"','\" + replaces + \"','\" + asset_id + \"','\" + symbol + \"','\" + asset_class + \"','\" + notional + \"','\" + qty + \"','\" + filled_qty + \"','\" + filled_avg_price + \"','\" + order_class + \"','\" + order_type + \"','\" + type + \"','\" + side + \"','\" + time_in_force + \"','\" + limit_price + \"','\" + stop_price + \"','\" + status + \"','\" + legs + \"','\" + trail_percent + \"','\" + trail_price + \"','\" + hwm + \"','\" + subtag + \"','\" + source+ \"', 'open', 'paper');\"\nnode.warn(msg.query)\nreturn msg;",
+        "func": "let id = msg.payload[\"id\"]\nlet client_order_id = msg.payload[\"client_order_id\"]\nlet created_at = msg.payload[\"created_at\"]\nlet updated_at = msg.payload[\"updated_at\"]\nlet submitted_at = msg.payload[\"submitted_at\"]\nlet filled_at = msg.payload[\"filled_at\"]\nlet expired_at = msg.payload[\"expired_at\"]\nlet canceled_at = msg.payload[\"canceled_at\"]\nlet failed_at = msg.payload[\"failed_at\"]\nlet replaced_at = msg.payload[\"replaced_at\"]\nlet replaced_by = msg.payload[\"replaced_by\"]\nlet replaces = msg.payload[\"replaces\"]\nlet asset_id = msg.payload[\"asset_id\"]\nlet symbol = msg.payload[\"symbol\"]\nlet asset_class = msg.payload[\"asset_class\"]\nlet notional = msg.payload[\"notional\"]\nlet qty = msg.payload[\"qty\"]\nif (qty === null) { qty = 0 }\n\n\nlet filled_qty = msg.payload[\"filled_qty\"]\nif (filled_qty === null) { filled_qty = 0 }\n\nlet filled_avg_price = msg.payload[\"filled_avg_price\"]\nif (filled_avg_price === null) { filled_avg_price = 0 }\n\n\nlet order_class = msg.payload[\"order_class\"]\nlet order_type = msg.payload[\"order_type\"]\nlet type = msg.payload[\"type\"]\nlet side = msg.payload[\"side\"]\nlet time_in_force = msg.payload[\"time_in_force\"]\n\nlet limit_price = msg.payload[\"limit_price\"]\nif (limit_price === null) { limit_price = 0 }\n\nlet stop_price = msg.payload[\"stop_price\"]\nif (stop_price === null ){ stop_price = 0}\n\nlet status = msg.payload[\"status\"]\nlet extended_hours = msg.payload[\"extended_hours\"]\nlet legs = msg.payload[\"legs\"]\n\nlet trail_percent = msg.payload[\"trail_percent\"]\nif (trail_percent === null) { trail_percent = 0 }\n\nlet trail_price = msg.payload[\"trail_price\"]\nif (trail_price === null) { trail_price = 0 }\n\nlet hwm = msg.payload[\"hwm\"]\nlet subtag = msg.payload[\"subtag\"]\nlet source = msg.payload[\"source\"]\n\nmsg.query = \"insert into orders (id,client_order_id,created_at,updated_at,submitted_at,filled_at,expired_at,canceled_at,failed_at,replaced_at,replaced_by,extended_hours,replaces,asset_id,symbol,asset_class,notional,qty,filled_qty,filled_avg_price,order_class,order_type,type,side,time_in_force,limit_price,stop_price,status,legs,trail_percent,trail_price,hwm,subtag,source, order_status, account) values ('\" + id + \"','\" + client_order_id + \"','\" + created_at + \"','\" + updated_at + \"','\" + submitted_at + \"','\" + filled_at + \"','\" + expired_at + \"','\" + canceled_at + \"','\" + failed_at + \"','\" + replaced_at + \"','\" + replaced_by + \"','\" + extended_hours + \"','\" + replaces + \"','\" + asset_id + \"','\" + symbol + \"','\" + asset_class + \"','\" + notional + \"','\" + qty + \"','\" + filled_qty + \"','\" + filled_avg_price + \"','\" + order_class + \"','\" + order_type + \"','\" + type + \"','\" + side + \"','\" + time_in_force + \"','\" + limit_price + \"','\" + stop_price + \"','\" + status + \"','\" + legs + \"','\" + trail_percent + \"','\" + trail_price + \"','\" + hwm + \"','\" + subtag + \"','\" + source+ \"', 'open', 'paper');\"\n//node.warn(msg.query)\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 930,
-        "y": 2060,
+        "y": 2040,
         "wires": [
             [
                 "c6e5a164f43f3b0e"
@@ -2983,7 +2938,7 @@
         "allowrate": false,
         "outputs": 1,
         "x": 140,
-        "y": 2060,
+        "y": 2040,
         "wires": [
             [
                 "d24974be6e5363b6"
@@ -3010,9 +2965,7 @@
         "x": 100,
         "y": 1660,
         "wires": [
-            [
-                "386eb38955630d93"
-            ]
+            []
         ]
     },
     {
@@ -3081,6 +3034,697 @@
                 "e516017b7e16e086"
             ]
         ]
+    },
+    {
+        "id": "4b6578c3d0422528",
+        "type": "inject",
+        "z": "da9fb362a36014db",
+        "name": "Truncate balances",
+        "props": [
+            {
+                "p": "query",
+                "v": "truncate table balances",
+                "vt": "str"
+            },
+            {
+                "p": "query1",
+                "v": "truncate table daily_balances",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 80,
+        "wires": [
+            [
+                "62999ef4b08b1828"
+            ]
+        ]
+    },
+    {
+        "id": "62999ef4b08b1828",
+        "type": "postgresql",
+        "z": "da9fb362a36014db",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 320,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "06ff0632e64eee86",
+        "type": "inject",
+        "z": "da9fb362a36014db",
+        "name": "Truncate balances_daily",
+        "props": [
+            {
+                "p": "query1",
+                "v": "truncate table balances",
+                "vt": "str"
+            },
+            {
+                "p": "query",
+                "v": "truncate table balances_daily",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 540,
+        "y": 80,
+        "wires": [
+            [
+                "920405c67c218d75"
+            ]
+        ]
+    },
+    {
+        "id": "920405c67c218d75",
+        "type": "postgresql",
+        "z": "da9fb362a36014db",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 720,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c3cc409d394cf3cd",
+        "type": "inject",
+        "z": "da9fb362a36014db",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 120,
+        "y": 2720,
+        "wires": [
+            [
+                "5c5d2d2e8e050188"
+            ]
+        ]
+    },
+    {
+        "id": "22cef66d1b96a919",
+        "type": "function",
+        "z": "da9fb362a36014db",
+        "name": "update order_confirms from tickers",
+        "func": "msg.query = \"UPDATE order_confirms SET subtag = tickers.portfolioname FROM tickers where tickers.symbol = order_confirms.symbol\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 2080,
+        "wires": [
+            [
+                "852243ece7f94050"
+            ]
+        ]
+    },
+    {
+        "id": "852243ece7f94050",
+        "type": "postgresql",
+        "z": "da9fb362a36014db",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 600,
+        "y": 2080,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2e53351de8a7794c",
+        "type": "delay",
+        "z": "da9fb362a36014db",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "3",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 140,
+        "y": 2080,
+        "wires": [
+            [
+                "22cef66d1b96a919"
+            ]
+        ]
+    },
+    {
+        "id": "44ec0d968a1ed6a4",
+        "type": "split",
+        "z": "da9fb362a36014db",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 790,
+        "y": 2760,
+        "wires": [
+            [
+                "2a07093b1b65445d"
+            ]
+        ]
+    },
+    {
+        "id": "1394836f7ca193ce",
+        "type": "postgresql",
+        "z": "da9fb362a36014db",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 660,
+        "y": 2760,
+        "wires": [
+            [
+                "44ec0d968a1ed6a4"
+            ]
+        ]
+    },
+    {
+        "id": "95aacff6081a24ca",
+        "type": "function",
+        "z": "da9fb362a36014db",
+        "name": "get total_sells from order_confirms",
+        "func": "let name = msg.name\n//msg.query = \"select *  from order_confirms where subtag = '\" +name+ \"';\"\n//msg.query = \"select sum(unrealized_intraday_pl) as a, sum(unrealized_pl) as b, sum(market_value) as c from order_confirms where subtag = '\" + name + \"';\"\nmsg.query = \"select sum(filled_qty * filled_avg_price) as a from order_confirms where side = 'sell' and status = 'filled' and subtag = '\" + name + \"';\"\n//node.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 2760,
+        "wires": [
+            [
+                "1394836f7ca193ce"
+            ]
+        ]
+    },
+    {
+        "id": "05b476b43eb59c30",
+        "type": "function",
+        "z": "da9fb362a36014db",
+        "name": "total buys",
+        "func": "let total_buys = msg.payload[\"a\"]\nlet name = msg.name\n\n//let gain_today = msg.payload[\"b\"]\n//let total_value = msg.payload[\"c\"]\n\nmsg.total_sells = total_buys\n//node.warn(\"Portfolio: \" +name+ \" Total Buys: \" +total_buys)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 920,
+        "y": 2700,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2a07093b1b65445d",
+        "type": "function",
+        "z": "da9fb362a36014db",
+        "name": "total sells",
+        "func": "let total_sells = msg.payload[\"a\"]\nlet name = msg.name\n\n//let gain_today = msg.payload[\"b\"]\n//let total_value = msg.payload[\"c\"]\n\nmsg.total_sells = total_sells\n//node.warn(\"Portfolio: \" +name+ \" Total Sells: \" +total_sells)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 920,
+        "y": 2760,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d5a7a3fad5ccc890",
+        "type": "function",
+        "z": "da9fb362a36014db",
+        "name": "delete from order_confirms",
+        "func": "msg.query = \"delete from order_confirms where filled_qty is null;\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 2120,
+        "wires": [
+            [
+                "07056d1e8e11a040"
+            ]
+        ]
+    },
+    {
+        "id": "07056d1e8e11a040",
+        "type": "postgresql",
+        "z": "da9fb362a36014db",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 600,
+        "y": 2120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "004a8861e401bf65",
+        "type": "delay",
+        "z": "da9fb362a36014db",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "4",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 140,
+        "y": 2120,
+        "wires": [
+            [
+                "d5a7a3fad5ccc890"
+            ]
+        ]
+    },
+    {
+        "id": "fc8c8e66aee0e80c",
+        "type": "comment",
+        "z": "da9fb362a36014db",
+        "name": "Update algos table performance all time from today's performance for \"interday\" stocks at  midnight",
+        "info": "",
+        "x": 380,
+        "y": 2460,
+        "wires": []
+    },
+    {
+        "id": "cdc024d39678a6e0",
+        "type": "inject",
+        "z": "da9fb362a36014db",
+        "name": "Midnight",
+        "props": [],
+        "repeat": "",
+        "crontab": "00 00 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 120,
+        "y": 2520,
+        "wires": [
+            [
+                "9fd4a6dea2efd19a"
+            ]
+        ]
+    },
+    {
+        "id": "aa056a0233be77d1",
+        "type": "function",
+        "z": "da9fb362a36014db",
+        "name": "get algo name",
+        "func": "msg.query = \"select algo_name from algos where algo_type = 'interday'\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 2520,
+        "wires": [
+            [
+                "1c72e0e12bf9bf79"
+            ]
+        ]
+    },
+    {
+        "id": "1c72e0e12bf9bf79",
+        "type": "postgresql",
+        "z": "da9fb362a36014db",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 600,
+        "y": 2520,
+        "wires": [
+            [
+                "df0341ac97dbbb03"
+            ]
+        ]
+    },
+    {
+        "id": "df0341ac97dbbb03",
+        "type": "split",
+        "z": "da9fb362a36014db",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 730,
+        "y": 2520,
+        "wires": [
+            [
+                "babf5ba3edc153fd"
+            ]
+        ]
+    },
+    {
+        "id": "babf5ba3edc153fd",
+        "type": "function",
+        "z": "da9fb362a36014db",
+        "name": "store sums",
+        "func": "let name  = msg.payload[\"algo_name\"]\n//node.warn(\"Algo name: \" +name)\nmsg.name = name\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 2520,
+        "wires": [
+            [
+                "4396b497bfc4ee56"
+            ]
+        ]
+    },
+    {
+        "id": "9fd4a6dea2efd19a",
+        "type": "delay",
+        "z": "da9fb362a36014db",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "6",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 280,
+        "y": 2520,
+        "wires": [
+            [
+                "aa056a0233be77d1"
+            ]
+        ]
+    },
+    {
+        "id": "4396b497bfc4ee56",
+        "type": "function",
+        "z": "da9fb362a36014db",
+        "name": "update algos table",
+        "func": "let id = msg.name\nmsg.query = \"update algos set pctgain_alltime = pctgain_today, gain_alltime  = gain_today where algo_name = '\" + id + \"';\"\n//node.warn(msg.query)\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1050,
+        "y": 2520,
+        "wires": [
+            [
+                "c77787553ac556f6"
+            ]
+        ]
+    },
+    {
+        "id": "c77787553ac556f6",
+        "type": "postgresql",
+        "z": "da9fb362a36014db",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1220,
+        "y": 2520,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2934b99deef352a5",
+        "type": "inject",
+        "z": "da9fb362a36014db",
+        "name": "",
+        "props": [
+            {
+                "p": "query",
+                "v": "select * from order_confirms",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 210,
+        "y": 2880,
+        "wires": [
+            [
+                "ebb4a654e858a6fc"
+            ]
+        ]
+    },
+    {
+        "id": "9e82b43e60f20231",
+        "type": "http in",
+        "z": "da9fb362a36014db",
+        "name": "/api/download_order_confirms",
+        "url": "/api/download_order_confirms",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 150,
+        "y": 3000,
+        "wires": [
+            [
+                "2048d39bfa17ed2f"
+            ]
+        ]
+    },
+    {
+        "id": "e0dec8ebe670a434",
+        "type": "http response",
+        "z": "da9fb362a36014db",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"positions.csv\""
+        },
+        "x": 970,
+        "y": 3000,
+        "wires": []
+    },
+    {
+        "id": "3313ee865dd0a3f9",
+        "type": "csv",
+        "z": "da9fb362a36014db",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 670,
+        "y": 3000,
+        "wires": [
+            [
+                "436252a10a435b7c"
+            ]
+        ]
+    },
+    {
+        "id": "2048d39bfa17ed2f",
+        "type": "function",
+        "z": "da9fb362a36014db",
+        "name": "export query",
+        "func": "msg.query= \"select * from order_confirms\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 3000,
+        "wires": [
+            [
+                "59a32d0372d722e8"
+            ]
+        ]
+    },
+    {
+        "id": "436252a10a435b7c",
+        "type": "file",
+        "z": "da9fb362a36014db",
+        "name": "write report",
+        "filename": "/data/store/output.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 830,
+        "y": 3000,
+        "wires": [
+            [
+                "e0dec8ebe670a434"
+            ]
+        ]
+    },
+    {
+        "id": "f22a9bcb610d8094",
+        "type": "comment",
+        "z": "da9fb362a36014db",
+        "name": "These flows downloads tables ",
+        "info": "",
+        "x": 200,
+        "y": 2960,
+        "wires": []
+    },
+    {
+        "id": "59a32d0372d722e8",
+        "type": "postgresql",
+        "z": "da9fb362a36014db",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 540,
+        "y": 3000,
+        "wires": [
+            [
+                "3313ee865dd0a3f9"
+            ]
+        ]
+    },
+    {
+        "id": "c7527d8875c3ffe6",
+        "type": "function",
+        "z": "da9fb362a36014db",
+        "name": "update algos table",
+        "func": "let gain_alltime = msg.gainalltime\nlet gain_today = msg.gaintoday\nlet total_value = msg.totalvalue\nlet id = msg.name\nlet pctgainalltime = 0\nlet pctgaintoday = 0\n\nif (total_value > 0){\n     pctgainalltime = (gain_alltime / total_value) * 100\n     pctgaintoday = (gain_today / total_value) * 100\n}\n\n\nmsg.query = \"update algos set pctgain_today = \" + pctgaintoday + \", pctgain_alltime  = \" + pctgainalltime + \" where algo_name = '\" + id + \"';\"\n//node.warn(msg.query)\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 2820,
+        "wires": [
+            [
+                "b086e5a754c005af"
+            ]
+        ]
+    },
+    {
+        "id": "b086e5a754c005af",
+        "type": "postgresql",
+        "z": "da9fb362a36014db",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 680,
+        "y": 2820,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e074e1ddf2f02d55",
+        "type": "debug",
+        "z": "da9fb362a36014db",
+        "name": "debug 292",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 510,
+        "y": 2880,
+        "wires": []
     },
     {
         "id": "0c86a5f06a42b505",
