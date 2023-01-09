@@ -18,154 +18,13 @@
         "wires": []
     },
     {
-        "id": "901f90cbe347648b",
-        "type": "function",
-        "z": "75cdaa2d7408cacc",
-        "name": "define values required for adding trade to portfolio",
-        "func": "let id = flow.get(\"id\")\nlet ticker = flow.get(\"tickers\")\nlet algo_name = flow.get(\"algo_name\")\n\nlet login = 'pta15'\nlet asset_class = 'crypto' // stocks or crypto\nlet number = 20 // number of tickers in portfolio\nlet target = 1 // target profit pct\nlet account = 'paper'\nlet psize = 50000 // size of portfolio\nlet algo_type = \"interday\"\nlet status = 'running'\nlet benchmark = 'SPY'\n\nlet benchmark_start = global.get(\"spy_current\")\n\nmsg.query = \"insert into algos (login,id,algo_name,algo_type,status,portfolio_size,benchmark,benchmark_start) values ('\" + login + \"','\" + id + \"','\" + algo_name + \"','\" + algo_type + \"','\" + status + \"','\" + psize + \"','\" + benchmark + \"','\" + benchmark_start + \"');\"\nnode.warn(msg.query)\n\nmsg.id = id\nmsg.login = login\nmsg.ticker = ticker\nmsg.algo_name = algo_name\nmsg.asset_class = asset_class\nmsg.number = number\nmsg.target = target\nmsg.account = account\nmsg.psize = psize\nmsg.status = status\nmsg.algo_type = algo_type\nmsg.benchmark = benchmark\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 390,
-        "y": 260,
-        "wires": [
-            [
-                "2c8ad2acf774e195",
-                "5df58126861c276a"
-            ]
-        ]
-    },
-    {
-        "id": "825fba9cb0ed77e6",
-        "type": "inject",
-        "z": "75cdaa2d7408cacc",
-        "name": "GO",
-        "props": [],
-        "repeat": "3600",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "x": 130,
-        "y": 260,
-        "wires": [
-            [
-                "901f90cbe347648b"
-            ]
-        ]
-    },
-    {
-        "id": "2c8ad2acf774e195",
-        "type": "change",
-        "z": "75cdaa2d7408cacc",
-        "name": "store as flow vars",
-        "rules": [
-            {
-                "t": "set",
-                "p": "id",
-                "pt": "flow",
-                "to": "id",
-                "tot": "msg"
-            },
-            {
-                "t": "set",
-                "p": "login",
-                "pt": "flow",
-                "to": "login",
-                "tot": "msg"
-            },
-            {
-                "t": "set",
-                "p": "account",
-                "pt": "flow",
-                "to": "account",
-                "tot": "msg"
-            },
-            {
-                "t": "set",
-                "p": "ticker",
-                "pt": "flow",
-                "to": "ticker",
-                "tot": "msg"
-            },
-            {
-                "t": "set",
-                "p": "algo_name",
-                "pt": "flow",
-                "to": "algo_name",
-                "tot": "msg"
-            },
-            {
-                "t": "set",
-                "p": "asset_class",
-                "pt": "flow",
-                "to": "asset_class",
-                "tot": "msg"
-            },
-            {
-                "t": "set",
-                "p": "number",
-                "pt": "flow",
-                "to": "number",
-                "tot": "msg"
-            },
-            {
-                "t": "set",
-                "p": "psize",
-                "pt": "flow",
-                "to": "psize",
-                "tot": "msg"
-            },
-            {
-                "t": "set",
-                "p": "status",
-                "pt": "flow",
-                "to": "status",
-                "tot": "msg"
-            },
-            {
-                "t": "set",
-                "p": "algo_type",
-                "pt": "flow",
-                "to": "algo_type",
-                "tot": "msg"
-            },
-            {
-                "t": "set",
-                "p": "benchmark",
-                "pt": "flow",
-                "to": "benchmark",
-                "tot": "msg"
-            },
-            {
-                "t": "set",
-                "p": "target",
-                "pt": "flow",
-                "to": "target",
-                "tot": "msg"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 710,
-        "y": 260,
-        "wires": [
-            []
-        ]
-    },
-    {
         "id": "6dff7f89c65238af",
         "type": "comment",
         "z": "75cdaa2d7408cacc",
         "name": "Flow 2: Create new entry in algos table (FIRSTTIME ONLY)",
         "info": "",
         "x": 250,
-        "y": 200,
+        "y": 300,
         "wires": []
     },
     {
@@ -175,7 +34,7 @@
         "name": "Flow 3: Create trading flow",
         "info": "",
         "x": 150,
-        "y": 360,
+        "y": 420,
         "wires": []
     },
     {
@@ -190,7 +49,7 @@
         "finalize": "",
         "libs": [],
         "x": 250,
-        "y": 580,
+        "y": 620,
         "wires": [
             [
                 "b26490d3ab48bae7"
@@ -203,7 +62,7 @@
         "z": "75cdaa2d7408cacc",
         "conf": "e535f42f1df1b25f",
         "x": 450,
-        "y": 580,
+        "y": 620,
         "wires": [
             [
                 "c1f3a171668f357e"
@@ -222,7 +81,7 @@
         "finalize": "",
         "libs": [],
         "x": 310,
-        "y": 440,
+        "y": 480,
         "wires": [
             [
                 "ca0ac95f497056c2"
@@ -241,7 +100,7 @@
         "stream": false,
         "addname": "",
         "x": 510,
-        "y": 440,
+        "y": 480,
         "wires": [
             [
                 "b84b71f21f3beb36"
@@ -260,7 +119,7 @@
         "finalize": "",
         "libs": [],
         "x": 680,
-        "y": 440,
+        "y": 480,
         "wires": [
             [
                 "a160d94b2b4366c0"
@@ -279,7 +138,7 @@
         "finalize": "",
         "libs": [],
         "x": 420,
-        "y": 500,
+        "y": 540,
         "wires": [
             [
                 "e63572884b88efbd"
@@ -297,7 +156,7 @@
         "rowsPerMsg": 1,
         "outputs": 1,
         "x": 840,
-        "y": 440,
+        "y": 480,
         "wires": [
             [
                 "889b0cd5c2a3225a"
@@ -316,7 +175,7 @@
         "stream": false,
         "addname": "",
         "x": 210,
-        "y": 500,
+        "y": 540,
         "wires": [
             [
                 "6904fbb40366fde3"
@@ -335,7 +194,7 @@
         "onceDelay": 0.1,
         "topic": "",
         "x": 110,
-        "y": 440,
+        "y": 480,
         "wires": [
             [
                 "a288968848316559"
@@ -354,7 +213,7 @@
         "finalize": "",
         "libs": [],
         "x": 1120,
-        "y": 500,
+        "y": 540,
         "wires": [
             [
                 "6925ccf6d384be8f"
@@ -368,7 +227,7 @@
         "conf": "651f0aab10dc1632",
         "symbol": "",
         "x": 940,
-        "y": 500,
+        "y": 540,
         "wires": [
             [
                 "b4d28b0ccbaa6645"
@@ -386,7 +245,7 @@
         "rowsPerMsg": 1,
         "outputs": 1,
         "x": 920,
-        "y": 580,
+        "y": 620,
         "wires": [
             []
         ]
@@ -403,322 +262,11 @@
         "finalize": "",
         "libs": [],
         "x": 690,
-        "y": 580,
+        "y": 620,
         "wires": [
             [
                 "ffa1a36faa408c2d"
             ]
-        ]
-    },
-    {
-        "id": "9c642abe7a993caa",
-        "type": "inject",
-        "z": "75cdaa2d7408cacc",
-        "name": "Get cryto tickers",
-        "props": [
-            {
-                "p": "query",
-                "v": "select symbol from alpaca_assets where exchange = 'FTXU' and tradable is true;",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "x": 180,
-        "y": 120,
-        "wires": [
-            [
-                "e39e4330a303cbf7"
-            ]
-        ]
-    },
-    {
-        "id": "785acd7e5e34f730",
-        "type": "function",
-        "z": "75cdaa2d7408cacc",
-        "name": "get tickers",
-        "func": "let tickers = ''\n\nfor (let item of msg.payload) {\n    let ticker = item.symbol;\n    tickers += ticker+ \", \"\n}\n\nmsg.tickers = tickers\nnode.warn(tickers)\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 510,
-        "y": 120,
-        "wires": [
-            [
-                "7d144f56859ca01d"
-            ]
-        ]
-    },
-    {
-        "id": "7d144f56859ca01d",
-        "type": "change",
-        "z": "75cdaa2d7408cacc",
-        "name": "",
-        "rules": [
-            {
-                "t": "set",
-                "p": "tickers",
-                "pt": "flow",
-                "to": "tickers",
-                "tot": "msg"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 680,
-        "y": 120,
-        "wires": [
-            [
-                "75e154979338b132",
-                "ce1511ea82b93555"
-            ]
-        ]
-    },
-    {
-        "id": "e39e4330a303cbf7",
-        "type": "postgresql",
-        "z": "75cdaa2d7408cacc",
-        "name": "postgres",
-        "query": "",
-        "postgreSQLConfig": "7455395cf269fb2b",
-        "split": false,
-        "rowsPerMsg": 1,
-        "outputs": 1,
-        "x": 360,
-        "y": 120,
-        "wires": [
-            [
-                "785acd7e5e34f730"
-            ]
-        ]
-    },
-    {
-        "id": "6e3b99e8c9837e8f",
-        "type": "inject",
-        "z": "75cdaa2d7408cacc",
-        "name": "GO",
-        "props": [],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "x": 150,
-        "y": 80,
-        "wires": [
-            [
-                "05f1ddbc511efcef"
-            ]
-        ]
-    },
-    {
-        "id": "75e154979338b132",
-        "type": "function",
-        "z": "75cdaa2d7408cacc",
-        "name": "get tickers ",
-        "func": "let ticker = msg.tickers\nmsg.payload = ticker\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 850,
-        "y": 120,
-        "wires": [
-            [
-                "3c4ba34f87b56b78"
-            ]
-        ]
-    },
-    {
-        "id": "3c4ba34f87b56b78",
-        "type": "split",
-        "z": "75cdaa2d7408cacc",
-        "name": "",
-        "splt": ",",
-        "spltType": "str",
-        "arraySplt": 1,
-        "arraySpltType": "len",
-        "stream": false,
-        "addname": "",
-        "x": 990,
-        "y": 120,
-        "wires": [
-            [
-                "3752df62e02a72a9"
-            ]
-        ]
-    },
-    {
-        "id": "3752df62e02a72a9",
-        "type": "function",
-        "z": "75cdaa2d7408cacc",
-        "name": "insert into tickers",
-        "func": "let id = flow.get(\"id\")\nlet symbol = msg.payload\nlet portfolioname = flow.get(\"algo_name\")\nsymbol = symbol.replace(\" \",\"\")\nmsg.query = \"insert into tickers (id, symbol, portfolioname) values (\" +id+ \",'\" + symbol + \"', '\" +portfolioname + \"');\"\nnode.warn(msg.query)\nmsg.symbol = symbol\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 1150,
-        "y": 120,
-        "wires": [
-            [
-                "68ab4248677ec26e"
-            ]
-        ]
-    },
-    {
-        "id": "68ab4248677ec26e",
-        "type": "postgresql",
-        "z": "75cdaa2d7408cacc",
-        "name": "postgres",
-        "query": "",
-        "postgreSQLConfig": "7455395cf269fb2b",
-        "split": false,
-        "rowsPerMsg": 1,
-        "outputs": 1,
-        "x": 1320,
-        "y": 120,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "779b7381b3520ec3",
-        "type": "function",
-        "z": "75cdaa2d7408cacc",
-        "name": "update tickers with name from alpaca_assets",
-        "func": "msg.query = \"update tickers set name = alpaca_assets.name FROM alpaca_assets where alpaca_assets.symbol = tickers.symbol\"\nnode.warn(msg.query)\nreturn msg;\n",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 1090,
-        "y": 160,
-        "wires": [
-            [
-                "24b5ed340da92763"
-            ]
-        ]
-    },
-    {
-        "id": "ce1511ea82b93555",
-        "type": "delay",
-        "z": "75cdaa2d7408cacc",
-        "name": "",
-        "pauseType": "delay",
-        "timeout": "5",
-        "timeoutUnits": "seconds",
-        "rate": "1",
-        "nbRateUnits": "1",
-        "rateUnits": "second",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": false,
-        "allowrate": false,
-        "outputs": 1,
-        "x": 840,
-        "y": 160,
-        "wires": [
-            [
-                "779b7381b3520ec3"
-            ]
-        ]
-    },
-    {
-        "id": "24b5ed340da92763",
-        "type": "postgresql",
-        "z": "75cdaa2d7408cacc",
-        "name": "postgres",
-        "query": "",
-        "postgreSQLConfig": "7455395cf269fb2b",
-        "split": false,
-        "rowsPerMsg": 1,
-        "outputs": 1,
-        "x": 1340,
-        "y": 160,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "4c7532c56c69a8b2",
-        "type": "change",
-        "z": "75cdaa2d7408cacc",
-        "name": "Set flow.id and flow.algo_name ",
-        "rules": [
-            {
-                "t": "set",
-                "p": "algo_name",
-                "pt": "flow",
-                "to": "name",
-                "tot": "msg"
-            },
-            {
-                "t": "set",
-                "p": "id",
-                "pt": "flow",
-                "to": "id",
-                "tot": "msg"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 610,
-        "y": 80,
-        "wires": [
-            [
-                "d3ab7f9c310ab7fb"
-            ]
-        ]
-    },
-    {
-        "id": "05f1ddbc511efcef",
-        "type": "function",
-        "z": "75cdaa2d7408cacc",
-        "name": "Create strategy name and id",
-        "func": "// portfolio_id is set to unixtime\nlet d = Date.now() // use to dynamically assign id\nlet id = d\nmsg.id = id\n\nlet name = \"Buy Crypto Portfolio\"\nmsg.name = name\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 340,
-        "y": 80,
-        "wires": [
-            [
-                "4c7532c56c69a8b2"
-            ]
-        ]
-    },
-    {
-        "id": "5df58126861c276a",
-        "type": "postgresql",
-        "z": "75cdaa2d7408cacc",
-        "name": "postgres",
-        "query": "",
-        "postgreSQLConfig": "7455395cf269fb2b",
-        "split": false,
-        "rowsPerMsg": 1,
-        "outputs": 1,
-        "x": 680,
-        "y": 300,
-        "wires": [
-            []
         ]
     },
     {
@@ -1003,7 +551,7 @@
         "finalize": "",
         "libs": [],
         "x": 690,
-        "y": 500,
+        "y": 540,
         "wires": [
             [
                 "1c409b7edba90386"
@@ -1011,7 +559,67 @@
         ]
     },
     {
-        "id": "d3ab7f9c310ab7fb",
+        "id": "7fd5d5e22d868236",
+        "type": "function",
+        "z": "75cdaa2d7408cacc",
+        "name": "get fresh list of tickers",
+        "func": "let tickers = ''\n\nfor (let item of msg.payload) {\n    let ticker = item.symbol;\n    tickers += ticker+ \", \"\n}\n\n// portfolio_id is set to unixtime\nlet d = Date.now() // use to dynamically assign id\nmsg.id = d\nmsg.tickers = tickers\nmsg.algo_name = 'Buy Crypto Portfolio'\nnode.warn(tickers)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 60,
+        "wires": [
+            [
+                "7a67cac05b1dff68"
+            ]
+        ]
+    },
+    {
+        "id": "7a67cac05b1dff68",
+        "type": "change",
+        "z": "75cdaa2d7408cacc",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "tickers",
+                "pt": "flow",
+                "to": "tickers",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "id",
+                "pt": "flow",
+                "to": "id",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "algo_name",
+                "pt": "flow",
+                "to": "algo_name",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 780,
+        "y": 60,
+        "wires": [
+            [
+                "fcab4471375ef550"
+            ]
+        ]
+    },
+    {
+        "id": "fcab4471375ef550",
         "type": "function",
         "z": "75cdaa2d7408cacc",
         "name": "Display flow vars",
@@ -1021,8 +629,501 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 850,
-        "y": 80,
+        "x": 970,
+        "y": 60,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5ac58d520fd5688a",
+        "type": "postgresql",
+        "z": "75cdaa2d7408cacc",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 380,
+        "y": 60,
+        "wires": [
+            [
+                "7fd5d5e22d868236"
+            ]
+        ]
+    },
+    {
+        "id": "45fae31e99af36eb",
+        "type": "inject",
+        "z": "75cdaa2d7408cacc",
+        "name": "Get cryto tickers",
+        "props": [
+            {
+                "p": "query",
+                "v": "select symbol from alpaca_assets where exchange = 'FTXU' and tradable is true;",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 220,
+        "y": 60,
+        "wires": [
+            [
+                "5ac58d520fd5688a"
+            ]
+        ]
+    },
+    {
+        "id": "0b05f80c0cb8e83c",
+        "type": "function",
+        "z": "75cdaa2d7408cacc",
+        "name": "define values required for adding trade to portfolio",
+        "func": "let id = flow.get(\"id\")\nlet login = 'pta15'\nlet ticker = flow.get(\"tickers\")\nlet algo_name = flow.get(\"algo_name\")\nlet asset_class = 'stocks' // stocks or crypto\nlet number = 25 // number of tickers in portfolio\nlet target = 1 // target profit pct\nlet account = 'paper'\nlet psize = 50000 // size of portfolio\nlet status = 'running'\nlet algo_type = 'interday'\nlet strategy_type = \"long\"\nlet benchmark = 'SPY'\n\nnode.warn(ticker)\n\nmsg.id = id\nmsg.login = login\nmsg.ticker = ticker\nmsg.algo_name = algo_name\nmsg.asset_class = asset_class\nmsg.number = number\nmsg.target = target\nmsg.account = account\nmsg.psize = psize\nmsg.status = status\nmsg.algo_type = algo_type\nmsg.benchmark = benchmark\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 100,
+        "wires": [
+            [
+                "992d4098a24792a1"
+            ]
+        ]
+    },
+    {
+        "id": "61816b077cd28f1b",
+        "type": "inject",
+        "z": "75cdaa2d7408cacc",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 190,
+        "y": 100,
+        "wires": [
+            [
+                "0b05f80c0cb8e83c"
+            ]
+        ]
+    },
+    {
+        "id": "992d4098a24792a1",
+        "type": "change",
+        "z": "75cdaa2d7408cacc",
+        "name": "store as flow vars",
+        "rules": [
+            {
+                "t": "set",
+                "p": "id",
+                "pt": "flow",
+                "to": "id",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "login",
+                "pt": "flow",
+                "to": "login",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "account",
+                "pt": "flow",
+                "to": "account",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "ticker",
+                "pt": "flow",
+                "to": "ticker",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "algo_name",
+                "pt": "flow",
+                "to": "algo_name",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "asset_class",
+                "pt": "flow",
+                "to": "asset_class",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "number",
+                "pt": "flow",
+                "to": "number",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "psize",
+                "pt": "flow",
+                "to": "psize",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "status",
+                "pt": "flow",
+                "to": "status",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "algo_type",
+                "pt": "flow",
+                "to": "algo_type",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "benchmark",
+                "pt": "flow",
+                "to": "benchmark",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "target",
+                "pt": "flow",
+                "to": "target",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 790,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "11427cfcb8b3cf8f",
+        "type": "inject",
+        "z": "75cdaa2d7408cacc",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 190,
+        "y": 180,
+        "wires": [
+            [
+                "d017ebb459512208",
+                "6e1d91dede86e0d6"
+            ]
+        ]
+    },
+    {
+        "id": "d017ebb459512208",
+        "type": "function",
+        "z": "75cdaa2d7408cacc",
+        "name": "get tickers ",
+        "func": "let ticker = flow.get(\"tickers\")\nmsg.payload = ticker\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 180,
+        "wires": [
+            [
+                "1dc435563b0219d1"
+            ]
+        ]
+    },
+    {
+        "id": "1dc435563b0219d1",
+        "type": "split",
+        "z": "75cdaa2d7408cacc",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 510,
+        "y": 180,
+        "wires": [
+            [
+                "a56b47c0c3ea86dd"
+            ]
+        ]
+    },
+    {
+        "id": "a56b47c0c3ea86dd",
+        "type": "function",
+        "z": "75cdaa2d7408cacc",
+        "name": "insert into tickers",
+        "func": "let id = flow.get(\"id\")\nlet symbol = msg.payload\nlet portfolioname = flow.get(\"algo_name\")\nsymbol = symbol.replace(\" \",\"\")\n//msg.query = \"delete from tickers where symbol = '\" + symbol + \"';\"\nmsg.query = \"insert into tickers (id, symbol, portfolioname) values (\" +id+ \",'\" + symbol + \"', '\" +portfolioname + \"');\"\nnode.warn(msg.query)\nmsg.symbol = symbol\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 180,
+        "wires": [
+            [
+                "d9828dbf19f1e356"
+            ]
+        ]
+    },
+    {
+        "id": "d9828dbf19f1e356",
+        "type": "postgresql",
+        "z": "75cdaa2d7408cacc",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 840,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "87e128aa0589953c",
+        "type": "function",
+        "z": "75cdaa2d7408cacc",
+        "name": "get tickers with name from alpaca_assets",
+        "func": "msg.query = \"update tickers set name = alpaca_assets.name FROM alpaca_assets where alpaca_assets.symbol = tickers.symbol\"\nnode.warn(msg.query)\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 600,
+        "y": 220,
+        "wires": [
+            [
+                "d6afb11f9519c953"
+            ]
+        ]
+    },
+    {
+        "id": "6e1d91dede86e0d6",
+        "type": "delay",
+        "z": "75cdaa2d7408cacc",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 360,
+        "y": 220,
+        "wires": [
+            [
+                "87e128aa0589953c"
+            ]
+        ]
+    },
+    {
+        "id": "d6afb11f9519c953",
+        "type": "postgresql",
+        "z": "75cdaa2d7408cacc",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 840,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "aa62ed6e9b41d665",
+        "type": "function",
+        "z": "75cdaa2d7408cacc",
+        "name": "define values required for adding trade to portfolio",
+        "func": "let id = flow.get(\"id\")\nlet ticker = flow.get(\"tickers\")\nlet algo_name = flow.get(\"algo_name\")\n\nlet login = 'pta15'\nlet asset_class = 'crypto' // stocks or crypto\nlet number = 20 // number of tickers in portfolio\nlet target = 1 // target profit pct\nlet account = 'paper'\nlet psize = 50000 // size of portfolio\nlet algo_type = \"interday\"\nlet strategy_type = \"long\"\nlet status = 'running'\nlet benchmark = 'SPY'\n\nlet benchmark_start = global.get(\"spy_current\")\n\nlet sql = \"insert into algos (login,id,algo_name,algo_type,strategy_type,status,portfolio_size,benchmark,benchmark_start) values \"\nsql += \"('\" + login + \"','\" + id + \"','\" + algo_name + \"','\" + algo_type + \"','\" + strategy_type + \"','\" + status + \"','\" + psize + \"','\" + benchmark + \"','\" + benchmark_start + \"');\"\nmsg.query = sql\nnode.warn(msg.query)\n\nmsg.id = id\nmsg.login = login\nmsg.ticker = ticker\nmsg.algo_name = algo_name\nmsg.asset_class = asset_class\nmsg.number = number\nmsg.target = target\nmsg.account = account\nmsg.psize = psize\nmsg.status = status\nmsg.algo_type = algo_type\nmsg.benchmark = benchmark\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 360,
+        "wires": [
+            [
+                "30d806a4f9e6c7f9",
+                "78fa9efaa2f0a80e"
+            ]
+        ]
+    },
+    {
+        "id": "5bd001eadadf425d",
+        "type": "inject",
+        "z": "75cdaa2d7408cacc",
+        "name": "GO",
+        "props": [],
+        "repeat": "3600",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 360,
+        "wires": [
+            [
+                "aa62ed6e9b41d665"
+            ]
+        ]
+    },
+    {
+        "id": "30d806a4f9e6c7f9",
+        "type": "change",
+        "z": "75cdaa2d7408cacc",
+        "name": "store as flow vars",
+        "rules": [
+            {
+                "t": "set",
+                "p": "id",
+                "pt": "flow",
+                "to": "id",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "login",
+                "pt": "flow",
+                "to": "login",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "account",
+                "pt": "flow",
+                "to": "account",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "ticker",
+                "pt": "flow",
+                "to": "ticker",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "algo_name",
+                "pt": "flow",
+                "to": "algo_name",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "asset_class",
+                "pt": "flow",
+                "to": "asset_class",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "number",
+                "pt": "flow",
+                "to": "number",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "psize",
+                "pt": "flow",
+                "to": "psize",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "status",
+                "pt": "flow",
+                "to": "status",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "algo_type",
+                "pt": "flow",
+                "to": "algo_type",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "benchmark",
+                "pt": "flow",
+                "to": "benchmark",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "target",
+                "pt": "flow",
+                "to": "target",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 870,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "78fa9efaa2f0a80e",
+        "type": "postgresql",
+        "z": "75cdaa2d7408cacc",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 680,
+        "y": 360,
         "wires": [
             []
         ]
@@ -1031,7 +1132,7 @@
         "id": "e535f42f1df1b25f",
         "type": "alpaca-account",
         "name": "paper",
-        "keyId": "PKFP41APUPEM0FD30MX8",
+        "keyId": "PK4TI6GDJ7NN146CF8YA",
         "paper": true
     },
     {
