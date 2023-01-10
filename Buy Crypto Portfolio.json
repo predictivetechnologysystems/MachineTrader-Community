@@ -276,7 +276,7 @@
         "name": "Flow 4: Place sell order at Market ",
         "info": "",
         "x": 170,
-        "y": 680,
+        "y": 700,
         "wires": []
     },
     {
@@ -339,7 +339,7 @@
         "checkall": "true",
         "repair": false,
         "outputs": 2,
-        "x": 710,
+        "x": 690,
         "y": 860,
         "wires": [
             [
@@ -372,7 +372,7 @@
         "type": "function",
         "z": "75cdaa2d7408cacc",
         "name": "split tickers",
-        "func": "let ticker = msg.payload\n//node.warn(ticker) \nmsg.ticker = ticker\n//msg.pos = 0\n\nreturn msg;",
+        "func": "let ticker = msg.payload\nticker = ticker.replace(\" \",\"\")\nnode.warn(ticker) \nmsg.ticker = ticker\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -390,14 +390,14 @@
         "id": "101f4b734759f56b",
         "type": "function",
         "z": "75cdaa2d7408cacc",
-        "name": "create Alpaca buy order ",
+        "name": "create Alpaca sell order ",
         "func": "let ticker = msg.ticker\nlet qty = msg.qty\nlet algo_name = flow.get(\"algo_name\")\nlet price = msg.price\nlet side = msg.side\nlet profit = msg.profit\n\nlet id1 = (\"Ticker\" +ticker+ \" Qty: \" +qty+ \" Price: \" +price+ \" Side: \" +side+ \" Profit: \" +profit)\n//node.warn(id1)\n\n\n// create a unique clientid with unixtime\nlet d = Date.now()\nlet client_order_id = ticker + d\nmsg.clientorderid = client_order_id // passes this variable in the flow \n\nlet subtag = algo_name\n\n\n\nlet order_type = 'market' // select limit for limit orders\n\nlet temp = ''\n\n//if ( profit > 10){\n\n    if ( (qty > 0 && order_type == 'market')){\n\n    temp = {\n            \"symbol\": ticker,\n            \"qty\": qty,\n            \"side\": \"sell\",\n            \"type\": order_type,\n            \"client_order_id\": client_order_id,\n            //\"limit_price\": price,  \n            //    \"subtag\": subtag,\n            \"time_in_force\": \"gtc\"\n        };\n    }\n\n    if ((qty < 0 && order_type == 'market')) {\n\n    qty = (qty * -1)\n    \n    temp = {\n        \n        \"symbol\": ticker,\n        \"qty\": qty,\n        \"side\": \"sell\",\n        \"type\": order_type,\n        \"client_order_id\": client_order_id,\n        //\"limit_price\": price,  \n        //    \"subtag\": subtag,\n        \"time_in_force\": \"gtc\"\n        };\n    }\n\n    if ((qty > 0 && order_type == 'limit')) {\n\n    temp = {\n        \"symbol\": ticker,\n        \"qty\": qty,\n        \"side\": \"sell\",\n        \"type\": order_type,\n        \"client_order_id\": client_order_id,\n        \"limit_price\": price,  \n        //    \"subtag\": subtag,\n        \"time_in_force\": \"gtc\"\n    };\n    }\n\n//}\n\n\nmsg.payload = temp\nnode.warn(msg.payload)\nlet id2 = temp\nmsg.query = \"insert into log_tqqq (id, id2) values ('\" + id1 + \"','\" + id2 + \"');\" \n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 290,
+        "x": 270,
         "y": 920,
         "wires": [
             [
@@ -502,7 +502,7 @@
         "name": "GO",
         "props": [],
         "repeat": "",
-        "crontab": "55 15 * * 1,2,3,4,5",
+        "crontab": "",
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
@@ -510,7 +510,8 @@
         "y": 740,
         "wires": [
             [
-                "2e3d63b7151ec171"
+                "2e3d63b7151ec171",
+                "bb6cf9dc4df20559"
             ]
         ]
     },
@@ -683,7 +684,7 @@
         "type": "function",
         "z": "75cdaa2d7408cacc",
         "name": "define values required for adding trade to portfolio",
-        "func": "let id = flow.get(\"id\")\nlet login = 'pta15'\nlet ticker = flow.get(\"tickers\")\nlet algo_name = flow.get(\"algo_name\")\nlet asset_class = 'stocks' // stocks or crypto\nlet number = 25 // number of tickers in portfolio\nlet target = 1 // target profit pct\nlet account = 'paper'\nlet psize = 50000 // size of portfolio\nlet status = 'running'\nlet algo_type = 'interday'\nlet strategy_type = \"long\"\nlet benchmark = 'SPY'\n\nnode.warn(ticker)\n\nmsg.id = id\nmsg.login = login\nmsg.ticker = ticker\nmsg.algo_name = algo_name\nmsg.asset_class = asset_class\nmsg.number = number\nmsg.target = target\nmsg.account = account\nmsg.psize = psize\nmsg.status = status\nmsg.algo_type = algo_type\nmsg.benchmark = benchmark\n\nreturn msg;",
+        "func": "let id = flow.get(\"id\")\nlet login = 'pta15'\nlet ticker = flow.get(\"tickers\")\nlet algo_name = flow.get(\"algo_name\")\nlet asset_class = 'cryptos' // stocks or crypto\nlet number = 25 // number of tickers in portfolio\nlet target = 1 // target profit pct\nlet account = 'paper'\nlet psize = 50000 // size of portfolio\nlet status = 'running'\nlet algo_type = 'interday'\nlet strategy_type = \"long\"\nlet benchmark = 'SPY'\n\nnode.warn(ticker)\n\nmsg.id = id\nmsg.login = login\nmsg.ticker = ticker\nmsg.algo_name = algo_name\nmsg.asset_class = asset_class\nmsg.number = number\nmsg.target = target\nmsg.account = account\nmsg.psize = psize\nmsg.status = status\nmsg.algo_type = algo_type\nmsg.benchmark = benchmark\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -986,7 +987,6 @@
         "y": 360,
         "wires": [
             [
-                "30d806a4f9e6c7f9",
                 "78fa9efaa2f0a80e"
             ]
         ]
@@ -1125,7 +1125,9 @@
         "x": 680,
         "y": 360,
         "wires": [
-            []
+            [
+                "30d806a4f9e6c7f9"
+            ]
         ]
     },
     {
