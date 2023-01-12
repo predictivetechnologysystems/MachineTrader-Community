@@ -2301,7 +2301,7 @@
         "type": "function",
         "z": "b5b50016c53d1dcf",
         "name": "create tickers_paper",
-        "func": "//msg.query = \"truncate table alpaca_assets\"\nmsg.query = \"CREATE TABLE IF NOT EXISTS tickers (id BIGINT, symbol varchar(20) PRIMARY KEY, name VARCHAR(200), portfolioname VARCHAR(100), orderid VARCHAR(100) )\"\nnode.warn(msg.query)\n\nreturn msg;",
+        "func": "//msg.query = \"truncate table alpaca_assets\"\nmsg.query = \"CREATE TABLE IF NOT EXISTS tickers_paper (id BIGINT, symbol varchar(20) PRIMARY KEY, name VARCHAR(200), portfolioname VARCHAR(100), orderid VARCHAR(100) )\"\nnode.warn(msg.query)\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
