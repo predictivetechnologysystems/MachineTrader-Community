@@ -98,12 +98,12 @@
         "z": "0cb13c1ff3ddec26",
         "name": "Every sec",
         "props": [],
-        "repeat": "1",
+        "repeat": "",
         "crontab": "",
         "once": true,
         "onceDelay": 0.1,
         "topic": "",
-        "x": 130,
+        "x": 120,
         "y": 280,
         "wires": [
             [
@@ -453,7 +453,6 @@
         "y": 980,
         "wires": [
             [
-                "bfd881b39176a447",
                 "36f6ecf981867554"
             ]
         ]
@@ -578,7 +577,7 @@
         "type": "function",
         "z": "0cb13c1ff3ddec26",
         "name": "payload > 0",
-        "func": "//node.warn(msg.payload.length);\nif (msg.payload.length > 0)\n{\n    msg.payload\n    return msg;    \n}\n",
+        "func": "node.warn(msg.payload.length);\nif (msg.payload.length > 0)\n{\n    msg.payload\n    return msg;    \n}\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -976,7 +975,7 @@
         "id": "3e96a062f101a762",
         "type": "alpaca-position-query",
         "z": "0cb13c1ff3ddec26",
-        "conf": "0c86a5f06a42b505",
+        "conf": "e535f42f1df1b25f",
         "x": 730,
         "y": 340,
         "wires": [
@@ -1035,7 +1034,7 @@
         "type": "function",
         "z": "0cb13c1ff3ddec26",
         "name": "select from positions_paper",
-        "func": "let symbol = flow.get(\"ticker\")\nlet sql = \"select * from positions_paper where symbol = '\" +symbol+ \"';\"\nreturn msg;",
+        "func": "let symbol = flow.get(\"ticker\")\nlet sql = \"select * from positions_paper where symbol = '\" +symbol+ \"';\"\nmsg.query = sql\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1054,7 +1053,7 @@
         "type": "function",
         "z": "0cb13c1ff3ddec26",
         "name": "select from positions_paper",
-        "func": "let symbol = flow.get(\"ticker\")\nlet sql = \"select * from positions_paper where symbol = '\" +symbol+ \"';\"\nreturn msg;",
+        "func": "let symbol = flow.get(\"ticker\")\nlet sql = \"select * from positions_paper where symbol = '\" +symbol+ \"';\"\nmsg.query = sql\n//node.warn(sql)\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1065,25 +1064,6 @@
         "wires": [
             [
                 "0c9f8cb58b365dcd"
-            ]
-        ]
-    },
-    {
-        "id": "3957ca2b0be4af09",
-        "type": "inject",
-        "z": "0cb13c1ff3ddec26",
-        "name": "Every min",
-        "props": [],
-        "repeat": "",
-        "crontab": "*/1 10-15 * * 1,2,3,4,5",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "x": 190,
-        "y": 660,
-        "wires": [
-            [
-                "2fa682560466d446"
             ]
         ]
     },
@@ -1113,28 +1093,9 @@
         "z": "0cb13c1ff3ddec26",
         "name": "Create sell order when position > 0",
         "info": "",
-        "x": 220,
-        "y": 860,
+        "x": 200,
+        "y": 840,
         "wires": []
-    },
-    {
-        "id": "a23a71b3445ed678",
-        "type": "inject",
-        "z": "0cb13c1ff3ddec26",
-        "name": "Every min",
-        "props": [],
-        "repeat": "",
-        "crontab": "*/1 10-19 * * 1,2,3,4,5",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "x": 170,
-        "y": 900,
-        "wires": [
-            [
-                "79ab9e77f777952b"
-            ]
-        ]
     },
     {
         "id": "81eee587da2febbd",
@@ -1219,6 +1180,26 @@
         "x": 150,
         "y": 420,
         "wires": []
+    },
+    {
+        "id": "60adf6e4b4e52eef",
+        "type": "inject",
+        "z": "0cb13c1ff3ddec26",
+        "name": "Every min",
+        "props": [],
+        "repeat": "",
+        "crontab": "*/1 10-15 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 170,
+        "y": 660,
+        "wires": [
+            [
+                "2fa682560466d446",
+                "79ab9e77f777952b"
+            ]
+        ]
     },
     {
         "id": "7455395cf269fb2b",
