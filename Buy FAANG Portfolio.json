@@ -48,95 +48,6 @@
         "wires": []
     },
     {
-        "id": "bbe421e288a0ea95",
-        "type": "inject",
-        "z": "680483fa7ebe2344",
-        "name": "Display Algos",
-        "props": [
-            {
-                "p": "query",
-                "v": "select * from algos",
-                "vt": "str"
-            },
-            {
-                "p": "query1",
-                "v": "delete from algos where id = 1671644577762",
-                "vt": "str"
-            },
-            {
-                "p": "query2",
-                "v": "update algos set login = 'pta19'",
-                "vt": "str"
-            },
-            {
-                "p": "query1",
-                "v": "update algos set gain_today = -158.7135149876422767159823658, gain_alltime = -158.71351498764227674, pctgain_today = 0, pctgain_alltime = 0 where algo_name = 'Buy and Sell BTCUSD on Profit Target';",
-                "vt": "str"
-            },
-            {
-                "p": "query1",
-                "v": "select * from order_confirms",
-                "vt": "str"
-            },
-            {
-                "p": "query1",
-                "v": "update order_confirms set subtag = 'Buy/Short SPY on News' where symbol = 'SPY'",
-                "vt": "str"
-            },
-            {
-                "p": "query1",
-                "v": "update order_confirms set subtag = 'Trade BTCUSD'  where symbol = 'BTC/USD'",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "x": 910,
-        "y": 20,
-        "wires": [
-            [
-                "73b906af35ee3ad3"
-            ]
-        ]
-    },
-    {
-        "id": "73b906af35ee3ad3",
-        "type": "postgresql",
-        "z": "680483fa7ebe2344",
-        "name": "postgres",
-        "query": "",
-        "postgreSQLConfig": "7455395cf269fb2b",
-        "split": false,
-        "rowsPerMsg": 1,
-        "outputs": 1,
-        "x": 1060,
-        "y": 20,
-        "wires": [
-            [
-                "3dc216c3cf1e9f21"
-            ]
-        ]
-    },
-    {
-        "id": "3dc216c3cf1e9f21",
-        "type": "debug",
-        "z": "680483fa7ebe2344",
-        "name": "debug 214",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 1230,
-        "y": 20,
-        "wires": []
-    },
-    {
         "id": "4535410de3f42ed9",
         "type": "function",
         "z": "680483fa7ebe2344",
@@ -601,14 +512,14 @@
         "id": "b2537be9cb3736ab",
         "type": "function",
         "z": "680483fa7ebe2344",
-        "name": "insert into tickers",
-        "func": "let id = flow.get(\"id\")\nlet symbol = msg.payload\nlet portfolioname = flow.get(\"algo_name\")\nsymbol = symbol.replace(\" \",\"\")\n//msg.query = \"delete from tickers where symbol = '\" + symbol + \"';\"\nmsg.query = \"insert into tickers (id, symbol, portfolioname) values (\" +id+ \",'\" + symbol + \"', '\" +portfolioname + \"');\"\nnode.warn(msg.query)\nmsg.symbol = symbol\nreturn msg;",
+        "name": "insert into tickers_paper",
+        "func": "let id = flow.get(\"id\")\nlet symbol = msg.payload\nlet portfolioname = flow.get(\"algo_name\")\nsymbol = symbol.replace(\" \",\"\")\n//msg.query = \"delete from tickers where symbol = '\" + symbol + \"';\"\nmsg.query = \"insert into tickers_paper (id, symbol, portfolioname) values (\" +id+ \",'\" + symbol + \"', '\" +portfolioname + \"');\"\nnode.warn(msg.query)\nmsg.symbol = symbol\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 630,
+        "x": 650,
         "y": 160,
         "wires": [
             [
@@ -637,7 +548,7 @@
         "type": "function",
         "z": "680483fa7ebe2344",
         "name": "get tickers with name from alpaca_assets",
-        "func": "msg.query = \"update tickers set name = alpaca_assets.name FROM alpaca_assets where alpaca_assets.symbol = tickers.symbol\"\nnode.warn(msg.query)\nreturn msg;\n",
+        "func": "msg.query = \"update tickers_paper set name = alpaca_assets.name FROM alpaca_assets where alpaca_assets.symbol = tickers_paper.symbol\"\nnode.warn(msg.query)\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -774,7 +685,7 @@
         "type": "function",
         "z": "680483fa7ebe2344",
         "name": "define values required for adding trade to portfolio",
-        "func": "let id = flow.get(\"id\")\nlet ticker = flow.get(\"tickers\")\nlet algo_name = flow.get(\"algo_name\")\n\nlet login = 'pta15'\nlet asset_class = 'crypto' // stocks or crypto\nlet number = 20 // number of tickers in portfolio\nlet target = 1 // target profit pct\nlet account = 'paper'\nlet psize = 50000 // size of portfolio\nlet algo_type = \"interday\"\nlet strategy_type = \"long\"\nlet status = 'running'\nlet benchmark = 'SPY'\n\nlet benchmark_start = global.get(\"spy_current\")\n\nlet sql = \"insert into algos (login,id,algo_name,algo_type,strategy_type,status,portfolio_size,benchmark,benchmark_start) values \"\nsql += \"('\" + login + \"','\" + id + \"','\" + algo_name + \"','\" + algo_type + \"','\" + strategy_type + \"','\" + status + \"','\" + psize + \"','\" + benchmark + \"','\" + benchmark_start + \"');\"\nmsg.query = sql\nnode.warn(msg.query)\n\nmsg.id = id\nmsg.login = login\nmsg.ticker = ticker\nmsg.algo_name = algo_name\nmsg.asset_class = asset_class\nmsg.number = number\nmsg.target = target\nmsg.account = account\nmsg.psize = psize\nmsg.status = status\nmsg.algo_type = algo_type\nmsg.benchmark = benchmark\n\nreturn msg;",
+        "func": "let id = flow.get(\"id\")\nlet ticker = flow.get(\"tickers\")\nlet algo_name = flow.get(\"algo_name\")\n\nlet login = 'pta15'\nlet asset_class = 'crypto' // stocks or crypto\nlet number = 20 // number of tickers in portfolio\nlet target = 1 // target profit pct\nlet account = 'paper'\nlet psize = 50000 // size of portfolio\nlet algo_type = \"interday\"\nlet strategy_type = \"long\"\nlet status = 'running'\nlet benchmark = 'SPY'\n\nlet benchmark_start = global.get(\"spy_current\")\n\nlet sql = \"insert into algos (login,id,account,algo_name,algo_type,strategy_type,status,portfolio_size,benchmark,benchmark_start) values \"\nsql += \"('\" + login + \"','\" + id + \"','\" + account + \"','\" + algo_name + \"','\" + algo_type + \"','\" + strategy_type + \"','\" + status + \"','\" + psize + \"','\" + benchmark + \"','\" + benchmark_start + \"');\"\nmsg.query = sql\nnode.warn(msg.query)\n\nmsg.id = id\nmsg.login = login\nmsg.ticker = ticker\nmsg.algo_name = algo_name\nmsg.asset_class = asset_class\nmsg.number = number\nmsg.target = target\nmsg.account = account\nmsg.psize = psize\nmsg.status = status\nmsg.algo_type = algo_type\nmsg.benchmark = benchmark\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -927,6 +838,13 @@
         ]
     },
     {
+        "id": "e535f42f1df1b25f",
+        "type": "alpaca-account",
+        "name": "paper",
+        "keyId": "PKA7ZL2KR9705ERT2BCO",
+        "paper": true
+    },
+    {
         "id": "7455395cf269fb2b",
         "type": "postgreSQLConfig",
         "name": "",
@@ -950,13 +868,6 @@
         "userFieldType": "str",
         "password": "docker",
         "passwordFieldType": "str"
-    },
-    {
-        "id": "e535f42f1df1b25f",
-        "type": "alpaca-account",
-        "name": "paper",
-        "keyId": "PK4TI6GDJ7NN146CF8YA",
-        "paper": true
     },
     {
         "id": "651f0aab10dc1632",
