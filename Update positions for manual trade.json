@@ -1,0 +1,116 @@
+[
+    {
+        "id": "210be9059151e43e",
+        "type": "comment",
+        "z": "0e823ae58e373fe9",
+        "name": "Update positions table for manual trades ",
+        "info": "",
+        "x": 220,
+        "y": 2700,
+        "wires": []
+    },
+    {
+        "id": "5073b47e84b82c4b",
+        "type": "function",
+        "z": "0e823ae58e373fe9",
+        "name": "update positions for manual trades",
+        "func": "let sql = \"update positions set portfolioname = 'Manual Trades', id = '999999' where portfolioname is null;\"\nmsg.query = sql\n//node.warn(msg.query)\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 2760,
+        "wires": [
+            [
+                "fd9f96025907ec56"
+            ]
+        ]
+    },
+    {
+        "id": "fd9f96025907ec56",
+        "type": "postgresql",
+        "z": "0e823ae58e373fe9",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 740,
+        "y": 2760,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "353e0b1187a4347d",
+        "type": "inject",
+        "z": "0e823ae58e373fe9",
+        "name": "Every min",
+        "props": [],
+        "repeat": "60",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 2760,
+        "wires": [
+            [
+                "56f2107c3821576d"
+            ]
+        ]
+    },
+    {
+        "id": "56f2107c3821576d",
+        "type": "delay",
+        "z": "0e823ae58e373fe9",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "4",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 300,
+        "y": 2760,
+        "wires": [
+            [
+                "5073b47e84b82c4b"
+            ]
+        ]
+    },
+    {
+        "id": "7455395cf269fb2b",
+        "type": "postgreSQLConfig",
+        "name": "",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "postgres",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "docker",
+        "userFieldType": "str",
+        "password": "docker",
+        "passwordFieldType": "str"
+    }
+]
