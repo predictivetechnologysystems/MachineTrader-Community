@@ -1,0 +1,18 @@
+[
+    {
+        "id": "e789c4acf2d82dc7",
+        "type": "function-npm",
+        "z": "e5fde121dab62af2",
+        "name": "Polygon Data Inputs",
+        "func": "let symbol = msg.payload.symbol;\nconst interval = msg.payload.interval;\nconst symbol_type = msg.payload.symbol_type;\nlet crypto = '';\n\nif (symbol.includes('USD')) {\n    if (!symbol.toLowerCase().includes('x:')) {\n        crypto = 'X:' + symbol;\n        crypto = crypto.replace('/', '');\n        symbol = crypto;\n    }\n\n    node.warn('The crypto symbol is: ' + symbol);\n}\n\nif (interval == 'min' && symbol_type == 'stocks') {\n    node.warn('min interval');\n    // this gets the day before yesterday\n    var date = new Date();\n    date.setDate(date.getDate() - 7);\n    const fromDt = date;\n    const toDt = new Date(); // Today\n    msg.timespan = 'minute';\n    msg.symbol = symbol;\n\n    /* Setup polygon request arguments */\n    msg.payload = {\n        from: fromDt.toLocaleDateString('en-CA'),\n        to: toDt.toLocaleDateString('en-CA'),\n        symbol: symbol\n    };\n} else if (interval == 'min' && symbol_type == 'crypto') {\n    // this gets the day before yesterday\n    var date = new Date();\n    date.setDate(date.getDate() - 4);\n    const fromDt = date;\n    const toDt = new Date(); // Today\n    msg.timespan = 'minute';\n    msg.symbol = symbol;\n    //node.warn(\"Interval is set to min and stock type is stocks\")\n\n    /* Setup polygon request arguments */\n    msg.payload = {\n        from: fromDt.toLocaleDateString('en-CA'),\n        to: toDt.toLocaleDateString('en-CA'),\n        symbol: symbol\n    };\n} else {\n    node.warn('day interval');\n    const fromDt = new Date();\n    fromDt.setFullYear(fromDt.getFullYear() - 15);\n    //const fromDt = new Date();\n    const toDt = new Date(); // Today\n    msg.timespan = 'day';\n    msg.symbol = symbol;\n    //node.warn(\"Interval is set to day. Symbol: \" +msg.symbol)\n\n    /* Setup polygon request arguments */\n    msg.payload = {\n        from: fromDt.toLocaleDateString('en-CA'),\n        to: toDt.toLocaleDateString('en-CA'),\n        symbol: symbol\n    };\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 300,
+        "y": 620,
+        "wires": [
+            [
+                "ea37c347eae73275"
+            ]
+        ]
+    }
+]
