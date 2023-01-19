@@ -1,0 +1,137 @@
+[
+    {
+        "id": "0f49d26163be9974",
+        "type": "http in",
+        "z": "51d14e9e5796ea78",
+        "name": "/api/download_orders",
+        "url": "/api/download_orders",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 140,
+        "y": 1520,
+        "wires": [
+            [
+                "29366c3b5d82eea0"
+            ]
+        ]
+    },
+    {
+        "id": "b814780defa497e3",
+        "type": "http response",
+        "z": "51d14e9e5796ea78",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 930,
+        "y": 1520,
+        "wires": []
+    },
+    {
+        "id": "bd6cb95482315469",
+        "type": "csv",
+        "z": "51d14e9e5796ea78",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 650,
+        "y": 1520,
+        "wires": [
+            [
+                "b9d868c3bf4b11db"
+            ]
+        ]
+    },
+    {
+        "id": "29366c3b5d82eea0",
+        "type": "function",
+        "z": "51d14e9e5796ea78",
+        "name": "export query",
+        "func": "msg.query= \"select * from orders\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 1520,
+        "wires": [
+            [
+                "485c5e5c2d46bbbc"
+            ]
+        ]
+    },
+    {
+        "id": "b9d868c3bf4b11db",
+        "type": "file",
+        "z": "51d14e9e5796ea78",
+        "name": "write report",
+        "filename": "/data/store/output.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 790,
+        "y": 1520,
+        "wires": [
+            [
+                "b814780defa497e3"
+            ]
+        ]
+    },
+    {
+        "id": "485c5e5c2d46bbbc",
+        "type": "postgresql",
+        "z": "51d14e9e5796ea78",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 520,
+        "y": 1520,
+        "wires": [
+            [
+                "bd6cb95482315469"
+            ]
+        ]
+    },
+    {
+        "id": "7455395cf269fb2b",
+        "type": "postgreSQLConfig",
+        "name": "",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "postgres",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "docker",
+        "userFieldType": "str",
+        "password": "docker",
+        "passwordFieldType": "str"
+    }
+]
