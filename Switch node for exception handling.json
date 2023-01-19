@@ -1,0 +1,39 @@
+[
+    {
+        "id": "0d5058a037ffa339",
+        "type": "switch",
+        "z": "e2f7c04fc44482f1",
+        "name": "",
+        "property": "payload.symbol",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "null"
+            },
+            {
+                "t": "empty"
+            },
+            {
+                "t": "cont",
+                "v": "X:",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 4,
+        "x": 870,
+        "y": 400,
+        "wires": [
+            [],
+            [],
+            [],
+            [
+                "2d7ea9f4a2a4235b"
+            ]
+        ]
+    }
+]
