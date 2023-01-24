@@ -1,0 +1,747 @@
+[
+    {
+        "id": "f225b573f4b66a7c",
+        "type": "tab",
+        "label": "Update Interday Algo Tracking",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "ea2e4d39dbd24e23",
+        "type": "comment",
+        "z": "f225b573f4b66a7c",
+        "name": "Update from algos table for interday strategies - paper account only",
+        "info": "",
+        "x": 280,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "d4893bb6e2ddbfb8",
+        "type": "inject",
+        "z": "f225b573f4b66a7c",
+        "name": "Every min",
+        "props": [],
+        "repeat": "60",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 240,
+        "wires": [
+            [
+                "32117c0da824dd7f"
+            ]
+        ]
+    },
+    {
+        "id": "0636e7ac5df3774a",
+        "type": "function",
+        "z": "f225b573f4b66a7c",
+        "name": "get totals from positions",
+        "func": "let name = msg.name\nmsg.query = \"select sum(unrealized_intraday_pl) as a, sum(unrealized_pl) as b, sum(market_value) as c from positions where portfolioname = '\" +name+ \"' and account = 'paper';\"\n//node.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1110,
+        "y": 240,
+        "wires": [
+            [
+                "31b2519bdc065301"
+            ]
+        ]
+    },
+    {
+        "id": "8624dc5599169c32",
+        "type": "function",
+        "z": "f225b573f4b66a7c",
+        "name": "store sums",
+        "func": "let gain_today = msg.payload[\"a\"]\nlet gain_alltime = msg.payload[\"b\"]\nlet total_value = msg.payload[\"c\"]\n\nmsg.totalvalue = total_value\nmsg.gainalltime = gain_alltime\nmsg.gaintoday = gain_today\n\nlet id = msg.name\n\n//node.warn(\"Strategy: \" +id+ \" Gain Today: \" + gain_today + \" Gain Alltime: \" + gain_alltime)\nmsg.query = \"update algos set portfolio_size = \" + total_value + \", gain_today = \" + gain_today + \", gain_alltime = \" + gain_alltime + \" where algo_name = '\" +id+ \"';\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 550,
+        "y": 300,
+        "wires": [
+            [
+                "2b220cf8b9f5211d"
+            ]
+        ]
+    },
+    {
+        "id": "37520b9aea7745a0",
+        "type": "split",
+        "z": "f225b573f4b66a7c",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 410,
+        "y": 300,
+        "wires": [
+            [
+                "8624dc5599169c32"
+            ]
+        ]
+    },
+    {
+        "id": "31b2519bdc065301",
+        "type": "postgresql",
+        "z": "f225b573f4b66a7c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 280,
+        "y": 300,
+        "wires": [
+            [
+                "37520b9aea7745a0"
+            ]
+        ]
+    },
+    {
+        "id": "2b220cf8b9f5211d",
+        "type": "postgresql",
+        "z": "f225b573f4b66a7c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 700,
+        "y": 300,
+        "wires": [
+            [
+                "1ff24d662c5a4271"
+            ]
+        ]
+    },
+    {
+        "id": "1ff24d662c5a4271",
+        "type": "function",
+        "z": "f225b573f4b66a7c",
+        "name": "update algos table",
+        "func": "let gain_alltime = msg.gainalltime\nlet gain_today = msg.gaintoday\nlet total_value = msg.totalvalue\nlet id = msg.name\nlet pctgainalltime = 0\nlet pctgaintoday = 0\n\nif (total_value > 0){\n     pctgainalltime = (gain_alltime / total_value) * 100\n     pctgaintoday = (gain_today / total_value) * 100\n}\n\n\nmsg.query = \"update algos set pctgain_today = \" + pctgaintoday + \", pctgain_alltime = \" +pctgainalltime+ \" where algo_name = '\" + id + \"';\"\nnode.warn(msg.query)\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 360,
+        "wires": [
+            [
+                "7abe10153ee725e6"
+            ]
+        ]
+    },
+    {
+        "id": "7abe10153ee725e6",
+        "type": "postgresql",
+        "z": "f225b573f4b66a7c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 600,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5ab7fe1407c77620",
+        "type": "function",
+        "z": "f225b573f4b66a7c",
+        "name": "get algo name",
+        "func": "msg.query = \"select * from algos where  algo_type = 'interday'\"\n//node.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 240,
+        "wires": [
+            [
+                "64f4a961e49482c1"
+            ]
+        ]
+    },
+    {
+        "id": "64f4a961e49482c1",
+        "type": "postgresql",
+        "z": "f225b573f4b66a7c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 640,
+        "y": 240,
+        "wires": [
+            [
+                "3c4c3492e3ba04c5"
+            ]
+        ]
+    },
+    {
+        "id": "3c4c3492e3ba04c5",
+        "type": "split",
+        "z": "f225b573f4b66a7c",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 770,
+        "y": 240,
+        "wires": [
+            [
+                "806accc4bc0c4f05"
+            ]
+        ]
+    },
+    {
+        "id": "806accc4bc0c4f05",
+        "type": "function",
+        "z": "f225b573f4b66a7c",
+        "name": "store sums",
+        "func": "let name  = msg.payload[\"algo_name\"]\nmsg.bench = msg.payload[\"benchmark_start\"]\n//node.warn(\"Algo name: \" +name)\nmsg.name = name\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 910,
+        "y": 240,
+        "wires": [
+            [
+                "0636e7ac5df3774a"
+            ]
+        ]
+    },
+    {
+        "id": "32117c0da824dd7f",
+        "type": "delay",
+        "z": "f225b573f4b66a7c",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 320,
+        "y": 240,
+        "wires": [
+            [
+                "5ab7fe1407c77620"
+            ]
+        ]
+    },
+    {
+        "id": "ea635e620c9a5ae5",
+        "type": "comment",
+        "z": "f225b573f4b66a7c",
+        "name": "Update from algos table benchmarks",
+        "info": "",
+        "x": 210,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "c448489a8e9f7478",
+        "type": "inject",
+        "z": "f225b573f4b66a7c",
+        "name": "Every min",
+        "props": [
+            {
+                "p": "query",
+                "v": "select * from algos",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 140,
+        "y": 820,
+        "wires": [
+            [
+                "9e5577028161de39",
+                "3960acc024ff3d18"
+            ]
+        ]
+    },
+    {
+        "id": "6dad6695a66e4bf9",
+        "type": "function",
+        "z": "f225b573f4b66a7c",
+        "name": "update algos table",
+        "func": "let id = msg.payload[\"id\"]\nlet start = msg.payload[\"benchmark_start\"]\n\n\nlet current = global.get(\"spy_current\")\nlet close = global.get(\"spy_close\")\n\nlet pctbench_today = ((current - close) / close) * 100 \nlet pctbench_alltime = ((current - start) / start) * 100\n\n//node.warn(\"Close: \" + close + \" Current: \" + current+ \" Pctbench Today: \" +pctbench_today+ \" Pctbench Alltime: \" +pctbench_alltime)\n\nmsg.query = \"update algos set pctbench_today = \" + pctbench_today+ \", pctbench_alltime = \" +pctbench_alltime+ \" where id = \" +id+ \";\"\n//node.warn(msg.query)\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 820,
+        "wires": [
+            [
+                "75a6ceb88122c521"
+            ]
+        ]
+    },
+    {
+        "id": "75a6ceb88122c521",
+        "type": "postgresql",
+        "z": "f225b573f4b66a7c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 760,
+        "y": 820,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "36f513505852bf76",
+        "type": "function",
+        "z": "f225b573f4b66a7c",
+        "name": "update info_ratio",
+        "func": "msg.query = \"update algos set info_ratio = (pctgain_alltime - pctbench_alltime);\"\n//node.warn(msg.query)\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 860,
+        "wires": [
+            [
+                "73941ee8a4647eea"
+            ]
+        ]
+    },
+    {
+        "id": "73941ee8a4647eea",
+        "type": "postgresql",
+        "z": "f225b573f4b66a7c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 620,
+        "y": 860,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9e5577028161de39",
+        "type": "postgresql",
+        "z": "f225b573f4b66a7c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 300,
+        "y": 820,
+        "wires": [
+            [
+                "a71ed8538e06a93b"
+            ]
+        ]
+    },
+    {
+        "id": "a71ed8538e06a93b",
+        "type": "split",
+        "z": "f225b573f4b66a7c",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 430,
+        "y": 820,
+        "wires": [
+            [
+                "6dad6695a66e4bf9"
+            ]
+        ]
+    },
+    {
+        "id": "3960acc024ff3d18",
+        "type": "delay",
+        "z": "f225b573f4b66a7c",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "2",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 280,
+        "y": 860,
+        "wires": [
+            [
+                "36f513505852bf76"
+            ]
+        ]
+    },
+    {
+        "id": "d09e1f8361b5f6d9",
+        "type": "comment",
+        "z": "f225b573f4b66a7c",
+        "name": "paper account selected here",
+        "info": "",
+        "x": 1120,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "0f9f996f8622dc54",
+        "type": "comment",
+        "z": "f225b573f4b66a7c",
+        "name": "Update from algos table for interday strategies - live account only",
+        "info": "",
+        "x": 270,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "f58ac3ab4e988c81",
+        "type": "inject",
+        "z": "f225b573f4b66a7c",
+        "name": "Every min",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 140,
+        "y": 520,
+        "wires": [
+            [
+                "0f228d7f1a5a50ad"
+            ]
+        ]
+    },
+    {
+        "id": "98ca959073c2c982",
+        "type": "function",
+        "z": "f225b573f4b66a7c",
+        "name": "get totals from positions",
+        "func": "let name = msg.name\nmsg.query = \"select sum(unrealized_intraday_pl) as a, sum(unrealized_pl) as b, sum(market_value) as c from positions where portfolioname = '\" +name+ \"' and account = 'paper';\"\n//node.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1110,
+        "y": 520,
+        "wires": [
+            [
+                "6eeeb54a40950d2f"
+            ]
+        ]
+    },
+    {
+        "id": "d0f4dd9ae8b6a0e1",
+        "type": "function",
+        "z": "f225b573f4b66a7c",
+        "name": "store sums",
+        "func": "let gain_today = msg.payload[\"a\"]\nlet gain_alltime = msg.payload[\"b\"]\nlet total_value = msg.payload[\"c\"]\n\nmsg.totalvalue = total_value\nmsg.gainalltime = gain_alltime\nmsg.gaintoday = gain_today\n\nlet id = msg.name\n\n//node.warn(\"Strategy: \" +id+ \" Gain Today: \" + gain_today + \" Gain Alltime: \" + gain_alltime)\nmsg.query = \"update algos set portfolio_size = \" + total_value + \", gain_today = \" + gain_today + \", gain_alltime = \" + gain_alltime + \" where algo_name = '\" +id+ \"';\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 550,
+        "y": 580,
+        "wires": [
+            [
+                "c674aef7a93e3e30"
+            ]
+        ]
+    },
+    {
+        "id": "fc4006e0d5e7c1e1",
+        "type": "split",
+        "z": "f225b573f4b66a7c",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 410,
+        "y": 580,
+        "wires": [
+            [
+                "d0f4dd9ae8b6a0e1"
+            ]
+        ]
+    },
+    {
+        "id": "6eeeb54a40950d2f",
+        "type": "postgresql",
+        "z": "f225b573f4b66a7c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 280,
+        "y": 580,
+        "wires": [
+            [
+                "fc4006e0d5e7c1e1"
+            ]
+        ]
+    },
+    {
+        "id": "c674aef7a93e3e30",
+        "type": "postgresql",
+        "z": "f225b573f4b66a7c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 700,
+        "y": 580,
+        "wires": [
+            [
+                "5e2a8b546988d231"
+            ]
+        ]
+    },
+    {
+        "id": "5e2a8b546988d231",
+        "type": "function",
+        "z": "f225b573f4b66a7c",
+        "name": "update algos table",
+        "func": "let gain_alltime = msg.gainalltime\nlet gain_today = msg.gaintoday\nlet total_value = msg.totalvalue\nlet id = msg.name\nlet pctgainalltime = 0\nlet pctgaintoday = 0\n\nif (total_value > 0){\n     pctgainalltime = (gain_alltime / total_value) * 100\n     pctgaintoday = (gain_today / total_value) * 100\n}\n\n\nmsg.query = \"update algos set pctgain_today = \" + pctgaintoday + \", pctgain_alltime = \" +pctgainalltime+ \" where algo_name = '\" + id + \"';\"\nnode.warn(msg.query)\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 640,
+        "wires": [
+            [
+                "3e3bb63e4c66e896"
+            ]
+        ]
+    },
+    {
+        "id": "3e3bb63e4c66e896",
+        "type": "postgresql",
+        "z": "f225b573f4b66a7c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 600,
+        "y": 640,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "daec94f6bfa11afe",
+        "type": "function",
+        "z": "f225b573f4b66a7c",
+        "name": "get algo name",
+        "func": "msg.query = \"select * from algos where  algo_type = 'interday'\"\n//node.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 520,
+        "wires": [
+            [
+                "d1487c1fe1d35fb1"
+            ]
+        ]
+    },
+    {
+        "id": "d1487c1fe1d35fb1",
+        "type": "postgresql",
+        "z": "f225b573f4b66a7c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 640,
+        "y": 520,
+        "wires": [
+            [
+                "52962915b07c6b0f"
+            ]
+        ]
+    },
+    {
+        "id": "52962915b07c6b0f",
+        "type": "split",
+        "z": "f225b573f4b66a7c",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 770,
+        "y": 520,
+        "wires": [
+            [
+                "45ae2aa00f424081"
+            ]
+        ]
+    },
+    {
+        "id": "45ae2aa00f424081",
+        "type": "function",
+        "z": "f225b573f4b66a7c",
+        "name": "store sums",
+        "func": "let name  = msg.payload[\"algo_name\"]\nmsg.bench = msg.payload[\"benchmark_start\"]\n//node.warn(\"Algo name: \" +name)\nmsg.name = name\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 910,
+        "y": 520,
+        "wires": [
+            [
+                "98ca959073c2c982"
+            ]
+        ]
+    },
+    {
+        "id": "0f228d7f1a5a50ad",
+        "type": "delay",
+        "z": "f225b573f4b66a7c",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 320,
+        "y": 520,
+        "wires": [
+            [
+                "daec94f6bfa11afe"
+            ]
+        ]
+    },
+    {
+        "id": "10ca841bec0d739b",
+        "type": "comment",
+        "z": "f225b573f4b66a7c",
+        "name": "live account selected here",
+        "info": "",
+        "x": 1110,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "3c43bc8a496ee1a5",
+        "type": "comment",
+        "z": "f225b573f4b66a7c",
+        "name": "Click to see notes.",
+        "info": "This flow updates the Algos Display in the front end from the algos table.\nIt only works properly for \"interday\" strategies which are purchased and sold once. \nIt relies on values supplied by Alpaca for todays gains and gains all time for each ticker that is currently held.\nThe function node \"get totals from positions\" totals  the unrealized_intraday_pl and unrealized_pl for each ticker contained in a strategy.\nThe percent changes are calculated from the total of the market value for each ticker.\nThe gains or losses are compared with the performane of the benchmark over time.\n",
+        "x": 130,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "7455395cf269fb2b",
+        "type": "postgreSQLConfig",
+        "name": "",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "postgres",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "docker",
+        "userFieldType": "str",
+        "password": "docker",
+        "passwordFieldType": "str"
+    }
+]
