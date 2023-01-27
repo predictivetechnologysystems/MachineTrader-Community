@@ -1,0 +1,135 @@
+[
+    {
+        "id": "2e6d3e3eef6e7b70",
+        "type": "tab",
+        "label": "Alpaca Keys",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "4f02562a516ef8fd",
+        "type": "comment",
+        "z": "2e6d3e3eef6e7b70",
+        "name": "add Alpaca live keys here",
+        "info": "",
+        "x": 190,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "4cb43f8dd9b1e96f",
+        "type": "comment",
+        "z": "2e6d3e3eef6e7b70",
+        "name": "add Alpaca paper keys here",
+        "info": "",
+        "x": 200,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "3205a1cade6df1a4",
+        "type": "alpaca-account-query",
+        "z": "2e6d3e3eef6e7b70",
+        "conf": "0c86a5f06a42b505",
+        "x": 340,
+        "y": 160,
+        "wires": [
+            [
+                "e0a0ba679f276e7d"
+            ]
+        ]
+    },
+    {
+        "id": "5f56465643a836de",
+        "type": "inject",
+        "z": "2e6d3e3eef6e7b70",
+        "name": "Test live keys",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 160,
+        "wires": [
+            [
+                "3205a1cade6df1a4"
+            ]
+        ]
+    },
+    {
+        "id": "e0a0ba679f276e7d",
+        "type": "debug",
+        "z": "2e6d3e3eef6e7b70",
+        "name": "display live keys",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 540,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "d415d774b029cab3",
+        "type": "alpaca-account-query",
+        "z": "2e6d3e3eef6e7b70",
+        "conf": "0c86a5f06a42b505",
+        "x": 360,
+        "y": 380,
+        "wires": [
+            [
+                "612f5076d5781f31"
+            ]
+        ]
+    },
+    {
+        "id": "57239453ced0ad15",
+        "type": "inject",
+        "z": "2e6d3e3eef6e7b70",
+        "name": "Test paper keys",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 160,
+        "y": 380,
+        "wires": [
+            [
+                "d415d774b029cab3"
+            ]
+        ]
+    },
+    {
+        "id": "612f5076d5781f31",
+        "type": "debug",
+        "z": "2e6d3e3eef6e7b70",
+        "name": "display paper keys",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 570,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "0c86a5f06a42b505",
+        "type": "alpaca-account",
+        "name": "live",
+        "keyId": "PK128UG0DXBGH54150IJ",
+        "paper": true
+    }
+]
