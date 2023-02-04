@@ -41,25 +41,27 @@ Once you have changed the Market Indicators and/or the Watchlist, you'll need to
 
 <img width="1333" alt="Screen Shot 2022-10-14 at 3 42 34 PM" src="https://user-images.githubusercontent.com/79699033/195928988-0068ead4-4839-4098-88d6-78a19a7ac247.png">
 
-# Adding Missing Nodes to Your Instance (e.g. "Loop" and "Calc") 
+# Buy Crypto Portfolio
 
-When importing certain JSON files, you may find that you do not have a particular node in your instance.  At this time, the only nodes that should be missing are the “Loop” and "Calc" nodes.  If that is the case, you will see the missing nodes and connections as red dotted lines, as shown below:
+This strategy creates a portfolio of a set dollar amount, gets a list of crypto symbols, and then purchases the cryptos so that the portfolio contains a balance of cryptos all held inh a simlar dollar amount. Before using this strategy, check your account details screen in the front end to make sure your account has been approved for tarding crypto.
 
-
-<img width="828" alt="Screen Shot 2022-10-18 at 8 01 51 AM" src="https://user-images.githubusercontent.com/79699033/196424007-4cb18946-550b-40d1-9095-912616dd70e9.png">
-
-To add the Loop node to the palette in your instance, click on the “hamburger” on the top right (the 3 parallel lines icon), and select “Manage palette.”
-
-<img width="515" alt="Screen Shot 2022-10-18 at 8 02 38 AM" src="https://user-images.githubusercontent.com/79699033/196424263-ee3ded53-51e9-4a08-a985-4255d896e005.png">
+<img width="975" alt="Screenshot 2023-02-04 at 7 14 40 AM" src="https://user-images.githubusercontent.com/79699033/216764979-03d3123e-085c-453e-8c6f-85f7549b1010.png">
 
 
-To add the Loop node to the palette in your instance, click on the “hamburger” on the top right (the 3 parallel lines icon), and select “Manage palette.”
+Flow #1: Identify list of crypto symbols, create a strategy ID, 
 
 
-<img width="580" alt="Screen Shot 2022-10-18 at 8 02 44 AM" src="https://user-images.githubusercontent.com/79699033/196424279-2e870212-2238-4358-8842-b7ddce285efe.png">
+<img width="641" <img width="641" alt="Screenshot 2023-02-04 at 7 24 14 AM" src="https://user-images.githubusercontent.com/79699033/216764937-eaf520b5-4a5c-4162-9660-18cf13203a9a.png">
 
 
-<img width="689" alt="Screen Shot 2022-10-18 at 8 02 50 AM" src="https://user-images.githubusercontent.com/79699033/196424321-26ca3eb4-6719-4817-9b11-4a5538e5c459.png">
+alt="Screenshot 2023-02-04 at 7 24 14 AM" src="https://user-images.githubusercontent.com/79699033/216764926-e735943f-76bb-45eb-83a4-1a3087240c95.png">
+
+
+<img width="847" alt="Screenshot 2023-02-04 at 7 24 32 AM" src="https://user-images.githubusercontent.com/79699033/216764923-3d703240-ad81-47fb-a8c2-8b5034f3b69c.png">
+
+
+ and store 
+
 
 
 # Simple Interday Trade - Trade and Hold SPY Overnight
