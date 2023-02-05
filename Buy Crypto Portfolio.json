@@ -508,14 +508,14 @@
         "id": "e63572884b88efbd",
         "type": "function",
         "z": "75cdaa2d7408cacc",
-        "name": "get list of tickers to buy",
+        "name": "format payload for polygon",
         "func": "let symbol = msg.polygon_symbol\n\nlet cnt = 1 // gets last trade\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: cnt,\n}\n\n\n//node.warn(symbol)\n//node.warn(msg.payload)\n\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 710,
+        "x": 720,
         "y": 600,
         "wires": [
             [
