@@ -7,11 +7,11 @@ Many of the procedures described below have corresponding instructional videos, 
 
 # Adding Your Alpaca Keys to Your Instance
 
-Download json file "Alpaca Account Management.json" and import to your instance. To view the instructional video, click here: https://drive.google.com/file/d/1Kz-h77E0QO-SEA_qbdGFgaBQUwJ2V1mk/view?usp=sharing
+Download json file "Alpaca Keys.json" and import to your instance. To view the instructional video, click here: https://drive.google.com/file/d/1Kz-h77E0QO-SEA_qbdGFgaBQUwJ2V1mk/view?usp=sharing
 
-When you first log in to your trading instance, everything is ready to go except for the flows which are powered by your Alpaca account keys, which you will have to enter manually. To add your keys, click the "Customize View" button on the upper right corner, which will bring you to your MachineTrader instance backend or "admin". We will assume that you have retrieved your Alpaca keys from your Alpaca account, and are ready to install. If you haven't done that yet, follow the instructions here: https://www.machinetrader.io/learn-articles/adding-alpaca-keys-to-your-machinetrader-instance.
+When you first log in to your trading instance, everything is ready to go except for the flows which are powered by your Alpaca account keys, which you will have to enter manually. To add your keys, click the "Customize View" button on the upper right corner of the home page, which will bring you to your MachineTrader instance backend or "admin". We will assume that you have retrieved your Alpaca keys from your Alpaca account (it is a good practice to save them to a note or document on your computer for future reference), and are ready to install. If you haven't done that yet, follow the instructions here: https://www.machinetrader.io/learn-articles/adding-alpaca-keys-to-your-machinetrader-instance.
 
-Be careful when you're using the admin because any changes you make will affect the operation of your instance. Notice that the admin consists of a series of tabs, each containing a grouping of flows. Go to the tab labeled "Add Alpaca Account Keys." 
+Be careful when you're using the admin because any changes you make will affect the operation of your instance. Notice that the admin consists of a series of tabs, each containing a grouping of flows. Go to the tab labeled "Alpaca Keys." 
 
 Your secret key is encrypted once you enter it, so no one will be able to get access to your Alpaca account.  
 
