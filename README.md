@@ -7,7 +7,7 @@ Many of the procedures described below have corresponding instructional videos, 
 
 # Adding Your Alpaca Keys to Your Instance
 
-Download json file "Alpaca Account Management.json" and import it to your instance.
+Download json file "Alpaca Keys.json" and import it to your instance.
 
 When you first log in into your trading instance, everything is ready to go except for the flows that are powered by your Alpaca account keys, which you will have to enter manually. To add your keys, click the orange “Customize View” button on the upper right of your instance screen, which will bring you to your MachineTrader instance backend, or “admin”. We will assume that you have retrieved your Alpaca keys from your Alpaca account and are ready to install.  It is a good practice to save these keys to a document or note on your computer, so you have them saved for reference.  If you haven't done that yet, follow the instructions here: https://www.machinetrader.io/learn-articles/adding-alpaca-keys-to-your-machinetrader-instance.
 
