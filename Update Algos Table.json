@@ -291,7 +291,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 340,
+        "x": 380,
         "y": 240,
         "wires": [
             [
@@ -310,7 +310,7 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "x": 90,
+        "x": 130,
         "y": 240,
         "wires": [
             [
@@ -328,7 +328,7 @@
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 560,
+        "x": 600,
         "y": 240,
         "wires": [
             [
@@ -981,7 +981,7 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "x": 110,
+        "x": 130,
         "y": 300,
         "wires": [
             [
@@ -1000,7 +1000,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 320,
+        "x": 340,
         "y": 300,
         "wires": [
             [
@@ -1018,7 +1018,7 @@
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 520,
+        "x": 540,
         "y": 300,
         "wires": [
             [
@@ -1126,7 +1126,9 @@
         "x": 620,
         "y": 800,
         "wires": [
-            []
+            [
+                "d9021e374bc0a2f8"
+            ]
         ]
     },
     {
@@ -1150,7 +1152,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 780,
+        "x": 820,
         "y": 240,
         "wires": [
             [
@@ -1168,7 +1170,7 @@
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 1000,
+        "x": 1040,
         "y": 240,
         "wires": [
             []
@@ -1711,9 +1713,7 @@
         "x": 1100,
         "y": 560,
         "wires": [
-            [
-                "a5d07d9eebc339f7"
-            ]
+            []
         ]
     },
     {
@@ -2058,31 +2058,31 @@
         "z": "b1a20b3e0b027fa0",
         "name": "correct for errors in orders table. Use only with pta accounts.",
         "info": "",
-        "x": 500,
-        "y": 620,
+        "x": 900,
+        "y": 760,
         "wires": []
     },
     {
-        "id": "a5d07d9eebc339f7",
+        "id": "d9021e374bc0a2f8",
         "type": "function",
         "z": "b1a20b3e0b027fa0",
-        "name": "update SPY",
-        "func": "msg.query = \"update algo_performance set market_value = (market_value + 40989), current =  (market_value + 40989) where symbol = 'SPY';\"\nreturn msg;",
+        "name": "calculate profit",
+        "func": "let sql = \"update algo_performance set profit = (profit + 40989) where symbol = 'SPY';\"\n//node.warn(sql)\nmsg.query = sql\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 350,
-        "y": 660,
+        "x": 780,
+        "y": 800,
         "wires": [
             [
-                "b77fa97219b9350d"
+                "9359d5cd19873669"
             ]
         ]
     },
     {
-        "id": "b77fa97219b9350d",
+        "id": "9359d5cd19873669",
         "type": "postgresql",
         "z": "b1a20b3e0b027fa0",
         "name": "postgres",
@@ -2091,8 +2091,8 @@
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 500,
-        "y": 660,
+        "x": 940,
+        "y": 800,
         "wires": [
             []
         ]
