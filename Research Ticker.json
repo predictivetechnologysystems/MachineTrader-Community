@@ -220,11 +220,11 @@
         "id": "e5526d68f0ef3304",
         "type": "function-npm",
         "z": "025f7d025c64fa47",
-        "name": "Get past 1000 trades",
+        "name": "Get past 10,000 trades",
         "func": "let symbol = flow.get(\"ticker\")\n\nlet cnt = 10000 // set count here\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: cnt,\n}\n\n\n//node.warn(symbol)\n//node.warn(msg.payload)\nmsg.symbol = symbol\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 260,
+        "x": 270,
         "y": 360,
         "wires": [
             [
@@ -238,7 +238,7 @@
         "z": "025f7d025c64fa47",
         "conf": "651f0aab10dc1632",
         "symbol": "",
-        "x": 480,
+        "x": 500,
         "y": 360,
         "wires": [
             [
@@ -604,10 +604,10 @@
         "id": "8ea1b356705cf14f",
         "type": "comment",
         "z": "025f7d025c64fa47",
-        "name": "Store in Postgres table",
+        "name": "Flow 4: Store in Postgres table",
         "info": "",
-        "x": 160,
-        "y": 720,
+        "x": 150,
+        "y": 640,
         "wires": []
     },
     {
@@ -828,14 +828,14 @@
         "type": "function",
         "z": "025f7d025c64fa47",
         "name": "create table to store ticker values",
-        "func": "let ticker = flow.get(\"ticker\")\nmsg.query = \"create table IF NOT EXISTS \" +ticker+ \" (ux BIGINT, price FLOAT, size FLOAT, exchange FLOAT, datetime VARCHAR(40))\"\nnode.warn(msg.query)\nreturn msg;",
+        "func": "let ticker = flow.get(\"ticker\")\n//msg.query = \"create table IF NOT EXISTS \" +ticker+ \" (ux BIGINT, price FLOAT, size FLOAT, exchange FLOAT, datetime VARCHAR(40))\"\nmsg.query = \"truncate table  \" + ticker + \";\"\nnode.warn(msg.query)\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 360,
-        "y": 660,
+        "x": 340,
+        "y": 700,
         "wires": [
             [
                 "49731c98d4b914fb"
@@ -853,8 +853,8 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "x": 150,
-        "y": 660,
+        "x": 130,
+        "y": 700,
         "wires": [
             [
                 "a76b5718437c27fa"
@@ -871,8 +871,8 @@
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 580,
-        "y": 660,
+        "x": 560,
+        "y": 700,
         "wires": [
             []
         ]
