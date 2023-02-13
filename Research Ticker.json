@@ -1,6 +1,6 @@
 [
     {
-        "id": "49c2a636ffe58181",
+        "id": "025f7d025c64fa47",
         "type": "tab",
         "label": "Research Ticker",
         "disabled": false,
@@ -8,9 +8,9 @@
         "env": []
     },
     {
-        "id": "7bddcc6669f0a212",
+        "id": "561b9f2366ea4b19",
         "type": "inject",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "GO",
         "props": [],
         "repeat": "",
@@ -22,44 +22,44 @@
         "y": 140,
         "wires": [
             [
-                "3e15aad2591d1b6f"
+                "e01833997e41063a"
             ]
         ]
     },
     {
-        "id": "3e15aad2591d1b6f",
+        "id": "e01833997e41063a",
         "type": "function-npm",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "Get past 1000 trades",
-        "func": "let symbol = 'TQQQ'\n\n// use polygon format for cryptos\n//let symbol = \"X:BTCUSD\"\n\n\n\nlet cnt = 1000 // set count here\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: cnt,\n}\n\n\n//node.warn(symbol)\n//node.warn(msg.payload)\nmsg.symbol = symbol\n\nreturn msg;",
+        "func": "let symbol = flow.get(\"ticker\")\n\n// use polygon format for cryptos\n//let symbol = \"X:BTCUSD\"\n\n\n\nlet cnt = 1000 // set count here\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: cnt,\n}\n\n\n//node.warn(symbol)\n//node.warn(msg.payload)\nmsg.symbol = symbol\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 300,
         "y": 140,
         "wires": [
             [
-                "561377179a6e5b50"
+                "d052e478ae990e0e"
             ]
         ]
     },
     {
-        "id": "561377179a6e5b50",
+        "id": "d052e478ae990e0e",
         "type": "polygon-last-trade-v3",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "conf": "651f0aab10dc1632",
         "symbol": "",
         "x": 540,
         "y": 140,
         "wires": [
             [
-                "5fd4701273cdd345"
+                "91cd683631ceee2a"
             ]
         ]
     },
     {
-        "id": "5fd4701273cdd345",
+        "id": "91cd683631ceee2a",
         "type": "function",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "create array for average",
         "func": "const prices = [];\nlet item = ''\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    prices.push(price);  \n//    node.warn(price)\n\n}\n\n//node.warn(prices)\nmsg.payload = prices\nreturn msg;",
         "outputs": 1,
@@ -71,14 +71,14 @@
         "y": 140,
         "wires": [
             [
-                "f12a0b116935d635"
+                "b59cd2121f70ad41"
             ]
         ]
     },
     {
-        "id": "45253f5e3fc09638",
+        "id": "aec85a01d11cfc1a",
         "type": "function",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "display avg",
         "func": "let avg = msg.moving_avg\navg = avg.toFixed(2)\nlet symbol = msg.symbol\nnode.warn(\"Ticker: \" +symbol+ \" Moving Avg: \" +avg)\nmsg.moving_avg = avg\nreturn msg;",
         "outputs": 1,
@@ -90,14 +90,14 @@
         "y": 140,
         "wires": [
             [
-                "7157a9b29790ef44"
+                "10c14ea7f7729c82"
             ]
         ]
     },
     {
-        "id": "7157a9b29790ef44",
+        "id": "10c14ea7f7729c82",
         "type": "function-npm",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "Get last trade",
         "func": "let symbol = msg.symbol\n\nlet cnt = 1\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: cnt,\n}\n\n\n//node.warn(symbol)\n//node.warn(msg.payload)\nmsg.symbol = symbol\n\nreturn msg;",
         "outputs": 1,
@@ -106,28 +106,28 @@
         "y": 200,
         "wires": [
             [
-                "60d85ea140a94905"
+                "07af316a7de8c58b"
             ]
         ]
     },
     {
-        "id": "60d85ea140a94905",
+        "id": "07af316a7de8c58b",
         "type": "polygon-last-trade-v3",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "conf": "651f0aab10dc1632",
         "symbol": "",
         "x": 520,
         "y": 200,
         "wires": [
             [
-                "5d186b9a822631fa"
+                "1936f2162a3c864d"
             ]
         ]
     },
     {
-        "id": "5d186b9a822631fa",
+        "id": "1936f2162a3c864d",
         "type": "function",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "display diff",
         "func": "const prices = [];\nlet item = ''\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload.results) {\n    price = item.price; // this is the price of the last trade\n\n}\n\n\nlet avg = msg.moving_avg\nlet ticker = msg.symbol\n\nlet diff = price - avg\ndiff = diff.toFixed(2)\n\nnode.warn(\"Ticker: \" + ticker + \" Current Price: \" + price + \" Avg Price: \" + avg + \" Diff: \" + diff)\nmsg.diff = diff\n\nreturn msg;",
         "outputs": 1,
@@ -139,14 +139,14 @@
         "y": 200,
         "wires": [
             [
-                "a49cbbb49b375d80"
+                "f43b14319ef941eb"
             ]
         ]
     },
     {
-        "id": "a49cbbb49b375d80",
+        "id": "f43b14319ef941eb",
         "type": "change",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "",
         "rules": [
             {
@@ -155,13 +155,6 @@
                 "pt": "flow",
                 "to": "diff",
                 "tot": "msg"
-            },
-            {
-                "t": "set",
-                "p": "ticker",
-                "pt": "flow",
-                "to": "symbol",
-                "tot": "msg"
             }
         ],
         "action": "",
@@ -169,16 +162,16 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 880,
+        "x": 870,
         "y": 200,
         "wires": [
             []
         ]
     },
     {
-        "id": "f12a0b116935d635",
+        "id": "b59cd2121f70ad41",
         "type": "calculator",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "",
         "inputMsgField": "payload",
         "outputMsgField": "moving_avg",
@@ -190,14 +183,14 @@
         "y": 140,
         "wires": [
             [
-                "45253f5e3fc09638"
+                "aec85a01d11cfc1a"
             ]
         ]
     },
     {
-        "id": "afe5ce698b344c5c",
+        "id": "aacbf5c74e74e47b",
         "type": "comment",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "FLOW 1: Calculate the difference between the current price and the moving average and store as flow variable",
         "info": "",
         "x": 390,
@@ -205,9 +198,9 @@
         "wires": []
     },
     {
-        "id": "6df3bf6f7053e717",
+        "id": "f7d6b1af995c86aa",
         "type": "inject",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "GO",
         "props": [],
         "repeat": "",
@@ -219,14 +212,14 @@
         "y": 360,
         "wires": [
             [
-                "70d860eb5dc4ea3f"
+                "e5526d68f0ef3304"
             ]
         ]
     },
     {
-        "id": "70d860eb5dc4ea3f",
+        "id": "e5526d68f0ef3304",
         "type": "function-npm",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "Get past 1000 trades",
         "func": "let symbol = flow.get(\"ticker\")\n\nlet cnt = 10000 // set count here\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: cnt,\n}\n\n\n//node.warn(symbol)\n//node.warn(msg.payload)\nmsg.symbol = symbol\n\nreturn msg;",
         "outputs": 1,
@@ -235,29 +228,29 @@
         "y": 360,
         "wires": [
             [
-                "f74c5b140d76387e"
+                "bc7a87d7e655d4b7"
             ]
         ]
     },
     {
-        "id": "f74c5b140d76387e",
+        "id": "bc7a87d7e655d4b7",
         "type": "polygon-last-trade-v3",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "conf": "651f0aab10dc1632",
         "symbol": "",
         "x": 480,
         "y": 360,
         "wires": [
             [
-                "4950e7a59dadadfe",
-                "e1f9346f38ba73ef"
+                "4a4d9c4e37bc35f4",
+                "6c71f30b6e4c3e4d"
             ]
         ]
     },
     {
-        "id": "4950e7a59dadadfe",
+        "id": "4a4d9c4e37bc35f4",
         "type": "function",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "create array for average",
         "func": "const prices = [];\nlet item = ''\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    prices.push(price);  \n//    node.warn(price)\n\n}\n\n//node.warn(prices)\nmsg.payload = prices\nreturn msg;",
         "outputs": 1,
@@ -269,16 +262,16 @@
         "y": 360,
         "wires": [
             [
-                "85048ebf221a23c9",
-                "08a75514f284b33c",
-                "6f718bc9d38191b2"
+                "67e976dcf331adac",
+                "9e39870ce0f1f1c0",
+                "502f1ff970123a04"
             ]
         ]
     },
     {
-        "id": "f990046b7f1ebc8d",
+        "id": "2322767f4e71f1c3",
         "type": "function",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "display avg",
         "func": "let avg = msg.moving_avg\navg = avg.toFixed(2)\nlet symbol = msg.symbol\nnode.warn(\"Ticker: \" +symbol+ \" Maximum: \" +avg)\nmsg.moving_avg = avg\nreturn msg;",
         "outputs": 1,
@@ -290,14 +283,14 @@
         "y": 300,
         "wires": [
             [
-                "6b2db565cf305fc3"
+                "31384579adfc524e"
             ]
         ]
     },
     {
-        "id": "85048ebf221a23c9",
+        "id": "67e976dcf331adac",
         "type": "calculator",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "",
         "inputMsgField": "payload",
         "outputMsgField": "moving_avg",
@@ -309,14 +302,14 @@
         "y": 300,
         "wires": [
             [
-                "f990046b7f1ebc8d"
+                "2322767f4e71f1c3"
             ]
         ]
     },
     {
-        "id": "fdb86613267f7853",
+        "id": "732896c20377f80c",
         "type": "function",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "display avg",
         "func": "let avg = msg.moving_avg\navg = avg.toFixed(2)\nlet symbol = msg.symbol\nnode.warn(\"Ticker: \" +symbol+ \" Minimum: \" +avg)\nmsg.moving_avg = avg\nreturn msg;",
         "outputs": 1,
@@ -328,14 +321,14 @@
         "y": 360,
         "wires": [
             [
-                "4e07834afd558627"
+                "e0a684c3d8385ae6"
             ]
         ]
     },
     {
-        "id": "08a75514f284b33c",
+        "id": "9e39870ce0f1f1c0",
         "type": "calculator",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "",
         "inputMsgField": "payload",
         "outputMsgField": "moving_avg",
@@ -347,14 +340,14 @@
         "y": 360,
         "wires": [
             [
-                "fdb86613267f7853"
+                "732896c20377f80c"
             ]
         ]
     },
     {
-        "id": "547de41eef6bc63a",
+        "id": "4e94771430a873ad",
         "type": "function",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "display avg",
         "func": "let avg = msg.moving_avg\navg = avg.toFixed(2)\nlet symbol = msg.symbol\nnode.warn(\"Ticker: \" +symbol+ \" Average: \" +avg)\nmsg.moving_avg = avg\nreturn msg;",
         "outputs": 1,
@@ -366,14 +359,14 @@
         "y": 420,
         "wires": [
             [
-                "d29ff33b28dc619b"
+                "b7df9aec1d539264"
             ]
         ]
     },
     {
-        "id": "6f718bc9d38191b2",
+        "id": "502f1ff970123a04",
         "type": "calculator",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "",
         "inputMsgField": "payload",
         "outputMsgField": "moving_avg",
@@ -385,14 +378,14 @@
         "y": 420,
         "wires": [
             [
-                "547de41eef6bc63a"
+                "4e94771430a873ad"
             ]
         ]
     },
     {
-        "id": "6b2db565cf305fc3",
+        "id": "31384579adfc524e",
         "type": "change",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "",
         "rules": [
             {
@@ -415,9 +408,9 @@
         ]
     },
     {
-        "id": "4e07834afd558627",
+        "id": "e0a684c3d8385ae6",
         "type": "change",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "",
         "rules": [
             {
@@ -440,9 +433,9 @@
         ]
     },
     {
-        "id": "d29ff33b28dc619b",
+        "id": "b7df9aec1d539264",
         "type": "change",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "",
         "rules": [
             {
@@ -465,9 +458,9 @@
         ]
     },
     {
-        "id": "55573f1169e6c29f",
+        "id": "6de4fe25e09bbf19",
         "type": "inject",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "GO",
         "props": [],
         "repeat": "",
@@ -479,14 +472,14 @@
         "y": 540,
         "wires": [
             [
-                "9de0234aef62a1a3"
+                "d9663d1c8e9ede55"
             ]
         ]
     },
     {
-        "id": "9de0234aef62a1a3",
+        "id": "d9663d1c8e9ede55",
         "type": "function",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "Display calculated values",
         "func": "let max = flow.get(\"max\")\nlet min = flow.get(\"min\")\nlet avg = flow.get(\"avg\")\nlet first = flow.get(\"first\")\nlet last = flow.get(\"last\")\nlet num = flow.get(\"number\")\n\n\nlet change = (last - first)\nlet pctchange = (change / avg) * 100\nlet spread = (max - min)\nlet pctspread = (spread / avg) * 100\n\nspread = spread.toFixed(4)\npctspread = pctspread.toFixed(4)\nchange = change.toFixed(4)\npctchange = pctchange.toFixed(4)\n\nnode.warn(\"Sample: \" +num+ \" Spread: \" +spread+ \" Pct Spread: \" +pctspread+ \"% Change: \" +change+ \" Pct Change: \" +pctchange)\n\nreturn msg;",
         "outputs": 1,
@@ -501,9 +494,9 @@
         ]
     },
     {
-        "id": "e1f9346f38ba73ef",
+        "id": "6c71f30b6e4c3e4d",
         "type": "function",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "get first and last values",
         "func": "const prices = [];\nlet item = ''\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    prices.push(price);\n    //    node.warn(price)\n\n}\n\nlet len = prices.length\nlet f = prices[0]\nlet l = prices[prices.length - 1];\n\nnode.warn(\"Length: \" +len+ \" First: \" +f+ \" Last: \" +l)\nmsg.first = f\nmsg.last = l\nmsg.num = len\nreturn msg;",
         "outputs": 1,
@@ -515,14 +508,14 @@
         "y": 480,
         "wires": [
             [
-                "93686d10f80c68f7"
+                "40c73ed9cbe91322"
             ]
         ]
     },
     {
-        "id": "93686d10f80c68f7",
+        "id": "40c73ed9cbe91322",
         "type": "change",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "",
         "rules": [
             {
@@ -559,9 +552,9 @@
         ]
     },
     {
-        "id": "5930983d08fb3870",
+        "id": "be9e7b32d82f9fbd",
         "type": "inject",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "GO",
         "props": [],
         "repeat": "",
@@ -573,14 +566,14 @@
         "y": 760,
         "wires": [
             [
-                "1287ba1022edb6b7"
+                "58e2784064a7401f"
             ]
         ]
     },
     {
-        "id": "1287ba1022edb6b7",
+        "id": "58e2784064a7401f",
         "type": "function-npm",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "Get past 10000 trades",
         "func": "let symbol = flow.get(\"ticker\")\n\nlet cnt = 10000 // set count here\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: cnt,\n}\n\n\n//node.warn(symbol)\n//node.warn(msg.payload)\nmsg.symbol = symbol\n\nreturn msg;",
         "outputs": 1,
@@ -589,28 +582,28 @@
         "y": 760,
         "wires": [
             [
-                "eb9c312890d3c195"
+                "923e9be7d4dbbe19"
             ]
         ]
     },
     {
-        "id": "eb9c312890d3c195",
+        "id": "923e9be7d4dbbe19",
         "type": "polygon-last-trade-v3",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "conf": "651f0aab10dc1632",
         "symbol": "",
         "x": 520,
         "y": 760,
         "wires": [
             [
-                "31397bf0074a79fd"
+                "82f191535a02fcc5"
             ]
         ]
     },
     {
-        "id": "ac930ae12a229242",
+        "id": "8ea1b356705cf14f",
         "type": "comment",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "Store in Postgres table",
         "info": "",
         "x": 160,
@@ -618,9 +611,9 @@
         "wires": []
     },
     {
-        "id": "31397bf0074a79fd",
+        "id": "82f191535a02fcc5",
         "type": "function",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "insert into table",
         "func": "let symbol = flow.get(\"ticker\")\n\nlet item = ''\nlet ux = 0\nlet price = 0\nlet size = 0\nlet exchange = 0\nlet sql = ''\n\nfor (item of msg.payload.results) {\n    ux = item.participant_timestamp;\n    price = item.price;\n    size = item.size;\n    exchange = item.exchange;\n    sql += \"insert into \" +symbol+ \" (ux, price, size, exchange)  values (\" + ux + \", \" + price + \", \" + size + \", \" + exchange + \");\\n\"\n}\n\nmsg.payload = sql\nreturn msg;\n",
         "outputs": 1,
@@ -632,14 +625,14 @@
         "y": 760,
         "wires": [
             [
-                "19417e6279dfb54c"
+                "48bf710bb714455e"
             ]
         ]
     },
     {
-        "id": "19417e6279dfb54c",
+        "id": "48bf710bb714455e",
         "type": "split",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "",
         "splt": "\\n",
         "spltType": "str",
@@ -651,14 +644,14 @@
         "y": 760,
         "wires": [
             [
-                "0e257e45667f8e04"
+                "38f906d67024bde0"
             ]
         ]
     },
     {
-        "id": "a1740ac2403e7855",
+        "id": "38bb280de7fdfb95",
         "type": "postgresql",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
@@ -672,9 +665,9 @@
         ]
     },
     {
-        "id": "0e257e45667f8e04",
+        "id": "38f906d67024bde0",
         "type": "function",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "insert into table",
         "func": "msg.query = msg.payload\n//node.warn(msg.query)\nreturn msg;",
         "outputs": 1,
@@ -686,45 +679,45 @@
         "y": 760,
         "wires": [
             [
-                "a1740ac2403e7855"
+                "38bb280de7fdfb95"
             ]
         ]
     },
     {
-        "id": "6e1479b0efe0264f",
+        "id": "256d129e6bbcb44f",
         "type": "http in",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "/api/download_output",
         "url": "/api/download_output",
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
-        "x": 160,
-        "y": 900,
+        "x": 140,
+        "y": 980,
         "wires": [
             [
-                "d95ec2d2744a11e8"
+                "e9f6f0d60795eb34"
             ]
         ]
     },
     {
-        "id": "3150ae3bfab730ed",
+        "id": "3e081d49c038475e",
         "type": "http response",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "",
         "statusCode": "",
         "headers": {
             "content-type": "application/json",
             "Content-Disposition": "attachment; filename=\"outfile.csv\""
         },
-        "x": 1010,
-        "y": 900,
+        "x": 990,
+        "y": 980,
         "wires": []
     },
     {
-        "id": "faa21843e173cf95",
+        "id": "8e51434ecbe8c1f5",
         "type": "csv",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "",
         "sep": ",",
         "hdrin": false,
@@ -736,18 +729,18 @@
         "strings": true,
         "include_empty_strings": false,
         "include_null_values": false,
-        "x": 690,
-        "y": 900,
+        "x": 670,
+        "y": 980,
         "wires": [
             [
-                "788075dcb109fb63"
+                "7dcf806a5046d104"
             ]
         ]
     },
     {
-        "id": "d95ec2d2744a11e8",
+        "id": "e9f6f0d60795eb34",
         "type": "function",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "export query",
         "func": "let ticker = flow.get(\"ticker\") \nmsg.query= \"select * from \" +ticker+ \";\"\nnode.warn(msg.query)\nreturn msg;",
         "outputs": 1,
@@ -755,18 +748,18 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 370,
-        "y": 900,
+        "x": 350,
+        "y": 980,
         "wires": [
             [
-                "42a51281f9065877"
+                "b1407e22a6d070f7"
             ]
         ]
     },
     {
-        "id": "788075dcb109fb63",
+        "id": "7dcf806a5046d104",
         "type": "file",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "write report",
         "filename": "/data/store/output.csv",
         "filenameType": "str",
@@ -774,46 +767,46 @@
         "createDir": true,
         "overwriteFile": "true",
         "encoding": "none",
-        "x": 850,
-        "y": 900,
+        "x": 830,
+        "y": 980,
         "wires": [
             [
-                "3150ae3bfab730ed"
+                "3e081d49c038475e"
             ]
         ]
     },
     {
-        "id": "50b2bac3a1a71fc6",
+        "id": "8ba58236fd536fc3",
         "type": "comment",
-        "z": "49c2a636ffe58181",
-        "name": "This flow downloads the portfolio table ",
+        "z": "025f7d025c64fa47",
+        "name": "This flow downloads the research table ",
         "info": "",
-        "x": 210,
-        "y": 860,
+        "x": 190,
+        "y": 940,
         "wires": []
     },
     {
-        "id": "42a51281f9065877",
+        "id": "b1407e22a6d070f7",
         "type": "postgresql",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 540,
-        "y": 900,
+        "x": 520,
+        "y": 980,
         "wires": [
             [
-                "faa21843e173cf95"
+                "8e51434ecbe8c1f5"
             ]
         ]
     },
     {
-        "id": "9ae856a67a4aba63",
+        "id": "f301e922fd59bcdd",
         "type": "comment",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "FLOW 2: Calculate and store other useful statistics",
         "info": "",
         "x": 210,
@@ -821,9 +814,9 @@
         "wires": []
     },
     {
-        "id": "17642a6a6385446e",
+        "id": "3c4ebafa88b9d4be",
         "type": "comment",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "FLOW 3: Display the statistics",
         "info": "",
         "x": 140,
@@ -831,19 +824,9 @@
         "wires": []
     },
     {
-        "id": "95427ae1e97e2cbe",
-        "type": "comment",
-        "z": "49c2a636ffe58181",
-        "name": "Modify line 1 to change the ticker. Line 3 to change the size of the data set.",
-        "info": "",
-        "x": 460,
-        "y": 100,
-        "wires": []
-    },
-    {
-        "id": "2dfebfc7cca31231",
+        "id": "a76b5718437c27fa",
         "type": "function",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "create table to store ticker values",
         "func": "let ticker = flow.get(\"ticker\")\nmsg.query = \"create table IF NOT EXISTS \" +ticker+ \" (ux BIGINT, price FLOAT, size FLOAT, exchange FLOAT, datetime VARCHAR(40))\"\nnode.warn(msg.query)\nreturn msg;",
         "outputs": 1,
@@ -851,18 +834,18 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 380,
-        "y": 640,
+        "x": 360,
+        "y": 660,
         "wires": [
             [
-                "f2ad6b8ea1216165"
+                "49731c98d4b914fb"
             ]
         ]
     },
     {
-        "id": "202ca5b74cf2a3d8",
+        "id": "f2f355df6a953fe3",
         "type": "inject",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "GO",
         "props": [],
         "repeat": "",
@@ -870,29 +853,151 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "x": 170,
-        "y": 640,
+        "x": 150,
+        "y": 660,
         "wires": [
             [
-                "2dfebfc7cca31231"
+                "a76b5718437c27fa"
             ]
         ]
     },
     {
-        "id": "f2ad6b8ea1216165",
+        "id": "49731c98d4b914fb",
         "type": "postgresql",
-        "z": "49c2a636ffe58181",
+        "z": "025f7d025c64fa47",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 600,
-        "y": 640,
+        "x": 580,
+        "y": 660,
         "wires": [
             []
         ]
+    },
+    {
+        "id": "6c44223cf55c6ee3",
+        "type": "inject",
+        "z": "025f7d025c64fa47",
+        "name": "Set ticker flow variable: flow.ticker",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "QQQ",
+        "payloadType": "str",
+        "x": 220,
+        "y": 80,
+        "wires": [
+            [
+                "55b6f82b1fb4572c"
+            ]
+        ]
+    },
+    {
+        "id": "55b6f82b1fb4572c",
+        "type": "change",
+        "z": "025f7d025c64fa47",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "ticker",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 460,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "622fdf63a1a592e5",
+        "type": "function",
+        "z": "025f7d025c64fa47",
+        "name": "display table ",
+        "func": "let ticker = flow.get(\"ticker\")\nmsg.query = \"select * from \" +ticker+ \";\" \nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 820,
+        "wires": [
+            [
+                "a19b33d6869c7832"
+            ]
+        ]
+    },
+    {
+        "id": "86aa85a097816222",
+        "type": "inject",
+        "z": "025f7d025c64fa47",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 820,
+        "wires": [
+            [
+                "622fdf63a1a592e5"
+            ]
+        ]
+    },
+    {
+        "id": "a19b33d6869c7832",
+        "type": "postgresql",
+        "z": "025f7d025c64fa47",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 420,
+        "y": 820,
+        "wires": [
+            [
+                "07bf1219acd83b2d"
+            ]
+        ]
+    },
+    {
+        "id": "07bf1219acd83b2d",
+        "type": "debug",
+        "z": "025f7d025c64fa47",
+        "name": "debug 333",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 570,
+        "y": 820,
+        "wires": []
     },
     {
         "id": "651f0aab10dc1632",
