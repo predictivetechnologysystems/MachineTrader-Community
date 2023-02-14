@@ -1,0 +1,319 @@
+[
+    {
+        "id": "9861bd31964e4496",
+        "type": "inject",
+        "z": "73b233f5937df93e",
+        "name": "Start",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 140,
+        "wires": [
+            [
+                "2b7b55d4e70abc8e"
+            ]
+        ]
+    },
+    {
+        "id": "2b7b55d4e70abc8e",
+        "type": "function-npm",
+        "z": "73b233f5937df93e",
+        "name": "Get past 1000 trades",
+        "func": "let symbol = flow.get(\"polygon_ticker\")\n\n// use polygon format for cryptos\n//let symbol = \"X:BTCUSD\"\n\n\n\nlet cnt = 1000 // set count here\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: cnt,\n}\n\n\n//node.warn(symbol)\nnode.warn(msg.payload)\nmsg.symbol = symbol\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 300,
+        "y": 140,
+        "wires": [
+            [
+                "67a28f41e75d5b7d"
+            ]
+        ]
+    },
+    {
+        "id": "67a28f41e75d5b7d",
+        "type": "polygon-last-trade-v3",
+        "z": "73b233f5937df93e",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "x": 540,
+        "y": 140,
+        "wires": [
+            [
+                "ba6920d8fbbc53ba"
+            ]
+        ]
+    },
+    {
+        "id": "ba6920d8fbbc53ba",
+        "type": "function",
+        "z": "73b233f5937df93e",
+        "name": "create array for average",
+        "func": "const prices = [];\nlet item = ''\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    prices.push(price);  \n//    node.warn(price)\n\n}\n\n//node.warn(prices)\nmsg.payload = prices\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 770,
+        "y": 140,
+        "wires": [
+            [
+                "8627c1f8b4bb32c6"
+            ]
+        ]
+    },
+    {
+        "id": "c51a473cce9951a3",
+        "type": "function",
+        "z": "73b233f5937df93e",
+        "name": "display avg",
+        "func": "let avg = msg.moving_avg\navg = avg.toFixed(2)\nlet symbol = msg.symbol\n//node.warn(\"Ticker: \" +symbol+ \" Moving Avg: \" +avg)\nmsg.moving_avg = avg\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1130,
+        "y": 140,
+        "wires": [
+            [
+                "1194545c32993fa1"
+            ]
+        ]
+    },
+    {
+        "id": "1194545c32993fa1",
+        "type": "function-npm",
+        "z": "73b233f5937df93e",
+        "name": "Get last trade",
+        "func": "let symbol = msg.symbol\n\nlet cnt = 1\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: cnt,\n}\n\n\n//node.warn(symbol)\n//node.warn(msg.payload)\nmsg.symbol = symbol\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 300,
+        "y": 200,
+        "wires": [
+            [
+                "a31f33a28eefba48"
+            ]
+        ]
+    },
+    {
+        "id": "a31f33a28eefba48",
+        "type": "polygon-last-trade-v3",
+        "z": "73b233f5937df93e",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "x": 520,
+        "y": 200,
+        "wires": [
+            [
+                "8a2883d4825e48b7"
+            ]
+        ]
+    },
+    {
+        "id": "8a2883d4825e48b7",
+        "type": "function",
+        "z": "73b233f5937df93e",
+        "name": "display diff",
+        "func": "const prices = [];\nlet item = ''\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload.results) {\n    price = item.price; // this is the price of the last trade\n\n}\n\n\nlet avg = msg.moving_avg\nlet ticker = msg.symbol\n\nlet diff = price - avg\ndiff = diff.toFixed(2)\n\nnode.warn(\"Ticker: \" + ticker + \" Current Price: \" + price + \" Avg Price: \" + avg + \" Diff: \" + diff)\nmsg.diff = diff\nmsg.price = price\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
+        "y": 200,
+        "wires": [
+            [
+                "33a951df6e80f39a"
+            ]
+        ]
+    },
+    {
+        "id": "33a951df6e80f39a",
+        "type": "change",
+        "z": "73b233f5937df93e",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "diff",
+                "pt": "flow",
+                "to": "diff",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "price",
+                "pt": "flow",
+                "to": "price",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 880,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8627c1f8b4bb32c6",
+        "type": "calculator",
+        "z": "73b233f5937df93e",
+        "name": "",
+        "inputMsgField": "payload",
+        "outputMsgField": "moving_avg",
+        "operation": "avg",
+        "constant": "",
+        "round": false,
+        "decimals": "0",
+        "x": 980,
+        "y": 140,
+        "wires": [
+            [
+                "c51a473cce9951a3"
+            ]
+        ]
+    },
+    {
+        "id": "117bc3ab68ca9594",
+        "type": "comment",
+        "z": "73b233f5937df93e",
+        "name": "This flow calculates the difference between the current price and the moving average price.  Set the desired frequency in the inject node \"Start\".",
+        "info": "",
+        "x": 520,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "a9bc75012ac592e4",
+        "type": "inject",
+        "z": "73b233f5937df93e",
+        "name": "Set trading ticker(s)",
+        "props": [
+            {
+                "p": "ticker",
+                "v": "TSLA",
+                "vt": "str"
+            },
+            {
+                "p": "alpaca_ticker",
+                "v": "TSLA",
+                "vt": "str"
+            },
+            {
+                "p": "polygon_ticker",
+                "v": "TSLA",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 170,
+        "y": 40,
+        "wires": [
+            [
+                "d617a833df3700b1"
+            ]
+        ]
+    },
+    {
+        "id": "d617a833df3700b1",
+        "type": "change",
+        "z": "73b233f5937df93e",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "ticker",
+                "pt": "flow",
+                "to": "ticker",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "alpaca_ticker",
+                "pt": "flow",
+                "to": "alpaca_ticker",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "polygon_ticker",
+                "pt": "flow",
+                "to": "polygon_ticker",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 360,
+        "y": 40,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b68a1ae942aa0467",
+        "type": "inject",
+        "z": "73b233f5937df93e",
+        "name": "Display Polygon Ticker",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "polygon_ticker",
+        "payloadType": "flow",
+        "x": 600,
+        "y": 40,
+        "wires": [
+            [
+                "f2162cddcd792d9c"
+            ]
+        ]
+    },
+    {
+        "id": "f2162cddcd792d9c",
+        "type": "debug",
+        "z": "73b233f5937df93e",
+        "name": "debug 336",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 790,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "651f0aab10dc1632",
+        "type": "polygon-account",
+        "name": "Polygon Key"
+    }
+]
