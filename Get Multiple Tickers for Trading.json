@@ -1,0 +1,165 @@
+[
+    {
+        "id": "97e572d84de790a2",
+        "type": "tab",
+        "label": "Define Crypto Portfolio",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "eba4ead6747d24bc",
+        "type": "comment",
+        "z": "97e572d84de790a2",
+        "name": "Flow 1: Define Strategy and Set Trading Values",
+        "info": "",
+        "x": 260,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "af05598370ae09f4",
+        "type": "function",
+        "z": "97e572d84de790a2",
+        "name": "get fresh list of tickers",
+        "func": "let tickers = ''\nlet count = msg.payload.length\nnode.warn(\"Count: \" +count)\n\nfor (let item of msg.payload) {\n    let ticker = item.symbol;\n    tickers += ticker+ \", \"\n}\n\n// portfolio_id is set to unixtime\nlet d = Date.now() // use to dynamically assign id\nmsg.id = d\nmsg.tickers = tickers\nmsg.algo_name = 'Buy Crypto Portfolio'\nnode.warn(tickers)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 100,
+        "wires": [
+            [
+                "a27fccdc7b42107b"
+            ]
+        ]
+    },
+    {
+        "id": "a27fccdc7b42107b",
+        "type": "change",
+        "z": "97e572d84de790a2",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "tickers",
+                "pt": "flow",
+                "to": "tickers",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "id",
+                "pt": "flow",
+                "to": "id",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "algo_name",
+                "pt": "flow",
+                "to": "algo_name",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 780,
+        "y": 100,
+        "wires": [
+            [
+                "e2e1009fc4337d9f"
+            ]
+        ]
+    },
+    {
+        "id": "e2e1009fc4337d9f",
+        "type": "function",
+        "z": "97e572d84de790a2",
+        "name": "Display flow vars",
+        "func": "let id = flow.get(\"id\")\nlet name = flow.get(\"algo_name\")\nnode.warn(\"ID: \" +id+ \" Name: \" +name)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 970,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "497141f30737ca2d",
+        "type": "postgresql",
+        "z": "97e572d84de790a2",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 380,
+        "y": 100,
+        "wires": [
+            [
+                "af05598370ae09f4"
+            ]
+        ]
+    },
+    {
+        "id": "012b20422b9b3bce",
+        "type": "inject",
+        "z": "97e572d84de790a2",
+        "name": "Get cryto tickers",
+        "props": [
+            {
+                "p": "query",
+                "v": "select symbol from alpaca_assets where exchange = 'FTXU' and tradable is true;",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 220,
+        "y": 100,
+        "wires": [
+            [
+                "497141f30737ca2d"
+            ]
+        ]
+    },
+    {
+        "id": "7455395cf269fb2b",
+        "type": "postgreSQLConfig",
+        "name": "",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "postgres",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "docker",
+        "userFieldType": "str",
+        "password": "docker",
+        "passwordFieldType": "str"
+    }
+]
