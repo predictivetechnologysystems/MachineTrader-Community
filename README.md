@@ -3,7 +3,7 @@ This is a community repository for MachineTrader users who want to upload or sha
 
 Before attempting to upload any of these json scripts, we highly recommend reviewing the MachineTrader "Intro to Nodes and Flows" video in the video training library by clicking here: https://drive.google.com/file/d/1sZTaXBhRjyAKSIIaxdYJ8Lh2xVoUtV_8/view?usp=sharing
 
-Many of the procedures described below have corresponding instructional videos, so if you prefer video learning, go to the MachineTrader YouTube channel.
+Many of the flows above have corresponding instructional documentation saved here: https://drive.google.com/drive/folders/1BY3VQ9Diz4gsCk15buN4k5ezFtCN7EKE?usp=sharing
 
 # Adding Your Alpaca Keys to Your Instance
 
