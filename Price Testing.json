@@ -1,0 +1,535 @@
+[
+    {
+        "id": "fb14fa8bee953ce8",
+        "type": "alpaca-position-query",
+        "z": "cbe990c6a7a95656",
+        "conf": "69709a7bf04959ce",
+        "x": 450,
+        "y": 520,
+        "wires": [
+            [
+                "d7932f7fe12b9388"
+            ]
+        ]
+    },
+    {
+        "id": "3cf24940d1df4662",
+        "type": "polygon-last-quote-rest",
+        "z": "cbe990c6a7a95656",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "x": 630,
+        "y": 400,
+        "wires": [
+            [
+                "e89901d5adfc55c0"
+            ]
+        ]
+    },
+    {
+        "id": "6c7435745e18f2c3",
+        "type": "inject",
+        "z": "cbe990c6a7a95656",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 180,
+        "y": 460,
+        "wires": [
+            [
+                "e2a12a8a78356676",
+                "e6a4da92adc8a27c",
+                "fb14fa8bee953ce8",
+                "01e00458b280f993"
+            ]
+        ]
+    },
+    {
+        "id": "e2a12a8a78356676",
+        "type": "function-npm",
+        "z": "cbe990c6a7a95656",
+        "name": "set symbol",
+        "func": "let symbol = msg.polygon_symbol\nsymbol = 'AAPL'\nmsg.symbol = symbol\n\nlet cnt = 1 // gets last trade\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: cnt,\n}\n\n\n//node.warn(symbol)\n//node.warn(msg.payload)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 410,
+        "y": 400,
+        "wires": [
+            [
+                "3cf24940d1df4662"
+            ]
+        ]
+    },
+    {
+        "id": "e6a4da92adc8a27c",
+        "type": "function-npm",
+        "z": "cbe990c6a7a95656",
+        "name": "set symbol",
+        "func": "let symbol = msg.polygon_symbol\nsymbol = 'AAPL'\n\nlet cnt = 1 // gets last trade\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: cnt,\n}\n\n\n//node.warn(symbol)\n//node.warn(msg.payload)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 410,
+        "y": 460,
+        "wires": [
+            [
+                "ed6359120b17e22e"
+            ]
+        ]
+    },
+    {
+        "id": "ed6359120b17e22e",
+        "type": "polygon-last-trade-v3",
+        "z": "cbe990c6a7a95656",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "x": 620,
+        "y": 460,
+        "wires": [
+            [
+                "f042213a8615ab33"
+            ]
+        ]
+    },
+    {
+        "id": "d7932f7fe12b9388",
+        "type": "split",
+        "z": "cbe990c6a7a95656",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 630,
+        "y": 520,
+        "wires": [
+            [
+                "6ef25f7b35da64ca"
+            ]
+        ]
+    },
+    {
+        "id": "6ef25f7b35da64ca",
+        "type": "function",
+        "z": "cbe990c6a7a95656",
+        "name": " last quote",
+        "func": "let ticker = msg.payload[\"symbol\"]\n\nif ( ticker == 'AAPL'){\nmsg.price =  msg.payload[\"current_price\"]\n//node.warn(msg.price)\nreturn msg;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 760,
+        "y": 520,
+        "wires": [
+            [
+                "57f3ea3c4ae0059c"
+            ]
+        ]
+    },
+    {
+        "id": "0e6c87c7f9966f11",
+        "type": "inject",
+        "z": "cbe990c6a7a95656",
+        "name": "create table polygon_test",
+        "props": [
+            {
+                "p": "query1",
+                "v": "create table IF NOT EXISTS polygon_test (unixtime BIGINT, alpaca FLOAT, trade FLOAT, quote FLOAT, diff FLOAT)",
+                "vt": "str"
+            },
+            {
+                "p": "query",
+                "v": "select * from polygon_test",
+                "vt": "str"
+            },
+            {
+                "p": "query1",
+                "v": "drop table polygon_test",
+                "vt": "str"
+            },
+            {
+                "p": "query1",
+                "v": "truncate table  polygon_test",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 250,
+        "y": 340,
+        "wires": [
+            [
+                "bad5b1428be761d1"
+            ]
+        ]
+    },
+    {
+        "id": "57f3ea3c4ae0059c",
+        "type": "change",
+        "z": "cbe990c6a7a95656",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "alpaca_price",
+                "pt": "flow",
+                "to": "price",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 940,
+        "y": 520,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f042213a8615ab33",
+        "type": "function",
+        "z": "cbe990c6a7a95656",
+        "name": " last trade",
+        "func": "let price = 0\nlet item = 0\n\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    \n}\n\nprice = price.toFixed(2)\nmsg.price = price\n//node.warn(price)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 800,
+        "y": 460,
+        "wires": [
+            [
+                "613aa38537b51dfa"
+            ]
+        ]
+    },
+    {
+        "id": "613aa38537b51dfa",
+        "type": "change",
+        "z": "cbe990c6a7a95656",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "polygon_trade",
+                "pt": "flow",
+                "to": "price",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 980,
+        "y": 460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e89901d5adfc55c0",
+        "type": "function",
+        "z": "cbe990c6a7a95656",
+        "name": " last quote",
+        "func": "let price =  msg.payload[\"results\"][\"p\"]\n//node.warn (\"Price: \" +price)\nmsg.price = price\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 820,
+        "y": 400,
+        "wires": [
+            [
+                "fcc83cfee0333e77"
+            ]
+        ]
+    },
+    {
+        "id": "fcc83cfee0333e77",
+        "type": "change",
+        "z": "cbe990c6a7a95656",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "polygon_quote",
+                "pt": "flow",
+                "to": "price",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1010,
+        "y": 400,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "24725fcd564a2b81",
+        "type": "function",
+        "z": "cbe990c6a7a95656",
+        "name": "display result",
+        "func": "let d = Date.now() // use to dynamically assign id\n\nlet alpaca_price = flow.get(\"alpaca_price\")\nlet polygon_quote = flow.get(\"polygon_quote\")\nlet polygon_trade = flow.get(\"polygon_trade\")\nlet diff = (polygon_trade - alpaca_price)\n//node.warn(\"Unixtime: \" +d+ \" Alpaca Price: \" +alpaca_price+ \" Polygon Trade: \" +polygon_trade+ \" Polygon Quote: \" +polygon_quote+ \" Diff:\" +diff)\nmsg.query = \"insert into polygon_test (unixtime,alpaca,trade,quote,diff) values (\" + d + \",\" + alpaca_price+ \", \"+polygon_trade+ \", \" +polygon_quote+ \", \" +diff+ \");\"\n//node.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 580,
+        "wires": [
+            [
+                "a4a9434ce911e058"
+            ]
+        ]
+    },
+    {
+        "id": "01e00458b280f993",
+        "type": "delay",
+        "z": "cbe990c6a7a95656",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "10",
+        "timeoutUnits": "milliseconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 270,
+        "y": 580,
+        "wires": [
+            [
+                "24725fcd564a2b81"
+            ]
+        ]
+    },
+    {
+        "id": "bad5b1428be761d1",
+        "type": "postgresql",
+        "z": "cbe990c6a7a95656",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 440,
+        "y": 340,
+        "wires": [
+            [
+                "eb6913f75b33dab5"
+            ]
+        ]
+    },
+    {
+        "id": "a4a9434ce911e058",
+        "type": "postgresql",
+        "z": "cbe990c6a7a95656",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 600,
+        "y": 580,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "eb6913f75b33dab5",
+        "type": "debug",
+        "z": "cbe990c6a7a95656",
+        "name": "debug 342",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 590,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "c7e707f4584881ae",
+        "type": "http in",
+        "z": "cbe990c6a7a95656",
+        "name": "/api/download_polygon_test",
+        "url": "/api/download_polygon_test",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 280,
+        "y": 660,
+        "wires": [
+            [
+                "b8c2a9f4b3e0b407"
+            ]
+        ]
+    },
+    {
+        "id": "8ded503b65c7723f",
+        "type": "http response",
+        "z": "cbe990c6a7a95656",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 1050,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "3f6f5583137218b6",
+        "type": "csv",
+        "z": "cbe990c6a7a95656",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 770,
+        "y": 660,
+        "wires": [
+            [
+                "ec124e634471f581"
+            ]
+        ]
+    },
+    {
+        "id": "b8c2a9f4b3e0b407",
+        "type": "function",
+        "z": "cbe990c6a7a95656",
+        "name": "export query",
+        "func": "msg.query = \"select * from polygon_test\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 660,
+        "wires": [
+            [
+                "ff038be4a648baf8"
+            ]
+        ]
+    },
+    {
+        "id": "ec124e634471f581",
+        "type": "file",
+        "z": "cbe990c6a7a95656",
+        "name": "write report",
+        "filename": "/data/store/output.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 910,
+        "y": 660,
+        "wires": [
+            [
+                "8ded503b65c7723f"
+            ]
+        ]
+    },
+    {
+        "id": "ff038be4a648baf8",
+        "type": "postgresql",
+        "z": "cbe990c6a7a95656",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 640,
+        "y": 660,
+        "wires": [
+            [
+                "3f6f5583137218b6"
+            ]
+        ]
+    },
+    {
+        "id": "69709a7bf04959ce",
+        "type": "alpaca-account",
+        "name": "danielsavage",
+        "keyId": "PKWWZ3DJDRGCHJPVE8SG",
+        "paper": true
+    },
+    {
+        "id": "651f0aab10dc1632",
+        "type": "polygon-account",
+        "name": "Polygon Key"
+    },
+    {
+        "id": "7455395cf269fb2b",
+        "type": "postgreSQLConfig",
+        "name": "",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "postgres",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "docker",
+        "userFieldType": "str",
+        "password": "docker",
+        "passwordFieldType": "str"
+    }
+]
