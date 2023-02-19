@@ -1,6 +1,6 @@
 [
     {
-        "id": "8c7b432ddeb3c22a",
+        "id": "8a3e28de9e3402c7",
         "type": "tab",
         "label": "Create tickers_detail table",
         "disabled": false,
@@ -8,9 +8,9 @@
         "env": []
     },
     {
-        "id": "bcb3e5820f27706a",
+        "id": "e1c102782debfae6",
         "type": "inject",
-        "z": "8c7b432ddeb3c22a",
+        "z": "8a3e28de9e3402c7",
         "name": "GO",
         "props": [],
         "repeat": "",
@@ -22,14 +22,14 @@
         "y": 140,
         "wires": [
             [
-                "eee68cf44d60ceaf"
+                "2919d7cc080679af"
             ]
         ]
     },
     {
-        "id": "eee68cf44d60ceaf",
+        "id": "2919d7cc080679af",
         "type": "function",
-        "z": "8c7b432ddeb3c22a",
+        "z": "8a3e28de9e3402c7",
         "name": "create table ",
         "func": "msg.query = \"create table IF NOT EXISTS tickers_detail (ticker varchar(10) PRIMARY KEY, name varchar(200), market varchar(10), locale varchar(10), primary_exchange varchar(10), type varchar(10),active varchar(10),currency_name varchar(10),cik varchar(100),composite_figi varchar(20), share_class_figi varchar(20), market_cap FLOAT, phone_number varchar(20),address1 varchar(100), description varchar(5000), sic_code varchar(10), sic_description varchar(100), ticker_root varchar(10), homepage_url varchar(200), total_employees int, list_date varchar(20), branding varchar(10), share_class_shares_outstanding bigint, weighted_shares_outstanding bigint, round_lot int, beta float, current_price float, stddev float);\"\n//msg.query = \"truncate table tickers_detail\"\n//msg.query = \"DROP TABLE tickers_detail\"\n\nnode.warn(msg.query)\nreturn msg;\n",
         "outputs": 1,
@@ -41,14 +41,14 @@
         "y": 140,
         "wires": [
             [
-                "9963ef17ff1f602c"
+                "eceb7d0cae38f5c7"
             ]
         ]
     },
     {
-        "id": "1e08e3e38aa11b02",
+        "id": "7ac606f6088a773a",
         "type": "debug",
-        "z": "8c7b432ddeb3c22a",
+        "z": "8a3e28de9e3402c7",
         "name": "debug 337",
         "active": true,
         "tosidebar": true,
@@ -62,9 +62,9 @@
         "wires": []
     },
     {
-        "id": "9963ef17ff1f602c",
+        "id": "eceb7d0cae38f5c7",
         "type": "postgresql",
-        "z": "8c7b432ddeb3c22a",
+        "z": "8a3e28de9e3402c7",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
@@ -75,14 +75,14 @@
         "y": 140,
         "wires": [
             [
-                "1e08e3e38aa11b02"
+                "7ac606f6088a773a"
             ]
         ]
     },
     {
-        "id": "705de2ddceeae90f",
+        "id": "a8f6d0e058f21146",
         "type": "inject",
-        "z": "8c7b432ddeb3c22a",
+        "z": "8a3e28de9e3402c7",
         "name": "",
         "props": [
             {
@@ -100,14 +100,14 @@
         "y": 80,
         "wires": [
             [
-                "89c0100e60f7c69e"
+                "a7cf2a5ac82458d0"
             ]
         ]
     },
     {
-        "id": "89c0100e60f7c69e",
+        "id": "a7cf2a5ac82458d0",
         "type": "postgresql",
-        "z": "8c7b432ddeb3c22a",
+        "z": "8a3e28de9e3402c7",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
@@ -118,28 +118,28 @@
         "y": 80,
         "wires": [
             [
-                "092a94ec99965947"
+                "b37d8943913c26a8"
             ]
         ]
     },
     {
-        "id": "8f7636aa3186befc",
+        "id": "775569056f9d1f8a",
         "type": "mysql",
-        "z": "8c7b432ddeb3c22a",
+        "z": "8a3e28de9e3402c7",
         "mydb": "3564bcf07c743fdf",
         "name": "",
         "x": 430,
         "y": 200,
         "wires": [
             [
-                "95c7564bd6f21f23"
+                "429a6c8aba4e195d"
             ]
         ]
     },
     {
-        "id": "6f895eb77889152f",
+        "id": "d8c6253f2c965e39",
         "type": "inject",
-        "z": "8c7b432ddeb3c22a",
+        "z": "8a3e28de9e3402c7",
         "name": "select * from ticker_details",
         "props": [
             {
@@ -151,21 +151,21 @@
         "crontab": "",
         "once": false,
         "onceDelay": 0.1,
-        "topic": "select * from ticker_details ",
+        "topic": "select * from ticker_details",
         "x": 250,
         "y": 200,
         "wires": [
             [
-                "8f7636aa3186befc"
+                "775569056f9d1f8a"
             ]
         ]
     },
     {
-        "id": "efee0db7519ce236",
+        "id": "fc8ea8d32b8e1355",
         "type": "function",
-        "z": "8c7b432ddeb3c22a",
+        "z": "8a3e28de9e3402c7",
         "name": "insert into tickers",
-        "func": "let ticker = msg.payload[\"ticker\"]\nlet name = msg.payload[\"name\"]\nlet market = msg.payload[\"market\"]\nlet locale = msg.payload[\"locale\"]\nlet primary_exchange = msg.payload[\"primary_exchange\"]\nlet type = msg.payload[\"type\"]\nlet active = msg.payload[\"active\"]\nlet currency_name = msg.payload[\"currency_name\"]\nlet cik = msg.payload[\"cik\"]\nlet composite_figi = msg.payload[\"composite_figi\"]\nlet share_class_figi = msg.payload[\"share_class_figi\"]\nlet market_cap = msg.payload[\"market_cap\"]\nlet phone_number = msg.payload[\"phone_number\"]\nlet address1 = msg.payload[\"address1\"]\naddress1 = ''\nlet description = msg.payload[\"description\"]\ndescription = ''\nlet sic_code = msg.payload[\"sic_code\"]\nlet sic_description = msg.payload[\"sic_description\"]\nlet ticker_root = msg.payload[\"ticker_root\"]\nlet homepage_url = msg.payload[\"homepage_url\"]\nlet total_employees = msg.payload[\"total_employees\"]\nlet list_date = msg.payload[\"list_date\"]\nlet branding = msg.payload[\"branding\"]\nlet share_class_shares_outstanding = msg.payload[\"share_class_shares_outstanding\"]\nlet weighted_shares_outstanding = msg.payload[\"weighted_shares_outstanding\"]\nlet round_lot = msg.payload[\"round_lot\"]\nlet beta = msg.payload[\"beta\"]\nlet current_price = msg.payload[\"current_price\"]\nlet stddev = msg.payload[\"stddev\"]\n\nif (beta == null){ beta - 0}\nif (current_price == null) { current_price = 0 }\nif (stddev == null) { stddev = 0 }\nif (share_class_shares_outstanding == null) { share_class_shares_outstanding = 0 }\nif (weighted_shares_outstanding == null) { weighted_shares_outstanding = 0 }\nif (round_lot == null) { round_lot = 0 }\nif (total_employees == null) { total_employees = 0 }\n\n\nlet sql = \"insert into tickers_detail (ticker, name, market, locale, primary_exchange, type, active, currency_name, cik, composite_figi, share_class_figi, market_cap, phone_number, address1, description, sic_code, sic_description, ticker_root, homepage_url, total_employees, list_date, branding, share_class_shares_outstanding, weighted_shares_outstanding, round_lot, beta, current_price, stddev) values \"\nsql += \"('\" + ticker + \"','\" + name + \"','\" + market + \"','\" + locale + \"','\" + primary_exchange + \"','\" + type + \"','\" + active + \"','\" + currency_name + \"','\" + cik + \"','\" + composite_figi + \"','\" + share_class_figi + \"','\" + market_cap + \"','\" + phone_number + \"','\" + address1 + \"','\" + description + \"','\" + sic_code + \"','\" + sic_description + \"','\" + ticker_root + \"','\" + homepage_url + \"','\" + total_employees + \"','\" + list_date + \"','\" + branding + \"','\" + share_class_shares_outstanding + \"','\" + weighted_shares_outstanding + \"','\" + round_lot + \"','\" + beta + \"','\" + current_price + \"','\" + stddev + \"') ON CONFLICT DO NOTHING;\"\n//node.warn(sql)\nmsg.query = sql\nreturn msg;",
+        "func": "let ticker = msg.payload[\"ticker\"]\nlet name = msg.payload[\"name\"]\nlet market = msg.payload[\"market\"]\nlet locale = msg.payload[\"locale\"]\nlet primary_exchange = msg.payload[\"primary_exchange\"]\nlet type = msg.payload[\"type\"]\nlet active = msg.payload[\"active\"]\nlet currency_name = msg.payload[\"currency_name\"]\nlet cik = msg.payload[\"cik\"]\nlet composite_figi = msg.payload[\"composite_figi\"]\nlet share_class_figi = msg.payload[\"share_class_figi\"]\nlet market_cap = msg.payload[\"market_cap\"]\nlet phone_number = msg.payload[\"phone_number\"]\nlet address1 = msg.payload[\"address1\"]\naddress1 = ''\nlet description = msg.payload[\"description\"]\ndescription = ''\nlet sic_code = msg.payload[\"sic_code\"]\nlet sic_description = msg.payload[\"sic_description\"]\nlet ticker_root = msg.payload[\"ticker_root\"]\nlet homepage_url = msg.payload[\"homepage_url\"]\nlet total_employees = msg.payload[\"total_employees\"]\nlet list_date = msg.payload[\"list_date\"]\nlet branding = msg.payload[\"branding\"]\nlet share_class_shares_outstanding = msg.payload[\"share_class_shares_outstanding\"]\nlet weighted_shares_outstanding = msg.payload[\"weighted_shares_outstanding\"]\nlet round_lot = msg.payload[\"round_lot\"]\nlet beta = msg.payload[\"beta\"]\nlet current_price = msg.payload[\"current_price\"]\nlet stddev = msg.payload[\"stddev\"]\n\nif (beta == null){ beta = 0}\nif (current_price == null) { current_price = 0 }\nif (stddev == null) { stddev = 0 }\nif (share_class_shares_outstanding == null) { share_class_shares_outstanding = 0 }\nif (weighted_shares_outstanding == null) { weighted_shares_outstanding = 0 }\nif (round_lot == null) { round_lot = 0 }\nif (total_employees == null) { total_employees = 0 }\n\n\nlet sql = \"insert into tickers_detail (ticker, name, market, locale, primary_exchange, type, active, currency_name, cik, composite_figi, share_class_figi, market_cap, phone_number, address1, description, sic_code, sic_description, ticker_root, homepage_url, total_employees, list_date, branding, share_class_shares_outstanding, weighted_shares_outstanding, round_lot, beta, current_price, stddev) values \"\nsql += \"('\" + ticker + \"','\" + name + \"','\" + market + \"','\" + locale + \"','\" + primary_exchange + \"','\" + type + \"','\" + active + \"','\" + currency_name + \"','\" + cik + \"','\" + composite_figi + \"','\" + share_class_figi + \"','\" + market_cap + \"','\" + phone_number + \"','\" + address1 + \"','\" + description + \"','\" + sic_code + \"','\" + sic_description + \"','\" + ticker_root + \"','\" + homepage_url + \"','\" + total_employees + \"','\" + list_date + \"','\" + branding + \"','\" + share_class_shares_outstanding + \"','\" + weighted_shares_outstanding + \"','\" + round_lot + \"','\" + beta + \"','\" + current_price + \"','\" + stddev + \"') ON CONFLICT DO NOTHING;\"\n//node.warn(sql)\nmsg.query = sql\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -175,14 +175,14 @@
         "y": 200,
         "wires": [
             [
-                "2d95f50a725dd283"
+                "7e27ed2d09158347"
             ]
         ]
     },
     {
-        "id": "95c7564bd6f21f23",
+        "id": "429a6c8aba4e195d",
         "type": "split",
-        "z": "8c7b432ddeb3c22a",
+        "z": "8a3e28de9e3402c7",
         "name": "",
         "splt": "\\n",
         "spltType": "str",
@@ -194,14 +194,14 @@
         "y": 200,
         "wires": [
             [
-                "efee0db7519ce236"
+                "fc8ea8d32b8e1355"
             ]
         ]
     },
     {
-        "id": "2d95f50a725dd283",
+        "id": "7e27ed2d09158347",
         "type": "postgresql",
-        "z": "8c7b432ddeb3c22a",
+        "z": "8a3e28de9e3402c7",
         "name": "postgres",
         "query": "",
         "postgreSQLConfig": "7455395cf269fb2b",
@@ -215,9 +215,9 @@
         ]
     },
     {
-        "id": "092a94ec99965947",
+        "id": "b37d8943913c26a8",
         "type": "debug",
-        "z": "8c7b432ddeb3c22a",
+        "z": "8a3e28de9e3402c7",
         "name": "debug 338",
         "active": true,
         "tosidebar": true,
