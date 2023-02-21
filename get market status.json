@@ -1,0 +1,163 @@
+[
+    {
+        "id": "b9be82c16b0764a6",
+        "type": "tab",
+        "label": "Market Status",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "8bcf4b6e725fa5c9",
+        "type": "inject",
+        "z": "b9be82c16b0764a6",
+        "name": "Get market status",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "30 09 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "select * from market_status;",
+        "x": 230,
+        "y": 120,
+        "wires": [
+            [
+                "c4d52a706c20a836"
+            ]
+        ]
+    },
+    {
+        "id": "c4d52a706c20a836",
+        "type": "mysql",
+        "z": "b9be82c16b0764a6",
+        "mydb": "3564bcf07c743fdf",
+        "name": "PTSAPI",
+        "x": 400,
+        "y": 120,
+        "wires": [
+            [
+                "79ec238d00947778"
+            ]
+        ]
+    },
+    {
+        "id": "62dd68a48f5202de",
+        "type": "function",
+        "z": "b9be82c16b0764a6",
+        "name": "store status",
+        "func": "let status = msg.payload[\"market\"]\nnode.warn(status)\nmsg.status = status\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 120,
+        "wires": [
+            [
+                "ef8af303d502e402"
+            ]
+        ]
+    },
+    {
+        "id": "79ec238d00947778",
+        "type": "split",
+        "z": "b9be82c16b0764a6",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 530,
+        "y": 120,
+        "wires": [
+            [
+                "62dd68a48f5202de"
+            ]
+        ]
+    },
+    {
+        "id": "ef8af303d502e402",
+        "type": "change",
+        "z": "b9be82c16b0764a6",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "market_status",
+                "pt": "global",
+                "to": "status",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 870,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "79d384cdecb1e681",
+        "type": "function",
+        "z": "b9be82c16b0764a6",
+        "name": "Display status",
+        "func": "let status = global.get(\"market_status\")\nnode.warn(\"The market are \" +status)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c9b3da8f14efcb14",
+        "type": "inject",
+        "z": "b9be82c16b0764a6",
+        "name": "Check market stats",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 250,
+        "y": 180,
+        "wires": [
+            [
+                "79d384cdecb1e681"
+            ]
+        ]
+    },
+    {
+        "id": "3564bcf07c743fdf",
+        "type": "MySQLdatabase",
+        "name": "ptsapi",
+        "host": "ptsapi.cax8fspskl8t.us-east-1.rds.amazonaws.com",
+        "port": "3306",
+        "db": "ptsapi",
+        "tz": "EST5EDT",
+        "charset": "UTF8"
+    }
+]
