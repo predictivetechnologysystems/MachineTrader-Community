@@ -1,0 +1,204 @@
+[
+    {
+        "id": "b9be82c16b0764a6",
+        "type": "tab",
+        "label": "Market Status",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "8bcf4b6e725fa5c9",
+        "type": "inject",
+        "z": "b9be82c16b0764a6",
+        "name": "Get market status",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "30 09 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "select * from market_status order by datetime desc limit 1;",
+        "x": 190,
+        "y": 160,
+        "wires": [
+            [
+                "c4d52a706c20a836"
+            ]
+        ]
+    },
+    {
+        "id": "c4d52a706c20a836",
+        "type": "mysql",
+        "z": "b9be82c16b0764a6",
+        "mydb": "3564bcf07c743fdf",
+        "name": "PTSAPI",
+        "x": 360,
+        "y": 160,
+        "wires": [
+            [
+                "79ec238d00947778"
+            ]
+        ]
+    },
+    {
+        "id": "62dd68a48f5202de",
+        "type": "function",
+        "z": "b9be82c16b0764a6",
+        "name": "store status",
+        "func": "let status = msg.payload[\"market\"]\nlet early = msg.payload[\"earlyHours\"]\nlet late = msg.payload[\"afterHours\"]\nlet dt = msg.payload[\"datetime\"]\n\nif ( early == 0){ early = 'closed'}\nif (early == 1) { early = 'open' }\nif (late == 0) { late = 'closed' }\nif (late == 1) { late = 'open' }\n\nnode.warn(\"The market is \" +status+ \" Early hours is: \" +early+ \" After hours is: \" +late+ \" Date: \" +dt)\n\nmsg.status = status\nmsg.early = early\nmsg.late = late\nmsg.dt = dt\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 630,
+        "y": 160,
+        "wires": [
+            [
+                "ef8af303d502e402"
+            ]
+        ]
+    },
+    {
+        "id": "79ec238d00947778",
+        "type": "split",
+        "z": "b9be82c16b0764a6",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 490,
+        "y": 160,
+        "wires": [
+            [
+                "62dd68a48f5202de"
+            ]
+        ]
+    },
+    {
+        "id": "ef8af303d502e402",
+        "type": "change",
+        "z": "b9be82c16b0764a6",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "market_status",
+                "pt": "global",
+                "to": "status",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "earlyhours",
+                "pt": "global",
+                "to": "early",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "latehours",
+                "pt": "global",
+                "to": "late",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "market_dt",
+                "pt": "global",
+                "to": "dt",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 800,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "79d384cdecb1e681",
+        "type": "function",
+        "z": "b9be82c16b0764a6",
+        "name": "Display status",
+        "func": "let status = global.get(\"market_status\")\nlet early = global.get(\"earlyhours\")\nlet late = global.get(\"latehours\")\nlet dt = global.get(\"market_dt\")\nnode.warn(\"The market is \" + status + \" Early hours is: \" + early + \" After hours is: \" + late + \" Date: \" + dt)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c9b3da8f14efcb14",
+        "type": "inject",
+        "z": "b9be82c16b0764a6",
+        "name": "Check market stats",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 210,
+        "y": 220,
+        "wires": [
+            [
+                "79d384cdecb1e681"
+            ]
+        ]
+    },
+    {
+        "id": "941cd777a0e05bec",
+        "type": "comment",
+        "z": "b9be82c16b0764a6",
+        "name": "Copyright©2023, MachineTrader.io Inc. All rights reserved.",
+        "info": "",
+        "x": 250,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "6680334e838f3385",
+        "type": "comment",
+        "z": "b9be82c16b0764a6",
+        "name": "Create globall  \"maket status\" variable",
+        "info": "",
+        "x": 230,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "3564bcf07c743fdf",
+        "type": "MySQLdatabase",
+        "name": "ptsapi",
+        "host": "ptsapi.cax8fspskl8t.us-east-1.rds.amazonaws.com",
+        "port": "3306",
+        "db": "ptsapi",
+        "tz": "EST5EDT",
+        "charset": "UTF8"
+    }
+]
