@@ -1,0 +1,1077 @@
+[
+    {
+        "id": "afd80480eb17d06a",
+        "type": "tab",
+        "label": "Alpaca Acct Mgmt",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "41850d18fc9f4929",
+        "type": "comment",
+        "z": "afd80480eb17d06a",
+        "name": "add Alpaca live keys here",
+        "info": "",
+        "x": 150,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "2ea33cb8dba928b9",
+        "type": "comment",
+        "z": "afd80480eb17d06a",
+        "name": "add Alpaca paper keys here",
+        "info": "",
+        "x": 180,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "338d0791c7b8fa74",
+        "type": "alpaca-account-query",
+        "z": "afd80480eb17d06a",
+        "conf": "810ce3520dc18040",
+        "x": 340,
+        "y": 120,
+        "wires": [
+            [
+                "e0049926df825e15"
+            ]
+        ]
+    },
+    {
+        "id": "354272a35061eb89",
+        "type": "inject",
+        "z": "afd80480eb17d06a",
+        "name": "Test live keys",
+        "props": [],
+        "repeat": "60",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 140,
+        "y": 120,
+        "wires": [
+            [
+                "338d0791c7b8fa74"
+            ]
+        ]
+    },
+    {
+        "id": "0af81992fdd0b2f6",
+        "type": "alpaca-account-query",
+        "z": "afd80480eb17d06a",
+        "conf": "c06cec183f9317f9",
+        "x": 360,
+        "y": 240,
+        "wires": [
+            [
+                "e4a537edaf0fbab1"
+            ]
+        ]
+    },
+    {
+        "id": "c5855bb214d50c67",
+        "type": "inject",
+        "z": "afd80480eb17d06a",
+        "name": "Test paper keys",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 160,
+        "y": 240,
+        "wires": [
+            [
+                "0af81992fdd0b2f6"
+            ]
+        ]
+    },
+    {
+        "id": "e4a537edaf0fbab1",
+        "type": "debug",
+        "z": "afd80480eb17d06a",
+        "name": "display paper keys",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 570,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "d5615d53591a8c39",
+        "type": "comment",
+        "z": "afd80480eb17d06a",
+        "name": "Rules when using margin",
+        "info": "",
+        "x": 170,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "ccef1c3a75032c9f",
+        "type": "comment",
+        "z": "afd80480eb17d06a",
+        "name": " “Initial Margin” is the maximum amount a broker can lend for the initial purchase of a security. This is explicitly defined in SEC Regulation T as 50% of the purchase price of margin securities. ",
+        "info": "",
+        "x": 680,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "26a738cf3021c585",
+        "type": "comment",
+        "z": "afd80480eb17d06a",
+        "name": "If one exceeds that amount a “Fed Call” is issued (named because this is a federal SEC “RegT” requirement). To avoid an initial margin Fed Call ensure the account.regt_buying_power is greater than 0 ",
+        "info": "",
+        "x": 710,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "3f85d8aabfc12348",
+        "type": "comment",
+        "z": "afd80480eb17d06a",
+        "name": "There are two separate issues/requirements when using margin. The first is “initial margin” and the second is “maintenance margin”. Each needs to be checked separately. ",
+        "info": "",
+        "x": 620,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "3913181ea8b16b7d",
+        "type": "comment",
+        "z": "afd80480eb17d06a",
+        "name": " at the EOD if any positions were opened or increased during the day.  Since this only applies to initial purchases, if there were no purchases this doesn’t apply (ie it’s ok to be 0 if no positions were opened or increased). ",
+        "info": "",
+        "x": 770,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "70e66ed67cf72059",
+        "type": "comment",
+        "z": "afd80480eb17d06a",
+        "name": "If account.regt_buying_power is 0 and one opened new positions, close some of the positions one opened during the day until it is a positive value. ",
+        "info": "",
+        "x": 550,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "4f7d80d9b505e7eb",
+        "type": "comment",
+        "z": "afd80480eb17d06a",
+        "name": " “Maintenance margin” is the minimum equity which must be maintained in an account to act as collateral for funds already borrowed (hence the name “maintenance”). ",
+        "info": "",
+        "x": 610,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "ccc4a0342d406133",
+        "type": "comment",
+        "z": "afd80480eb17d06a",
+        "name": " (named because these are enforced by each brokerage “house”). To avoid a House Call ensure the end of day equity is greater than the account.maintenance_margin . ",
+        "info": "",
+        "x": 610,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "9ebc96745a3e9a39",
+        "type": "comment",
+        "z": "afd80480eb17d06a",
+        "name": "If the equity is less than the account.maintenance_margin then close some positions by the end of day. Make sure to leave a little cushion because the actual closing prices (which is what a House Call is based upon) may be a bit different.",
+        "info": "",
+        "x": 830,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "06c028c1db3ea800",
+        "type": "comment",
+        "z": "afd80480eb17d06a",
+        "name": "This isn’t as strictly regulated by the SEC (though there are minimums) and is usually set by the individual broker. If the end of day equity drops below the account.maintenance_margin a “House Call” is issued (",
+        "info": "",
+        "x": 740,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "1c5794b1c89a60dd",
+        "type": "comment",
+        "z": "afd80480eb17d06a",
+        "name": "the three margin requirements:",
+        "info": "",
+        "x": 190,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "12263f139d7e1ade",
+        "type": "comment",
+        "z": "afd80480eb17d06a",
+        "name": "1) don’t exceed day trading buying power - monitor this throughout the day ",
+        "info": "",
+        "x": 320,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "83892dd8df6edd0a",
+        "type": "comment",
+        "z": "afd80480eb17d06a",
+        "name": "2) regt_buying_power should be greater than 0 at the end of the day i",
+        "info": "",
+        "x": 310,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "a81927e1a671b448",
+        "type": "comment",
+        "z": "afd80480eb17d06a",
+        "name": "3) if one opened any positions during the day equity should be greater than maintenance_margin at the end of the day",
+        "info": "",
+        "x": 460,
+        "y": 880,
+        "wires": []
+    },
+    {
+        "id": "e0049926df825e15",
+        "type": "function",
+        "z": "afd80480eb17d06a",
+        "name": "store key metrics",
+        "func": "const dateObj = new Date();\nmsg.dt = dateObj.toISOString()\nmsg.regt = msg.payload[\"regt_buying_power\"] \nmsg.long = msg.payload[\"long_market_value\"] \nmsg.short = msg.payload[\"short_market_value\"]\nmsg.position = msg.payload[\"position_market_value\"]\nmsg.initMargin = msg.payload[\"initial_margin\"] // max amt available to lean\nmsg.maintMargin = msg.payload[\"maintenance_margin\"]\nmsg.equity = msg.payload[\"equity\"]\nmsg.dtbp = msg.payload[\"daytrading_buying_power\"]\nmsg.bp = msg.payload[\"buying_power\"]\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 550,
+        "y": 120,
+        "wires": [
+            [
+                "b82f7d64e4bd065c"
+            ]
+        ]
+    },
+    {
+        "id": "b82f7d64e4bd065c",
+        "type": "change",
+        "z": "afd80480eb17d06a",
+        "name": "Store globals",
+        "rules": [
+            {
+                "t": "set",
+                "p": "regt",
+                "pt": "global",
+                "to": "regt",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "long",
+                "pt": "global",
+                "to": "long",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "short",
+                "pt": "global",
+                "to": "short",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "position",
+                "pt": "global",
+                "to": "position",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "initMargin",
+                "pt": "global",
+                "to": "initMargin",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "maintMargin",
+                "pt": "global",
+                "to": "maintMargin",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "equity",
+                "pt": "global",
+                "to": "equity",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "dt",
+                "pt": "global",
+                "to": "dt",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "dtbp",
+                "pt": "global",
+                "to": "dtbp",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "bp",
+                "pt": "global",
+                "to": "bp",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 730,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "397e755f6b39124c",
+        "type": "comment",
+        "z": "afd80480eb17d06a",
+        "name": "Pattern Day Trader Rules",
+        "info": "",
+        "x": 170,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "c0296995b453c861",
+        "type": "inject",
+        "z": "afd80480eb17d06a",
+        "name": "day trading buying power",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 750,
+        "y": 800,
+        "wires": [
+            [
+                "c7dd5cfdc1b0bfa2"
+            ]
+        ]
+    },
+    {
+        "id": "c7dd5cfdc1b0bfa2",
+        "type": "function",
+        "z": "afd80480eb17d06a",
+        "name": "display",
+        "func": "let dtbp = global.get(\"dtbp\")\nnode.warn(\"Day Trading Buying Power: \" +dtbp)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 940,
+        "y": 800,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "fd8467a78577bc4e",
+        "type": "inject",
+        "z": "afd80480eb17d06a",
+        "name": "regT buying power",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 730,
+        "y": 840,
+        "wires": [
+            [
+                "162ad828cc917514"
+            ]
+        ]
+    },
+    {
+        "id": "162ad828cc917514",
+        "type": "function",
+        "z": "afd80480eb17d06a",
+        "name": "display",
+        "func": "let regt = global.get(\"regt\")\nnode.warn(\"RegT Buying Power: \" +regt)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 940,
+        "y": 840,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "674af2a2e9afc342",
+        "type": "inject",
+        "z": "afd80480eb17d06a",
+        "name": "Maintenance Margin",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 1010,
+        "y": 880,
+        "wires": [
+            [
+                "e7053d9079ba479f"
+            ]
+        ]
+    },
+    {
+        "id": "e7053d9079ba479f",
+        "type": "function",
+        "z": "afd80480eb17d06a",
+        "name": "display",
+        "func": "let mm = global.get(\"maintMargin\")\nnode.warn(\"Maintenance Margin: \" +mm)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1180,
+        "y": 880,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "afa4776766330d94",
+        "type": "comment",
+        "z": "afd80480eb17d06a",
+        "name": "the three margin requirements:",
+        "info": "",
+        "x": 190,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "d5acc4a9a8c2ba21",
+        "type": "comment",
+        "z": "afd80480eb17d06a",
+        "name": "1) don’t exceed initial margin when buying new assets",
+        "info": "",
+        "x": 260,
+        "y": 1020,
+        "wires": []
+    },
+    {
+        "id": "c41821363c5daded",
+        "type": "comment",
+        "z": "afd80480eb17d06a",
+        "name": "2) regt_buying_power should be greater than 0 when buying new assets",
+        "info": "",
+        "x": 310,
+        "y": 1060,
+        "wires": []
+    },
+    {
+        "id": "f6b0e48061c3a8f8",
+        "type": "comment",
+        "z": "afd80480eb17d06a",
+        "name": "3) Must maintain maintenance_margin at all times",
+        "info": "",
+        "x": 240,
+        "y": 1100,
+        "wires": []
+    },
+    {
+        "id": "25ae650ef35fad17",
+        "type": "comment",
+        "z": "afd80480eb17d06a",
+        "name": "Margin Rules",
+        "info": "",
+        "x": 130,
+        "y": 940,
+        "wires": []
+    },
+    {
+        "id": "d036efe7b2d0cf64",
+        "type": "inject",
+        "z": "afd80480eb17d06a",
+        "name": "Initial Margin",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 690,
+        "y": 1020,
+        "wires": [
+            [
+                "f1bb09f7ae18fd83"
+            ]
+        ]
+    },
+    {
+        "id": "f1bb09f7ae18fd83",
+        "type": "function",
+        "z": "afd80480eb17d06a",
+        "name": "display",
+        "func": "let im = global.get(\"initMargin\")\nnode.warn(\"Initial Margin: \" +im)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 920,
+        "y": 1020,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1f93594694ce9f15",
+        "type": "inject",
+        "z": "afd80480eb17d06a",
+        "name": "Maintenance Margin",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 710,
+        "y": 1100,
+        "wires": [
+            [
+                "ffd23a5d43c16e04"
+            ]
+        ]
+    },
+    {
+        "id": "ffd23a5d43c16e04",
+        "type": "function",
+        "z": "afd80480eb17d06a",
+        "name": "display",
+        "func": "let mm = global.get(\"maintMargin\")\nnode.warn(\"Maintenance Margin: \" +mm)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 920,
+        "y": 1100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9a4d01dc6641197d",
+        "type": "inject",
+        "z": "afd80480eb17d06a",
+        "name": "regT buying power",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 710,
+        "y": 1060,
+        "wires": [
+            [
+                "e9865628d19db85f"
+            ]
+        ]
+    },
+    {
+        "id": "e9865628d19db85f",
+        "type": "function",
+        "z": "afd80480eb17d06a",
+        "name": "display",
+        "func": "let regt = global.get(\"regt\")\nnode.warn(\"RegT Buying Power: \" +regt)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 920,
+        "y": 1060,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "cb659c385f61f80f",
+        "type": "comment",
+        "z": "afd80480eb17d06a",
+        "name": "3) Equity must exceed maintenance_margin at EOD",
+        "info": "",
+        "x": 250,
+        "y": 1140,
+        "wires": []
+    },
+    {
+        "id": "f11621f3704b0ccc",
+        "type": "inject",
+        "z": "afd80480eb17d06a",
+        "name": "Equity > Maintenance Margin",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 740,
+        "y": 1140,
+        "wires": [
+            [
+                "778d708cddad2f98"
+            ]
+        ]
+    },
+    {
+        "id": "778d708cddad2f98",
+        "type": "function",
+        "z": "afd80480eb17d06a",
+        "name": "display",
+        "func": "let mm = global.get(\"maintMargin\")\nlet e = global.get(\"equity\")\nlet net = e - mm\nnode.warn(\"Surplus Equity: \" +net)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 940,
+        "y": 1140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8c51368b2f28dcf9",
+        "type": "comment",
+        "z": "afd80480eb17d06a",
+        "name": "Warnings",
+        "info": "",
+        "x": 120,
+        "y": 1220,
+        "wires": []
+    },
+    {
+        "id": "df784f76f1b1488b",
+        "type": "inject",
+        "z": "afd80480eb17d06a",
+        "name": "Send day trading buying power",
+        "props": [
+            {
+                "p": "payload.type",
+                "v": "",
+                "vt": "date"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 210,
+        "y": 1280,
+        "wires": [
+            [
+                "fd8b775165154181"
+            ]
+        ]
+    },
+    {
+        "id": "fd8b775165154181",
+        "type": "function",
+        "z": "afd80480eb17d06a",
+        "name": "telegram send",
+        "func": "let dtbp = global.get(\"dtbp\")\ndtbp = +dtbp\ndtbp = dtbp.toFixed(0)\n\nnode.warn(\"Day Trading Buying Power: \" + dtbp)\nmsg.dtbp = \"Day Trading BP: \" +dtbp\n\nmsg.payload = {}\nmsg.payload.chatId = \"[your chat id here]\"\nmsg.payload.type = 'message'\nmsg.payload.content = msg.dtbp\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 1280,
+        "wires": [
+            [
+                "19c3012b97e81d5e"
+            ]
+        ]
+    },
+    {
+        "id": "3dbc2a0c0d223b3f",
+        "type": "debug",
+        "z": "afd80480eb17d06a",
+        "name": "debug 344",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 850,
+        "y": 1280,
+        "wires": []
+    },
+    {
+        "id": "202a3f464ee68953",
+        "type": "inject",
+        "z": "afd80480eb17d06a",
+        "name": "Send day regT buying power EOD",
+        "props": [
+            {
+                "p": "payload.type",
+                "v": "",
+                "vt": "date"
+            }
+        ],
+        "repeat": "",
+        "crontab": "50 15 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 220,
+        "y": 1320,
+        "wires": [
+            [
+                "f2611267cc08eb8b"
+            ]
+        ]
+    },
+    {
+        "id": "3e8407dfb7156838",
+        "type": "debug",
+        "z": "afd80480eb17d06a",
+        "name": "debug 345",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 850,
+        "y": 1320,
+        "wires": []
+    },
+    {
+        "id": "24e82af777953c6b",
+        "type": "inject",
+        "z": "afd80480eb17d06a",
+        "name": "Send Surplus Equity  EOD",
+        "props": [
+            {
+                "p": "payload.type",
+                "v": "",
+                "vt": "date"
+            }
+        ],
+        "repeat": "",
+        "crontab": "50 15 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 200,
+        "y": 1360,
+        "wires": [
+            [
+                "f785e3001342b606"
+            ]
+        ]
+    },
+    {
+        "id": "78f2c5ba1cdb44d7",
+        "type": "debug",
+        "z": "afd80480eb17d06a",
+        "name": "debug 346",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 850,
+        "y": 1360,
+        "wires": []
+    },
+    {
+        "id": "19c3012b97e81d5e",
+        "type": "telegram sender",
+        "z": "afd80480eb17d06a",
+        "name": "",
+        "bot": "c4300cad1b706337",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 660,
+        "y": 1280,
+        "wires": [
+            [
+                "3dbc2a0c0d223b3f"
+            ]
+        ]
+    },
+    {
+        "id": "cdd1ec8c0c4ccfe9",
+        "type": "comment",
+        "z": "afd80480eb17d06a",
+        "name": "Set up a Telegram Bot",
+        "info": "",
+        "x": 980,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "4c9779458b106a06",
+        "type": "comment",
+        "z": "afd80480eb17d06a",
+        "name": "Botname: '[your bot name]'",
+        "info": "",
+        "x": 990,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "c791a91b03ed60e9",
+        "type": "comment",
+        "z": "afd80480eb17d06a",
+        "name": "user name: 'your bot user name'",
+        "info": "",
+        "x": 1010,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "dd1f83b104d53f7f",
+        "type": "comment",
+        "z": "afd80480eb17d06a",
+        "name": "token: [your Telegram toker']",
+        "info": "",
+        "x": 1000,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "ae5bb77c47584e5d",
+        "type": "comment",
+        "z": "afd80480eb17d06a",
+        "name": "Group Chat: '[chat id]'",
+        "info": "",
+        "x": 980,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "f2611267cc08eb8b",
+        "type": "function",
+        "z": "afd80480eb17d06a",
+        "name": "telegram send",
+        "func": "let dtbp = global.get(\"dtbp\")\ndtbp = +dtbp\ndtbp = dtbp.toFixed(0)\n\nnode.warn(\"Day Trading Buying Power: \" + dtbp)\nmsg.dtbp = \"Day Trading BP: \" +dtbp\n\nmsg.payload = {}\nmsg.payload.chatId = \"[your chat id here]\"\nmsg.payload.type = 'message'\nmsg.payload.content = msg.dtbp\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 1320,
+        "wires": [
+            [
+                "96d7a2ae0b14da19"
+            ]
+        ]
+    },
+    {
+        "id": "f785e3001342b606",
+        "type": "function",
+        "z": "afd80480eb17d06a",
+        "name": "telegram send",
+        "func": "let dtbp = global.get(\"dtbp\")\ndtbp = +dtbp\ndtbp = dtbp.toFixed(0)\n\nnode.warn(\"Day Trading Buying Power: \" + dtbp)\nmsg.dtbp = \"Day Trading BP: \" +dtbp\n\nmsg.payload = {}\nmsg.payload.chatId = \"[your chat id here]\"\nmsg.payload.type = 'message'\nmsg.payload.content = msg.dtbp\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 1360,
+        "wires": [
+            [
+                "1cd6b381689472f8"
+            ]
+        ]
+    },
+    {
+        "id": "96d7a2ae0b14da19",
+        "type": "telegram sender",
+        "z": "afd80480eb17d06a",
+        "name": "",
+        "bot": "c4300cad1b706337",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 660,
+        "y": 1320,
+        "wires": [
+            [
+                "3e8407dfb7156838"
+            ]
+        ]
+    },
+    {
+        "id": "1cd6b381689472f8",
+        "type": "telegram sender",
+        "z": "afd80480eb17d06a",
+        "name": "",
+        "bot": "c4300cad1b706337",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 660,
+        "y": 1360,
+        "wires": [
+            [
+                "78f2c5ba1cdb44d7"
+            ]
+        ]
+    },
+    {
+        "id": "810ce3520dc18040",
+        "type": "alpaca-account",
+        "name": "live",
+        "keyId": "AK9R43RKBVRI859WTN2P",
+        "paper": false
+    },
+    {
+        "id": "c06cec183f9317f9",
+        "type": "alpaca-account",
+        "name": "paper",
+        "keyId": "PK9BPLTX2V42PSD577VR",
+        "paper": true
+    },
+    {
+        "id": "c4300cad1b706337",
+        "type": "telegram bot",
+        "botname": "dansavageBot",
+        "usernames": "",
+        "chatids": "",
+        "baseapiurl": "",
+        "updatemode": "polling",
+        "pollinterval": "300",
+        "usesocks": false,
+        "sockshost": "",
+        "socksprotocol": "socks5",
+        "socksport": "6667",
+        "socksusername": "anonymous",
+        "sockspassword": "",
+        "bothost": "",
+        "botpath": "",
+        "localbotport": "8443",
+        "publicbotport": "8443",
+        "privatekey": "",
+        "certificate": "",
+        "useselfsignedcertificate": false,
+        "sslterminated": false,
+        "verboselogging": false
+    }
+]
