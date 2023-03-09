@@ -1,0 +1,307 @@
+[
+    {
+        "id": "15c5f6888e97f83e",
+        "type": "tab",
+        "label": "Get Alpaca ticker prices",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "2298086d725f53c1",
+        "type": "inject",
+        "z": "15c5f6888e97f83e",
+        "name": "Check ticker",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 150,
+        "y": 300,
+        "wires": [
+            [
+                "3424bb68b3c0cb54"
+            ]
+        ]
+    },
+    {
+        "id": "17de4f538be23e68",
+        "type": "comment",
+        "z": "15c5f6888e97f83e",
+        "name": "Get list of tickers tracked (pta11)",
+        "info": "",
+        "x": 170,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "a5a4071cf47fb5e8",
+        "type": "alpaca-position-query",
+        "z": "15c5f6888e97f83e",
+        "conf": "e095a3a321da7bce",
+        "x": 490,
+        "y": 180,
+        "wires": [
+            [
+                "17dea9292608da18"
+            ]
+        ]
+    },
+    {
+        "id": "f0706bd2d1ff3d3c",
+        "type": "inject",
+        "z": "15c5f6888e97f83e",
+        "name": "Display all tickers tracked on pta11",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 220,
+        "y": 180,
+        "wires": [
+            [
+                "a5a4071cf47fb5e8"
+            ]
+        ]
+    },
+    {
+        "id": "17dea9292608da18",
+        "type": "debug",
+        "z": "15c5f6888e97f83e",
+        "name": "debug 349",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 690,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "33a7ac985407693e",
+        "type": "comment",
+        "z": "15c5f6888e97f83e",
+        "name": "Copyright©2023, MachineTrader.io Inc. All rights reserved.",
+        "info": "",
+        "x": 230,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "088f92ebf0ea11a3",
+        "type": "comment",
+        "z": "15c5f6888e97f83e",
+        "name": "This flow retrieves current prices for tickers from Alpaca, providing additional accuracy in extended hours trading.",
+        "info": "",
+        "x": 420,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "3424bb68b3c0cb54",
+        "type": "alpaca-position-query",
+        "z": "15c5f6888e97f83e",
+        "conf": "e095a3a321da7bce",
+        "x": 350,
+        "y": 300,
+        "wires": [
+            [
+                "eb0a3a6d7ba0da32"
+            ]
+        ]
+    },
+    {
+        "id": "a1aea9fe16ed8062",
+        "type": "switch",
+        "z": "15c5f6888e97f83e",
+        "name": "SPY",
+        "property": "payload[\"symbol\"]",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "SPY",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 650,
+        "y": 300,
+        "wires": [
+            [
+                "640d94777122e5c6"
+            ]
+        ]
+    },
+    {
+        "id": "eb0a3a6d7ba0da32",
+        "type": "split",
+        "z": "15c5f6888e97f83e",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 530,
+        "y": 300,
+        "wires": [
+            [
+                "a1aea9fe16ed8062"
+            ]
+        ]
+    },
+    {
+        "id": "640d94777122e5c6",
+        "type": "function",
+        "z": "15c5f6888e97f83e",
+        "name": "display",
+        "func": "let ticker = msg.payload[\"symbol\"]\nlet price = msg.payload[\"current_price\"]\nnode.warn (\"Ticker: \" +ticker+ \" Alpaca  Price: \" +price)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 780,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3d444a6dd8066202",
+        "type": "comment",
+        "z": "15c5f6888e97f83e",
+        "name": "Enter desired ticker in change node below",
+        "info": "",
+        "x": 760,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "685abe2933d42064",
+        "type": "comment",
+        "z": "15c5f6888e97f83e",
+        "name": "Display ticker price",
+        "info": "",
+        "x": 130,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "af030a1b5ec958a2",
+        "type": "function",
+        "z": "15c5f6888e97f83e",
+        "name": "create Alpaca order ",
+        "func": "let ticker = msg.ticker\n\n// create a order for Alpaca\n\nlet temp = ''\ntemp = {\n    \"symbol\": ticker,\n    \"qty\": 0.1,\n    \"side\": 'buy',\n    \"type\": 'market',\n    \"time_in_force\": \"day\"\n};\n\nmsg.payload = temp\nnode.warn(msg.payload)\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 440,
+        "wires": [
+            [
+                "6edc381fe3918c55"
+            ]
+        ]
+    },
+    {
+        "id": "6edc381fe3918c55",
+        "type": "alpaca-order",
+        "z": "15c5f6888e97f83e",
+        "conf": "e095a3a321da7bce",
+        "x": 490,
+        "y": 440,
+        "wires": [
+            [
+                "677e474c45877525"
+            ]
+        ]
+    },
+    {
+        "id": "af5480474ee13c96",
+        "type": "comment",
+        "z": "15c5f6888e97f83e",
+        "name": "Add a ticker to the tracked list",
+        "info": "",
+        "x": 160,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "7672fbc48fb92eea",
+        "type": "inject",
+        "z": "15c5f6888e97f83e",
+        "name": "Enter ticker ",
+        "props": [
+            {
+                "p": "ticker",
+                "v": "T",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 440,
+        "wires": [
+            [
+                "af030a1b5ec958a2"
+            ]
+        ]
+    },
+    {
+        "id": "677e474c45877525",
+        "type": "debug",
+        "z": "15c5f6888e97f83e",
+        "name": "debug 350",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "e095a3a321da7bce",
+        "type": "alpaca-account",
+        "name": "pta11",
+        "keyId": "PKSCE9RM5A3W2X05VMUQ",
+        "paper": true
+    }
+]
