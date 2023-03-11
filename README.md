@@ -15,14 +15,17 @@ When you first log in into your trading instance, everything is ready to go exce
 
 Be careful when you're using the admin because any changes you make will affect the operation of your instance. Notice that the admin consists of a series of tabs, each containing a grouping of flows. Go to the tab labeled "Alpaca Keys."  You will see two sets of flows - one for Live and one for Paper.  Double click on the yellow “Alpaca Account Query” node.  
 
+<img width="1010" alt="Screenshot 2023-03-11 at 9 03 21 AM" src="https://user-images.githubusercontent.com/79699033/224489148-43a98b28-4ab5-4718-964d-26138c3cd26a.png">
+
 You will see a pencil icon on the right.  Click that, and paste in your Key in “API Key ID” and your Secret Key in “API Key”.  We recommend you use your paper account keys, for both Paper and Live to ensure that you are always using your Paper account until you are experienced and ready to make live trades.  In this case, select “Live” but enter your paper account keys.  Check the blue “paper trading” box whenever you are using paper account keys.  
 Your secret key is encrypted once you enter it, so no one will be able to get access to your Alpaca account.  Once you have pasted your keys, click the red “Update” and then click the red “Done” button.  
 
 Repeat this process by clicking on the yellow “Alpaca Account Query” node in the second flow.  This time, select paper, enter your paper keys again, and ensure that the blue “Paper Trading” box is clicked.  Again click the red “Done” button.  Then, be sure to click the red “Deploy” button on the top right of the screen.  This will “save” your changes to your instance.  
 
+The third flow allows you to save various account details as global variables. As you start live trading, you may want to tracking the available buying power allowed as you make trades. You also may want to set up alerts to avoid margin calls. More on that later.
+
 At this point, you can go to the window that displays the front end of your instance and refresh.  You should see all of your account information updated there.
 
-<img width="1010" alt="Screenshot 2023-03-11 at 9 03 21 AM" src="https://user-images.githubusercontent.com/79699033/224489148-43a98b28-4ab5-4718-964d-26138c3cd26a.png">
 
 
 
