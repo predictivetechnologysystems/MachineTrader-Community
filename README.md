@@ -22,11 +22,6 @@ Repeat this process by clicking on the yellow “Alpaca Account Query” node in
 
 At this point, you can go to the window that displays the front end of your instance and refresh.  You should see all of your account information updated there.
 
-<img width="1120" alt="Screen Shot 2022-10-12 at 7 34 19 AM" src="https://user-images.githubusercontent.com/79699033/195339369-afad32d3-64de-4dbb-829f-3b1297a263b5.png">
-
-<img width="512" alt="Screen Shot 2022-10-12 at 7 54 21 AM" src="https://user-images.githubusercontent.com/79699033/195339499-edd469e4-360d-4b22-8d8b-77a6ec8193f2.png">
-
-<img width="530" alt="Screen Shot 2022-10-12 at 7 54 29 AM" src="https://user-images.githubusercontent.com/79699033/195339513-38db9d28-0fe9-4d70-bb51-08a4df3bef30.png">
 
 
 
