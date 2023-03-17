@@ -6,14 +6,14 @@
         "name": "Flow 4: Close all postions for specific algo",
         "info": "",
         "x": 200,
-        "y": 700,
+        "y": 720,
         "wires": []
     },
     {
         "id": "8404db46464fb94e",
         "type": "alpaca-order",
         "z": "15d09ab80a8c38b9",
-        "conf": "810ce3520dc18040",
+        "conf": "c06cec183f9317f9",
         "x": 570,
         "y": 840,
         "wires": [
@@ -185,7 +185,9 @@
         "x": 350,
         "y": 840,
         "wires": [
-            []
+            [
+                "8404db46464fb94e"
+            ]
         ]
     },
     {
@@ -207,11 +209,11 @@
         ]
     },
     {
-        "id": "810ce3520dc18040",
+        "id": "c06cec183f9317f9",
         "type": "alpaca-account",
-        "name": "live",
-        "keyId": "AKAERPL40H0ODY9MO0RX",
-        "paper": false
+        "name": "paper",
+        "keyId": "PKMGQKGZAI7ZZE1VHGOH",
+        "paper": true
     },
     {
         "id": "7455395cf269fb2b",
