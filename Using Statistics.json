@@ -93,7 +93,7 @@
         "finalize": "",
         "libs": [],
         "x": 370,
-        "y": 320,
+        "y": 400,
         "wires": [
             [
                 "5478585014684a22"
@@ -109,7 +109,7 @@
         "outputs": 1,
         "noerr": 0,
         "x": 320,
-        "y": 220,
+        "y": 300,
         "wires": [
             [
                 "7c6e88aec9a62f9f"
@@ -123,13 +123,23 @@
         "conf": "651f0aab10dc1632",
         "symbol": "",
         "x": 540,
-        "y": 220,
+        "y": 300,
         "wires": [
             [
                 "9a9ed199b4ed078a",
                 "51d41de18a31fb0c",
                 "834373135e9331d4",
-                "ba852e16ccaa742d"
+                "ba852e16ccaa742d",
+                "36c7b7c6c3eb40dd",
+                "2d309a214d7c5727",
+                "792c1a238b47f173",
+                "bcac8089f10dbcd1",
+                "9cc4ecc46c0f0665",
+                "337c1a541358b887",
+                "807c848316eb7cea",
+                "cbe94e6f13557863",
+                "db6e53a567bd72b2",
+                "305586a91414e3a5"
             ]
         ]
     },
@@ -145,7 +155,7 @@
         "onceDelay": 0.1,
         "topic": "",
         "x": 130,
-        "y": 220,
+        "y": 300,
         "wires": [
             [
                 "8f442e587214d205"
@@ -166,8 +176,8 @@
         "parameterFieldType": "msg",
         "stripFunction": false,
         "resultOnly": true,
-        "x": 580,
-        "y": 320,
+        "x": 640,
+        "y": 400,
         "wires": [
             [
                 "939e66b4a0960c88"
@@ -186,7 +196,7 @@
         "finalize": "",
         "libs": [],
         "x": 350,
-        "y": 360,
+        "y": 440,
         "wires": [
             [
                 "9327e14e7f4a712c"
@@ -207,8 +217,8 @@
         "parameterFieldType": "msg",
         "stripFunction": false,
         "resultOnly": true,
-        "x": 580,
-        "y": 360,
+        "x": 640,
+        "y": 440,
         "wires": [
             [
                 "6a9630c39640f7ae"
@@ -227,7 +237,7 @@
         "finalize": "",
         "libs": [],
         "x": 350,
-        "y": 400,
+        "y": 480,
         "wires": [
             [
                 "ef62825e34c1e8d6"
@@ -248,8 +258,8 @@
         "parameterFieldType": "msg",
         "stripFunction": false,
         "resultOnly": true,
-        "x": 580,
-        "y": 400,
+        "x": 640,
+        "y": 480,
         "wires": [
             [
                 "491c3afb534f1089"
@@ -268,7 +278,7 @@
         "finalize": "",
         "libs": [],
         "x": 350,
-        "y": 440,
+        "y": 520,
         "wires": [
             [
                 "48330893eb3f96e9"
@@ -289,8 +299,8 @@
         "parameterFieldType": "msg",
         "stripFunction": false,
         "resultOnly": true,
-        "x": 580,
-        "y": 440,
+        "x": 640,
+        "y": 520,
         "wires": [
             [
                 "caa7e48071fb90f7"
@@ -316,8 +326,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 760,
-        "y": 320,
+        "x": 820,
+        "y": 400,
         "wires": [
             []
         ]
@@ -341,8 +351,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 740,
-        "y": 360,
+        "x": 800,
+        "y": 440,
         "wires": [
             []
         ]
@@ -366,8 +376,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 740,
-        "y": 400,
+        "x": 800,
+        "y": 480,
         "wires": [
             []
         ]
@@ -391,8 +401,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 740,
-        "y": 440,
+        "x": 800,
+        "y": 520,
         "wires": [
             []
         ]
@@ -402,14 +412,14 @@
         "type": "function",
         "z": "4734bd6f5faa8836",
         "name": "Display Stats",
-        "func": "let mean = flow.get(\"mean\")\nlet median = flow.get(\"median\")\nlet std = flow.get(\"stddev\")\nlet medianstd = flow.get(\"medianstddev\")\nlet price = flow.get(\"current_price\")\nlet ticker = flow.get(\"ticker\")\nnode.warn(\"Symbol: \" +ticker+ \" Price: \" +price+ \" Mean: \" +mean+ \" Median: \" +median+ \" Std Dev: \" +std+ \" Median Stddev:\" +medianstd)\nreturn msg;",
+        "func": "let mean = flow.get(\"mean\")\nlet median = flow.get(\"median\")\nlet std = flow.get(\"stddev\")\nlet medianstd = flow.get(\"medianstddev\")\nlet price = flow.get(\"current_price\")\nlet ticker = flow.get(\"ticker\")\nlet sum = flow.get(\"sum\")\nlet max = flow.get(\"max\")\nlet min = flow.get(\"min\")\nlet variance = flow.get(\"variance\")\nlet standardDeviation = flow.get(\"standardDeviation\")\nlet uniqueCount = flow.get(\"uniqueCount\")\nlet medianAbsoluteDeviation = flow.get(\"medianAbsoluteDeviation\")\nlet interquartileRange = flow.get(\"interquartileRange\")\nlet quartile = flow.get(\"quartile\")\nlet quartileRank = flow.get(\"quartileRank\")\nlet sampleKurtosis = flow.get(\"sampleKurtosis\")\nlet sampleSkewness = flow.get(\"sampleSkewness\")\nlet sampleStandardDeviation = flow.get(\"sampleStandardDeviation\")\n\n\n\n\nnode.warn(\"Symbol: \" + ticker + \" Price: \" + price + \" Mean: \" + mean + \" Median: \" + median + \" Std Dev: \" + std + \" Median Stddev:\" + medianstd + \"  sum: \" + sum + \" max: \" + max + \" min: \" + min + \" mean: \" + mean + \" median: \" + median + \" variance: \" + variance + \" uniqueCount: \" + uniqueCount + \" medianAbsoluteDeviation: \" + medianAbsoluteDeviation + \" interquartileRange: \" + interquartileRange + \" sampleKurtosis: \" + sampleKurtosis + \" sampleSkewness: \" + sampleSkewness + \" sampleStandardDeviation: \" + sampleStandardDeviation)\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 270,
-        "y": 520,
+        "y": 220,
         "wires": [
             []
         ]
@@ -515,11 +525,671 @@
         "payload": "",
         "payloadType": "date",
         "x": 120,
-        "y": 520,
+        "y": 220,
         "wires": [
             [
                 "eb5550b93aeb3c96"
             ]
+        ]
+    },
+    {
+        "id": "36c7b7c6c3eb40dd",
+        "type": "function",
+        "z": "4734bd6f5faa8836",
+        "name": "create array for sum",
+        "func": "const prices = [];\nlet item = ''\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    prices.push(price);  \n//    node.warn(price)\n\n}\n\n//node.warn(prices)\nmsg.payload = prices\nmsg.topic = 'data/sum'\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 560,
+        "wires": [
+            [
+                "fc8dacfd31e20c48"
+            ]
+        ]
+    },
+    {
+        "id": "fc8dacfd31e20c48",
+        "type": "statistics",
+        "z": "4734bd6f5faa8836",
+        "name": "",
+        "dataSetSize": "1000",
+        "inputField": "payload",
+        "inputFieldType": "msg",
+        "resultField": "payload",
+        "resultFieldType": "msg",
+        "parameterField": "",
+        "parameterFieldType": "msg",
+        "stripFunction": false,
+        "resultOnly": true,
+        "x": 640,
+        "y": 560,
+        "wires": [
+            [
+                "1cb5a46fa83819cb"
+            ]
+        ]
+    },
+    {
+        "id": "2d309a214d7c5727",
+        "type": "function",
+        "z": "4734bd6f5faa8836",
+        "name": "create array for max",
+        "func": "const prices = [];\nlet item = ''\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    prices.push(price);  \n//    node.warn(price)\n\n}\n\n//node.warn(prices)\nmsg.payload = prices\nmsg.topic = 'data/max'\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 600,
+        "wires": [
+            [
+                "453782b876d2cc21"
+            ]
+        ]
+    },
+    {
+        "id": "453782b876d2cc21",
+        "type": "statistics",
+        "z": "4734bd6f5faa8836",
+        "name": "",
+        "dataSetSize": "1000",
+        "inputField": "payload",
+        "inputFieldType": "msg",
+        "resultField": "payload",
+        "resultFieldType": "msg",
+        "parameterField": "",
+        "parameterFieldType": "msg",
+        "stripFunction": false,
+        "resultOnly": true,
+        "x": 640,
+        "y": 600,
+        "wires": [
+            [
+                "f73992a77ac9928e"
+            ]
+        ]
+    },
+    {
+        "id": "792c1a238b47f173",
+        "type": "function",
+        "z": "4734bd6f5faa8836",
+        "name": "create array for min",
+        "func": "const prices = [];\nlet item = ''\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    prices.push(price);  \n//    node.warn(price)\n\n}\n\n//node.warn(prices)\nmsg.payload = prices\nmsg.topic = 'data/min'\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 640,
+        "wires": [
+            [
+                "7f45e010d67e5dce"
+            ]
+        ]
+    },
+    {
+        "id": "7f45e010d67e5dce",
+        "type": "statistics",
+        "z": "4734bd6f5faa8836",
+        "name": "",
+        "dataSetSize": "1000",
+        "inputField": "payload",
+        "inputFieldType": "msg",
+        "resultField": "payload",
+        "resultFieldType": "msg",
+        "parameterField": "",
+        "parameterFieldType": "msg",
+        "stripFunction": false,
+        "resultOnly": true,
+        "x": 640,
+        "y": 640,
+        "wires": [
+            [
+                "16f20c2a8a8b3807"
+            ]
+        ]
+    },
+    {
+        "id": "1cb5a46fa83819cb",
+        "type": "change",
+        "z": "4734bd6f5faa8836",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "sum",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 790,
+        "y": 560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f73992a77ac9928e",
+        "type": "change",
+        "z": "4734bd6f5faa8836",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "max",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 790,
+        "y": 600,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "16f20c2a8a8b3807",
+        "type": "change",
+        "z": "4734bd6f5faa8836",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "min",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 790,
+        "y": 640,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "bcac8089f10dbcd1",
+        "type": "function",
+        "z": "4734bd6f5faa8836",
+        "name": "create array for variance",
+        "func": "const prices = [];\nlet item = ''\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    prices.push(price);  \n//    node.warn(price)\n\n}\n\n//node.warn(prices)\nmsg.payload = prices\nmsg.topic = 'data/variance'\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 680,
+        "wires": [
+            [
+                "4ac2025f8c9c0712"
+            ]
+        ]
+    },
+    {
+        "id": "4ac2025f8c9c0712",
+        "type": "statistics",
+        "z": "4734bd6f5faa8836",
+        "name": "",
+        "dataSetSize": "1000",
+        "inputField": "payload",
+        "inputFieldType": "msg",
+        "resultField": "payload",
+        "resultFieldType": "msg",
+        "parameterField": "",
+        "parameterFieldType": "msg",
+        "stripFunction": false,
+        "resultOnly": true,
+        "x": 640,
+        "y": 680,
+        "wires": [
+            [
+                "d8b5fc45236f8921"
+            ]
+        ]
+    },
+    {
+        "id": "9cc4ecc46c0f0665",
+        "type": "function",
+        "z": "4734bd6f5faa8836",
+        "name": "create array for uniqueCount",
+        "func": "const prices = [];\nlet item = ''\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    prices.push(price);  \n//    node.warn(price)\n\n}\n\n//node.warn(prices)\nmsg.payload = prices\nmsg.topic = 'data/uniqueCount'\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 720,
+        "wires": [
+            [
+                "f4e726fde5badf7b"
+            ]
+        ]
+    },
+    {
+        "id": "f4e726fde5badf7b",
+        "type": "statistics",
+        "z": "4734bd6f5faa8836",
+        "name": "",
+        "dataSetSize": "1000",
+        "inputField": "payload",
+        "inputFieldType": "msg",
+        "resultField": "payload",
+        "resultFieldType": "msg",
+        "parameterField": "",
+        "parameterFieldType": "msg",
+        "stripFunction": false,
+        "resultOnly": true,
+        "x": 640,
+        "y": 720,
+        "wires": [
+            [
+                "a08e6b4b47cc973f"
+            ]
+        ]
+    },
+    {
+        "id": "337c1a541358b887",
+        "type": "function",
+        "z": "4734bd6f5faa8836",
+        "name": "create array for medianAbsoluteDeviation",
+        "func": "const prices = [];\nlet item = ''\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    prices.push(price);  \n//    node.warn(price)\n\n}\n\n//node.warn(prices)\nmsg.payload = prices\nmsg.topic = 'data/medianAbsoluteDeviation'\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 760,
+        "wires": [
+            [
+                "4f1eefdc247adddf"
+            ]
+        ]
+    },
+    {
+        "id": "4f1eefdc247adddf",
+        "type": "statistics",
+        "z": "4734bd6f5faa8836",
+        "name": "",
+        "dataSetSize": "1000",
+        "inputField": "payload",
+        "inputFieldType": "msg",
+        "resultField": "payload",
+        "resultFieldType": "msg",
+        "parameterField": "",
+        "parameterFieldType": "msg",
+        "stripFunction": false,
+        "resultOnly": true,
+        "x": 640,
+        "y": 760,
+        "wires": [
+            [
+                "f24fdd6f24e2b6e4"
+            ]
+        ]
+    },
+    {
+        "id": "d8b5fc45236f8921",
+        "type": "change",
+        "z": "4734bd6f5faa8836",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "variance",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 810,
+        "y": 680,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a08e6b4b47cc973f",
+        "type": "change",
+        "z": "4734bd6f5faa8836",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "uniqueCount",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 820,
+        "y": 720,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f24fdd6f24e2b6e4",
+        "type": "change",
+        "z": "4734bd6f5faa8836",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "medianAbsoluteDeviation",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 860,
+        "y": 760,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "807c848316eb7cea",
+        "type": "function",
+        "z": "4734bd6f5faa8836",
+        "name": "create array for interquartileRange",
+        "func": "const prices = [];\nlet item = ''\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    prices.push(price);  \n//    node.warn(price)\n\n}\n\n//node.warn(prices)\nmsg.payload = prices\nmsg.topic = 'data/interquartileRange'\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 800,
+        "wires": [
+            [
+                "cc07b6487f89d223"
+            ]
+        ]
+    },
+    {
+        "id": "cc07b6487f89d223",
+        "type": "statistics",
+        "z": "4734bd6f5faa8836",
+        "name": "",
+        "dataSetSize": "1000",
+        "inputField": "payload",
+        "inputFieldType": "msg",
+        "resultField": "payload",
+        "resultFieldType": "msg",
+        "parameterField": "",
+        "parameterFieldType": "msg",
+        "stripFunction": false,
+        "resultOnly": true,
+        "x": 640,
+        "y": 800,
+        "wires": [
+            [
+                "c2532c2098987038"
+            ]
+        ]
+    },
+    {
+        "id": "cbe94e6f13557863",
+        "type": "function",
+        "z": "4734bd6f5faa8836",
+        "name": "create array for sampleKurtosis",
+        "func": "const prices = [];\nlet item = ''\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    prices.push(price);  \n//    node.warn(price)\n\n}\n\n//node.warn(prices)\nmsg.payload = prices\nmsg.topic = 'data/sampleKurtosis'\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 920,
+        "wires": [
+            [
+                "05242978c9d9462a"
+            ]
+        ]
+    },
+    {
+        "id": "05242978c9d9462a",
+        "type": "statistics",
+        "z": "4734bd6f5faa8836",
+        "name": "",
+        "dataSetSize": "1000",
+        "inputField": "payload",
+        "inputFieldType": "msg",
+        "resultField": "payload",
+        "resultFieldType": "msg",
+        "parameterField": "",
+        "parameterFieldType": "msg",
+        "stripFunction": false,
+        "resultOnly": true,
+        "x": 640,
+        "y": 920,
+        "wires": [
+            [
+                "ec6844917d6e5199"
+            ]
+        ]
+    },
+    {
+        "id": "db6e53a567bd72b2",
+        "type": "function",
+        "z": "4734bd6f5faa8836",
+        "name": "create array for sampleSkewness",
+        "func": "const prices = [];\nlet item = ''\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    prices.push(price);  \n//    node.warn(price)\n\n}\n\n//node.warn(prices)\nmsg.payload = prices\nmsg.topic = 'data/sampleSkewness'\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 960,
+        "wires": [
+            [
+                "8e69f74eee6584cb"
+            ]
+        ]
+    },
+    {
+        "id": "8e69f74eee6584cb",
+        "type": "statistics",
+        "z": "4734bd6f5faa8836",
+        "name": "",
+        "dataSetSize": "1000",
+        "inputField": "payload",
+        "inputFieldType": "msg",
+        "resultField": "payload",
+        "resultFieldType": "msg",
+        "parameterField": "",
+        "parameterFieldType": "msg",
+        "stripFunction": false,
+        "resultOnly": true,
+        "x": 640,
+        "y": 960,
+        "wires": [
+            [
+                "cddd041eed847ca4"
+            ]
+        ]
+    },
+    {
+        "id": "c2532c2098987038",
+        "type": "change",
+        "z": "4734bd6f5faa8836",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "interquartileRange",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 840,
+        "y": 800,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ec6844917d6e5199",
+        "type": "change",
+        "z": "4734bd6f5faa8836",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "sampleKurtosis",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 830,
+        "y": 920,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "cddd041eed847ca4",
+        "type": "change",
+        "z": "4734bd6f5faa8836",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "sampleSkewness",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 830,
+        "y": 960,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "305586a91414e3a5",
+        "type": "function",
+        "z": "4734bd6f5faa8836",
+        "name": "create array for sampleStandardDeviation",
+        "func": "const prices = [];\nlet item = ''\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    prices.push(price);  \n//    node.warn(price)\n\n}\n\n//node.warn(prices)\nmsg.payload = prices\nmsg.topic = 'data/sampleStandardDeviation'\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 1000,
+        "wires": [
+            [
+                "a96044881c230060"
+            ]
+        ]
+    },
+    {
+        "id": "a96044881c230060",
+        "type": "statistics",
+        "z": "4734bd6f5faa8836",
+        "name": "",
+        "dataSetSize": "1000",
+        "inputField": "payload",
+        "inputFieldType": "msg",
+        "resultField": "payload",
+        "resultFieldType": "msg",
+        "parameterField": "",
+        "parameterFieldType": "msg",
+        "stripFunction": false,
+        "resultOnly": true,
+        "x": 640,
+        "y": 1000,
+        "wires": [
+            [
+                "9adeb5c0db45bd94"
+            ]
+        ]
+    },
+    {
+        "id": "9adeb5c0db45bd94",
+        "type": "change",
+        "z": "4734bd6f5faa8836",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "sampleStandardDeviation",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 860,
+        "y": 1000,
+        "wires": [
+            []
         ]
     },
     {
