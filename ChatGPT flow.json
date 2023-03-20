@@ -1,0 +1,172 @@
+[
+    {
+        "id": "0910e095e9f6c62d",
+        "type": "tab",
+        "label": "ChatCPT",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "889b17f9bb30ef9c",
+        "type": "ptschatgpt",
+        "z": "0910e095e9f6c62d",
+        "name": "",
+        "filename": "",
+        "encoding": "none",
+        "x": 430,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "f0d2450760753151",
+        "type": "inject",
+        "z": "0910e095e9f6c62d",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 140,
+        "y": 160,
+        "wires": [
+            [
+                "f72be2ec2709868b"
+            ]
+        ]
+    },
+    {
+        "id": "1ed3d553b0c23eb0",
+        "type": "postgresql",
+        "z": "0910e095e9f6c62d",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 460,
+        "y": 160,
+        "wires": [
+            [
+                "9008ae78e17328f9"
+            ]
+        ]
+    },
+    {
+        "id": "9008ae78e17328f9",
+        "type": "debug",
+        "z": "0910e095e9f6c62d",
+        "name": "debug 368",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 610,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "f72be2ec2709868b",
+        "type": "function",
+        "z": "0910e095e9f6c62d",
+        "name": "count orderss",
+        "func": "msg.query = 'SELECT COUNT(*) FROM orders;'\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 160,
+        "wires": [
+            [
+                "1ed3d553b0c23eb0"
+            ]
+        ]
+    },
+    {
+        "id": "7b122f0bbff0c896",
+        "type": "function",
+        "z": "0910e095e9f6c62d",
+        "name": "write query",
+        "func": "//msg.payload = \"write a postgres query for getting a count of the orders table\"\nmsg.payload = \"write a postgres query that counts the number of rows in the orders table\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 100,
+        "wires": [
+            [
+                "889b17f9bb30ef9c"
+            ]
+        ]
+    },
+    {
+        "id": "dad7e68b3394062a",
+        "type": "inject",
+        "z": "0910e095e9f6c62d",
+        "name": "GO",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 100,
+        "wires": [
+            [
+                "7b122f0bbff0c896"
+            ]
+        ]
+    },
+    {
+        "id": "7455395cf269fb2b",
+        "type": "postgreSQLConfig",
+        "name": "",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "postgres",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "docker",
+        "userFieldType": "str",
+        "password": "docker",
+        "passwordFieldType": "str"
+    }
+]
