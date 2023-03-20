@@ -1,0 +1,530 @@
+[
+    {
+        "id": "4734bd6f5faa8836",
+        "type": "tab",
+        "label": "Using Statistics",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "370ebc4d3f47eb09",
+        "type": "function-npm",
+        "z": "4734bd6f5faa8836",
+        "name": "Get last trade",
+        "func": "let symbol = flow.get(\"ticker\")\n\nlet cnt = 1\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: cnt,\n}\n\n\n//node.warn(symbol)\n//node.warn(msg.payload)\nmsg.symbol = symbol\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 300,
+        "y": 140,
+        "wires": [
+            [
+                "3fceee5915b5b15b"
+            ]
+        ]
+    },
+    {
+        "id": "3fceee5915b5b15b",
+        "type": "polygon-last-trade-v3",
+        "z": "4734bd6f5faa8836",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "x": 520,
+        "y": 140,
+        "wires": [
+            [
+                "7182e7a46d623354"
+            ]
+        ]
+    },
+    {
+        "id": "7182e7a46d623354",
+        "type": "function",
+        "z": "4734bd6f5faa8836",
+        "name": "display diff",
+        "func": "const prices = [];\nlet item = ''\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload.results) {\n    price = item.price; // this is the price of the last trade\n\n}\n\n\nlet avg = msg.moving_avg\nlet ticker = msg.symbol\n\nlet diff = price - avg\ndiff = diff.toFixed(2)\n\n//node.warn(\"Ticker: \" + ticker + \" Current Price: \" + price + \" Avg Price: \" + avg + \" Diff: \" + diff)\nmsg.diff = diff\nmsg.price = price\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
+        "y": 140,
+        "wires": [
+            [
+                "2a29a59479a6d8e8"
+            ]
+        ]
+    },
+    {
+        "id": "2a29a59479a6d8e8",
+        "type": "change",
+        "z": "4734bd6f5faa8836",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "current_price",
+                "pt": "flow",
+                "to": "price",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 900,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9a9ed199b4ed078a",
+        "type": "function",
+        "z": "4734bd6f5faa8836",
+        "name": "create array for median std dev",
+        "func": "const prices = [];\nlet item = ''\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    prices.push(price);  \n//    node.warn(price)\n\n}\n\n//node.warn(prices)\nmsg.payload = prices\nmsg.topic = 'data/medianAbsoluteDeviation'\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 320,
+        "wires": [
+            [
+                "5478585014684a22"
+            ]
+        ]
+    },
+    {
+        "id": "8f442e587214d205",
+        "type": "function-npm",
+        "z": "4734bd6f5faa8836",
+        "name": "Get past 1000 trades",
+        "func": "let symbol = flow.get(\"ticker\")\n\n// use polygon format for cryptos\n//let symbol = \"X:ETHUSD\"\n\n\n\nlet cnt = 1000 // set count here\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: cnt,\n}\n\n\n//node.warn(symbol)\n//node.warn(msg.payload)\nmsg.symbol = symbol\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 320,
+        "y": 220,
+        "wires": [
+            [
+                "7c6e88aec9a62f9f"
+            ]
+        ]
+    },
+    {
+        "id": "7c6e88aec9a62f9f",
+        "type": "polygon-last-trade-v3",
+        "z": "4734bd6f5faa8836",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "x": 540,
+        "y": 220,
+        "wires": [
+            [
+                "9a9ed199b4ed078a",
+                "51d41de18a31fb0c",
+                "834373135e9331d4",
+                "ba852e16ccaa742d"
+            ]
+        ]
+    },
+    {
+        "id": "f4911db5d985900e",
+        "type": "inject",
+        "z": "4734bd6f5faa8836",
+        "name": "Every second",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 220,
+        "wires": [
+            [
+                "8f442e587214d205"
+            ]
+        ]
+    },
+    {
+        "id": "5478585014684a22",
+        "type": "statistics",
+        "z": "4734bd6f5faa8836",
+        "name": "",
+        "dataSetSize": "1000",
+        "inputField": "payload",
+        "inputFieldType": "msg",
+        "resultField": "payload",
+        "resultFieldType": "msg",
+        "parameterField": "",
+        "parameterFieldType": "msg",
+        "stripFunction": false,
+        "resultOnly": true,
+        "x": 580,
+        "y": 320,
+        "wires": [
+            [
+                "939e66b4a0960c88"
+            ]
+        ]
+    },
+    {
+        "id": "51d41de18a31fb0c",
+        "type": "function",
+        "z": "4734bd6f5faa8836",
+        "name": "create array for std dev",
+        "func": "const prices = [];\nlet item = ''\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    prices.push(price);  \n//    node.warn(price)\n\n}\n\n//node.warn(prices)\nmsg.payload = prices\nmsg.topic = 'data/standardDeviation'\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 360,
+        "wires": [
+            [
+                "9327e14e7f4a712c"
+            ]
+        ]
+    },
+    {
+        "id": "9327e14e7f4a712c",
+        "type": "statistics",
+        "z": "4734bd6f5faa8836",
+        "name": "",
+        "dataSetSize": "1000",
+        "inputField": "payload",
+        "inputFieldType": "msg",
+        "resultField": "payload",
+        "resultFieldType": "msg",
+        "parameterField": "",
+        "parameterFieldType": "msg",
+        "stripFunction": false,
+        "resultOnly": true,
+        "x": 580,
+        "y": 360,
+        "wires": [
+            [
+                "6a9630c39640f7ae"
+            ]
+        ]
+    },
+    {
+        "id": "834373135e9331d4",
+        "type": "function",
+        "z": "4734bd6f5faa8836",
+        "name": "create array for average",
+        "func": "const prices = [];\nlet item = ''\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    prices.push(price);  \n//    node.warn(price)\n\n}\n\n//node.warn(prices)\nmsg.payload = prices\nmsg.topic = 'data/mean'\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 400,
+        "wires": [
+            [
+                "ef62825e34c1e8d6"
+            ]
+        ]
+    },
+    {
+        "id": "ef62825e34c1e8d6",
+        "type": "statistics",
+        "z": "4734bd6f5faa8836",
+        "name": "",
+        "dataSetSize": "1000",
+        "inputField": "payload",
+        "inputFieldType": "msg",
+        "resultField": "payload",
+        "resultFieldType": "msg",
+        "parameterField": "",
+        "parameterFieldType": "msg",
+        "stripFunction": false,
+        "resultOnly": true,
+        "x": 580,
+        "y": 400,
+        "wires": [
+            [
+                "491c3afb534f1089"
+            ]
+        ]
+    },
+    {
+        "id": "ba852e16ccaa742d",
+        "type": "function",
+        "z": "4734bd6f5faa8836",
+        "name": "create array for median",
+        "func": "const prices = [];\nlet item = ''\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    prices.push(price);  \n//    node.warn(price)\n\n}\n\n//node.warn(prices)\nmsg.payload = prices\nmsg.topic = 'data/median'\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 440,
+        "wires": [
+            [
+                "48330893eb3f96e9"
+            ]
+        ]
+    },
+    {
+        "id": "48330893eb3f96e9",
+        "type": "statistics",
+        "z": "4734bd6f5faa8836",
+        "name": "",
+        "dataSetSize": "1000",
+        "inputField": "payload",
+        "inputFieldType": "msg",
+        "resultField": "payload",
+        "resultFieldType": "msg",
+        "parameterField": "",
+        "parameterFieldType": "msg",
+        "stripFunction": false,
+        "resultOnly": true,
+        "x": 580,
+        "y": 440,
+        "wires": [
+            [
+                "caa7e48071fb90f7"
+            ]
+        ]
+    },
+    {
+        "id": "939e66b4a0960c88",
+        "type": "change",
+        "z": "4734bd6f5faa8836",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "medianstddev",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 760,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6a9630c39640f7ae",
+        "type": "change",
+        "z": "4734bd6f5faa8836",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "stddev",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 740,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "491c3afb534f1089",
+        "type": "change",
+        "z": "4734bd6f5faa8836",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "mean",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 740,
+        "y": 400,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "caa7e48071fb90f7",
+        "type": "change",
+        "z": "4734bd6f5faa8836",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "median",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 740,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "eb5550b93aeb3c96",
+        "type": "function",
+        "z": "4734bd6f5faa8836",
+        "name": "Display Stats",
+        "func": "let mean = flow.get(\"mean\")\nlet median = flow.get(\"median\")\nlet std = flow.get(\"stddev\")\nlet medianstd = flow.get(\"medianstddev\")\nlet price = flow.get(\"current_price\")\nlet ticker = flow.get(\"ticker\")\nnode.warn(\"Symbol: \" +ticker+ \" Price: \" +price+ \" Mean: \" +mean+ \" Median: \" +median+ \" Std Dev: \" +std+ \" Median Stddev:\" +medianstd)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 520,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f0f4a4186e568934",
+        "type": "inject",
+        "z": "4734bd6f5faa8836",
+        "name": "set ticker",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "TSLA",
+        "payloadType": "str",
+        "x": 120,
+        "y": 60,
+        "wires": [
+            [
+                "24c7f7a47ccb8fc6"
+            ]
+        ]
+    },
+    {
+        "id": "24c7f7a47ccb8fc6",
+        "type": "change",
+        "z": "4734bd6f5faa8836",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "ticker",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 280,
+        "y": 60,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "fb101cb030b99635",
+        "type": "inject",
+        "z": "4734bd6f5faa8836",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 120,
+        "y": 140,
+        "wires": [
+            [
+                "370ebc4d3f47eb09"
+            ]
+        ]
+    },
+    {
+        "id": "2b953f462c8889d2",
+        "type": "inject",
+        "z": "4734bd6f5faa8836",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 120,
+        "y": 520,
+        "wires": [
+            [
+                "eb5550b93aeb3c96"
+            ]
+        ]
+    },
+    {
+        "id": "651f0aab10dc1632",
+        "type": "polygon-account",
+        "name": "Polygon Key"
+    }
+]
