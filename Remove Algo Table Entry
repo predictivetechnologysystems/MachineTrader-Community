@@ -1,0 +1,96 @@
+[
+    {
+        "id": "30cb5a7584a4b2ef",
+        "type": "tab",
+        "label": "Remove Entry from Algos Table",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "bfca73b1a6d001da",
+        "type": "inject",
+        "z": "30cb5a7584a4b2ef",
+        "name": "",
+        "props": [
+            {
+                "p": "query",
+                "v": "delete from algos where id = 1676896195807",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 210,
+        "y": 300,
+        "wires": [
+            [
+                "e3ad5bb0b2de5efd"
+            ]
+        ]
+    },
+    {
+        "id": "e3ad5bb0b2de5efd",
+        "type": "postgresql",
+        "z": "30cb5a7584a4b2ef",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 480,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "220dd6154299b108",
+        "type": "comment",
+        "z": "30cb5a7584a4b2ef",
+        "name": "Use this SQL query to remove unwanted entries from the \"Your Algo Strategies\" table",
+        "info": "",
+        "x": 420,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "39ef5a5e8a450fa4",
+        "type": "comment",
+        "z": "30cb5a7584a4b2ef",
+        "name": "Double click the inject node and overwrite the Strategy ID number with the Strategy ID number from the unwanted table entry",
+        "info": "",
+        "x": 540,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "7455395cf269fb2b",
+        "type": "postgreSQLConfig",
+        "name": "",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "postgres",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "docker",
+        "userFieldType": "str",
+        "password": "docker",
+        "passwordFieldType": "str"
+    }
+]
