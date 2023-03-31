@@ -1,0 +1,41 @@
+[
+    {
+        "id": "a79b076caaf2727d",
+        "type": "inject",
+        "z": "362267b7f6844d44",
+        "name": "GO",
+        "props": [],
+        "repeat": "5",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 820,
+        "wires": [
+            [
+                "e90a6764cfb5fca0"
+            ]
+        ]
+    },
+    {
+        "id": "e90a6764cfb5fca0",
+        "type": "function",
+        "z": "362267b7f6844d44",
+        "name": "time of day",
+        "func": "let d = new Date();\nlet hour = d.getHours();\nif ( hour > 9 && hour < 16){ //node.warn(\"Market Open\")\nreturn msg;\n}\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 820,
+        "wires": [
+            [
+                "622a9bf9d8cf6cf9",
+                "d2d53c9586b4d0bc"
+            ]
+        ]
+    }
+]
