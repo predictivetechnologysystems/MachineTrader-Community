@@ -1303,7 +1303,7 @@
         "type": "function",
         "z": "362267b7f6844d44",
         "name": "create Alpaca buy or sell order ",
-        "func": "let pos = flow.get(\"position\")\n//node.warn(\"Position: \" +pos)\n\n\nif (pos > 0 || pos < 0){\n//    node.warn(\"holding a position\")\n}\n\nif (pos == 0) {\n  //  node.warn(\"position is zero\")\n\n\n    let alpaca_ticker = flow.get(\"alpaca_ticker\")\n//    let alpaca_ticker = 'QQQ'\n    let algo_name = flow.get(\"algo_name\")\n    let number = flow.get(\"number\")\n    let psize = flow.get(\"psize\")\n    let diff = flow.get(\"diff\")\n    let price = flow.get(\"price\")\n\n    let qty = ((psize / number) / price)\n    qty = qty.toFixed(0)\n\n    price = +price\n    price = price.toFixed(2)\n\n\n //   node.warn(\"Algoname: \" +algo_name+ \" Ticker: \" +alpaca_ticker+ \" Qty: \" +qty+ \" Price: \" +price+ \" Portfolio: \" +psize+ \" Number: \" +number+ \" Diff: \" +diff)\n \n \n    // create a unique clientid with unixtime\n    let d = Date.now()\n    let client_order_id = alpaca_ticker + d\n    msg.clientorderid = client_order_id // passes this variable in the flow \n\n    let subtag = d\n    let temp = ''\n\n    // exception handling for missing flow variables\n    if (alpaca_ticker == null) { alpaca_ticker = 'ETH/USD' }\n    if (qty == null) { qty = 6 }\n\n    let side = 'buy'\n\n// make a long order \n    if ((diff < - 0.14) || (diff > 0.14)  ){\n    if ( diff > 0) { side = 'sell'}\n        temp = {\n            \"symbol\": alpaca_ticker,\n            \"qty\": qty,\n            \"side\": side,\n            \"type\": 'limit',\n            \"client_order_id\": client_order_id,\n            \"limit_price\": price,  // limit orders only\n            //    \"subtag\": subtag,\n            \"time_in_force\": \"gtc\"\n        }; // line 46\n\n        msg.payload = temp\n        //node.warn(msg.payload)\n        return msg;\n    } // line 44\n\n\n} // line 9\n\n",
+        "func": "let pos = flow.get(\"position\")\n//node.warn(\"Position: \" +pos)\n\n\nif (pos > 0 || pos < 0){\n//    node.warn(\"holding a position\")\n}\n\nif (pos == 0) {\n  //  node.warn(\"position is zero\")\n\n\n    let alpaca_ticker = flow.get(\"alpaca_ticker\")\n//    let alpaca_ticker = 'QQQ'\n    let algo_name = flow.get(\"algo_name\")\n    let number = flow.get(\"number\")\n    let psize = flow.get(\"psize\")\n    let diff = flow.get(\"diff\")\n    let price = flow.get(\"price\")\n\n    let qty = ((psize / number) / price)\n    qty = qty.toFixed(0)\n\n    price = +price\n    price = price.toFixed(2)\n\n\n //   node.warn(\"Algoname: \" +algo_name+ \" Ticker: \" +alpaca_ticker+ \" Qty: \" +qty+ \" Price: \" +price+ \" Portfolio: \" +psize+ \" Number: \" +number+ \" Diff: \" +diff)\n \n \n    // create a unique clientid with unixtime\n    let d = Date.now()\n    let client_order_id = alpaca_ticker + d\n    msg.clientorderid = client_order_id // passes this variable in the flow \n\n    let subtag = d\n    let temp = ''\n    let side = 'buy'\n\n    // exception handling for missing flow variables\n    if (alpaca_ticker == null) { alpaca_ticker = 'ETH/USD' }\n    if (qty == null) { qty = 6 }\n\n    if ((diff < - 0.14) ||  (diff > 0.14) ){\n        if ( diff > 0.14 ) { side = 'sell' }\n\n        temp = {\n            \"symbol\": alpaca_ticker,\n            \"qty\": qty,\n            \"side\": side,\n            \"type\": 'limit',\n            \"client_order_id\": client_order_id,\n            \"limit_price\": price,  // limit orders only\n            //    \"subtag\": subtag,\n            \"time_in_force\": \"gtc\"\n        }; // line 46\n\n        msg.payload = temp\n        //node.warn(msg.payload)\n        return msg;\n    } // line 44\n\n\n} // line 9\n\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1397,26 +1397,7 @@
         "y": 820,
         "wires": [
             [
-                "e90a6764cfb5fca0"
-            ]
-        ]
-    },
-    {
-        "id": "7a72ec851f0796b7",
-        "type": "function",
-        "z": "362267b7f6844d44",
-        "name": "time of day",
-        "func": "let d = new Date();\nlet hour = d.getHours();\nif ( hour > 9 && hour < 16){  // node.warn(\"Market Open\")\nreturn msg;\n}\n\n",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 270,
-        "y": 960,
-        "wires": [
-            [
-                "34cbac4ac86eed22"
+                "a105efe2e60858bc"
             ]
         ]
     },
@@ -1425,13 +1406,13 @@
         "type": "function",
         "z": "362267b7f6844d44",
         "name": "time of day",
-        "func": "let d = new Date();\nlet hour = d.getHours();\nif ( hour > 9 && hour < 16){ //node.warn(\"Market Open\")\nreturn msg;\n}\n\n",
+        "func": "let d = new Date();\nlet hour = d.getHours();\n\n// get the day of the week as a number (0 = Sunday, 1 = Monday, etc.)\nconst day = d.getDay();\n//node.warn(day)\n\n\nif ( (hour > 9 && hour < 16) || (day > 0 && day < 6) ){ //node.warn(\"Market Open\")\n\nreturn msg;\n}\n\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 270,
+        "x": 250,
         "y": 1180,
         "wires": [
             [
@@ -1464,7 +1445,7 @@
         "y": 960,
         "wires": [
             [
-                "7a72ec851f0796b7"
+                "1ede43f8a86f5e3e"
             ]
         ]
     },
@@ -1544,26 +1525,6 @@
         "wires": [
             [
                 "3cc02180e09359ba"
-            ]
-        ]
-    },
-    {
-        "id": "e90a6764cfb5fca0",
-        "type": "function",
-        "z": "362267b7f6844d44",
-        "name": "time of day",
-        "func": "let d = new Date();\nlet hour = d.getHours();\nif ( hour > 9 && hour < 16){ //node.warn(\"Market Open\")\nreturn msg;\n}\n\n",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 250,
-        "y": 820,
-        "wires": [
-            [
-                "622a9bf9d8cf6cf9",
-                "d2d53c9586b4d0bc"
             ]
         ]
     },
@@ -1742,9 +1703,7 @@
         "x": 130,
         "y": 1600,
         "wires": [
-            [
-                "063dfcbf288cc156"
-            ]
+            []
         ]
     },
     {
@@ -1911,7 +1870,9 @@
         "x": 1030,
         "y": 1180,
         "wires": [
-            []
+            [
+                "b613e3a28d30a9ac"
+            ]
         ]
     },
     {
@@ -2020,6 +1981,43 @@
         "wires": [
             [
                 "9e37848638363d2f"
+            ]
+        ]
+    },
+    {
+        "id": "1ede43f8a86f5e3e",
+        "type": "function",
+        "z": "362267b7f6844d44",
+        "name": "time of day",
+        "func": "let d = new Date();\nlet hour = d.getHours();\n\n// get the day of the week as a number (0 = Sunday, 1 = Monday, etc.)\nconst day = d.getDay();\n//node.warn(day)\n\n\nif ( (hour > 9 && hour < 16) || (day > 0 && day < 6) ){ //node.warn(\"Market Open\")\n\nreturn msg;\n}\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 960,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a105efe2e60858bc",
+        "type": "function",
+        "z": "362267b7f6844d44",
+        "name": "time of day",
+        "func": "let d = new Date();\nlet hour = d.getHours();\n\n// get the day of the week as a number (0 = Sunday, 1 = Monday, etc.)\nconst day = d.getDay();\n//node.warn(day)\n\n\nif ( (hour > 9 && hour < 16) || (day > 0 && day < 6) ){ //node.warn(\"Market Open\")\n\nreturn msg;\n}\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 820,
+        "wires": [
+            [
+                "622a9bf9d8cf6cf9",
+                "d2d53c9586b4d0bc"
             ]
         ]
     },
