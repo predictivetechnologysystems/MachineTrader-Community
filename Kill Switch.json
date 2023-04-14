@@ -1,0 +1,155 @@
+[
+    {
+        "id": "6272ae55e7590958",
+        "type": "tab",
+        "label": "Kill Switch",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "fe218202b39637b0",
+        "type": "inject",
+        "z": "6272ae55e7590958",
+        "name": "Start",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "control",
+        "payload": "open",
+        "payloadType": "str",
+        "x": 130,
+        "y": 100,
+        "wires": [
+            [
+                "51cc325a7c4158c2"
+            ]
+        ]
+    },
+    {
+        "id": "ce51e4c44d87c141",
+        "type": "inject",
+        "z": "6272ae55e7590958",
+        "name": "Stop",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "control",
+        "payload": "close",
+        "payloadType": "str",
+        "x": 130,
+        "y": 160,
+        "wires": [
+            [
+                "d05e28c0b56b112e"
+            ]
+        ]
+    },
+    {
+        "id": "51cc325a7c4158c2",
+        "type": "link out",
+        "z": "6272ae55e7590958",
+        "name": "link out 7",
+        "mode": "link",
+        "links": [
+            "a53e91baaaaaf399",
+            "f3d3397c5a59c8a3",
+            "288c61ddeb493db3",
+            "905485f430470872",
+            "43ef644180cf92c8",
+            "c3628b7edda6b077",
+            "5a320148861fd493",
+            "aeb8c8949288daae"
+        ],
+        "x": 225,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "d05e28c0b56b112e",
+        "type": "link out",
+        "z": "6272ae55e7590958",
+        "name": "link out 8",
+        "mode": "link",
+        "links": [
+            "f3d3397c5a59c8a3",
+            "288c61ddeb493db3",
+            "905485f430470872",
+            "43ef644180cf92c8",
+            "c3628b7edda6b077",
+            "5a320148861fd493",
+            "aeb8c8949288daae"
+        ],
+        "x": 225,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "905485f430470872",
+        "type": "link in",
+        "z": "6272ae55e7590958",
+        "name": "link in 8",
+        "links": [
+            "3558988dd06142f4",
+            "b4a219110a81484f",
+            "51cc325a7c4158c2",
+            "d05e28c0b56b112e"
+        ],
+        "x": 105,
+        "y": 300,
+        "wires": [
+            [
+                "85ede6e601f0928d"
+            ]
+        ]
+    },
+    {
+        "id": "85ede6e601f0928d",
+        "type": "gate",
+        "z": "6272ae55e7590958",
+        "name": "kill switch",
+        "controlTopic": "control",
+        "defaultState": "open",
+        "openCmd": "open",
+        "closeCmd": "close",
+        "toggleCmd": "toggle",
+        "defaultCmd": "default",
+        "statusCmd": "status",
+        "persist": false,
+        "x": 200,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c0477d34ae1064b5",
+        "type": "comment",
+        "z": "6272ae55e7590958",
+        "name": "Place these nodes after inject node at start of flow",
+        "info": "",
+        "x": 250,
+        "y": 240,
+        "wires": []
+    }
+]
