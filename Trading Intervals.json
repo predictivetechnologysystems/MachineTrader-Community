@@ -1,0 +1,22 @@
+[
+    {
+        "id": "cc778db2bd5aa602",
+        "type": "function",
+        "z": "60e75e527eb032bd",
+        "name": "trading interval",
+        "func": "let d = new Date();\nlet hour = d.getHours();\nlet min = d.getMinutes();\nlet day = d.getDay();\nlet sec = d.getSeconds();\n\n//node.warn(\"Day: \" +day+ \" Hour: \" +hour+ \" Minute: \" +min+ \" Seconds: \" +sec)\n\n// this should run once a minute during trading hours when the second = 1\nif ( day > 0 && day < 6 && hour > 9 && hour < 16 ){ node.warn(\"Market Open\")\nreturn msg;\n}\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 240,
+        "y": 820,
+        "wires": [
+            [
+                "c372296b00835a76",
+                "6f27be3bc216ad82"
+            ]
+        ]
+    }
+]
