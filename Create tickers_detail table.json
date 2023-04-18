@@ -1,0 +1,213 @@
+[
+    {
+        "id": "1ce5b441cc677c94",
+        "type": "tab",
+        "label": "Create tickers_detail table",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "0bcccff3f407f116",
+        "type": "function",
+        "z": "1ce5b441cc677c94",
+        "name": "create tickers_detail",
+        "func": "msg.query = \"create table IF NOT EXISTS tickers_detail (ticker varchar(10) PRIMARY KEY, name varchar(200), market varchar(10), locale varchar(10), primary_exchange varchar(10), type varchar(10),active varchar(10),currency_name varchar(10),cik varchar(100),composite_figi varchar(20), share_class_figi varchar(20), market_cap FLOAT, phone_number varchar(20),address1 varchar(100), description varchar(5000), sic_code varchar(10), sic_description varchar(100), ticker_root varchar(10), homepage_url varchar(200), total_employees int, list_date varchar(20), branding varchar(10), share_class_shares_outstanding bigint, weighted_shares_outstanding bigint, round_lot int, beta float, current_price float, stddev float);\"\n//msg.query = \"truncate table tickers_detail\"\n//msg.query = \"DROP TABLE tickers_detail\"\n\nnode.warn(msg.query)\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 140,
+        "wires": [
+            [
+                "494ffc2764306df1"
+            ]
+        ]
+    },
+    {
+        "id": "494ffc2764306df1",
+        "type": "postgresql",
+        "z": "1ce5b441cc677c94",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 520,
+        "y": 140,
+        "wires": [
+            [
+                "e0027157022068f5"
+            ]
+        ]
+    },
+    {
+        "id": "1f5da7ec0f3bd03c",
+        "type": "mysql",
+        "z": "1ce5b441cc677c94",
+        "mydb": "3564bcf07c743fdf",
+        "name": "",
+        "x": 710,
+        "y": 200,
+        "wires": [
+            [
+                "df4bcb5d89895b47"
+            ]
+        ]
+    },
+    {
+        "id": "c43ba50ed57791f0",
+        "type": "function",
+        "z": "1ce5b441cc677c94",
+        "name": "insert into tickers",
+        "func": "let ticker = msg.payload[\"ticker\"]\nlet name = msg.payload[\"name\"]\nlet market = msg.payload[\"market\"]\nlet locale = msg.payload[\"locale\"]\nlet primary_exchange = msg.payload[\"primary_exchange\"]\nlet type = msg.payload[\"type\"]\nlet active = msg.payload[\"active\"]\nlet currency_name = msg.payload[\"currency_name\"]\nlet cik = msg.payload[\"cik\"]\nlet composite_figi = msg.payload[\"composite_figi\"]\nlet share_class_figi = msg.payload[\"share_class_figi\"]\nlet market_cap = msg.payload[\"market_cap\"]\nlet phone_number = msg.payload[\"phone_number\"]\nlet address1 = msg.payload[\"address1\"]\naddress1 = ''\nlet description = msg.payload[\"description\"]\ndescription = ''\nlet sic_code = msg.payload[\"sic_code\"]\nlet sic_description = msg.payload[\"sic_description\"]\nlet ticker_root = msg.payload[\"ticker_root\"]\nlet homepage_url = msg.payload[\"homepage_url\"]\nlet total_employees = msg.payload[\"total_employees\"]\nlet list_date = msg.payload[\"list_date\"]\nlet branding = msg.payload[\"branding\"]\nlet share_class_shares_outstanding = msg.payload[\"share_class_shares_outstanding\"]\nlet weighted_shares_outstanding = msg.payload[\"weighted_shares_outstanding\"]\nlet round_lot = msg.payload[\"round_lot\"]\nlet beta = msg.payload[\"beta\"]\nlet current_price = msg.payload[\"current_price\"]\nlet stddev = msg.payload[\"stddev\"]\n\nif (beta == null){ beta = 0}\nif (current_price == null) { current_price = 0 }\nif (stddev == null) { stddev = 0 }\nif (share_class_shares_outstanding == null) { share_class_shares_outstanding = 0 }\nif (weighted_shares_outstanding == null) { weighted_shares_outstanding = 0 }\nif (round_lot == null) { round_lot = 0 }\nif (total_employees == null) { total_employees = 0 }\n\n\nlet sql = \"insert into tickers_detail (ticker, name, market, locale, primary_exchange, type, active, currency_name, cik, composite_figi, share_class_figi, market_cap, phone_number, address1, description, sic_code, sic_description, ticker_root, homepage_url, total_employees, list_date, branding, share_class_shares_outstanding, weighted_shares_outstanding, round_lot, beta, current_price, stddev) values \"\nsql += \"('\" + ticker + \"','\" + name + \"','\" + market + \"','\" + locale + \"','\" + primary_exchange + \"','\" + type + \"','\" + active + \"','\" + currency_name + \"','\" + cik + \"','\" + composite_figi + \"','\" + share_class_figi + \"','\" + market_cap + \"','\" + phone_number + \"','\" + address1 + \"','\" + description + \"','\" + sic_code + \"','\" + sic_description + \"','\" + ticker_root + \"','\" + homepage_url + \"','\" + total_employees + \"','\" + list_date + \"','\" + branding + \"','\" + share_class_shares_outstanding + \"','\" + weighted_shares_outstanding + \"','\" + round_lot + \"','\" + beta + \"','\" + current_price + \"','\" + stddev + \"') ON CONFLICT DO NOTHING;\"\n//node.warn(sql)\nmsg.query = sql\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 990,
+        "y": 200,
+        "wires": [
+            [
+                "80f88b60c38d0526"
+            ]
+        ]
+    },
+    {
+        "id": "df4bcb5d89895b47",
+        "type": "split",
+        "z": "1ce5b441cc677c94",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 830,
+        "y": 200,
+        "wires": [
+            [
+                "c43ba50ed57791f0"
+            ]
+        ]
+    },
+    {
+        "id": "80f88b60c38d0526",
+        "type": "postgresql",
+        "z": "1ce5b441cc677c94",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1160,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "63da0b391be4af8f",
+        "type": "function",
+        "z": "1ce5b441cc677c94",
+        "name": "select from ticker_details",
+        "func": "msg.topic = \"select * from ticker_details\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 530,
+        "y": 200,
+        "wires": [
+            [
+                "1f5da7ec0f3bd03c"
+            ]
+        ]
+    },
+    {
+        "id": "e0027157022068f5",
+        "type": "delay",
+        "z": "1ce5b441cc677c94",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 340,
+        "y": 200,
+        "wires": [
+            [
+                "63da0b391be4af8f"
+            ]
+        ]
+    },
+    {
+        "id": "6438d9d72bc02b5d",
+        "type": "inject",
+        "z": "1ce5b441cc677c94",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 170,
+        "y": 140,
+        "wires": [
+            [
+                "0bcccff3f407f116"
+            ]
+        ]
+    },
+    {
+        "id": "7455395cf269fb2b",
+        "type": "postgreSQLConfig",
+        "name": "",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "postgres",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "docker",
+        "userFieldType": "str",
+        "password": "docker",
+        "passwordFieldType": "str"
+    },
+    {
+        "id": "3564bcf07c743fdf",
+        "type": "MySQLdatabase",
+        "name": "ptsapi",
+        "host": "ptsapi.cax8fspskl8t.us-east-1.rds.amazonaws.com",
+        "port": "3306",
+        "db": "ptsapi",
+        "tz": "EST5EDT",
+        "charset": "UTF8"
+    }
+]
