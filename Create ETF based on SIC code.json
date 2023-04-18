@@ -17,7 +17,7 @@
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 540,
+        "x": 460,
         "y": 260,
         "wires": [
             [
@@ -116,7 +116,7 @@
         "id": "fb0f4ae086f5afb3",
         "type": "comment",
         "z": "09c9484c2e7215de",
-        "name": "create banking table",
+        "name": "create and fill table",
         "info": "",
         "x": 170,
         "y": 220,
@@ -136,14 +136,14 @@
         "id": "db246117162da5d7",
         "type": "function",
         "z": "09c9484c2e7215de",
-        "name": "select banking assets",
-        "func": "msg.query = \"select * from tickers_detail where sic_code = '6021'\"\nreturn msg;",
+        "name": "select assets",
+        "func": "msg.sic_code = '6021'\nmsg.query = \"select * from tickers_detail where sic_code = '\" +msg.sic_code+ \"';\"\nnode.warn(msg.query)\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 340,
+        "x": 310,
         "y": 140,
         "wires": [
             [
@@ -163,7 +163,7 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 670,
+        "x": 830,
         "y": 140,
         "wires": []
     },
@@ -403,11 +403,11 @@
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 520,
+        "x": 460,
         "y": 140,
         "wires": [
             [
-                "8953eb9de128e6d9"
+                "4b0d8fd2656672aa"
             ]
         ]
     },
@@ -466,7 +466,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 390,
+        "x": 310,
         "y": 260,
         "wires": [
             [
@@ -478,14 +478,14 @@
         "id": "ddc417dbcf4de7e5",
         "type": "inject",
         "z": "09c9484c2e7215de",
-        "name": "create banking table",
+        "name": "GO",
         "props": [],
         "repeat": "",
         "crontab": "",
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "x": 210,
+        "x": 170,
         "y": 260,
         "wires": [
             [
@@ -504,7 +504,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1160,
+        "x": 1040,
         "y": 260,
         "wires": [
             [
@@ -523,7 +523,7 @@
         "arraySpltType": "len",
         "stream": false,
         "addname": "",
-        "x": 1030,
+        "x": 910,
         "y": 260,
         "wires": [
             [
@@ -541,7 +541,7 @@
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 1300,
+        "x": 1180,
         "y": 260,
         "wires": [
             []
@@ -557,7 +557,7 @@
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 900,
+        "x": 780,
         "y": 260,
         "wires": [
             [
@@ -569,14 +569,14 @@
         "id": "a23c765c9d8caed8",
         "type": "function",
         "z": "09c9484c2e7215de",
-        "name": "select banking assets",
-        "func": "msg.query = \"select * from tickers_detail where sic_code = '6021'\"\nreturn msg;",
+        "name": "select assets",
+        "func": "msg.sic_code = flow.get(\"sic_code\")\nmsg.query = \"select * from tickers_detail where sic_code = '\" +msg.sic_code+ \"';\"\nnode.warn(msg.query)\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 720,
+        "x": 610,
         "y": 260,
         "wires": [
             [
@@ -1676,6 +1676,33 @@
         "x": 1190,
         "y": 40,
         "wires": []
+    },
+    {
+        "id": "4b0d8fd2656672aa",
+        "type": "change",
+        "z": "09c9484c2e7215de",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "sic_code",
+                "pt": "flow",
+                "to": "sic_code",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 630,
+        "y": 140,
+        "wires": [
+            [
+                "8953eb9de128e6d9"
+            ]
+        ]
     },
     {
         "id": "7455395cf269fb2b",
