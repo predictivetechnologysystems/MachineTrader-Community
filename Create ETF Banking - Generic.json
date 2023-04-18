@@ -1,0 +1,1742 @@
+[
+    {
+        "id": "09c9484c2e7215de",
+        "type": "tab",
+        "label": "Create ETF Banking",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "7c17b34d8e2bfe3a",
+        "type": "postgresql",
+        "z": "09c9484c2e7215de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 460,
+        "y": 260,
+        "wires": [
+            [
+                "a23c765c9d8caed8"
+            ]
+        ]
+    },
+    {
+        "id": "37b683a1507e10b4",
+        "type": "inject",
+        "z": "09c9484c2e7215de",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 160,
+        "y": 140,
+        "wires": [
+            [
+                "db246117162da5d7"
+            ]
+        ]
+    },
+    {
+        "id": "8dff4d1f0746d739",
+        "type": "inject",
+        "z": "09c9484c2e7215de",
+        "name": "9:30 am",
+        "props": [],
+        "repeat": "",
+        "crontab": "30 09 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 160,
+        "y": 400,
+        "wires": [
+            [
+                "d7546491b9aa2067"
+            ]
+        ]
+    },
+    {
+        "id": "f572b96529834785",
+        "type": "inject",
+        "z": "09c9484c2e7215de",
+        "name": "every min",
+        "props": [
+            {
+                "p": "query",
+                "v": "select * from biostocks",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 170,
+        "y": 540,
+        "wires": [
+            [
+                "c4acdcae1fe9b759"
+            ]
+        ]
+    },
+    {
+        "id": "7c0780be4306c39d",
+        "type": "comment",
+        "z": "09c9484c2e7215de",
+        "name": "Create a Portfolio of Equities in the SIC Category: NATIONAL COMMERCIAL BANKS 6021\t",
+        "info": "",
+        "x": 370,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "fb0f4ae086f5afb3",
+        "type": "comment",
+        "z": "09c9484c2e7215de",
+        "name": "create and fill table",
+        "info": "",
+        "x": 170,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "b54f5c2d92c5413a",
+        "type": "comment",
+        "z": "09c9484c2e7215de",
+        "name": "Display tickers - enter desired sic code here",
+        "info": "",
+        "x": 250,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "db246117162da5d7",
+        "type": "function",
+        "z": "09c9484c2e7215de",
+        "name": "select assets",
+        "func": "msg.sic_code = '6021'\nmsg.query = \"select * from tickers_detail where sic_code = '\" +msg.sic_code+ \"';\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 140,
+        "wires": [
+            [
+                "b9d5104376ddb0a6"
+            ]
+        ]
+    },
+    {
+        "id": "8953eb9de128e6d9",
+        "type": "debug",
+        "z": "09c9484c2e7215de",
+        "name": "debug 334",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 830,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "f1ec4188f4925469",
+        "type": "comment",
+        "z": "09c9484c2e7215de",
+        "name": "update today's starting price  ",
+        "info": "",
+        "x": 200,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "1f0c8b9c3bb1e38f",
+        "type": "comment",
+        "z": "09c9484c2e7215de",
+        "name": "update current price  ",
+        "info": "",
+        "x": 170,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "1059efd3a3ee2fdd",
+        "type": "comment",
+        "z": "09c9484c2e7215de",
+        "name": "update change and pct change  ",
+        "info": "",
+        "x": 190,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "7c27dd59d447d932",
+        "type": "inject",
+        "z": "09c9484c2e7215de",
+        "name": "3:45 pm",
+        "props": [
+            {
+                "p": "query",
+                "v": "select * from biostocks",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "45 15 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 160,
+        "y": 660,
+        "wires": [
+            [
+                "1df4af4d91c41d74"
+            ]
+        ]
+    },
+    {
+        "id": "5fdc59758cf5d508",
+        "type": "comment",
+        "z": "09c9484c2e7215de",
+        "name": "update closing price  ",
+        "info": "",
+        "x": 170,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "91684d13c584c9aa",
+        "type": "inject",
+        "z": "09c9484c2e7215de",
+        "name": "3:50 pm",
+        "props": [
+            {
+                "p": "query",
+                "v": "select * from biostocks",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "50 15 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 160,
+        "y": 920,
+        "wires": [
+            [
+                "2faa1445e5c505de"
+            ]
+        ]
+    },
+    {
+        "id": "2faa1445e5c505de",
+        "type": "function",
+        "z": "09c9484c2e7215de",
+        "name": "update change",
+        "func": "let name = flow.get(\"name\")\nmsg.name = name\nmsg.query = \"update \" +name+ \" set price_change = (end_price - start_price)\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 920,
+        "wires": [
+            [
+                "6abf96d6a2954396"
+            ]
+        ]
+    },
+    {
+        "id": "6abf96d6a2954396",
+        "type": "postgresql",
+        "z": "09c9484c2e7215de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 480,
+        "y": 920,
+        "wires": [
+            [
+                "27c9fc07e574aa4e"
+            ]
+        ]
+    },
+    {
+        "id": "27c9fc07e574aa4e",
+        "type": "delay",
+        "z": "09c9484c2e7215de",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 620,
+        "y": 920,
+        "wires": [
+            [
+                "f7feae8d2ac9d6d7"
+            ]
+        ]
+    },
+    {
+        "id": "f7feae8d2ac9d6d7",
+        "type": "function",
+        "z": "09c9484c2e7215de",
+        "name": "update change",
+        "func": "msg.query = \"update \" +msg.name+ \" set pct_change = (price_change / start_price) where start_price > 0\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 780,
+        "y": 920,
+        "wires": [
+            [
+                "1b082bab49fe6024"
+            ]
+        ]
+    },
+    {
+        "id": "1b082bab49fe6024",
+        "type": "postgresql",
+        "z": "09c9484c2e7215de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 940,
+        "y": 920,
+        "wires": [
+            [
+                "096312f8c5fd0d51"
+            ]
+        ]
+    },
+    {
+        "id": "c42ea10876763877",
+        "type": "inject",
+        "z": "09c9484c2e7215de",
+        "name": "top gainers",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 160,
+        "y": 1240,
+        "wires": [
+            [
+                "e00d536b37d569ac"
+            ]
+        ]
+    },
+    {
+        "id": "f9d8070fe62b4ae6",
+        "type": "comment",
+        "z": "09c9484c2e7215de",
+        "name": "get list of top movers today",
+        "info": "",
+        "x": 180,
+        "y": 1180,
+        "wires": []
+    },
+    {
+        "id": "b9d5104376ddb0a6",
+        "type": "postgresql",
+        "z": "09c9484c2e7215de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 460,
+        "y": 140,
+        "wires": [
+            [
+                "4b0d8fd2656672aa"
+            ]
+        ]
+    },
+    {
+        "id": "748b7cb8a62b0b80",
+        "type": "change",
+        "z": "09c9484c2e7215de",
+        "name": "store table name",
+        "rules": [
+            {
+                "t": "set",
+                "p": "name",
+                "pt": "flow",
+                "to": "banking",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1330,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6c95dc5d2d1641cb",
+        "type": "inject",
+        "z": "09c9484c2e7215de",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 1170,
+        "y": 80,
+        "wires": [
+            [
+                "748b7cb8a62b0b80"
+            ]
+        ]
+    },
+    {
+        "id": "04aa96cef8850353",
+        "type": "function",
+        "z": "09c9484c2e7215de",
+        "name": "create table",
+        "func": "let name = flow.get(\"name\")\nmsg.query = \"create table IF NOT EXISTS \" +name+ \" (ticker VARCHAR(10) PRIMARY KEY, name VARCHAR(200), start_price FLOAT, end_price FLOAT, price FLOAT, price_change FLOAT, pct_change FLOAT, price7d FLOAT, change7d FLOAT, pctchange7d FLOAT )\"\n//msg.query = \"drop table \" +name+ \";\"\nnode.warn(msg.query)\nmsg.name = name\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 260,
+        "wires": [
+            [
+                "7c17b34d8e2bfe3a"
+            ]
+        ]
+    },
+    {
+        "id": "ddc417dbcf4de7e5",
+        "type": "inject",
+        "z": "09c9484c2e7215de",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 170,
+        "y": 260,
+        "wires": [
+            [
+                "04aa96cef8850353"
+            ]
+        ]
+    },
+    {
+        "id": "787728d29dd37a14",
+        "type": "function",
+        "z": "09c9484c2e7215de",
+        "name": "ticker list",
+        "func": "let ticker = msg.payload[\"ticker\"]\nlet name = msg.payload[\"name\"]\nlet tablename = msg.name\nmsg.query = \"insert into \" +tablename+ \" (ticker,name) values ('\" +ticker+ \"','\" +name+ \"') ON CONFLICT DO NOTHING;\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1040,
+        "y": 260,
+        "wires": [
+            [
+                "632887604dbdbbe9"
+            ]
+        ]
+    },
+    {
+        "id": "eb1d5c483b9ce941",
+        "type": "split",
+        "z": "09c9484c2e7215de",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 910,
+        "y": 260,
+        "wires": [
+            [
+                "787728d29dd37a14"
+            ]
+        ]
+    },
+    {
+        "id": "632887604dbdbbe9",
+        "type": "postgresql",
+        "z": "09c9484c2e7215de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1180,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "fbdb0b9a79eebd13",
+        "type": "postgresql",
+        "z": "09c9484c2e7215de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 780,
+        "y": 260,
+        "wires": [
+            [
+                "eb1d5c483b9ce941"
+            ]
+        ]
+    },
+    {
+        "id": "a23c765c9d8caed8",
+        "type": "function",
+        "z": "09c9484c2e7215de",
+        "name": "select assets",
+        "func": "msg.sic_code = flow.get(\"sic_code\")\nmsg.query = \"select * from tickers_detail where sic_code = '\" +msg.sic_code+ \"';\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 610,
+        "y": 260,
+        "wires": [
+            [
+                "fbdb0b9a79eebd13"
+            ]
+        ]
+    },
+    {
+        "id": "29957465132c6591",
+        "type": "function-npm",
+        "z": "09c9484c2e7215de",
+        "name": "Get price of trade trade",
+        "func": "let symbol = msg.ticker\n\nlet cnt = 1 // gets last trade\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: cnt,\n}\n\n\n//node.warn(symbol)\n//node.warn(msg.payload)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 890,
+        "y": 400,
+        "wires": [
+            [
+                "779b0e325d119e32"
+            ]
+        ]
+    },
+    {
+        "id": "e9bb76d43cf2a55e",
+        "type": "function",
+        "z": "09c9484c2e7215de",
+        "name": "price",
+        "func": "let price = 0\nlet item = 0\n\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    \n}\n\nprice = price.toFixed(2)\nmsg.price = price\n//node.warn(price)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1290,
+        "y": 400,
+        "wires": [
+            [
+                "ef5bbe92f4c78c48"
+            ]
+        ]
+    },
+    {
+        "id": "779b0e325d119e32",
+        "type": "polygon-last-trade-v3",
+        "z": "09c9484c2e7215de",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "x": 1120,
+        "y": 400,
+        "wires": [
+            [
+                "e9bb76d43cf2a55e"
+            ]
+        ]
+    },
+    {
+        "id": "9fc68dbf64a1d73f",
+        "type": "postgresql",
+        "z": "09c9484c2e7215de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 440,
+        "y": 400,
+        "wires": [
+            [
+                "87428d0ec3256d6a"
+            ]
+        ]
+    },
+    {
+        "id": "0a98fb6a96f1d0fa",
+        "type": "function",
+        "z": "09c9484c2e7215de",
+        "name": "ticker tist",
+        "func": "let ticker = msg.payload[\"ticker\"]\nmsg.ticker = ticker\n//node.warn(msg.ticker)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 700,
+        "y": 400,
+        "wires": [
+            [
+                "29957465132c6591"
+            ]
+        ]
+    },
+    {
+        "id": "87428d0ec3256d6a",
+        "type": "split",
+        "z": "09c9484c2e7215de",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 570,
+        "y": 400,
+        "wires": [
+            [
+                "0a98fb6a96f1d0fa"
+            ]
+        ]
+    },
+    {
+        "id": "ef5bbe92f4c78c48",
+        "type": "function",
+        "z": "09c9484c2e7215de",
+        "name": "start price",
+        "func": "let current_price = msg.price\nmsg.query = \"update \" +msg.name+ \" set start_price = \" +current_price+ \" where ticker = '\" +msg.ticker+ \"';\"\n//node.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1420,
+        "y": 400,
+        "wires": [
+            [
+                "0eb031486595e8d3"
+            ]
+        ]
+    },
+    {
+        "id": "0eb031486595e8d3",
+        "type": "postgresql",
+        "z": "09c9484c2e7215de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1560,
+        "y": 400,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d7592fc41467812a",
+        "type": "function-npm",
+        "z": "09c9484c2e7215de",
+        "name": "Get price of trade trade",
+        "func": "let symbol = msg.ticker\n\nlet cnt = 1 // gets last trade\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: cnt,\n}\n\n\n//node.warn(symbol)\n//node.warn(msg.payload)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 890,
+        "y": 540,
+        "wires": [
+            [
+                "f18f15e86e8c96d3"
+            ]
+        ]
+    },
+    {
+        "id": "066b3182dd331cc8",
+        "type": "function",
+        "z": "09c9484c2e7215de",
+        "name": "price",
+        "func": "let price = 0\nlet item = 0\n\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    \n}\n\nprice = price.toFixed(2)\nmsg.price = price\n//node.warn(price)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1290,
+        "y": 540,
+        "wires": [
+            [
+                "1bb307333cf9e3f3"
+            ]
+        ]
+    },
+    {
+        "id": "f18f15e86e8c96d3",
+        "type": "polygon-last-trade-v3",
+        "z": "09c9484c2e7215de",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "x": 1120,
+        "y": 540,
+        "wires": [
+            [
+                "066b3182dd331cc8"
+            ]
+        ]
+    },
+    {
+        "id": "91518c7ec431e2e9",
+        "type": "postgresql",
+        "z": "09c9484c2e7215de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 440,
+        "y": 540,
+        "wires": [
+            [
+                "c9a5cf1daf61bf6f"
+            ]
+        ]
+    },
+    {
+        "id": "25c7c4e719b7eb17",
+        "type": "function",
+        "z": "09c9484c2e7215de",
+        "name": "ticker list",
+        "func": "let ticker = msg.payload[\"ticker\"]\nmsg.ticker = ticker\n//node.warn(msg.ticker)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 700,
+        "y": 540,
+        "wires": [
+            [
+                "d7592fc41467812a"
+            ]
+        ]
+    },
+    {
+        "id": "c9a5cf1daf61bf6f",
+        "type": "split",
+        "z": "09c9484c2e7215de",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 570,
+        "y": 540,
+        "wires": [
+            [
+                "25c7c4e719b7eb17"
+            ]
+        ]
+    },
+    {
+        "id": "1bb307333cf9e3f3",
+        "type": "function",
+        "z": "09c9484c2e7215de",
+        "name": "current price",
+        "func": "let current_price = msg.price\nmsg.query = \"update \" +msg.name+ \" set price = \" +current_price+ \" where ticker = '\" +msg.ticker+ \"';\"\n//node.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1430,
+        "y": 540,
+        "wires": [
+            [
+                "4de6288e88781816"
+            ]
+        ]
+    },
+    {
+        "id": "4de6288e88781816",
+        "type": "postgresql",
+        "z": "09c9484c2e7215de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1580,
+        "y": 540,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "99d43af23adb00f0",
+        "type": "function-npm",
+        "z": "09c9484c2e7215de",
+        "name": "Get price of trade trade",
+        "func": "let symbol = msg.ticker\n\nlet cnt = 1 // gets last trade\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: cnt,\n}\n\n\n//node.warn(symbol)\n//node.warn(msg.payload)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 890,
+        "y": 660,
+        "wires": [
+            [
+                "aebe6f810c70daec"
+            ]
+        ]
+    },
+    {
+        "id": "1fd4402cb0c619c6",
+        "type": "function",
+        "z": "09c9484c2e7215de",
+        "name": "price",
+        "func": "let price = 0\nlet item = 0\n\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    \n}\n\nprice = price.toFixed(2)\nmsg.price = price\n//node.warn(price)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1290,
+        "y": 660,
+        "wires": [
+            [
+                "bed2f62b4656a2b9"
+            ]
+        ]
+    },
+    {
+        "id": "aebe6f810c70daec",
+        "type": "polygon-last-trade-v3",
+        "z": "09c9484c2e7215de",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "x": 1120,
+        "y": 660,
+        "wires": [
+            [
+                "1fd4402cb0c619c6"
+            ]
+        ]
+    },
+    {
+        "id": "b53d84014fe8d3a5",
+        "type": "postgresql",
+        "z": "09c9484c2e7215de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 440,
+        "y": 660,
+        "wires": [
+            [
+                "c7720b4c2856d868"
+            ]
+        ]
+    },
+    {
+        "id": "52e48e9242e3fe6b",
+        "type": "function",
+        "z": "09c9484c2e7215de",
+        "name": "ticker list",
+        "func": "let ticker = msg.payload[\"ticker\"]\nmsg.ticker = ticker\n//node.warn(msg.ticker)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 700,
+        "y": 660,
+        "wires": [
+            [
+                "99d43af23adb00f0"
+            ]
+        ]
+    },
+    {
+        "id": "c7720b4c2856d868",
+        "type": "split",
+        "z": "09c9484c2e7215de",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 570,
+        "y": 660,
+        "wires": [
+            [
+                "52e48e9242e3fe6b"
+            ]
+        ]
+    },
+    {
+        "id": "bed2f62b4656a2b9",
+        "type": "function",
+        "z": "09c9484c2e7215de",
+        "name": "end price",
+        "func": "let current_price = msg.price\nmsg.query = \"update \" +msg.name+ \" set end_price = \" +current_price+ \" where ticker = '\" +msg.ticker+ \"';\"\n//node.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1420,
+        "y": 660,
+        "wires": [
+            [
+                "d2d85d5fc1afab45"
+            ]
+        ]
+    },
+    {
+        "id": "d2d85d5fc1afab45",
+        "type": "postgresql",
+        "z": "09c9484c2e7215de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1560,
+        "y": 660,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d7546491b9aa2067",
+        "type": "function",
+        "z": "09c9484c2e7215de",
+        "name": "select",
+        "func": "let name = flow.get(\"name\")\nmsg.name = name\nmsg.query = \"select * from \" +name+ \";\"\n//node.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 290,
+        "y": 400,
+        "wires": [
+            [
+                "9fc68dbf64a1d73f"
+            ]
+        ]
+    },
+    {
+        "id": "c4acdcae1fe9b759",
+        "type": "function",
+        "z": "09c9484c2e7215de",
+        "name": "select",
+        "func": "let name = flow.get(\"name\")\nmsg.name = name\nmsg.query = \"select * from \" +name+ \";\"\n//node.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 540,
+        "wires": [
+            [
+                "91518c7ec431e2e9"
+            ]
+        ]
+    },
+    {
+        "id": "1df4af4d91c41d74",
+        "type": "function",
+        "z": "09c9484c2e7215de",
+        "name": "select",
+        "func": "let name = flow.get(\"name\")\nmsg.name = name\nmsg.query = \"select * from \" +name+ \";\"\n//node.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 660,
+        "wires": [
+            [
+                "b53d84014fe8d3a5"
+            ]
+        ]
+    },
+    {
+        "id": "8e7ce16b64078c86",
+        "type": "postgresql",
+        "z": "09c9484c2e7215de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 460,
+        "y": 1240,
+        "wires": [
+            [
+                "9c2208a59a1a32f0"
+            ]
+        ]
+    },
+    {
+        "id": "9c2208a59a1a32f0",
+        "type": "debug",
+        "z": "09c9484c2e7215de",
+        "name": "debug 336",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 610,
+        "y": 1240,
+        "wires": []
+    },
+    {
+        "id": "e00d536b37d569ac",
+        "type": "function",
+        "z": "09c9484c2e7215de",
+        "name": "select to 20",
+        "func": "let name = flow.get(\"name\")\nmsg.name = name\nmsg.query = \"select * from \" + name + \" order by pct_change desc limit 20;\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 1240,
+        "wires": [
+            [
+                "8e7ce16b64078c86"
+            ]
+        ]
+    },
+    {
+        "id": "6384b3e0752944a9",
+        "type": "inject",
+        "z": "09c9484c2e7215de",
+        "name": "6 AM",
+        "props": [
+            {
+                "p": "query",
+                "v": "select symbol, polygon_symbol from markets",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 06 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 760,
+        "wires": [
+            [
+                "a5662bb93519a7b1"
+            ]
+        ]
+    },
+    {
+        "id": "e1b83a78a57d631a",
+        "type": "comment",
+        "z": "09c9484c2e7215de",
+        "name": "update price 7 days ago ",
+        "info": "",
+        "x": 170,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "521666437e45dbb1",
+        "type": "split",
+        "z": "09c9484c2e7215de",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 510,
+        "y": 760,
+        "wires": [
+            [
+                "ffdb1251eaea88ab"
+            ]
+        ]
+    },
+    {
+        "id": "7303c9da1c323b3b",
+        "type": "polygon-trades-min-agg-rest",
+        "z": "09c9484c2e7215de",
+        "conf": "8a426fd8cd37146c",
+        "symbol": "",
+        "multiplier": 1,
+        "timespan": "minute",
+        "from": "",
+        "to": "",
+        "x": 900,
+        "y": 760,
+        "wires": [
+            [
+                "dcedebe22e9e462a"
+            ]
+        ]
+    },
+    {
+        "id": "07da7a31f1604b6c",
+        "type": "postgresql",
+        "z": "09c9484c2e7215de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1280,
+        "y": 760,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "60fb54f9de196a39",
+        "type": "postgresql",
+        "z": "09c9484c2e7215de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 380,
+        "y": 760,
+        "wires": [
+            [
+                "521666437e45dbb1"
+            ]
+        ]
+    },
+    {
+        "id": "ffdb1251eaea88ab",
+        "type": "function-npm",
+        "z": "09c9484c2e7215de",
+        "name": "prepare polygon  7d",
+        "func": "let symbol = msg.payload[\"ticker\"]\nmsg.ticker = symbol\n\nlet cnt = 1\n\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: cnt,\n}\n\nlet date = new Date();\n\n// this gets the day before yesterday\ndate.setDate(date.getDate() - 7);\n\nconst fromDt = date\n\n// toDt is today\nconst toDt = new Date(); // Today\n\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    from: fromDt.toLocaleDateString('en-CA'),\n    to: toDt.toLocaleDateString('en-CA'),\n    symbol: symbol\n}\n\nmsg.timespan = 'day';\nmsg.topic = symbol\n\n//node.warn(msg.payload)\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 670,
+        "y": 760,
+        "wires": [
+            [
+                "7303c9da1c323b3b"
+            ]
+        ]
+    },
+    {
+        "id": "a5662bb93519a7b1",
+        "type": "function",
+        "z": "09c9484c2e7215de",
+        "name": "select",
+        "func": "let name = flow.get(\"name\")\nmsg.name = name\nmsg.query = \"select * from \" +name+ \";\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 760,
+        "wires": [
+            [
+                "60fb54f9de196a39"
+            ]
+        ]
+    },
+    {
+        "id": "dcedebe22e9e462a",
+        "type": "function",
+        "z": "09c9484c2e7215de",
+        "name": "update 7d",
+        "func": "let symbol = msg.ticker\nlet tablename = flow.get(\"name\")\n\nconst account = { name: 'One Minute Bars', data: [] };\n\nfor (const item of msg.payload.results) {\n    const { c, t } = item;\n    const dateEpoch = +(new Date(t));\n\n//    account.data.push([ dateEpoch, +c ]);\n    account.data.push([ c ]);\n}\n\nlet price = account.data[0];\n\nprice = price.toString()\n//node.warn(\"Tikcer: \" +symbol+ \" Price: \" +price)\n\nmsg.query = \"update \" +tablename+ \" set price7d = \" + price + \" where ticker = '\" + symbol + \"'\"\n\nnode.warn(msg.query)\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1130,
+        "y": 760,
+        "wires": [
+            [
+                "07da7a31f1604b6c"
+            ]
+        ]
+    },
+    {
+        "id": "78560b600b5dbb79",
+        "type": "function",
+        "z": "09c9484c2e7215de",
+        "name": "update change",
+        "func": "msg.query = \"update \" +msg.name+ \" set change7d = (end_price - price7d)\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 980,
+        "wires": [
+            [
+                "43abd9fa7d8fdc96"
+            ]
+        ]
+    },
+    {
+        "id": "43abd9fa7d8fdc96",
+        "type": "postgresql",
+        "z": "09c9484c2e7215de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 480,
+        "y": 980,
+        "wires": [
+            [
+                "fff7e47b48814a5b"
+            ]
+        ]
+    },
+    {
+        "id": "fff7e47b48814a5b",
+        "type": "delay",
+        "z": "09c9484c2e7215de",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 620,
+        "y": 980,
+        "wires": [
+            [
+                "2af36606e6a1ce03"
+            ]
+        ]
+    },
+    {
+        "id": "2af36606e6a1ce03",
+        "type": "function",
+        "z": "09c9484c2e7215de",
+        "name": "update change",
+        "func": "msg.query =  \"update \" +msg.name+ \" set pctchange7d = (change7d / price7d) where price7d > 0\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 780,
+        "y": 980,
+        "wires": [
+            [
+                "bedc5ffbeb9a91c7"
+            ]
+        ]
+    },
+    {
+        "id": "bedc5ffbeb9a91c7",
+        "type": "postgresql",
+        "z": "09c9484c2e7215de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 940,
+        "y": 980,
+        "wires": [
+            [
+                "df627fc7d52ff090"
+            ]
+        ]
+    },
+    {
+        "id": "227f794bccbd9c46",
+        "type": "function",
+        "z": "09c9484c2e7215de",
+        "name": "price_change null",
+        "func": "msg.query = \"update \" +msg.name+ \" set price_change = 0 where price_change is null\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 1040,
+        "wires": [
+            [
+                "e005f12da05977da"
+            ]
+        ]
+    },
+    {
+        "id": "e005f12da05977da",
+        "type": "postgresql",
+        "z": "09c9484c2e7215de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 500,
+        "y": 1040,
+        "wires": [
+            [
+                "46dc861a10dd62a2"
+            ]
+        ]
+    },
+    {
+        "id": "46dc861a10dd62a2",
+        "type": "delay",
+        "z": "09c9484c2e7215de",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 640,
+        "y": 1040,
+        "wires": [
+            [
+                "426f73b5cfebf893"
+            ]
+        ]
+    },
+    {
+        "id": "1710abe58611ef79",
+        "type": "postgresql",
+        "z": "09c9484c2e7215de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 980,
+        "y": 1040,
+        "wires": [
+            [
+                "743ab81aac108b90"
+            ]
+        ]
+    },
+    {
+        "id": "096312f8c5fd0d51",
+        "type": "delay",
+        "z": "09c9484c2e7215de",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1080,
+        "y": 920,
+        "wires": [
+            [
+                "78560b600b5dbb79"
+            ]
+        ]
+    },
+    {
+        "id": "df627fc7d52ff090",
+        "type": "delay",
+        "z": "09c9484c2e7215de",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1080,
+        "y": 980,
+        "wires": [
+            [
+                "227f794bccbd9c46"
+            ]
+        ]
+    },
+    {
+        "id": "743ab81aac108b90",
+        "type": "delay",
+        "z": "09c9484c2e7215de",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1120,
+        "y": 1040,
+        "wires": [
+            [
+                "11c701ebee265480"
+            ]
+        ]
+    },
+    {
+        "id": "426f73b5cfebf893",
+        "type": "function",
+        "z": "09c9484c2e7215de",
+        "name": "pct_change null",
+        "func": "msg.query = \"update \" +msg.name+ \" set pct_change = 0 where pct_change is null\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 800,
+        "y": 1040,
+        "wires": [
+            [
+                "1710abe58611ef79"
+            ]
+        ]
+    },
+    {
+        "id": "11c701ebee265480",
+        "type": "function",
+        "z": "09c9484c2e7215de",
+        "name": "price7d null",
+        "func": "msg.query = \"update \" +msg.name+ \" set price7d = 0 where price7d is null\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 1100,
+        "wires": [
+            [
+                "5d17114dce02e148"
+            ]
+        ]
+    },
+    {
+        "id": "5d17114dce02e148",
+        "type": "postgresql",
+        "z": "09c9484c2e7215de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 500,
+        "y": 1100,
+        "wires": [
+            [
+                "7d1dc9beee7803e9"
+            ]
+        ]
+    },
+    {
+        "id": "7d1dc9beee7803e9",
+        "type": "delay",
+        "z": "09c9484c2e7215de",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 640,
+        "y": 1100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f2d52982812ed1d0",
+        "type": "postgresql",
+        "z": "09c9484c2e7215de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 980,
+        "y": 1100,
+        "wires": [
+            [
+                "e881dd6ce0fd2b1c"
+            ]
+        ]
+    },
+    {
+        "id": "e881dd6ce0fd2b1c",
+        "type": "delay",
+        "z": "09c9484c2e7215de",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1120,
+        "y": 1100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "86c7f297277a676d",
+        "type": "function",
+        "z": "09c9484c2e7215de",
+        "name": "pctchange7d null",
+        "func": "msg.query = \"update \" +msg.name+ \" set pctchange7d = 0 where pctchange7d is null\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 1100,
+        "wires": [
+            [
+                "f2d52982812ed1d0"
+            ]
+        ]
+    },
+    {
+        "id": "852830b3c47fae12",
+        "type": "comment",
+        "z": "09c9484c2e7215de",
+        "name": "Specify table name here",
+        "info": "",
+        "x": 1190,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "4b0d8fd2656672aa",
+        "type": "change",
+        "z": "09c9484c2e7215de",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "sic_code",
+                "pt": "flow",
+                "to": "sic_code",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 630,
+        "y": 140,
+        "wires": [
+            [
+                "8953eb9de128e6d9"
+            ]
+        ]
+    },
+    {
+        "id": "7455395cf269fb2b",
+        "type": "postgreSQLConfig",
+        "name": "",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "postgres",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "docker",
+        "userFieldType": "str",
+        "password": "docker",
+        "passwordFieldType": "str"
+    },
+    {
+        "id": "651f0aab10dc1632",
+        "type": "polygon-account",
+        "name": "Polygon Key"
+    },
+    {
+        "id": "8a426fd8cd37146c",
+        "type": "polygon-account",
+        "name": "Polygon Key"
+    }
+]
