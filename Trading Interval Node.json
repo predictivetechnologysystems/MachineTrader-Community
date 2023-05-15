@@ -1,0 +1,22 @@
+[
+    {
+        "id": "94d47a621826653a",
+        "type": "function",
+        "z": "bb774fa77493e4a7",
+        "name": "trading interval ",
+        "func": "let d = new Date();\nlet hour = d.getHours();\nlet min = d.getMinutes();\nlet day = d.getDay();\nlet sec = d.getSeconds();\n\n//node.warn(\"Day: \" +day+ \" Hour: \" +hour+ \" Minute: \" +min+ \" Seconds: \" +sec)\n\n// this will run during trading 9:30 - 4:00 pm\n if ((day > 0 && day < 6 && hour > 9 && hour < 16) || (day > 0 && day < 6 && hour > 8 && hour < 10 && min > 29 && min < 60)) {  \n\n// this runs 9 am - 4 pm\n//if ( day > 0 && day < 6 && hour > 8 && hour < 16 ) { \n\n// this runs 4 am - 8 pm\n//if (day > 0 && day < 6 && hour > 3 && hour < 21) { \n\n//node.warn(\"Market Open\")\nreturn msg;\n }",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 260,
+        "y": 200,
+        "wires": [
+            [
+                "188e8b992c9aed8f",
+                "d4a3656c334f80e2"
+            ]
+        ]
+    }
+]
