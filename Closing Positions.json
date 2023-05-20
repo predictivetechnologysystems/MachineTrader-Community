@@ -1,0 +1,574 @@
+[
+    {
+        "id": "500f03f10a5a0db4",
+        "type": "tab",
+        "label": "Closing Positions",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "daa53ebd5b333e1d",
+        "type": "alpaca-position-query",
+        "z": "500f03f10a5a0db4",
+        "conf": "c06cec183f9317f9",
+        "x": 330,
+        "y": 100,
+        "wires": [
+            [
+                "3e983445ee3768d3"
+            ]
+        ]
+    },
+    {
+        "id": "804466ebb6a86a9d",
+        "type": "inject",
+        "z": "500f03f10a5a0db4",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 100,
+        "wires": [
+            [
+                "daa53ebd5b333e1d"
+            ]
+        ]
+    },
+    {
+        "id": "3e983445ee3768d3",
+        "type": "debug",
+        "z": "500f03f10a5a0db4",
+        "name": "Display all positions",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 560,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "4cf4ba09addaf6b8",
+        "type": "comment",
+        "z": "500f03f10a5a0db4",
+        "name": "Display all positions",
+        "info": "",
+        "x": 170,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "cd0d943f33981775",
+        "type": "comment",
+        "z": "500f03f10a5a0db4",
+        "name": "Buy/Sell all open positions",
+        "info": "",
+        "x": 190,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "4ce95c9ec6fa20a5",
+        "type": "inject",
+        "z": "500f03f10a5a0db4",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 220,
+        "wires": [
+            [
+                "fb70889c34a2d23b"
+            ]
+        ]
+    },
+    {
+        "id": "e0ecc740b9669cdf",
+        "type": "alpaca-order",
+        "z": "500f03f10a5a0db4",
+        "conf": "6b89e17e2ccc79ef",
+        "x": 1090,
+        "y": 220,
+        "wires": [
+            [
+                "aee4ef5a0969e7ea"
+            ]
+        ]
+    },
+    {
+        "id": "aee4ef5a0969e7ea",
+        "type": "debug",
+        "z": "500f03f10a5a0db4",
+        "name": "display alpaca response",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1290,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "843d04caf688eb1a",
+        "type": "alpaca-position-query",
+        "z": "500f03f10a5a0db4",
+        "conf": "c06cec183f9317f9",
+        "x": 510,
+        "y": 220,
+        "wires": [
+            [
+                "5dd3e9c6ecd46c91"
+            ]
+        ]
+    },
+    {
+        "id": "5dd3e9c6ecd46c91",
+        "type": "split",
+        "z": "500f03f10a5a0db4",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 690,
+        "y": 220,
+        "wires": [
+            [
+                "5d33befa7acadcea"
+            ]
+        ]
+    },
+    {
+        "id": "5d33befa7acadcea",
+        "type": "function",
+        "z": "500f03f10a5a0db4",
+        "name": "Prepare orders for Alpaca",
+        "func": "let symbol = msg.payload[\"symbol\"]\nlet qty = msg.payload[\"qty\"]\nlet price = msg.payload[\"current_price\"]\nlet side = msg.payload[\"side\"]\n\n// create a unique clientid with unixtime\nlet d = Date.now()\nlet client_order_id = symbol + d\nmsg.clientorderid = client_order_id // passes this variable in the flow \n\nlet action = 'sell' // unless the position is short \nif ( side == 'short'){ \n    action = 'buy'\n    qty = (qty * -1) // reverse sign to make proper Alpaca order\n}\n\nlet temp = ''\n\nif (msg.ordertype == 'limit'){\n    \n    temp = {\n        \"symbol\": symbol,\n        \"qty\": qty,\n        \"side\": action,\n        \"type\": 'limit',\n        \"client_order_id\": client_order_id,\n         \"limit_price\": price,  // limit orders only\n        //    \"subtag\": subtag,\n        \"time_in_force\": \"gtc\"\n    }; \n\n    msg.payload = temp\n    node.warn(msg.payload)\n    return msg;\n} \n\n\nelse {\n    \n    temp = {\n        \"symbol\": symbol,\n        \"qty\": qty,\n        \"side\": action,\n        \"type\": 'market',\n        \"client_order_id\": client_order_id,\n        // \"limit_price\": price,  // limit orders only\n        //    \"subtag\": subtag,\n        \"time_in_force\": \"gtc\"\n    };\n\n    msg.payload = temp\n    node.warn(msg.payload)\n    return msg;\n} \n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "fb70889c34a2d23b",
+        "type": "function",
+        "z": "500f03f10a5a0db4",
+        "name": "set order type",
+        "func": "msg.ordertype = 'market'\n// msg.ordertype = 'limit'\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 220,
+        "wires": [
+            [
+                "843d04caf688eb1a"
+            ]
+        ]
+    },
+    {
+        "id": "8d6bdbd9b87d55c3",
+        "type": "comment",
+        "z": "500f03f10a5a0db4",
+        "name": "Buy/Sell specific ticker position",
+        "info": "",
+        "x": 210,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "6a4110a527241b26",
+        "type": "inject",
+        "z": "500f03f10a5a0db4",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 360,
+        "wires": [
+            [
+                "298d5396e921cb1c"
+            ]
+        ]
+    },
+    {
+        "id": "94419d7f6ab8a736",
+        "type": "alpaca-position-query",
+        "z": "500f03f10a5a0db4",
+        "conf": "c06cec183f9317f9",
+        "x": 570,
+        "y": 360,
+        "wires": [
+            [
+                "511866407e9e98d9"
+            ]
+        ]
+    },
+    {
+        "id": "511866407e9e98d9",
+        "type": "split",
+        "z": "500f03f10a5a0db4",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 750,
+        "y": 360,
+        "wires": [
+            [
+                "c3dc97a78cc7cfd1"
+            ]
+        ]
+    },
+    {
+        "id": "c3dc97a78cc7cfd1",
+        "type": "function",
+        "z": "500f03f10a5a0db4",
+        "name": "Prepare orders for Alpaca",
+        "func": "let symbol = msg.payload[\"symbol\"]\nlet qty = msg.payload[\"qty\"]\nlet price = msg.payload[\"current_price\"]\nlet side = msg.payload[\"side\"]\n\nif ( symbol == msg.ticker){\n\n    // create a unique clientid with unixtime\n    let d = Date.now()\n    let client_order_id = symbol + d\n    msg.clientorderid = client_order_id // passes this variable in the flow \n\n    let action = 'sell' // unless the position is short \n    if (side == 'short') {\n        action = 'buy'\n        qty = (qty * -1) // reverse sign to make proper Alpaca order\n    }\n\n    let temp = ''\n\n    if (msg.ordertype == 'limit') {\n\n        temp = {\n            \"symbol\": symbol,\n            \"qty\": qty,\n            \"side\": action,\n            \"type\": 'limit',\n            \"client_order_id\": client_order_id,\n            \"limit_price\": price,  // limit orders only\n            //    \"subtag\": subtag,\n            \"time_in_force\": \"gtc\"\n        };\n\n        msg.payload = temp\n        node.warn(msg.payload)\n        return msg;\n    }\n\n\n    else {\n\n        temp = {\n            \"symbol\": symbol,\n            \"qty\": qty,\n            \"side\": action,\n            \"type\": 'market',\n            \"client_order_id\": client_order_id,\n            // \"limit_price\": price,  // limit orders only\n            //    \"subtag\": subtag,\n            \"time_in_force\": \"gtc\"\n        };\n\n        msg.payload = temp\n        node.warn(msg.payload)\n        return msg;\n    } \n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 930,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "298d5396e921cb1c",
+        "type": "function",
+        "z": "500f03f10a5a0db4",
+        "name": "set ticker and order type",
+        "func": "msg.ticker = 'TQQQ'\nmsg.ordertype = 'market'\n// msg.ordertype = 'limit'\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 360,
+        "wires": [
+            [
+                "94419d7f6ab8a736"
+            ]
+        ]
+    },
+    {
+        "id": "56fb1bc931260db2",
+        "type": "alpaca-order",
+        "z": "500f03f10a5a0db4",
+        "conf": "6b89e17e2ccc79ef",
+        "x": 1130,
+        "y": 360,
+        "wires": [
+            [
+                "d9e75b7219af5377"
+            ]
+        ]
+    },
+    {
+        "id": "d9e75b7219af5377",
+        "type": "debug",
+        "z": "500f03f10a5a0db4",
+        "name": "display alpaca response",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1330,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "0ce0f2e25db810b6",
+        "type": "comment",
+        "z": "500f03f10a5a0db4",
+        "name": "Buy/Sell specific algo or strategy",
+        "info": "",
+        "x": 210,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "5de8974b2d086718",
+        "type": "comment",
+        "z": "500f03f10a5a0db4",
+        "name": "This is more complicated because we need to retrieve a list of tickers associated with a strategy. To do this, use the \"positions\" table and select based on the strategy id.",
+        "info": "",
+        "x": 640,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "a36780fb9066afc8",
+        "type": "inject",
+        "z": "500f03f10a5a0db4",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 540,
+        "wires": [
+            [
+                "d8ac72fa861f2e4b"
+            ]
+        ]
+    },
+    {
+        "id": "fbf836401b307e25",
+        "type": "alpaca-position-query",
+        "z": "500f03f10a5a0db4",
+        "conf": "c06cec183f9317f9",
+        "x": 330,
+        "y": 620,
+        "wires": [
+            [
+                "a0729cb462a220e2"
+            ]
+        ]
+    },
+    {
+        "id": "a0729cb462a220e2",
+        "type": "split",
+        "z": "500f03f10a5a0db4",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 530,
+        "y": 620,
+        "wires": [
+            [
+                "d92c7c382e331f6d"
+            ]
+        ]
+    },
+    {
+        "id": "d92c7c382e331f6d",
+        "type": "function",
+        "z": "500f03f10a5a0db4",
+        "name": "Prepare orders for Alpaca",
+        "func": "let symbol = msg.payload[\"symbol\"]\nlet qty = msg.payload[\"qty\"]\nlet price = msg.payload[\"current_price\"]\nlet side = msg.payload[\"side\"]\nnode.warn(\"Ticker: \" +msg.ticker)\n\nif ( symbol == msg.ticker){\n\n    // create a unique clientid with unixtime\n    let d = Date.now()\n    let client_order_id = symbol + d\n    msg.clientorderid = client_order_id // passes this variable in the flow \n\n    let action = 'sell' // unless the position is short \n    if (side == 'short') {\n        action = 'buy'\n        qty = (qty * -1) // reverse sign to make proper Alpaca order\n    }\n\n    let temp = ''\n\n    if (msg.ordertype == 'limit') {\n\n        temp = {\n            \"symbol\": symbol,\n            \"qty\": qty,\n            \"side\": action,\n            \"type\": 'limit',\n            \"client_order_id\": client_order_id,\n            \"limit_price\": price,  // limit orders only\n            //    \"subtag\": subtag,\n            \"time_in_force\": \"gtc\"\n        };\n\n        msg.payload = temp\n        node.warn(msg.payload)\n        return msg;\n    }\n\n\n    else {\n\n        temp = {\n            \"symbol\": symbol,\n            \"qty\": qty,\n            \"side\": action,\n            \"type\": 'market',\n            \"client_order_id\": client_order_id,\n            // \"limit_price\": price,  // limit orders only\n            //    \"subtag\": subtag,\n            \"time_in_force\": \"gtc\"\n        };\n\n        msg.payload = temp\n        node.warn(msg.payload)\n        return msg;\n    } \n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
+        "y": 620,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4c3386acbd2bd8e5",
+        "type": "alpaca-order",
+        "z": "500f03f10a5a0db4",
+        "conf": "6b89e17e2ccc79ef",
+        "x": 930,
+        "y": 620,
+        "wires": [
+            [
+                "e5384f311f1b6172"
+            ]
+        ]
+    },
+    {
+        "id": "e5384f311f1b6172",
+        "type": "debug",
+        "z": "500f03f10a5a0db4",
+        "name": "display alpaca response",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1130,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "af34b64678fc1490",
+        "type": "function",
+        "z": "500f03f10a5a0db4",
+        "name": "get tickers for specific strategy id",
+        "func": "msg.query = \"select * from positions where id = \" +msg.id+ \";\"\n\n// see all contents of positions table\n//msg.query = \"select * from positions;\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 640,
+        "y": 540,
+        "wires": [
+            [
+                "c50480ec2abce14f"
+            ]
+        ]
+    },
+    {
+        "id": "c50480ec2abce14f",
+        "type": "postgresql",
+        "z": "500f03f10a5a0db4",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 860,
+        "y": 540,
+        "wires": [
+            [
+                "f3d747c616e9042f"
+            ]
+        ]
+    },
+    {
+        "id": "e618456098fec98e",
+        "type": "function",
+        "z": "500f03f10a5a0db4",
+        "name": "display positions values",
+        "func": "msg.ticker = msg.payload[\"symbol\"]\nlet strategy = msg.payload[\"portfolioname\"] \nlet qty = msg.payload[\"qty\"]\nlet price = msg.payload[\"current_price\"]\nlet side = msg.payload[\"side\"]\n\nlet d = Date.now()\nmsg.payload = d\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1170,
+        "y": 540,
+        "wires": [
+            [
+                "fbf836401b307e25"
+            ]
+        ]
+    },
+    {
+        "id": "f3d747c616e9042f",
+        "type": "split",
+        "z": "500f03f10a5a0db4",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 990,
+        "y": 540,
+        "wires": [
+            [
+                "e618456098fec98e"
+            ]
+        ]
+    },
+    {
+        "id": "d8ac72fa861f2e4b",
+        "type": "function",
+        "z": "500f03f10a5a0db4",
+        "name": "enter strategy id and order type",
+        "func": "msg.id = '1683125581721'  // strategy id\nmsg.ordertype = 'market'\n// msg.ordertype = 'limit'\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 540,
+        "wires": [
+            [
+                "af34b64678fc1490"
+            ]
+        ]
+    },
+    {
+        "id": "c06cec183f9317f9",
+        "type": "alpaca-account",
+        "name": "paper",
+        "keyId": "USE-OAUTH-OR-REPLACE",
+        "paper": true
+    },
+    {
+        "id": "6b89e17e2ccc79ef",
+        "type": "alpaca-account",
+        "name": "live",
+        "keyId": "USE-OAUTH-OR-REPLACE",
+        "paper": false
+    },
+    {
+        "id": "7455395cf269fb2b",
+        "type": "postgreSQLConfig",
+        "name": "",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "postgres",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "docker",
+        "userFieldType": "str",
+        "password": "docker",
+        "passwordFieldType": "str"
+    }
+]
