@@ -1,0 +1,343 @@
+[
+    {
+        "id": "95bd753412df5188",
+        "type": "tab",
+        "label": "polygon test",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "8d07fa210177feac",
+        "type": "polygon-trades-min-agg-rest",
+        "z": "95bd753412df5188",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "multiplier": 1,
+        "timespan": "minute",
+        "from": "",
+        "to": "",
+        "x": 580,
+        "y": 140,
+        "wires": [
+            [
+                "a9c28c0913a4c436"
+            ]
+        ]
+    },
+    {
+        "id": "4a25469a585c5344",
+        "type": "function",
+        "z": "95bd753412df5188",
+        "name": "set timespan and date range",
+        "func": "let symbol = 'QQQ'\nlet cnt = 1\nlet timespan = 'day'\nlet startdate = '2023-05-17'\nlet enddate = '2023-05-22'\n\n\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    timespan: timespan,\n    from: startdate,\n    to: enddate\n}\n\nmsg.symbol = symbol\nnode.warn(msg.payload)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 140,
+        "wires": [
+            [
+                "8d07fa210177feac"
+            ]
+        ]
+    },
+    {
+        "id": "ef50ecb96185d372",
+        "type": "inject",
+        "z": "95bd753412df5188",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 120,
+        "y": 140,
+        "wires": [
+            [
+                "4a25469a585c5344"
+            ]
+        ]
+    },
+    {
+        "id": "a9c28c0913a4c436",
+        "type": "debug",
+        "z": "95bd753412df5188",
+        "name": "debug 416",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 790,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "ded972531f576604",
+        "type": "function",
+        "z": "95bd753412df5188",
+        "name": "format output",
+        "func": "let close = 0\nlet item = 0\nlet temp = ''\nlet sql = ''\nlet v = 0\nlet vw = 0\nlet o = 0\nlet c = 0\nlet h = 0\nlet l = 0\nlet t = 0\nlet n = 0\n\n\n\nfor (item of msg.payload.results) {\n    v = item.v;\n    vw = item.vw;\n    o = item.o;\n    c = item.c;\n    h = item.h;\n    l = item.l;\n    t = item.t;\n    n = item.n;\n    sql = \"insert into daily_close (symbol, volume, vwap, open, close, high, low, unixtime, transactions) values ('\" + msg.symbol + \"', \" + v + \",\" + vw + \",\" + o + \",\" + c + \",\" + h+ \", \" +l+ \", \" +t+ \",\" +n+ \");\\n\"\n    temp += sql\n}\n\nnode.warn(temp)\nmsg.payload = temp\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 780,
+        "y": 360,
+        "wires": [
+            [
+                "9128fd3ddb80cc56"
+            ]
+        ]
+    },
+    {
+        "id": "cc3717a729cb5fc4",
+        "type": "polygon-trades-min-agg-rest",
+        "z": "95bd753412df5188",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "multiplier": 1,
+        "timespan": "minute",
+        "from": "",
+        "to": "",
+        "x": 560,
+        "y": 360,
+        "wires": [
+            [
+                "ded972531f576604"
+            ]
+        ]
+    },
+    {
+        "id": "2aafdab5725fba23",
+        "type": "function",
+        "z": "95bd753412df5188",
+        "name": "set timespan and date range",
+        "func": "let symbol = 'QQQ'\nlet cnt = 1\nlet timespan = 'day'\nlet startdate = '2023-05-17'\nlet enddate = '2023-05-22'\n\n\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    timespan: timespan,\n    from: startdate,\n    to: enddate\n}\n\nmsg.symbol = symbol\n//node.warn(msg.payload)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 360,
+        "wires": [
+            [
+                "cc3717a729cb5fc4"
+            ]
+        ]
+    },
+    {
+        "id": "2f988ef1941483a7",
+        "type": "inject",
+        "z": "95bd753412df5188",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 100,
+        "y": 360,
+        "wires": [
+            [
+                "2aafdab5725fba23"
+            ]
+        ]
+    },
+    {
+        "id": "5ee4d652cc4858ea",
+        "type": "inject",
+        "z": "95bd753412df5188",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 120,
+        "y": 600,
+        "wires": [
+            [
+                "32b7e562722d6097"
+            ]
+        ]
+    },
+    {
+        "id": "32b7e562722d6097",
+        "type": "function",
+        "z": "95bd753412df5188",
+        "name": "create table",
+        "func": "msg.query = \"create table IF NOT EXISTS daily_close (symbol VARCHAR(10), volume FLOAT, vwap FLOAT, open FLOAT, close FLOAT, high FLOAT, low FLOAT, unixtime BIGINT, transactions INT, change FLOAT);\"\n//msg.query = \"DROP table daily_close\"\nmsg.query = \"select * from daily_close\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 600,
+        "wires": [
+            [
+                "90d961a5a0189b0f"
+            ]
+        ]
+    },
+    {
+        "id": "90d961a5a0189b0f",
+        "type": "postgresql",
+        "z": "95bd753412df5188",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 420,
+        "y": 600,
+        "wires": [
+            [
+                "a45e3a21a430201e"
+            ]
+        ]
+    },
+    {
+        "id": "a45e3a21a430201e",
+        "type": "debug",
+        "z": "95bd753412df5188",
+        "name": "debug 448",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 570,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "9128fd3ddb80cc56",
+        "type": "split",
+        "z": "95bd753412df5188",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 330,
+        "y": 420,
+        "wires": [
+            [
+                "e35d1ec138a204a2"
+            ]
+        ]
+    },
+    {
+        "id": "303d4998bd592fcc",
+        "type": "postgresql",
+        "z": "95bd753412df5188",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 620,
+        "y": 420,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e35d1ec138a204a2",
+        "type": "function",
+        "z": "95bd753412df5188",
+        "name": "msg.query",
+        "func": "msg.query = msg.payload\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 420,
+        "wires": [
+            [
+                "303d4998bd592fcc"
+            ]
+        ]
+    },
+    {
+        "id": "651f0aab10dc1632",
+        "type": "polygon-account",
+        "name": "Polygon Key"
+    },
+    {
+        "id": "7455395cf269fb2b",
+        "type": "postgreSQLConfig",
+        "name": "",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "postgres",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "docker",
+        "userFieldType": "str",
+        "password": "docker",
+        "passwordFieldType": "str"
+    }
+]
