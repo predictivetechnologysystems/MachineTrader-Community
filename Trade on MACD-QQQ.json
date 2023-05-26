@@ -1,0 +1,1188 @@
+[
+    {
+        "id": "bf2d9698daeaf83c",
+        "type": "tab",
+        "label": "Trade on MACD-QQQ",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "3cac93e39fdb3c8e",
+        "type": "function",
+        "z": "bf2d9698daeaf83c",
+        "name": "create Alpaca buy or sell order ",
+        "func": "let alpaca_ticker = msg.symbol\nlet algo_name = msg.algo_name\nlet price = msg.price\nlet qty = msg.size\nlet hist = msg.hist\nlet pos = msg.pos\nlet profit = msg.profit\nprice = +price\nprice = price.toFixed(2)\n\n\nnode.warn(\"Algoname: \" +algo_name+ \" Ticker: \" +alpaca_ticker+ \" Qty: \" +qty+ \" Position: \" +pos+ \" Price: \" +price+ \" Hist: \" +hist)\n\n// create a unique clientid with unixtime\nlet d = Date.now()\nlet client_order_id = alpaca_ticker + d\nmsg.clientorderid = client_order_id // passes this variable in the flow \n\nlet subtag = algo_name\nlet temp = ''\nlet side = 'buy'\n\n\n// CASE 1: Holding More than 100 Shares Short \n\nif (pos < -100) {\n    side = 'buy'\n    pos = (pos * -1)\n    node.warn(\"CASE 1: Holding More than 100 Shares Short \")\n    temp = {\n        \"symbol\": alpaca_ticker,\n        \"qty\": pos,\n        \"side\": side,\n        \"type\": 'limit',\n        \"client_order_id\": client_order_id,\n        \"limit_price\": price,  // limit orders only\n        //    \"subtag\": subtag,\n        \"time_in_force\": \"gtc\"\n    }; // line 28\n\n    msg.payload = temp\n    node.warn(msg.payload)\n    return msg;\n} // line 24\n\n\n// CASE 2: Holding More than 100 Shares Long \n\nelse if (pos > 100) {\n    side = 'sell'\n    node.warn(\"CASE 2: Holding More than 100 Shares Long \")\n\n    \n    temp = {\n        \"symbol\": alpaca_ticker,\n        \"qty\": pos,\n        \"side\": side,\n        \"type\": 'limit',\n        \"client_order_id\": client_order_id,\n        \"limit_price\": price,  // limit orders only\n        //    \"subtag\": subtag,\n        \"time_in_force\": \"gtc\"\n    }; // line 51\n\n    msg.payload = temp\n    node.warn(msg.payload)\n    return msg;\n} // line 48\n\n// CASE 3: No position held and Hist indictaes Sell\n\nif ((hist < -0.01) && (pos == 0)) {\n    side = 'sell'\n    node.warn(\"CASE 3: No position held and RSI indictaes Sell\")\n\n    temp = {\n        \"symbol\": alpaca_ticker,\n        \"qty\": qty,\n        \"side\": side,\n        \"type\": 'limit',\n        \"client_order_id\": client_order_id,\n        \"limit_price\": price,  // limit orders only\n        //    \"subtag\": subtag,\n        \"time_in_force\": \"gtc\"\n    }; // line 72\n\n    msg.payload = temp\n    node.warn(msg.payload)\n    return msg;\n} // line 69\n\n// CASE 4 No position held buy Hist indicates Buy\n\nelse if (( hist > 0.01) && (pos == 0)) {\n    side = 'buy'\n    node.warn(\"CASE 4 No position held and RSI indicates Buy\")\n\n    temp = {\n        \"symbol\": alpaca_ticker,\n        \"qty\": qty,\n        \"side\": side,\n        \"type\": 'limit',\n        \"client_order_id\": client_order_id,\n        \"limit_price\": price,  // limit orders only\n        //    \"subtag\": subtag,\n        \"time_in_force\": \"gtc\"\n    }; // line 93\n\n    msg.payload = temp\n    node.warn(msg.payload)\n    return msg;\n} // line 90\n\n\n// CASE 5: Holding Long Position\n\nelse if ( ( hist < -0.01 ) && (pos > 0) ) {\n    side = 'sell'\n    qty = pos\n    node.warn(\"CASE 5: Holding Long Position and Hist Indicates sell\")\n\n    temp = {\n        \"symbol\": alpaca_ticker,\n        \"qty\": qty,\n        \"side\": side,\n        \"type\": 'limit',\n        \"client_order_id\": client_order_id,\n        \"limit_price\": price,  // limit orders only\n        //    \"subtag\": subtag,\n        \"time_in_force\": \"gtc\"\n    }; // line 116\n\n    msg.payload = temp\n    node.warn(msg.payload)\n    return msg;\n} // line 112\n\n// CASE 6: Holding Long Position and Hist indicates buy. Do nothing.\n\nelse if ((hist > -0.01) && (pos > 0)) {\n    side = 'buy'\n    qty = pos\n    node.warn(\"CASE 6: Holding Long Position and Hist Indicates buy. Do NOthing.\")\n\n} \n\n\n\n// CASE 7: Holding Short Position and Hist Indicates buy\n\nelse if (( hist > 0.01) && (pos < 0)) {\n    side = 'buy'\n    qty = (pos * -1)\n    node.warn(\"CASE 7: Holding Short Position and Hist Indicates buy\")\n\n    temp = {\n        \"symbol\": alpaca_ticker,\n        \"qty\": qty,\n        \"side\": side,\n        \"type\": 'limit',\n        \"client_order_id\": client_order_id,\n        \"limit_price\": price,  // limit orders only\n        //    \"subtag\": subtag,\n        \"time_in_force\": \"gtc\"\n    }; // line 139\n\n    msg.payload = temp\n    node.warn(msg.payload)\n    return msg;\n} // line 135\n\n// CASE 8: Holding Short Position and Hist Indicates sell\n\nelse if ((hist < 0.01) && (pos < 0)) {\n\n    node.warn(\"CASE 8: Holding Short Position and Hist Indicates sell. Do nothing.\")\n}\n\nreturn msg",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 360,
+        "wires": [
+            [
+                "62b990ca384ea257"
+            ]
+        ]
+    },
+    {
+        "id": "882be3f3e801502a",
+        "type": "comment",
+        "z": "bf2d9698daeaf83c",
+        "name": "Sample MACD Flow Trading QQQ",
+        "info": "",
+        "x": 200,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "3dd58a02e849da5d",
+        "type": "function",
+        "z": "bf2d9698daeaf83c",
+        "name": "Store Flow Variables",
+        "func": "let d = new Date().toJSON().slice(0, 10);\n//node.warn(d)\n\n// enter desired values below\nmsg.symbol = 'QQQ'\nmsg.window = 1000 // lookback window\nmsg.cnt = 1 // get most recent value\nmsg.timestamp = d\nmsg.timespan = 'minute'\nmsg.algo_name = \"Trade QQQ on MACD [paper]\"\nmsg.psize = 35000 // size of portfolio\nmsg.size = 100 // shares to trade\nmsg.account = 'paper'\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 300,
+        "wires": [
+            [
+                "bf6067e10c068f9e"
+            ]
+        ]
+    },
+    {
+        "id": "87a1ad34ffc4cfa9",
+        "type": "inject",
+        "z": "bf2d9698daeaf83c",
+        "name": "GO",
+        "props": [],
+        "repeat": "60",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 180,
+        "wires": [
+            [
+                "e3af911bbfe2fba3"
+            ]
+        ]
+    },
+    {
+        "id": "c1b7736b3da333ca",
+        "type": "delay",
+        "z": "bf2d9698daeaf83c",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 240,
+        "y": 300,
+        "wires": [
+            [
+                "3dd58a02e849da5d"
+            ]
+        ]
+    },
+    {
+        "id": "ae5ceefa2a4d993a",
+        "type": "inject",
+        "z": "bf2d9698daeaf83c",
+        "name": "GO",
+        "props": [],
+        "repeat": "60",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 120,
+        "wires": [
+            [
+                "42f395b9317ee1bd"
+            ]
+        ]
+    },
+    {
+        "id": "8dff45cb13caf7fb",
+        "type": "alpaca-position-query",
+        "z": "bf2d9698daeaf83c",
+        "conf": "c06cec183f9317f9",
+        "x": 490,
+        "y": 120,
+        "wires": [
+            [
+                "d5af746be88006a4"
+            ]
+        ]
+    },
+    {
+        "id": "6273ee0342be2622",
+        "type": "function",
+        "z": "bf2d9698daeaf83c",
+        "name": "create msg.vars for ticker",
+        "func": "let ticker = flow.get(\"ticker\")\nticker = 'QQQ'\n\nif (msg.payload[\"symbol\"] == ticker ){\n    \n//let id = msg.payload[\"id\"]\nlet asset_id = msg.payload[\"asset_id\"]\n//let portfolioname = msg.payload[\"portfolioname\"]\nlet symbol = msg.payload[\"symbol\"]\n//let name = msg.payload[\"name\"]\n//let account = msg.payload[\"account\"]\nlet exchange = msg.payload[\"exchange\"]\nlet asset_class = msg.payload[\"asset_class\"]\nlet asset_marginable = msg.payload[\"asset_marginable\"]\nlet qty = msg.payload[\"qty\"]\nlet avg_entry_price = msg.payload[\"avg_entry_price\"]\nlet side = msg.payload[\"side\"]\nlet market_value = msg.payload[\"market_value\"]\nlet cost_basis = msg.payload[\"cost_basis\"]\nlet unrealized_pl = msg.payload[\"unrealized_pl\"]\nlet unrealized_plpc = msg.payload[\"unrealized_plpc\"]\nlet unrealized_intraday_pl = msg.payload[\"unrealized_intraday_pl\"]\nlet unrealized_intraday_plpc = msg.payload[\"unrealized_intraday_plpc\"]\nlet current_price = msg.payload[\"current_price\"]\nlet lastday_price = msg.payload[\"lastday_price\"]\nlet change_today = msg.payload[\"change_today\"]\nlet qty_available = msg.payload[\"qty_available\"]\n//let status = msg.payload[\"status\"]\n//let orderid = msg.payload[\"orderid\"]\n\n//node.warn(qty)\nmsg.qty = qty\nmsg.profit = unrealized_pl\nmsg.ticker = symbol\nmsg.price = current_price\n//node.warn(\"Ticker: \" + msg.ticker + \" Price: \" + msg.price + \" Profit: \" + msg.profit + \" Buy Qty: \" + msg.qty)\nreturn msg;\n\n}\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 120,
+        "wires": [
+            [
+                "586503bfd9f1062f"
+            ]
+        ]
+    },
+    {
+        "id": "d5af746be88006a4",
+        "type": "split",
+        "z": "bf2d9698daeaf83c",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 670,
+        "y": 120,
+        "wires": [
+            [
+                "6273ee0342be2622"
+            ]
+        ]
+    },
+    {
+        "id": "586503bfd9f1062f",
+        "type": "change",
+        "z": "bf2d9698daeaf83c",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "pos",
+                "pt": "flow",
+                "to": "qty",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1070,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "42f395b9317ee1bd",
+        "type": "change",
+        "z": "bf2d9698daeaf83c",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "pos",
+                "pt": "flow",
+                "to": "0",
+                "tot": "num"
+            },
+            {
+                "t": "set",
+                "p": "profit",
+                "pt": "flow",
+                "to": "0",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 280,
+        "y": 120,
+        "wires": [
+            [
+                "8dff45cb13caf7fb"
+            ]
+        ]
+    },
+    {
+        "id": "62b990ca384ea257",
+        "type": "alpaca-order",
+        "z": "bf2d9698daeaf83c",
+        "conf": "c06cec183f9317f9",
+        "x": 550,
+        "y": 360,
+        "wires": [
+            [
+                "b521f08493b68a78"
+            ]
+        ]
+    },
+    {
+        "id": "b521f08493b68a78",
+        "type": "debug",
+        "z": "bf2d9698daeaf83c",
+        "name": "debug 370",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 710,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "e0a4302d195cc2bb",
+        "type": "alpaca-orders-close",
+        "z": "bf2d9698daeaf83c",
+        "conf": "c06cec183f9317f9",
+        "name": "",
+        "x": 530,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2f118a978f185a94",
+        "type": "comment",
+        "z": "bf2d9698daeaf83c",
+        "name": "set ticker on line 2",
+        "info": "",
+        "x": 850,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "37eb812ea14006a2",
+        "type": "function-npm",
+        "z": "bf2d9698daeaf83c",
+        "name": "Hist vars",
+        "func": "let shortwindow = 12\nlet longwindow = 26\nlet signalwindow = 9\nlet cnt = 1\nlet d = new Date().toJSON().slice(0, 10);\n//node.warn(d)\n\n\nlet timestamp = d \nlet timespan = 'minute'\nlet symbol = msg.symbol\n\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    shortwindow: shortwindow,\n    longwindow: longwindow,\n    signalwindow: signalwindow,\n    limit: cnt,\n    timestamp: timestamp,\n    timespan: timespan,\n}\n\nmsg.symbol = symbol\nnode.warn(msg.payload)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 780,
+        "y": 300,
+        "wires": [
+            [
+                "26d2561183cb5d69"
+            ]
+        ]
+    },
+    {
+        "id": "af400141d89d9f32",
+        "type": "function",
+        "z": "bf2d9698daeaf83c",
+        "name": "store Hist",
+        "func": "//node.warn(msg.payload.results)\nmsg.profit = flow.get(\"profit\")\nmsg.pos = flow.get(\"pos\")\nmsg.price = flow.get(\"price\")\n\nlet ux = 0\nlet macd = 0\nlet signal = 0\nlet hist = 0\nlet item = 0\n\nfor (item of msg.payload.results.values) {\n    ux = item.timestamp\n    macd = item.value\n    signal = item.value\n    hist = item.value\n}\n\nvar unixTimestamp = ux;\nvar d = new Date(unixTimestamp);\nlet lt = d.toLocaleTimeString(\"en-US\");\n\n\nhist = hist.toFixed(3) \nmsg.hist = hist\nnode.warn(\"Time: \" + ux + \" Symbol: \" +msg.symbol+  \" Price:\" +msg.price+ \" Postion: \" +msg.pos+ \" Price: \" +msg.price)\nmsg.query = \"insert into qqq_macd (datetime, value, position, profit, price) values ('\" + lt + \"',\" + hist + \",\" + msg.pos + \",\" + msg.profit + \",\" + msg.price + \");\"\nnode.warn(msg.query)\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1100,
+        "y": 300,
+        "wires": [
+            [
+                "c93230f002d6b21d",
+                "3cac93e39fdb3c8e"
+            ]
+        ]
+    },
+    {
+        "id": "26d2561183cb5d69",
+        "type": "polygon-macd",
+        "z": "bf2d9698daeaf83c",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "timestamp": "",
+        "timespan": "",
+        "shortwindow": "",
+        "longwindow": "",
+        "signalwindow": "",
+        "limit": "",
+        "x": 940,
+        "y": 300,
+        "wires": [
+            [
+                "af400141d89d9f32"
+            ]
+        ]
+    },
+    {
+        "id": "7ed794d3810cd9fd",
+        "type": "http in",
+        "z": "bf2d9698daeaf83c",
+        "name": "/api/download_QQQ",
+        "url": "/api/download_QQQ",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 150,
+        "y": 460,
+        "wires": [
+            [
+                "6b4f5f1e55962166"
+            ]
+        ]
+    },
+    {
+        "id": "1b6e6ea6fd22276b",
+        "type": "http response",
+        "z": "bf2d9698daeaf83c",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 910,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "b9f6a0b4720ff4e9",
+        "type": "csv",
+        "z": "bf2d9698daeaf83c",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 630,
+        "y": 460,
+        "wires": [
+            [
+                "6d4c02a52af133f0"
+            ]
+        ]
+    },
+    {
+        "id": "6b4f5f1e55962166",
+        "type": "function",
+        "z": "bf2d9698daeaf83c",
+        "name": "export query",
+        "func": "msg.query = \"select * from orders_paper where symbol like 'QQQ';\"\n//msg.query = \"select * from orders_paper where symbol like 'QQQ' and created_at like '2023-05-11%';\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 460,
+        "wires": [
+            [
+                "1715fd052cf825af"
+            ]
+        ]
+    },
+    {
+        "id": "6d4c02a52af133f0",
+        "type": "file",
+        "z": "bf2d9698daeaf83c",
+        "name": "write report",
+        "filename": "/data/store/qqq_paper.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 770,
+        "y": 460,
+        "wires": [
+            [
+                "1b6e6ea6fd22276b"
+            ]
+        ]
+    },
+    {
+        "id": "1715fd052cf825af",
+        "type": "postgresql",
+        "z": "bf2d9698daeaf83c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 500,
+        "y": 460,
+        "wires": [
+            [
+                "b9f6a0b4720ff4e9"
+            ]
+        ]
+    },
+    {
+        "id": "5a23588f0e770706",
+        "type": "comment",
+        "z": "bf2d9698daeaf83c",
+        "name": "Polygon defaults are: shortwindow-12 longwindow 26    signalwindow 9",
+        "info": "",
+        "x": 730,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "e3af911bbfe2fba3",
+        "type": "function",
+        "z": "bf2d9698daeaf83c",
+        "name": "trading interval ",
+        "func": "let d = new Date();\nlet hour = d.getHours();\nlet min = d.getMinutes();\nlet day = d.getDay();\nlet sec = d.getSeconds();\n\n//node.warn(\"Day: \" +day+ \" Hour: \" +hour+ \" Minute: \" +min+ \" Seconds: \" +sec)\n\n// this will run during trading 9:30 - 4:00 pm\n if ((day > 0 && day < 6 && hour > 9 && hour < 16) || (day > 0 && day < 6 && hour > 8 && hour < 10 && min > 29 && min < 60)) {  \n\n// this runs 9 am - 4 pm\n//if ( day > 0 && day < 6 && hour > 8 && hour < 16 ) { \n\n// this runs 4 am - 8 pm\n//if (day > 0 && day < 6 && hour > 3 && hour < 21) { \n\n//node.warn(\"Market Open\")\nreturn msg;\n }",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 180,
+        "wires": [
+            [
+                "e0a4302d195cc2bb",
+                "c1b7736b3da333ca"
+            ]
+        ]
+    },
+    {
+        "id": "683856515847cf18",
+        "type": "inject",
+        "z": "bf2d9698daeaf83c",
+        "name": "every sec",
+        "props": [],
+        "repeat": "1",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 660,
+        "wires": [
+            [
+                "40f17a2fa97bbce9"
+            ]
+        ]
+    },
+    {
+        "id": "5c6cd35d063939bd",
+        "type": "comment",
+        "z": "bf2d9698daeaf83c",
+        "name": "Get current price of the asset from Polygon",
+        "info": "",
+        "x": 200,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "b91381a0719ce23b",
+        "type": "comment",
+        "z": "bf2d9698daeaf83c",
+        "name": "download csv file",
+        "info": "",
+        "x": 140,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "6355b6242d6b0c6b",
+        "type": "comment",
+        "z": "bf2d9698daeaf83c",
+        "name": "set trade vars",
+        "info": "",
+        "x": 390,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "7552a26168f45f6a",
+        "type": "comment",
+        "z": "bf2d9698daeaf83c",
+        "name": "set MACD vars",
+        "info": "",
+        "x": 760,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "2420dd266b31ffaf",
+        "type": "function-npm",
+        "z": "bf2d9698daeaf83c",
+        "name": "Get lasttrades",
+        "func": "let symbol = 'QQQ'\nlet cnt = 1 // last trade\n\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: cnt,\n}\n\n//node.warn(symbol)\n//node.warn(msg.payload)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 500,
+        "y": 660,
+        "wires": [
+            [
+                "28cb342be817f17f"
+            ]
+        ]
+    },
+    {
+        "id": "28cb342be817f17f",
+        "type": "polygon-last-trade-v3",
+        "z": "bf2d9698daeaf83c",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "x": 700,
+        "y": 660,
+        "wires": [
+            [
+                "71979f832fb5e306"
+            ]
+        ]
+    },
+    {
+        "id": "71979f832fb5e306",
+        "type": "function",
+        "z": "bf2d9698daeaf83c",
+        "name": "display price",
+        "func": "const prices = [];\nlet item = ''\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    prices.push(price);  \n//    node.warn(price)\n\n}\n\nmsg.price = prices\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 890,
+        "y": 660,
+        "wires": [
+            [
+                "b37bacf0a8a2221e"
+            ]
+        ]
+    },
+    {
+        "id": "b37bacf0a8a2221e",
+        "type": "change",
+        "z": "bf2d9698daeaf83c",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "price",
+                "pt": "flow",
+                "to": "price",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1050,
+        "y": 660,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7ab7312bad7d26ae",
+        "type": "comment",
+        "z": "bf2d9698daeaf83c",
+        "name": "set ticker on line 1",
+        "info": "",
+        "x": 510,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "40f17a2fa97bbce9",
+        "type": "function",
+        "z": "bf2d9698daeaf83c",
+        "name": "trading interval ",
+        "func": "let d = new Date();\nlet hour = d.getHours();\nlet min = d.getMinutes();\nlet day = d.getDay();\nlet sec = d.getSeconds();\n\n//node.warn(\"Day: \" +day+ \" Hour: \" +hour+ \" Minute: \" +min+ \" Seconds: \" +sec)\n\n// this will run during trading 9:30 - 4:00 pm\n if ((day > 0 && day < 6 && hour > 9 && hour < 16) || (day > 0 && day < 6 && hour > 8 && hour < 10 && min > 29 && min < 60)) {  \n\n// this runs 9 am - 4 pm\n//if ( day > 0 && day < 6 && hour > 8 && hour < 16 ) { \n\n// this runs 4 am - 8 pm\n//if (day > 0 && day < 6 && hour > 3 && hour < 21) { \n\n//node.warn(\"Market Open\")\nreturn msg;\n }",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 660,
+        "wires": [
+            [
+                "2420dd266b31ffaf"
+            ]
+        ]
+    },
+    {
+        "id": "9faf747b6e7abace",
+        "type": "comment",
+        "z": "bf2d9698daeaf83c",
+        "name": "Enable frontend reporting",
+        "info": "",
+        "x": 150,
+        "y": 740,
+        "wires": []
+    },
+    {
+        "id": "45e0ae1d2bc1a328",
+        "type": "function",
+        "z": "bf2d9698daeaf83c",
+        "name": "define values required for adding trade to portfolio",
+        "func": "// create a unique algo_id with current unixtime\nlet d = Date.now()\n\nmsg.id = d\nmsg.login = global.get(\"login\")\nmsg.ticker = flow.get(\"symbol\")\nmsg.algo_name = flow.get(\"algo_name\")\nmsg.asset_class = 'stocks'\nmsg.number = 1\nmsg.target = ''\nmsg.account = flow.get(\"account\")\nmsg.psize = flow.get(\"psize\")\nmsg.status = 'running'\nmsg.algo_type = 'intraday'\nmsg.benchmark = 'SPY'\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 800,
+        "wires": [
+            [
+                "83a3d7f4393ce9bc"
+            ]
+        ]
+    },
+    {
+        "id": "8a78ad837a32e026",
+        "type": "function",
+        "z": "bf2d9698daeaf83c",
+        "name": "delete from tickers",
+        "func": "let id = msg.id\nlet symbol = msg.ticker\nlet portfolioname = msg.algo_name\nmsg.query = \"delete from tickers_\" +msg.account+ \" where symbol like '\" +symbol+ \"';\"\nnode.warn(msg.query)\nmsg.symbol = symbol\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 860,
+        "wires": [
+            [
+                "d6580e3724735364"
+            ]
+        ]
+    },
+    {
+        "id": "d6580e3724735364",
+        "type": "postgresql",
+        "z": "bf2d9698daeaf83c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 580,
+        "y": 860,
+        "wires": [
+            [
+                "507d212d61290cc6"
+            ]
+        ]
+    },
+    {
+        "id": "83a3d7f4393ce9bc",
+        "type": "delay",
+        "z": "bf2d9698daeaf83c",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1020,
+        "y": 800,
+        "wires": [
+            [
+                "b9a5466812575b8a"
+            ]
+        ]
+    },
+    {
+        "id": "2babe7d3e9f6f6f2",
+        "type": "postgresql",
+        "z": "bf2d9698daeaf83c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 240,
+        "y": 860,
+        "wires": [
+            [
+                "8a78ad837a32e026"
+            ]
+        ]
+    },
+    {
+        "id": "5781613cfa9d7972",
+        "type": "function",
+        "z": "bf2d9698daeaf83c",
+        "name": "delete existing algo",
+        "func": "msg.algo_name = flow.get(\"algo_name\")\nmsg.query = \"delete from algos where algo_name = '\" +msg.algo_name+ \"';\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 290,
+        "y": 800,
+        "wires": [
+            [
+                "72676a8da277bf2c"
+            ]
+        ]
+    },
+    {
+        "id": "72676a8da277bf2c",
+        "type": "postgresql",
+        "z": "bf2d9698daeaf83c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 460,
+        "y": 800,
+        "wires": [
+            [
+                "45e0ae1d2bc1a328"
+            ]
+        ]
+    },
+    {
+        "id": "507d212d61290cc6",
+        "type": "function",
+        "z": "bf2d9698daeaf83c",
+        "name": "insert into tickers_paper",
+        "func": "let id = msg.id\nlet symbol = msg.symbol\nlet portfolioname = msg.algo_name\nmsg.query = \"insert into tickers_\" +msg.account+ \" (id, symbol, portfolioname) values (\" + id + \",'\" + symbol + \"', '\" + portfolioname + \"') ON CONFLICT DO NOTHING;\"\nnode.warn(msg.query)\nmsg.symbol = symbol\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 770,
+        "y": 860,
+        "wires": [
+            [
+                "61ed36bb5666a958"
+            ]
+        ]
+    },
+    {
+        "id": "61ed36bb5666a958",
+        "type": "postgresql",
+        "z": "bf2d9698daeaf83c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 960,
+        "y": 860,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b9a5466812575b8a",
+        "type": "function",
+        "z": "bf2d9698daeaf83c",
+        "name": "add values to algos table",
+        "func": "let id = msg.id\nlet ticker = msg.tickers\nlet algo_name = msg.algo_name\nlet login = msg.login\nlet asset_class = msg.asset_class\nlet number = msg.number\nlet target = msg.target\nlet account = msg.account\nlet psize = msg.psize\nlet algo_type = msg.algo_type\nlet status = msg.status\nlet benchmark = msg.benchmark\n\nlet benchmark_start = global.get(\"spy_current\")\nlet sql = \"insert into algos (login,id,account,algo_name,algo_type,status,portfolio_size,benchmark,benchmark_start) values \"\nsql += \"('\" + login + \"','\" + id + \"','\" + account + \"','\" + algo_name + \"','\" + algo_type + \"','\" + status + \"','\" + psize + \"','\" + benchmark + \"','\" + benchmark_start + \"') ON CONFLICT DO NOTHING;\"\nmsg.query = sql\nnode.warn(msg.query)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1210,
+        "y": 800,
+        "wires": [
+            [
+                "2babe7d3e9f6f6f2"
+            ]
+        ]
+    },
+    {
+        "id": "45c5480234cc2d6e",
+        "type": "inject",
+        "z": "bf2d9698daeaf83c",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 800,
+        "wires": [
+            [
+                "5781613cfa9d7972"
+            ]
+        ]
+    },
+    {
+        "id": "bf6067e10c068f9e",
+        "type": "change",
+        "z": "bf2d9698daeaf83c",
+        "name": "Store flow vars",
+        "rules": [
+            {
+                "t": "set",
+                "p": "algo_name",
+                "pt": "flow",
+                "to": "algo_name",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "psize",
+                "pt": "flow",
+                "to": "psize",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "size",
+                "pt": "flow",
+                "to": "size",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "symbol",
+                "pt": "flow",
+                "to": "symbol",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "account",
+                "pt": "flow",
+                "to": "account",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 620,
+        "y": 300,
+        "wires": [
+            [
+                "37eb812ea14006a2"
+            ]
+        ]
+    },
+    {
+        "id": "9255a7b59436fb67",
+        "type": "comment",
+        "z": "bf2d9698daeaf83c",
+        "name": "set orders_paper or order_paper",
+        "info": "",
+        "x": 380,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "c93230f002d6b21d",
+        "type": "postgresql",
+        "z": "bf2d9698daeaf83c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1240,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "faf206f592c31f71",
+        "type": "http in",
+        "z": "bf2d9698daeaf83c",
+        "name": "/api/download_qqq_macd",
+        "url": "/api/download_qqq_macd",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 150,
+        "y": 500,
+        "wires": [
+            [
+                "db575ebed5817f14"
+            ]
+        ]
+    },
+    {
+        "id": "3004f0ac1ff5f3d2",
+        "type": "http response",
+        "z": "bf2d9698daeaf83c",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 910,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "ade6cce37718f771",
+        "type": "csv",
+        "z": "bf2d9698daeaf83c",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 630,
+        "y": 500,
+        "wires": [
+            [
+                "aafbb2d324c00561"
+            ]
+        ]
+    },
+    {
+        "id": "db575ebed5817f14",
+        "type": "function",
+        "z": "bf2d9698daeaf83c",
+        "name": "export query",
+        "func": "msg.query = \"select * from qqq_macd;\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 500,
+        "wires": [
+            [
+                "8f2e4b0682c9ddae"
+            ]
+        ]
+    },
+    {
+        "id": "aafbb2d324c00561",
+        "type": "file",
+        "z": "bf2d9698daeaf83c",
+        "name": "write report",
+        "filename": "/data/store/output.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 770,
+        "y": 500,
+        "wires": [
+            [
+                "3004f0ac1ff5f3d2"
+            ]
+        ]
+    },
+    {
+        "id": "8f2e4b0682c9ddae",
+        "type": "postgresql",
+        "z": "bf2d9698daeaf83c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 500,
+        "y": 500,
+        "wires": [
+            [
+                "ade6cce37718f771"
+            ]
+        ]
+    },
+    {
+        "id": "bdfe9793119a2f7f",
+        "type": "function",
+        "z": "bf2d9698daeaf83c",
+        "name": "create table qqq_macd",
+        "func": "msg.query = \"create table IF NOT EXISTS qqq_macd(datetime VARCHAR(40), value FLOAT, position FLOAT, profit FLOAT, price FLOAT)\"\n//msg.query = \"select * from qqq_macd;\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 1000,
+        "wires": [
+            [
+                "8e2308d964733916"
+            ]
+        ]
+    },
+    {
+        "id": "91789438b84b7d02",
+        "type": "inject",
+        "z": "bf2d9698daeaf83c",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 1000,
+        "wires": [
+            [
+                "bdfe9793119a2f7f"
+            ]
+        ]
+    },
+    {
+        "id": "93a48930fb57c8a8",
+        "type": "debug",
+        "z": "bf2d9698daeaf83c",
+        "name": "debug 407",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 1000,
+        "wires": []
+    },
+    {
+        "id": "8e2308d964733916",
+        "type": "postgresql",
+        "z": "bf2d9698daeaf83c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 500,
+        "y": 1000,
+        "wires": [
+            [
+                "93a48930fb57c8a8"
+            ]
+        ]
+    },
+    {
+        "id": "8d91840a3f9d5248",
+        "type": "comment",
+        "z": "bf2d9698daeaf83c",
+        "name": "create qqq_macd table",
+        "info": "",
+        "x": 160,
+        "y": 960,
+        "wires": []
+    },
+    {
+        "id": "8d886a9a0f8bc516",
+        "type": "inject",
+        "z": "bf2d9698daeaf83c",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 300,
+        "wires": [
+            [
+                "c1b7736b3da333ca"
+            ]
+        ]
+    },
+    {
+        "id": "c06cec183f9317f9",
+        "type": "alpaca-account",
+        "name": "paper",
+        "keyId": "USE-OAUTH-OR-REPLACE",
+        "paper": true
+    },
+    {
+        "id": "651f0aab10dc1632",
+        "type": "polygon-account",
+        "name": "Polygon Key"
+    },
+    {
+        "id": "7455395cf269fb2b",
+        "type": "postgreSQLConfig",
+        "name": "",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "postgres",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "docker",
+        "userFieldType": "str",
+        "password": "docker",
+        "passwordFieldType": "str"
+    }
+]
