@@ -1,0 +1,1249 @@
+[
+    {
+        "id": "3184c9cdd4a0a4f1",
+        "type": "tab",
+        "label": "Trade on EMA-AMZN",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "340fb25e3ac3fdd0",
+        "type": "comment",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "Sample EMA Flow Trading AMZN",
+        "info": "",
+        "x": 170,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "74bdb1bc14b0531d",
+        "type": "function",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "trading interval ",
+        "func": "let d = new Date();\nlet hour = d.getHours();\nlet min = d.getMinutes();\nlet day = d.getDay();\nlet sec = d.getSeconds();\n\n//node.warn(\"Day: \" +day+ \" Hour: \" +hour+ \" Minute: \" +min+ \" Seconds: \" +sec)\n\n// this will run during trading 9:30 - 4:00 pm\n if ((day > 0 && day < 6 && hour > 9 && hour < 16) || (day > 0 && day < 6 && hour > 8 && hour < 10 && min > 29 && min < 60)) {  \n\n// this runs 9 am - 4 pm\n//if ( day > 0 && day < 6 && hour > 8 && hour < 16 ) { \n\n// this runs 4 am - 8 pm\n//if (day > 0 && day < 6 && hour > 3 && hour < 21) { \n\n//node.warn(\"Market Open\")\nreturn msg;\n }",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 220,
+        "wires": [
+            [
+                "d81b85541a648b1c",
+                "a6a26afcfa9d248d"
+            ]
+        ]
+    },
+    {
+        "id": "f4a5e27b15821be1",
+        "type": "inject",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "GO",
+        "props": [],
+        "repeat": "60",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 220,
+        "wires": [
+            [
+                "74bdb1bc14b0531d"
+            ]
+        ]
+    },
+    {
+        "id": "d81b85541a648b1c",
+        "type": "delay",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 260,
+        "y": 300,
+        "wires": [
+            [
+                "bcaf91ed7dd096e4"
+            ]
+        ]
+    },
+    {
+        "id": "750d4027a8ac05f9",
+        "type": "inject",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "GO",
+        "props": [],
+        "repeat": "60",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 140,
+        "wires": [
+            [
+                "632b0a951b19e057"
+            ]
+        ]
+    },
+    {
+        "id": "d3a6332c3e89b687",
+        "type": "alpaca-order",
+        "z": "3184c9cdd4a0a4f1",
+        "conf": "c06cec183f9317f9",
+        "x": 610,
+        "y": 360,
+        "wires": [
+            [
+                "72fe0f2d16e0da72"
+            ]
+        ]
+    },
+    {
+        "id": "72fe0f2d16e0da72",
+        "type": "debug",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "debug 369",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 790,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "69d28e00dc8bdd95",
+        "type": "http in",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "/api/download_AMZN",
+        "url": "/api/download_AMZN",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 160,
+        "y": 500,
+        "wires": [
+            [
+                "8d28cc6095d7d64d"
+            ]
+        ]
+    },
+    {
+        "id": "e4631404cfc20ce5",
+        "type": "http response",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 910,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "66cf829f49b4395d",
+        "type": "csv",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 630,
+        "y": 500,
+        "wires": [
+            [
+                "6190524f90d88c09"
+            ]
+        ]
+    },
+    {
+        "id": "8d28cc6095d7d64d",
+        "type": "function",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "export query",
+        "func": "let d = new Date().toJSON().slice(0, 10);\nmsg.query = \"select * from orders_paper where symbol like 'AMZN';\"\n//msg.query = \"select * from orders_paper where symbol like 'AMZN' and created_at like '\" +d+ \"%';\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 500,
+        "wires": [
+            [
+                "a3091801d8f670dd"
+            ]
+        ]
+    },
+    {
+        "id": "6190524f90d88c09",
+        "type": "file",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "write report",
+        "filename": "/data/store/amzn_paper_orders.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 770,
+        "y": 500,
+        "wires": [
+            [
+                "e4631404cfc20ce5"
+            ]
+        ]
+    },
+    {
+        "id": "a3091801d8f670dd",
+        "type": "postgresql",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 500,
+        "y": 500,
+        "wires": [
+            [
+                "66cf829f49b4395d",
+                "0d7549e05afa7c09"
+            ]
+        ]
+    },
+    {
+        "id": "a6a26afcfa9d248d",
+        "type": "alpaca-orders-close",
+        "z": "3184c9cdd4a0a4f1",
+        "conf": "c06cec183f9317f9",
+        "name": "",
+        "x": 530,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "15363c237479f839",
+        "type": "comment",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "The lookback window is the key variable to be testing. The smaller the value, the closer the EMA matches the current price.",
+        "info": "",
+        "x": 790,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "13c2fe72e69ad554",
+        "type": "inject",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "every sec",
+        "props": [],
+        "repeat": "1",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 660,
+        "wires": [
+            [
+                "487bbbeedcebacc4"
+            ]
+        ]
+    },
+    {
+        "id": "98171515856abc18",
+        "type": "comment",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "Get current price of the asset from Polygon",
+        "info": "",
+        "x": 180,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "5e5280919e7bbdd5",
+        "type": "function-npm",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "Get lasttrades",
+        "func": "let symbol = 'AMZN'\nlet cnt = 1 // last trade\n\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    cnt: cnt,\n}\n\n//node.warn(symbol)\n//node.warn(msg.payload)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 500,
+        "y": 660,
+        "wires": [
+            [
+                "a2bd5593bc8b407c"
+            ]
+        ]
+    },
+    {
+        "id": "a2bd5593bc8b407c",
+        "type": "polygon-last-trade-v3",
+        "z": "3184c9cdd4a0a4f1",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "x": 700,
+        "y": 660,
+        "wires": [
+            [
+                "ba64a85ae4fd1e8e"
+            ]
+        ]
+    },
+    {
+        "id": "ba64a85ae4fd1e8e",
+        "type": "function",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "display price",
+        "func": "const prices = [];\nlet item = ''\nlet price = 0\nlet ux = 0\n\nfor (item of msg.payload.results) {\n    price = item.price;\n    prices.push(price);  \n//    node.warn(price)\n\n}\n\nmsg.price = prices\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 890,
+        "y": 660,
+        "wires": [
+            [
+                "cfa7191e4919c241"
+            ]
+        ]
+    },
+    {
+        "id": "cfa7191e4919c241",
+        "type": "change",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "price",
+                "pt": "flow",
+                "to": "price",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1050,
+        "y": 660,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "74d199398c99f926",
+        "type": "comment",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "set ticker on line 1",
+        "info": "",
+        "x": 510,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "487bbbeedcebacc4",
+        "type": "function",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "trading interval ",
+        "func": "let d = new Date();\nlet hour = d.getHours();\nlet min = d.getMinutes();\nlet day = d.getDay();\nlet sec = d.getSeconds();\n\n//node.warn(\"Day: \" +day+ \" Hour: \" +hour+ \" Minute: \" +min+ \" Seconds: \" +sec)\n\n// this will run during trading 9:30 - 4:00 pm\n if ((day > 0 && day < 6 && hour > 9 && hour < 16) || (day > 0 && day < 6 && hour > 8 && hour < 10 && min > 29 && min < 60)) {  \n\n// this runs 9 am - 4 pm\n//if ( day > 0 && day < 6 && hour > 8 && hour < 16 ) { \n\n// this runs 4 am - 8 pm\n//if (day > 0 && day < 6 && hour > 3 && hour < 21) { \n\n//node.warn(\"Market Open\")\nreturn msg;\n }",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 660,
+        "wires": [
+            [
+                "5e5280919e7bbdd5"
+            ]
+        ]
+    },
+    {
+        "id": "ca8682c7a5f349fe",
+        "type": "comment",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "download csv file",
+        "info": "",
+        "x": 140,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "b6d696b35d4dcff4",
+        "type": "comment",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "Enable frontend reporting",
+        "info": "",
+        "x": 150,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "e2ff24834c2f07ef",
+        "type": "function",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "define values required for adding trade to portfolio",
+        "func": "// create a unique algo_id with current unixtime\nlet d = Date.now()\n\nmsg.id = d\nmsg.login = global.get(\"login\")\nmsg.ticker = flow.get(\"symbol\")\nmsg.algo_name = flow.get(\"algo_name\")\nmsg.asset_class = 'stocks'\nmsg.number = 1\nmsg.target = ''\nmsg.account = flow.get(\"account\")\nmsg.psize = flow.get(\"psize\")\nmsg.status = 'running'\nmsg.algo_type = 'intraday'\nmsg.benchmark = 'SPY'\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 860,
+        "wires": [
+            [
+                "2823daeaa6c736c5"
+            ]
+        ]
+    },
+    {
+        "id": "4c01eac433d7a649",
+        "type": "function",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "delete from tickers",
+        "func": "let id = msg.id\nlet symbol = msg.ticker\nlet portfolioname = msg.algo_name\nmsg.query = \"delete from tickers_\" +msg.account+ \" where symbol like '\" +symbol+ \"';\"\nnode.warn(msg.query)\nmsg.symbol = symbol\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 920,
+        "wires": [
+            [
+                "5c477f899b0d29a5"
+            ]
+        ]
+    },
+    {
+        "id": "5c477f899b0d29a5",
+        "type": "postgresql",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 580,
+        "y": 920,
+        "wires": [
+            [
+                "76bd66caac38a9f0"
+            ]
+        ]
+    },
+    {
+        "id": "2823daeaa6c736c5",
+        "type": "delay",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1020,
+        "y": 860,
+        "wires": [
+            [
+                "2605543ae93138a6"
+            ]
+        ]
+    },
+    {
+        "id": "21e08b34769280af",
+        "type": "postgresql",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 240,
+        "y": 920,
+        "wires": [
+            [
+                "4c01eac433d7a649"
+            ]
+        ]
+    },
+    {
+        "id": "f2539fcfdd6bc7c6",
+        "type": "function",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "delete existing algo",
+        "func": "msg.algo_name = flow.get(\"algo_name\")\nmsg.query = \"delete from algos where algo_name = '\" +msg.algo_name+ \"';\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 290,
+        "y": 860,
+        "wires": [
+            [
+                "d46bd320e728cf68"
+            ]
+        ]
+    },
+    {
+        "id": "d46bd320e728cf68",
+        "type": "postgresql",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 460,
+        "y": 860,
+        "wires": [
+            [
+                "e2ff24834c2f07ef"
+            ]
+        ]
+    },
+    {
+        "id": "76bd66caac38a9f0",
+        "type": "function",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "insert into tickers_paper",
+        "func": "let id = msg.id\nlet symbol = msg.symbol\nlet portfolioname = msg.algo_name\nmsg.query = \"insert into tickers_\" +msg.account+ \" (id, symbol, portfolioname) values (\" + id + \",'\" + symbol + \"', '\" + portfolioname + \"') ON CONFLICT DO NOTHING;\"\nnode.warn(msg.query)\nmsg.symbol = symbol\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 770,
+        "y": 920,
+        "wires": [
+            [
+                "0755f7c285626379"
+            ]
+        ]
+    },
+    {
+        "id": "0755f7c285626379",
+        "type": "postgresql",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 960,
+        "y": 920,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2605543ae93138a6",
+        "type": "function",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "add values to algos table",
+        "func": "let id = msg.id\nlet ticker = msg.tickers\nlet algo_name = msg.algo_name\nlet login = msg.login\nlet asset_class = msg.asset_class\nlet number = msg.number\nlet target = msg.target\nlet account = msg.account\nlet psize = msg.psize\nlet algo_type = msg.algo_type\nlet status = msg.status\nlet benchmark = msg.benchmark\n\nlet benchmark_start = global.get(\"spy_current\")\nlet sql = \"insert into algos (login,id,account,algo_name,algo_type,status,portfolio_size,benchmark,benchmark_start) values \"\nsql += \"('\" + login + \"','\" + id + \"','\" + account + \"','\" + algo_name + \"','\" + algo_type + \"','\" + status + \"','\" + psize + \"','\" + benchmark + \"','\" + benchmark_start + \"') ON CONFLICT DO NOTHING;\"\nmsg.query = sql\nnode.warn(msg.query)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1210,
+        "y": 860,
+        "wires": [
+            [
+                "21e08b34769280af"
+            ]
+        ]
+    },
+    {
+        "id": "20a6ef6333bb03cb",
+        "type": "inject",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 860,
+        "wires": [
+            [
+                "f2539fcfdd6bc7c6"
+            ]
+        ]
+    },
+    {
+        "id": "092196368707e9c7",
+        "type": "comment",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "set orders_paper or order_paper",
+        "info": "",
+        "x": 380,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "a38fe8223df5f794",
+        "type": "function-npm",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "EMA vars",
+        "func": "let symbol = msg.symbol\nlet window = msg.window\nlet cnt = msg.cnt\nlet timestamp = msg.timestamp\nlet timespan = msg.timespan\n\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    window: window,\n    limit: cnt,\n    timestamp: timestamp,\n    timespan: timespan,\n}\n\nmsg.symbol = symbol\n//node.warn(msg.payload)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 800,
+        "y": 300,
+        "wires": [
+            [
+                "a710fd5ce4e41814"
+            ]
+        ]
+    },
+    {
+        "id": "a710fd5ce4e41814",
+        "type": "polygon-ema",
+        "z": "3184c9cdd4a0a4f1",
+        "conf": "651f0aab10dc1632",
+        "symbol": "",
+        "timestamp": "",
+        "timespan": "minute",
+        "window": "",
+        "limit": "",
+        "x": 950,
+        "y": 300,
+        "wires": [
+            [
+                "83743728fdc30140"
+            ]
+        ]
+    },
+    {
+        "id": "83743728fdc30140",
+        "type": "function",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "store diff",
+        "func": "msg.price = flow.get(\"price\")\nmsg.pos = flow.get(\"pos\")\nmsg.profit = flow.get(\"profit\")\n\nif (msg.price == null) { msg.price = 0 }\nif (msg.pos == null) { msg.pos = 0 }\nif (msg.profit == null) { msg.profit = 0 }\n\n\n\n//node.warn(msg.payload.results)\nlet ux = 0\nlet ema = 0\nlet item = 0\n\nfor (item of msg.payload.results.values) {\n    ux = item.timestamp\n    ema = item.value\n}\n\nlet diff = (msg.price - ema)\nmsg.diff = diff.toFixed(2)\n\nvar unixTimestamp = ux;\nvar d = new Date(unixTimestamp);\nlet lt = d.toLocaleTimeString(\"en-US\");\n\nnode.warn(\"Time: \" + lt + \" Diff: \" + msg.diff+ \" Position: \" +msg.pos+ \" Profit: \" +msg.profit+ \" Price:\" +msg.price)\nmsg.query = \"insert into amzn_ema (datetime, value, position, profit, price) values ('\" + lt + \"',\" + diff + \",\" + msg.pos + \",\" + msg.profit + \",\" + msg.price + \");\"\n//node.warn(msg.query)\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1100,
+        "y": 300,
+        "wires": [
+            [
+                "240ecef78179adfb",
+                "5af3ba4bcccff2a4"
+            ]
+        ]
+    },
+    {
+        "id": "1be0464192078452",
+        "type": "change",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "Store flow vars",
+        "rules": [
+            {
+                "t": "set",
+                "p": "algo_name",
+                "pt": "flow",
+                "to": "algo_name",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "psize",
+                "pt": "flow",
+                "to": "psize",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "size",
+                "pt": "flow",
+                "to": "size",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "symbol",
+                "pt": "flow",
+                "to": "symbol",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "account",
+                "pt": "flow",
+                "to": "account",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 640,
+        "y": 300,
+        "wires": [
+            [
+                "a38fe8223df5f794"
+            ]
+        ]
+    },
+    {
+        "id": "7da44423796809a1",
+        "type": "function",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "create table amzn_ema",
+        "func": "msg.query = \"create table IF NOT EXISTS amzn_ema (datetime VARCHAR(40), value FLOAT, position FLOAT, profit FLOAT, price FLOAT)\"\n//msg.query = \"select * from amzn_ema;\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 290,
+        "y": 1060,
+        "wires": [
+            [
+                "c41c8a1edc2b00a6"
+            ]
+        ]
+    },
+    {
+        "id": "0bea2977354cba1b",
+        "type": "inject",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 1060,
+        "wires": [
+            [
+                "7da44423796809a1"
+            ]
+        ]
+    },
+    {
+        "id": "240ecef78179adfb",
+        "type": "postgresql",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1280,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1666f7b476a295bc",
+        "type": "debug",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "debug 399",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 630,
+        "y": 1060,
+        "wires": []
+    },
+    {
+        "id": "c41c8a1edc2b00a6",
+        "type": "postgresql",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 480,
+        "y": 1060,
+        "wires": [
+            [
+                "1666f7b476a295bc"
+            ]
+        ]
+    },
+    {
+        "id": "8fa271e875419d26",
+        "type": "http in",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "/api/download_amzn_ema",
+        "url": "/api/download_amzn_ema",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 170,
+        "y": 540,
+        "wires": [
+            [
+                "354dda575dcbc560"
+            ]
+        ]
+    },
+    {
+        "id": "2de7ba9b038b3dd1",
+        "type": "http response",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 930,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "f6e2bda5538a7891",
+        "type": "csv",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 650,
+        "y": 540,
+        "wires": [
+            [
+                "75559912c89f1ca7"
+            ]
+        ]
+    },
+    {
+        "id": "354dda575dcbc560",
+        "type": "function",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "export query",
+        "func": "msg.query = \"select * from amzn_ema;\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 540,
+        "wires": [
+            [
+                "09f82399e5955f5e"
+            ]
+        ]
+    },
+    {
+        "id": "75559912c89f1ca7",
+        "type": "file",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "write report",
+        "filename": "/data/store/output.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 790,
+        "y": 540,
+        "wires": [
+            [
+                "2de7ba9b038b3dd1"
+            ]
+        ]
+    },
+    {
+        "id": "09f82399e5955f5e",
+        "type": "postgresql",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 520,
+        "y": 540,
+        "wires": [
+            [
+                "f6e2bda5538a7891"
+            ]
+        ]
+    },
+    {
+        "id": "c7b10e402b059d58",
+        "type": "alpaca-position-query",
+        "z": "3184c9cdd4a0a4f1",
+        "conf": "c06cec183f9317f9",
+        "x": 690,
+        "y": 140,
+        "wires": [
+            [
+                "1460134c453df040"
+            ]
+        ]
+    },
+    {
+        "id": "0832eee11822575a",
+        "type": "function",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "create msg.vars for ticker",
+        "func": "let ticker = flow.get(\"ticker\")\nticker = 'AMZN'\n\nif (msg.payload[\"symbol\"] == ticker ){\n    \n//let id = msg.payload[\"id\"]\nlet asset_id = msg.payload[\"asset_id\"]\n//let portfolioname = msg.payload[\"portfolioname\"]\nlet symbol = msg.payload[\"symbol\"]\n//let name = msg.payload[\"name\"]\n//let account = msg.payload[\"account\"]\nlet exchange = msg.payload[\"exchange\"]\nlet asset_class = msg.payload[\"asset_class\"]\nlet asset_marginable = msg.payload[\"asset_marginable\"]\nlet qty = msg.payload[\"qty\"]\nlet avg_entry_price = msg.payload[\"avg_entry_price\"]\nlet side = msg.payload[\"side\"]\nlet market_value = msg.payload[\"market_value\"]\nlet cost_basis = msg.payload[\"cost_basis\"]\nlet unrealized_pl = msg.payload[\"unrealized_pl\"]\nlet unrealized_plpc = msg.payload[\"unrealized_plpc\"]\nlet unrealized_intraday_pl = msg.payload[\"unrealized_intraday_pl\"]\nlet unrealized_intraday_plpc = msg.payload[\"unrealized_intraday_plpc\"]\nlet current_price = msg.payload[\"current_price\"]\nlet lastday_price = msg.payload[\"lastday_price\"]\nlet change_today = msg.payload[\"change_today\"]\nlet qty_available = msg.payload[\"qty_available\"]\n//let status = msg.payload[\"status\"]\n//let orderid = msg.payload[\"orderid\"]\n\n//node.warn(qty)\nmsg.qty = qty\nmsg.profit = unrealized_pl\nmsg.ticker = symbol\nmsg.price = current_price\n//node.warn(\"Ticker: \" + msg.ticker + \" Price: \" + msg.price + \" Profit: \" + msg.profit + \" Buy Qty: \" + msg.qty)\nreturn msg;\n\n}\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1070,
+        "y": 140,
+        "wires": [
+            [
+                "bcc966fcd210feb5"
+            ]
+        ]
+    },
+    {
+        "id": "1460134c453df040",
+        "type": "split",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 870,
+        "y": 140,
+        "wires": [
+            [
+                "0832eee11822575a"
+            ]
+        ]
+    },
+    {
+        "id": "bcc966fcd210feb5",
+        "type": "change",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "pos",
+                "pt": "flow",
+                "to": "qty",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "profit",
+                "pt": "flow",
+                "to": "profit",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1300,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9338309d2f390b76",
+        "type": "change",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "pos",
+                "pt": "flow",
+                "to": "0",
+                "tot": "num"
+            },
+            {
+                "t": "set",
+                "p": "profit",
+                "pt": "flow",
+                "to": "0",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 480,
+        "y": 140,
+        "wires": [
+            [
+                "c7b10e402b059d58"
+            ]
+        ]
+    },
+    {
+        "id": "be848a3cca936166",
+        "type": "comment",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "set ticker on line 2",
+        "info": "",
+        "x": 1050,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "632b0a951b19e057",
+        "type": "function",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "trading interval ",
+        "func": "let d = new Date();\nlet hour = d.getHours();\nlet min = d.getMinutes();\nlet day = d.getDay();\nlet sec = d.getSeconds();\n\n//node.warn(\"Day: \" +day+ \" Hour: \" +hour+ \" Minute: \" +min+ \" Seconds: \" +sec)\n\n// this will run during trading 9:30 - 4:00 pm\n if ((day > 0 && day < 6 && hour > 9 && hour < 16) || (day > 0 && day < 6 && hour > 8 && hour < 10 && min > 29 && min < 60)) {  \n\n// this runs 9 am - 4 pm\n//if ( day > 0 && day < 6 && hour > 8 && hour < 16 ) { \n\n// this runs 4 am - 8 pm\n//if (day > 0 && day < 6 && hour > 3 && hour < 21) { \n\n//node.warn(\"Market Open\")\nreturn msg;\n }",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 140,
+        "wires": [
+            [
+                "9338309d2f390b76"
+            ]
+        ]
+    },
+    {
+        "id": "bcaf91ed7dd096e4",
+        "type": "function",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "Store Flow Variables",
+        "func": "let d = new Date().toJSON().slice(0, 10);\n//node.warn(d)\n\n// enter desired values below\nmsg.symbol = 'AMZN'\nmsg.window = 100 // lookback window\nmsg.cnt = 1 // get most recent value\nmsg.timestamp = d\n//msg.timespan = 'minute'\nmsg.algo_name = \"Trade AMZN on EMA [paper]\"\nmsg.psize = 16000 // size of portfolio\nmsg.size = 100 // shares to trade\nmsg.account = 'paper'\nmsg.buydiff = -0.10\nmsg.selldiff = 0.10\nmsg.profittarget = 0.15\nmsg.losstarget = -.03\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 300,
+        "wires": [
+            [
+                "1be0464192078452"
+            ]
+        ]
+    },
+    {
+        "id": "5216a648f30e708c",
+        "type": "comment",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "enter trading vars below",
+        "info": "",
+        "x": 450,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "5af3ba4bcccff2a4",
+        "type": "function",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "create Alpaca buy or sell order ",
+        "func": "let alpaca_ticker = msg.symbol\nlet algo_name = msg.algo_name\nlet price = msg.price\nlet qty = msg.size\nlet pos = msg.pos\nlet profit = msg.profit\nprice = +price\nprice = price.toFixed(2)\n\n\n//node.warn(\"Algoname: \" +algo_name+ \" Ticker: \" +alpaca_ticker+ \" Qty: \" +qty+ \" Position: \" +pos+ \" Price: \" +price+ \" Diff: \" +diff)\n\n// create a unique clientid with unixtime\nlet d = Date.now()\nlet client_order_id = alpaca_ticker + d\nmsg.clientorderid = client_order_id // passes this variable in the flow \n\nlet subtag = algo_name\nlet temp = ''\nlet side = 'buy'\n\n\n// CASE 1: Holding More than 100 Shares Short \n\nif (pos < -100) {\n    side = 'buy'\n    qty = (pos * -1)\n    node.warn(\"Case 1: Buy to cover > 100 shares\")\n    temp = {\n        \"symbol\": alpaca_ticker,\n        \"qty\": qty,\n        \"side\": side,\n        \"type\": 'market',\n        \"client_order_id\": client_order_id,\n       // \"limit_price\": price,  // limit orders only\n        //    \"subtag\": subtag,\n        \"time_in_force\": \"gtc\"\n    }; // line 28\n\n    msg.payload = temp\n    node.warn(msg.payload)\n    return msg;\n} // line 24\n\n\n// CASE 2: Holding More than 100 Shares Long \n\nelse if (pos > 100) {\n    side = 'sell'\n    node.warn(\"Case 2: Buy to cover > 100 shares\")\n\n    temp = {\n        \"symbol\": alpaca_ticker,\n        \"qty\": qty,\n        \"side\": side,\n        \"type\": 'market',\n        \"client_order_id\": client_order_id,\n       // \"limit_price\": price,  // limit orders only\n        //    \"subtag\": subtag,\n        \"time_in_force\": \"gtc\"\n    }; // line 51\n\n    msg.payload = temp\n    node.warn(msg.payload)\n    return msg;\n} // line 48\n\n\n// CASE 3: No position held by. Buy if diff msg.diff\n\nif (( msg.diff < msg.buydiff) && (pos == 0)) {\n    node.warn(\"Case 3: Position = 0. Buy shares as price below buydiff\")\n\n    side = 'buy'\n\n    temp = {\n        \"symbol\": alpaca_ticker,\n        \"qty\": qty,\n        \"side\": side,\n        \"type\": 'limit',\n        \"client_order_id\": client_order_id,\n        \"limit_price\": price,  // limit orders only\n        //    \"subtag\": subtag,\n        \"time_in_force\": \"gtc\"\n    }; \n\n    msg.payload = temp\n    node.warn(msg.payload)\n    return msg;\n} \n\n// CASE 4 No position held. Diff indicates sell\n\nelse if ((msg.diff > msg.selldiff ) && (pos == 0)) {\n    side = 'sell'\n    node.warn(\"Case 4: Position = 0. Sell shares as price above selldiff\")\n\n    temp = {\n        \"symbol\": alpaca_ticker,\n        \"qty\": qty,\n        \"side\": side,\n        \"type\": 'limit',\n        \"client_order_id\": client_order_id,\n        \"limit_price\": price,  // limit orders only\n        //    \"subtag\": subtag,\n        \"time_in_force\": \"gtc\"\n    }; \n\n    msg.payload = temp\n    node.warn(msg.payload)\n    return msg;\n} \n\n\n// CASE 5: Profitable and Holding Long Position \n\nelse if ( (profit > msg.profittarget ) && (pos > 0) ) {\n    side = 'sell'\n    qty = pos\n    node.warn(\"Case 5: Take Profit by selling shares\")\n\n    temp = {\n        \"symbol\": alpaca_ticker,\n        \"qty\": qty,\n        \"side\": side,\n        \"type\": 'limit',\n        \"client_order_id\": client_order_id,\n        \"limit_price\": price,  // limit orders only\n        //    \"subtag\": subtag,\n        \"time_in_force\": \"gtc\"\n    }; \n\n    msg.payload = temp\n    node.warn(msg.payload)\n    return msg;\n} \n\n// CASE 6: Profitable and Holding Short Position \n\n\nelse if ((profit > msg.profittarget) && (pos < 0)) {\n    side = 'buy'\n    qty = (pos * -1)\n    node.warn(\"Case 6: Take Profit by covering shares\")\n\n    temp = {\n        \"symbol\": alpaca_ticker,\n        \"qty\": qty,\n        \"side\": side,\n        \"type\": 'limit',\n        \"client_order_id\": client_order_id,\n        \"limit_price\": price,  // limit orders only\n        //    \"subtag\": subtag,\n        \"time_in_force\": \"gtc\"\n    }; \n\n    msg.payload = temp\n    node.warn(msg.payload)\n    return msg;\n} \n\n\n\n// CASE 7: Unprofitable and Holding Long Position \n\n\nelse if ((profit < msg.losstarget) && (pos > 0)) {\n    side = 'sell'\n    node.warn(\"Case 7: Cut losses  by selling shares\")\n    qty = pos\n    temp = {\n        \"symbol\": alpaca_ticker,\n        \"qty\": qty,\n        \"side\": side,\n        \"type\": 'limit',\n        \"client_order_id\": client_order_id,\n        \"limit_price\": price,  // limit orders only\n        //    \"subtag\": subtag,\n        \"time_in_force\": \"gtc\"\n    };\n\n    msg.payload = temp\n    node.warn(msg.payload)\n    return msg;\n}\n\n\n\n// CASE 8: Unprofitable and Holding Short Position \n\n\nelse if ((profit < msg.losstarget ) && (pos < 0)) {\n    side = 'buy'\n    qty = (pos * -1)\n    node.warn(\"Case 8: Cut loss by buying shares\")\n\n    temp = {\n        \"symbol\": alpaca_ticker,\n        \"qty\": qty,\n        \"side\": side,\n        \"type\": 'limit',\n        \"client_order_id\": client_order_id,\n        \"limit_price\": price,  // limit orders only\n        //    \"subtag\": subtag,\n        \"time_in_force\": \"gtc\"\n    };\n\n    msg.payload = temp\n    node.warn(msg.payload)\n    return msg;\n}\n\n\n\n\nreturn msg",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 360,
+        "wires": [
+            [
+                "d3a6332c3e89b687"
+            ]
+        ]
+    },
+    {
+        "id": "e9eb3c665f88d8a8",
+        "type": "comment",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "create amzn_ema table",
+        "info": "",
+        "x": 140,
+        "y": 1020,
+        "wires": []
+    },
+    {
+        "id": "fd328fe3247e712d",
+        "type": "inject",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 260,
+        "y": 400,
+        "wires": [
+            [
+                "8d28cc6095d7d64d"
+            ]
+        ]
+    },
+    {
+        "id": "0d7549e05afa7c09",
+        "type": "debug",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "debug 417",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 710,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "81fdaa49b6379b6c",
+        "type": "inject",
+        "z": "3184c9cdd4a0a4f1",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 300,
+        "wires": [
+            [
+                "d81b85541a648b1c"
+            ]
+        ]
+    },
+    {
+        "id": "c06cec183f9317f9",
+        "type": "alpaca-account",
+        "name": "paper",
+        "keyId": "USE-OAUTH-OR-REPLACE",
+        "paper": true
+    },
+    {
+        "id": "7455395cf269fb2b",
+        "type": "postgreSQLConfig",
+        "name": "",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "postgres",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "docker",
+        "userFieldType": "str",
+        "password": "docker",
+        "passwordFieldType": "str"
+    },
+    {
+        "id": "651f0aab10dc1632",
+        "type": "polygon-account",
+        "name": "Polygon Key"
+    }
+]
