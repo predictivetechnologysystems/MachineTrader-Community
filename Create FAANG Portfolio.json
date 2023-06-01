@@ -31,11 +31,11 @@
         "type": "alpaca-order",
         "z": "f053db246b2903f8",
         "conf": "c06cec183f9317f9",
-        "x": 590,
+        "x": 570,
         "y": 460,
         "wires": [
             [
-                "105ef20f3192b692"
+                "4f5a589ecab9c832"
             ]
         ]
     },
@@ -89,41 +89,6 @@
         ]
     },
     {
-        "id": "bc070b6920bc8e23",
-        "type": "postgresql",
-        "z": "f053db246b2903f8",
-        "name": "postgres",
-        "query": "",
-        "postgreSQLConfig": "7455395cf269fb2b",
-        "split": false,
-        "rowsPerMsg": 1,
-        "outputs": 1,
-        "x": 1060,
-        "y": 460,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "105ef20f3192b692",
-        "type": "function",
-        "z": "f053db246b2903f8",
-        "name": "insert into order_confirms table",
-        "func": "let id = msg.payload[\"id\"]\nlet client_order_id = msg.payload[\"client_order_id\"]\nlet created_at = msg.payload[\"created_at\"]\nlet updated_at = msg.payload[\"updated_at\"]\nlet submitted_at = msg.payload[\"submitted_at\"]\nlet filled_at = msg.payload[\"filled_at\"]\nlet expired_at = msg.payload[\"expired_at\"]\nlet canceled_at = msg.payload[\"canceled_at\"]\nlet failed_at = msg.payload[\"failed_at\"]\nlet replaced_at = msg.payload[\"replaced_at\"]\nlet replaced_by = msg.payload[\"replaced_by\"]\nlet replaces = msg.payload[\"replaces\"]\nlet asset_id = msg.payload[\"asset_id\"]\nlet symbol = msg.payload[\"symbol\"]\nlet asset_class = msg.payload[\"asset_class\"]\nlet notional = msg.payload[\"notional\"]\nlet qty = msg.payload[\"qty\"]\nlet filled_qty = msg.payload[\"filled_qty\"]\nlet filled_avg_price = msg.payload[\"filled_avg_price\"]\nlet order_class = msg.payload[\"order_class\"]\nlet order_type = msg.payload[\"order_type\"]\nlet type = msg.payload[\"type\"]\nlet side = msg.payload[\"side\"]\nlet time_in_force = msg.payload[\"time_in_force\"]\nlet limit_price = msg.payload[\"limit_price\"]\nlet stop_price = msg.payload[\"stop_price\"]\nlet status = msg.payload[\"status\"]\nlet extended_hours = msg.payload[\"extended_hours\"]\nlet legs = msg.payload[\"legs\"]\nlet trail_percent = msg.payload[\"trail_percent\"]\nlet trail_price = msg.payload[\"trail_price\"]\nlet hwm = msg.payload[\"hwm\"]\nlet subtag = msg.payload[\"subtag\"]\nlet source = msg.payload[\"source\"]\n\nsubtag = flow.get(\"algo_name\")\nsubtag = ''\n\nif ( source == null) { source = 0}\nif (limit_price == null) { limit_price = 0 }\nlet result = symbol.includes(\"/\");\nif (result == true) {\n    symbol = symbol.replace(\"/\",\"\")\n}\n\nlet sql = \"insert into order_confirms(id, client_order_id, created_at, updated_at, submitted_at, asset_id, symbol, asset_class, qty, order_type, type, side, time_in_force, status, subtag, source,extended_hours) values \"\nsql += \"('\" + id + \"', '\" + client_order_id + \"', '\" + created_at + \"', '\" + updated_at + \"', '\" + submitted_at + \"', '\" + asset_id + \"', '\" + symbol + \"', '\" + asset_class + \"', '\" + qty + \"', '\" + order_type + \"', '\" + type + \"', '\" + side + \"', '\" + time_in_force + \"', '\" + status + \"', '\" + subtag + \"', '\" + source + \"', '\" + extended_hours+ \"'); \" \n\nmsg.query = sql\nnode.warn(msg.query)\nmsg.id = id\n//msg.sql = \"truncate table temp_ids\"\n//node.warn(msg.sql)\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 830,
-        "y": 460,
-        "wires": [
-            [
-                "bc070b6920bc8e23"
-            ]
-        ]
-    },
-    {
         "id": "51c9bccf9447ee33",
         "type": "function",
         "z": "f053db246b2903f8",
@@ -166,7 +131,7 @@
         "type": "function",
         "z": "f053db246b2903f8",
         "name": "delete from tickers_paper",
-        "func": "let id = msg.id\nlet symbol = msg.payload\nlet portfolioname = msg.algo_name\nsymbol = symbol.replace(\" \",\"\")\nmsg.query = \"delete from tickers_paper where symbol like '\" +symbol+ \"';\"\n//msg.query = \"insert into tickers_paper (id, symbol, portfolioname) values (\" + id + \",'\" + symbol + \"', '\" + portfolioname + \"') ON CONFLICT DO NOTHING;\"\nnode.warn(msg.query)\nmsg.symbol = symbol\nreturn msg;",
+        "func": "let id = msg.id\nlet symbol = msg.payload\nlet portfolioname = msg.algo_name\nsymbol = symbol.replace(\" \",\"\")\nmsg.query = \"delete from tickers_paper where symbol like '\" +symbol+ \"';\"\nnode.warn(msg.query)\nmsg.symbol = symbol\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -644,22 +609,12 @@
         "type": "inject",
         "z": "f053db246b2903f8",
         "name": "GO",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
+        "props": [],
         "repeat": "",
         "crontab": "",
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "",
-        "payloadType": "date",
         "x": 150,
         "y": 220,
         "wires": [
@@ -708,26 +663,29 @@
         "wires": []
     },
     {
-        "id": "f1a722a23261f16c",
+        "id": "a8e002fcc7176442",
         "type": "pts_oauth_browser",
         "z": "f053db246b2903f8",
-        "x": 320,
+        "callback": "",
+        "redirect": "",
+        "name": "Documentation Link",
+        "x": 380,
         "y": 80,
         "wires": []
     },
     {
-        "id": "af601478100a274e",
+        "id": "0cfd5ea7cc762659",
         "type": "inject",
         "z": "f053db246b2903f8",
-        "name": "Click here",
+        "name": "Click Here to Open",
         "props": [
             {
-                "p": "url_redirect1",
+                "p": "redirect1",
                 "v": "https://drive.google.com/file/d/1vAUkXuiP4CGUszLROUvCPBdG5Lx0T0I0/view",
                 "vt": "str"
             },
             {
-                "p": "url_redirect",
+                "p": "redirect",
                 "v": "https://docs.google.com/document/d/1K3mPA2g2eiYU0s8Jyp4_-gQIlTvW8FCUwTNqY2iJHMw/view",
                 "vt": "str"
             }
@@ -737,13 +695,29 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "x": 140,
+        "x": 170,
         "y": 80,
         "wires": [
             [
-                "f1a722a23261f16c"
+                "a8e002fcc7176442"
             ]
         ]
+    },
+    {
+        "id": "4f5a589ecab9c832",
+        "type": "debug",
+        "z": "f053db246b2903f8",
+        "name": "debug 422",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 730,
+        "y": 460,
+        "wires": []
     },
     {
         "id": "c06cec183f9317f9",
