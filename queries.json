@@ -1,0 +1,1580 @@
+[
+    {
+        "id": "7e6d67449df2b72c",
+        "type": "tab",
+        "label": "queries",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "9fef638b92ac71b2",
+        "type": "comment",
+        "z": "7e6d67449df2b72c",
+        "name": "query trading tables",
+        "info": "",
+        "x": 170,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "1a0e4e10e8360ff0",
+        "type": "function",
+        "z": "7e6d67449df2b72c",
+        "name": "queries",
+        "func": "msg.query = \"select count(*) from goog_rsi\"\n//msg.query = \"select count(*) from qqq_macd\"\n//msg.query = \"select count(*) from amzn_ema\" // 0\n//msg.query = \"select count(*) from XLK_lasttrade\" // 20713\n//msg.query = \"select count(*) from tsla_lasttrade\" // 12118\n//msg.query = \"select count(*) from orders_paper\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 120,
+        "wires": [
+            [
+                "e4f7abf649537314"
+            ]
+        ]
+    },
+    {
+        "id": "d58bb9fe29f6e13d",
+        "type": "function",
+        "z": "7e6d67449df2b72c",
+        "name": "queries",
+        "func": "//msg.query = \"select count(*) from goog_rsi\"\nmsg.query = \"select count(*) from qqq_macd\"\n//msg.query = \"select count(*) from amzn_ema\" // 0\n//msg.query = \"select count(*) from XLK_lasttrade\" // 20713\n//msg.query = \"select count(*) from tsla_lasttrade\" // 12118\n//msg.query = \"select count(*) from orders_paper\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 160,
+        "wires": [
+            [
+                "e4f7abf649537314"
+            ]
+        ]
+    },
+    {
+        "id": "a449cf3e80992cf8",
+        "type": "function",
+        "z": "7e6d67449df2b72c",
+        "name": "queries",
+        "func": "//msg.query = \"select count(*) from goog_rsi\"\n//msg.query = \"select count(*) from qqq_macd\"\nmsg.query = \"select count(*) from amzn_ema\" // 0\n//msg.query = \"select count(*) from XLK_lasttrade\" // 20713\n//msg.query = \"select count(*) from tsla_lasttrade\" // 12118\n//msg.query = \"select count(*) from orders_paper\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 200,
+        "wires": [
+            [
+                "e4f7abf649537314"
+            ]
+        ]
+    },
+    {
+        "id": "dfb20df11566e27d",
+        "type": "function",
+        "z": "7e6d67449df2b72c",
+        "name": "queries",
+        "func": "//msg.query = \"select count(*) from goog_rsi\"\n//msg.query = \"select count(*) from qqq_macd\"\n//msg.query = \"select count(*) from amzn_ema\" // 0\nmsg.query = \"select count(*) from XLK_lasttrade\" // 20713\n//msg.query = \"select count(*) from tsla_lasttrade\" // 12118\n//msg.query = \"select count(*) from orders_paper\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 240,
+        "wires": [
+            [
+                "e4f7abf649537314"
+            ]
+        ]
+    },
+    {
+        "id": "a68cbb34ed4f3de4",
+        "type": "function",
+        "z": "7e6d67449df2b72c",
+        "name": "queries",
+        "func": "//msg.query = \"select count(*) from goog_rsi\"\n//msg.query = \"select count(*) from qqq_macd\"\n//msg.query = \"select count(*) from amzn_ema\" // 0\n//msg.query = \"select count(*) from XLK_lasttrade\" // 20713\nmsg.query = \"select count(*) from tsla_lasttrade\" // 12118\n//msg.query = \"select count(*) from orders_paper\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 280,
+        "wires": [
+            [
+                "e4f7abf649537314"
+            ]
+        ]
+    },
+    {
+        "id": "1a2a3ca5434736e9",
+        "type": "function",
+        "z": "7e6d67449df2b72c",
+        "name": "queries",
+        "func": "//msg.query = \"select count(*) from goog_rsi\"\n//msg.query = \"select count(*) from qqq_macd\"\n//msg.query = \"select count(*) from amzn_ema\" // 0\n//msg.query = \"select count(*) from XLK_lasttrade\" // 20713\n//msg.query = \"select count(*) from tsla_lasttrade\" // 12118\nmsg.query = \"select count(*) from orders_paper\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 320,
+        "wires": [
+            [
+                "e4f7abf649537314"
+            ]
+        ]
+    },
+    {
+        "id": "0ecd992b9d0a1e24",
+        "type": "inject",
+        "z": "7e6d67449df2b72c",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 220,
+        "wires": [
+            [
+                "dfb20df11566e27d",
+                "a449cf3e80992cf8",
+                "1a0e4e10e8360ff0",
+                "d58bb9fe29f6e13d",
+                "a68cbb34ed4f3de4",
+                "1a2a3ca5434736e9",
+                "26080bb8ef592a69"
+            ]
+        ]
+    },
+    {
+        "id": "e4f7abf649537314",
+        "type": "postgresql",
+        "z": "7e6d67449df2b72c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 520,
+        "y": 220,
+        "wires": [
+            [
+                "5cbfc15020e09856"
+            ]
+        ]
+    },
+    {
+        "id": "5cbfc15020e09856",
+        "type": "function",
+        "z": "7e6d67449df2b72c",
+        "name": "display output",
+        "func": "//node.warn(msg.payload)\nlet i = 0\nlet count = 0\n\nfor (i of msg.payload) {\n    count = i.count;\n    node.warn(msg.query+ \" count = \" +count)\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 680,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f0359e6e8e578cc4",
+        "type": "comment",
+        "z": "7e6d67449df2b72c",
+        "name": "TRUNCATE trading tables",
+        "info": "",
+        "x": 190,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "79095278a4c1f47f",
+        "type": "function",
+        "z": "7e6d67449df2b72c",
+        "name": "queries goog_rsi",
+        "func": "msg.query = \"truncate table goog_rsi\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 460,
+        "wires": [
+            [
+                "70e026fea2110563"
+            ]
+        ]
+    },
+    {
+        "id": "7b11a130250deaf4",
+        "type": "function",
+        "z": "7e6d67449df2b72c",
+        "name": "queries qqq_macd",
+        "func": "msg.query = \"truncate table  qqq_macd\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 500,
+        "wires": [
+            [
+                "70e026fea2110563"
+            ]
+        ]
+    },
+    {
+        "id": "5ddcd475408cca1c",
+        "type": "function",
+        "z": "7e6d67449df2b72c",
+        "name": "queries amzn_ema",
+        "func": "msg.query = \"truncate table  amzn_ema\" // 0\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 540,
+        "wires": [
+            [
+                "70e026fea2110563"
+            ]
+        ]
+    },
+    {
+        "id": "1d30acec7df30993",
+        "type": "function",
+        "z": "7e6d67449df2b72c",
+        "name": "xlk_lasttrade",
+        "func": "msg.query = \"truncate table XLK_lasttrade\" \nreturn msg",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 580,
+        "wires": [
+            [
+                "70e026fea2110563"
+            ]
+        ]
+    },
+    {
+        "id": "fe66ce29cb75ecc0",
+        "type": "function",
+        "z": "7e6d67449df2b72c",
+        "name": "tsla_lasttrade",
+        "func": "msg.query = \"truncate table  tsla_lasttrade\" \nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 620,
+        "wires": [
+            [
+                "70e026fea2110563"
+            ]
+        ]
+    },
+    {
+        "id": "5979132e74c80b5e",
+        "type": "function",
+        "z": "7e6d67449df2b72c",
+        "name": "orders_paper",
+        "func": "msg.query = \"truncate table orders_paper\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 660,
+        "wires": [
+            [
+                "70e026fea2110563"
+            ]
+        ]
+    },
+    {
+        "id": "54c7750250d7af99",
+        "type": "inject",
+        "z": "7e6d67449df2b72c",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 560,
+        "wires": [
+            [
+                "1d30acec7df30993",
+                "fe66ce29cb75ecc0",
+                "5979132e74c80b5e",
+                "0b23dba25a014117"
+            ]
+        ]
+    },
+    {
+        "id": "70e026fea2110563",
+        "type": "postgresql",
+        "z": "7e6d67449df2b72c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 640,
+        "y": 540,
+        "wires": [
+            [
+                "a2d41a441be78c59"
+            ]
+        ]
+    },
+    {
+        "id": "a2d41a441be78c59",
+        "type": "function",
+        "z": "7e6d67449df2b72c",
+        "name": "display output",
+        "func": "//node.warn(msg.payload)\nlet i = 0\nlet count = 0\n\nfor (i of msg.payload) {\n    count = i.count;\n    node.warn(msg.query+ \" count = \" +count)\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 800,
+        "y": 540,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7c84e17aa1e1dfaa",
+        "type": "function",
+        "z": "7e6d67449df2b72c",
+        "name": "create table qqq_macd",
+        "func": "msg.query = \"create table IF NOT EXISTS qqq_macd(datetime VARCHAR(40), value FLOAT, position FLOAT, profit FLOAT, price FLOAT, unixtime BIGINT )\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 800,
+        "wires": [
+            [
+                "2141e996cbf14018"
+            ]
+        ]
+    },
+    {
+        "id": "6396de357196c159",
+        "type": "debug",
+        "z": "7e6d67449df2b72c",
+        "name": "debug 422",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 670,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "2141e996cbf14018",
+        "type": "postgresql",
+        "z": "7e6d67449df2b72c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 520,
+        "y": 800,
+        "wires": [
+            [
+                "6396de357196c159"
+            ]
+        ]
+    },
+    {
+        "id": "3acabb16d738ccde",
+        "type": "comment",
+        "z": "7e6d67449df2b72c",
+        "name": "create trading tables",
+        "info": "",
+        "x": 150,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "d3c6805e1be6fd50",
+        "type": "function",
+        "z": "7e6d67449df2b72c",
+        "name": "create table amzn_ema",
+        "func": "msg.query = \"create table IF NOT EXISTS amzn_ema(datetime VARCHAR(40), value FLOAT, position FLOAT, profit FLOAT, price FLOAT, unixtime BIGINT )\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 840,
+        "wires": [
+            [
+                "17532fca0cf7e8f4"
+            ]
+        ]
+    },
+    {
+        "id": "353b05452e6b22c3",
+        "type": "debug",
+        "z": "7e6d67449df2b72c",
+        "name": "debug 423",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 670,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "17532fca0cf7e8f4",
+        "type": "postgresql",
+        "z": "7e6d67449df2b72c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 520,
+        "y": 840,
+        "wires": [
+            [
+                "353b05452e6b22c3"
+            ]
+        ]
+    },
+    {
+        "id": "b950904c7aaf11c8",
+        "type": "function",
+        "z": "7e6d67449df2b72c",
+        "name": "create table goog_rsi",
+        "func": "msg.query = \"create table IF NOT EXISTS goog_rsi(datetime VARCHAR(40), value FLOAT, position FLOAT, profit FLOAT, price FLOAT, unixtime BIGINT )\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 880,
+        "wires": [
+            [
+                "28f29cecd873db9d"
+            ]
+        ]
+    },
+    {
+        "id": "7d9e7d274a25ca54",
+        "type": "debug",
+        "z": "7e6d67449df2b72c",
+        "name": "debug 424",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 670,
+        "y": 880,
+        "wires": []
+    },
+    {
+        "id": "28f29cecd873db9d",
+        "type": "postgresql",
+        "z": "7e6d67449df2b72c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 520,
+        "y": 880,
+        "wires": [
+            [
+                "7d9e7d274a25ca54"
+            ]
+        ]
+    },
+    {
+        "id": "f5e6f870b9df9ef3",
+        "type": "function",
+        "z": "7e6d67449df2b72c",
+        "name": "Create XLK_lasttrade table",
+        "func": "msg.query = \"create table IF NOT EXISTS XLK_lasttrade (datetime VARCHAR(40), value FLOAT, position FLOAT, profit FLOAT, price FLOAT, avg_price FLOAT, unixtime BIGINT)\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 920,
+        "wires": [
+            [
+                "4b266485973e7d8b"
+            ]
+        ]
+    },
+    {
+        "id": "80f4ef2ef8baaacd",
+        "type": "debug",
+        "z": "7e6d67449df2b72c",
+        "name": "debug 425",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 670,
+        "y": 920,
+        "wires": []
+    },
+    {
+        "id": "4b266485973e7d8b",
+        "type": "postgresql",
+        "z": "7e6d67449df2b72c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 520,
+        "y": 920,
+        "wires": [
+            [
+                "80f4ef2ef8baaacd"
+            ]
+        ]
+    },
+    {
+        "id": "4a0332357657c211",
+        "type": "function",
+        "z": "7e6d67449df2b72c",
+        "name": "Create TSLA_lasttrade table",
+        "func": "msg.query = \"create table IF NOT EXISTS TSLA_lasttrade (datetime VARCHAR(40), value FLOAT, position FLOAT, profit FLOAT, price FLOAT, avg_price FLOAT, unixtime BIGINT)\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 960,
+        "wires": [
+            [
+                "3e384e6fc2bff7ef"
+            ]
+        ]
+    },
+    {
+        "id": "63e5126f6c14ff89",
+        "type": "debug",
+        "z": "7e6d67449df2b72c",
+        "name": "debug 426",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 670,
+        "y": 960,
+        "wires": []
+    },
+    {
+        "id": "3e384e6fc2bff7ef",
+        "type": "postgresql",
+        "z": "7e6d67449df2b72c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 520,
+        "y": 960,
+        "wires": [
+            [
+                "63e5126f6c14ff89"
+            ]
+        ]
+    },
+    {
+        "id": "8cb1f96947039a1a",
+        "type": "inject",
+        "z": "7e6d67449df2b72c",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 860,
+        "wires": [
+            [
+                "7c84e17aa1e1dfaa",
+                "d3c6805e1be6fd50",
+                "b950904c7aaf11c8",
+                "f5e6f870b9df9ef3",
+                "4a0332357657c211"
+            ]
+        ]
+    },
+    {
+        "id": "cade26f6db031e0d",
+        "type": "http in",
+        "z": "7e6d67449df2b72c",
+        "name": "/api/download_orders_paper",
+        "url": "/api/download_orders_paper",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 140,
+        "y": 1060,
+        "wires": [
+            [
+                "78d37901c7289b49"
+            ]
+        ]
+    },
+    {
+        "id": "a4aa66cb6a9930cc",
+        "type": "http response",
+        "z": "7e6d67449df2b72c",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 910,
+        "y": 1060,
+        "wires": []
+    },
+    {
+        "id": "c36afffb178615f2",
+        "type": "csv",
+        "z": "7e6d67449df2b72c",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 630,
+        "y": 1060,
+        "wires": [
+            [
+                "9eeeaeaa0b39111d"
+            ]
+        ]
+    },
+    {
+        "id": "78d37901c7289b49",
+        "type": "function",
+        "z": "7e6d67449df2b72c",
+        "name": "export query",
+        "func": "let d = new Date().toJSON().slice(0, 10);\nd = '2023-06-02'\n//msg.query = \"select * from orders_paper limit 5560 offset 10000;\"\n//msg.query = \"select * from orders_paper;\"\nmsg.query = \"select * from orders_paper where created_at like '\" +d+ \"%';\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 1060,
+        "wires": [
+            [
+                "1f1ff2adb672e8e2"
+            ]
+        ]
+    },
+    {
+        "id": "9eeeaeaa0b39111d",
+        "type": "file",
+        "z": "7e6d67449df2b72c",
+        "name": "write report",
+        "filename": "/data/store/amzn_paper_orders.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 770,
+        "y": 1060,
+        "wires": [
+            [
+                "a4aa66cb6a9930cc"
+            ]
+        ]
+    },
+    {
+        "id": "1f1ff2adb672e8e2",
+        "type": "postgresql",
+        "z": "7e6d67449df2b72c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 500,
+        "y": 1060,
+        "wires": [
+            [
+                "c36afffb178615f2"
+            ]
+        ]
+    },
+    {
+        "id": "c02a9777961d3485",
+        "type": "http in",
+        "z": "7e6d67449df2b72c",
+        "name": "/api/download_xlk_lasttrade",
+        "url": "/api/download_xlk_lasttrade",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 140,
+        "y": 1100,
+        "wires": [
+            [
+                "545b580054c0f728"
+            ]
+        ]
+    },
+    {
+        "id": "de904dd88f774899",
+        "type": "http response",
+        "z": "7e6d67449df2b72c",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 970,
+        "y": 1100,
+        "wires": []
+    },
+    {
+        "id": "cccb292e9270f5a5",
+        "type": "csv",
+        "z": "7e6d67449df2b72c",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 690,
+        "y": 1100,
+        "wires": [
+            [
+                "1ddbeb4197644fc9"
+            ]
+        ]
+    },
+    {
+        "id": "545b580054c0f728",
+        "type": "function",
+        "z": "7e6d67449df2b72c",
+        "name": "export query XLK",
+        "func": "//msg.query = \"select * from XLK_lasttrade limit 10000 offset 1;\"\nmsg.query = \"select * from XLK_lasttrade;\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 1100,
+        "wires": [
+            [
+                "d50876f47eebddb1"
+            ]
+        ]
+    },
+    {
+        "id": "1ddbeb4197644fc9",
+        "type": "file",
+        "z": "7e6d67449df2b72c",
+        "name": "write report",
+        "filename": "/data/store/output.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 830,
+        "y": 1100,
+        "wires": [
+            [
+                "de904dd88f774899"
+            ]
+        ]
+    },
+    {
+        "id": "d50876f47eebddb1",
+        "type": "postgresql",
+        "z": "7e6d67449df2b72c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 560,
+        "y": 1100,
+        "wires": [
+            [
+                "cccb292e9270f5a5"
+            ]
+        ]
+    },
+    {
+        "id": "ad4de6fbdf9542f2",
+        "type": "comment",
+        "z": "7e6d67449df2b72c",
+        "name": "download csv files",
+        "info": "",
+        "x": 110,
+        "y": 1000,
+        "wires": []
+    },
+    {
+        "id": "38d781fe7565d1db",
+        "type": "http in",
+        "z": "7e6d67449df2b72c",
+        "name": "/api/download_tsla_lasttrde",
+        "url": "/api/download_tsla_lasttrade",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 140,
+        "y": 1140,
+        "wires": [
+            [
+                "74817f40fb1e2377"
+            ]
+        ]
+    },
+    {
+        "id": "92a67ba1086b29ae",
+        "type": "http response",
+        "z": "7e6d67449df2b72c",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 970,
+        "y": 1140,
+        "wires": []
+    },
+    {
+        "id": "64b28e9efbccfe84",
+        "type": "csv",
+        "z": "7e6d67449df2b72c",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 690,
+        "y": 1140,
+        "wires": [
+            [
+                "7f7e4793e4ec3b8c"
+            ]
+        ]
+    },
+    {
+        "id": "74817f40fb1e2377",
+        "type": "function",
+        "z": "7e6d67449df2b72c",
+        "name": "export query TSLA",
+        "func": "msg.query = \"select * from TSLA_lasttrade limit 10000 offset 20000;\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 1140,
+        "wires": [
+            [
+                "363a7c7977f06d2a"
+            ]
+        ]
+    },
+    {
+        "id": "7f7e4793e4ec3b8c",
+        "type": "file",
+        "z": "7e6d67449df2b72c",
+        "name": "write report",
+        "filename": "/data/store/output.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 830,
+        "y": 1140,
+        "wires": [
+            [
+                "92a67ba1086b29ae"
+            ]
+        ]
+    },
+    {
+        "id": "363a7c7977f06d2a",
+        "type": "postgresql",
+        "z": "7e6d67449df2b72c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 560,
+        "y": 1140,
+        "wires": [
+            [
+                "64b28e9efbccfe84"
+            ]
+        ]
+    },
+    {
+        "id": "890b99fba6458e95",
+        "type": "http in",
+        "z": "7e6d67449df2b72c",
+        "name": "/api/download_goog_rsi",
+        "url": "/api/download_goog_rsi",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 130,
+        "y": 1180,
+        "wires": [
+            [
+                "449faa8d2dc37ef9"
+            ]
+        ]
+    },
+    {
+        "id": "4f01c385927c1c56",
+        "type": "http response",
+        "z": "7e6d67449df2b72c",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 970,
+        "y": 1180,
+        "wires": []
+    },
+    {
+        "id": "ed7cddf9279fda4b",
+        "type": "csv",
+        "z": "7e6d67449df2b72c",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 690,
+        "y": 1180,
+        "wires": [
+            [
+                "987cefe7685aeb6e"
+            ]
+        ]
+    },
+    {
+        "id": "449faa8d2dc37ef9",
+        "type": "function",
+        "z": "7e6d67449df2b72c",
+        "name": "export goog_rsi",
+        "func": "msg.query = \"select * from goog_rsi\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 1180,
+        "wires": [
+            [
+                "be957ae9d06e8613"
+            ]
+        ]
+    },
+    {
+        "id": "987cefe7685aeb6e",
+        "type": "file",
+        "z": "7e6d67449df2b72c",
+        "name": "write report",
+        "filename": "/data/store/output.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 830,
+        "y": 1180,
+        "wires": [
+            [
+                "4f01c385927c1c56"
+            ]
+        ]
+    },
+    {
+        "id": "be957ae9d06e8613",
+        "type": "postgresql",
+        "z": "7e6d67449df2b72c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 560,
+        "y": 1180,
+        "wires": [
+            [
+                "ed7cddf9279fda4b"
+            ]
+        ]
+    },
+    {
+        "id": "3525100f8f8acf10",
+        "type": "http in",
+        "z": "7e6d67449df2b72c",
+        "name": "/api/download_amzn_ema",
+        "url": "/api/download_amzn_ema",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 130,
+        "y": 1220,
+        "wires": [
+            [
+                "278b65e461ffaac5"
+            ]
+        ]
+    },
+    {
+        "id": "7ce7d9acd34b0f7f",
+        "type": "http in",
+        "z": "7e6d67449df2b72c",
+        "name": "/api/download_qqq_macd",
+        "url": "/api/download_qqq_macd",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 130,
+        "y": 1260,
+        "wires": [
+            [
+                "cc335579f8cfe8d1"
+            ]
+        ]
+    },
+    {
+        "id": "b801bf50ef6a1290",
+        "type": "http response",
+        "z": "7e6d67449df2b72c",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 1010,
+        "y": 1220,
+        "wires": []
+    },
+    {
+        "id": "b39a1070f459836c",
+        "type": "csv",
+        "z": "7e6d67449df2b72c",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 730,
+        "y": 1220,
+        "wires": [
+            [
+                "6f6ed4df0b02a7c7"
+            ]
+        ]
+    },
+    {
+        "id": "278b65e461ffaac5",
+        "type": "function",
+        "z": "7e6d67449df2b72c",
+        "name": "export query amzn_ema",
+        "func": "msg.query = \"select * from amzn_ema\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 1220,
+        "wires": [
+            [
+                "d9640729229d9ee5"
+            ]
+        ]
+    },
+    {
+        "id": "6f6ed4df0b02a7c7",
+        "type": "file",
+        "z": "7e6d67449df2b72c",
+        "name": "write report",
+        "filename": "/data/store/output.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 870,
+        "y": 1220,
+        "wires": [
+            [
+                "b801bf50ef6a1290"
+            ]
+        ]
+    },
+    {
+        "id": "d9640729229d9ee5",
+        "type": "postgresql",
+        "z": "7e6d67449df2b72c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 600,
+        "y": 1220,
+        "wires": [
+            [
+                "b39a1070f459836c"
+            ]
+        ]
+    },
+    {
+        "id": "3501fbffe342e437",
+        "type": "http response",
+        "z": "7e6d67449df2b72c",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 1010,
+        "y": 1260,
+        "wires": []
+    },
+    {
+        "id": "7b98044cc8e468b4",
+        "type": "csv",
+        "z": "7e6d67449df2b72c",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 730,
+        "y": 1260,
+        "wires": [
+            [
+                "37cdae544ab8036a"
+            ]
+        ]
+    },
+    {
+        "id": "cc335579f8cfe8d1",
+        "type": "function",
+        "z": "7e6d67449df2b72c",
+        "name": "export query qqq_macd",
+        "func": "msg.query = \"select * from qqq_macd\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 1260,
+        "wires": [
+            [
+                "3cbc36dc8b879845"
+            ]
+        ]
+    },
+    {
+        "id": "37cdae544ab8036a",
+        "type": "file",
+        "z": "7e6d67449df2b72c",
+        "name": "write report",
+        "filename": "/data/store/output.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 870,
+        "y": 1260,
+        "wires": [
+            [
+                "3501fbffe342e437"
+            ]
+        ]
+    },
+    {
+        "id": "3cbc36dc8b879845",
+        "type": "postgresql",
+        "z": "7e6d67449df2b72c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 600,
+        "y": 1260,
+        "wires": [
+            [
+                "7b98044cc8e468b4"
+            ]
+        ]
+    },
+    {
+        "id": "26080bb8ef592a69",
+        "type": "function",
+        "z": "7e6d67449df2b72c",
+        "name": "queries",
+        "func": "//msg.query = \"select count(*) from goog_rsi\"\n//msg.query = \"select count(*) from qqq_macd\"\n//msg.query = \"select count(*) from amzn_ema\" // 0\n//msg.query = \"select count(*) from XLK_lasttrade\" // 20713\n//msg.query = \"select count(*) from tsla_lasttrade\" // 12118\nmsg.query = \"select count(*) from orders_passed\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 360,
+        "wires": [
+            [
+                "e4f7abf649537314"
+            ]
+        ]
+    },
+    {
+        "id": "490da731784642a4",
+        "type": "http in",
+        "z": "7e6d67449df2b72c",
+        "name": "/api/download_orders_passed",
+        "url": "/api/download_orders_passed",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 140,
+        "y": 1300,
+        "wires": [
+            [
+                "a4091b6c5624cd49"
+            ]
+        ]
+    },
+    {
+        "id": "4da3f1ab2b5c7342",
+        "type": "http response",
+        "z": "7e6d67449df2b72c",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 910,
+        "y": 1300,
+        "wires": []
+    },
+    {
+        "id": "cb95d2074397cceb",
+        "type": "csv",
+        "z": "7e6d67449df2b72c",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 630,
+        "y": 1300,
+        "wires": [
+            [
+                "52b2a102cfa115a3"
+            ]
+        ]
+    },
+    {
+        "id": "a4091b6c5624cd49",
+        "type": "function",
+        "z": "7e6d67449df2b72c",
+        "name": "export query",
+        "func": "let d = new Date().toJSON().slice(0, 10);\nmsg.query = \"select * from orders_passed limit 10000 offset 1;\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 1300,
+        "wires": [
+            [
+                "6815da84e6aab86d"
+            ]
+        ]
+    },
+    {
+        "id": "52b2a102cfa115a3",
+        "type": "file",
+        "z": "7e6d67449df2b72c",
+        "name": "write report",
+        "filename": "/data/store/amzn_paper_orders.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 770,
+        "y": 1300,
+        "wires": [
+            [
+                "4da3f1ab2b5c7342"
+            ]
+        ]
+    },
+    {
+        "id": "6815da84e6aab86d",
+        "type": "postgresql",
+        "z": "7e6d67449df2b72c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 500,
+        "y": 1300,
+        "wires": [
+            [
+                "cb95d2074397cceb"
+            ]
+        ]
+    },
+    {
+        "id": "0b23dba25a014117",
+        "type": "function",
+        "z": "7e6d67449df2b72c",
+        "name": "orders_passed",
+        "func": "msg.query = \"truncate table orders_passed\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 700,
+        "wires": [
+            [
+                "70e026fea2110563"
+            ]
+        ]
+    },
+    {
+        "id": "1e20cd847208eeb5",
+        "type": "inject",
+        "z": "7e6d67449df2b72c",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "query",
+                "v": "select * from  alpaca_assets limit 1",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 680,
+        "y": 340,
+        "wires": [
+            [
+                "0e0302795662f3d7"
+            ]
+        ]
+    },
+    {
+        "id": "0e0302795662f3d7",
+        "type": "postgresql",
+        "z": "7e6d67449df2b72c",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 820,
+        "y": 340,
+        "wires": [
+            [
+                "b6eaa1864c779f4d"
+            ]
+        ]
+    },
+    {
+        "id": "b6eaa1864c779f4d",
+        "type": "debug",
+        "z": "7e6d67449df2b72c",
+        "name": "debug 430",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 970,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "7455395cf269fb2b",
+        "type": "postgreSQLConfig",
+        "name": "",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "postgres",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "docker",
+        "userFieldType": "str",
+        "password": "docker",
+        "passwordFieldType": "str"
+    }
+]
