@@ -1,0 +1,275 @@
+[
+    {
+        "id": "31d44b269ecb986a",
+        "type": "tab",
+        "label": "Sell based on daily profit",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "1cc029ba9af5c6e8",
+        "type": "inject",
+        "z": "31d44b269ecb986a",
+        "name": "Get paper starting balance",
+        "props": [
+            {
+                "p": "query",
+                "v": "select * from balances where account like 'paper' order by unixtime desc limit 1",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 09 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 180,
+        "y": 120,
+        "wires": [
+            [
+                "6ea53515497e7a1b"
+            ]
+        ]
+    },
+    {
+        "id": "6ea53515497e7a1b",
+        "type": "postgresql",
+        "z": "31d44b269ecb986a",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 380,
+        "y": 120,
+        "wires": [
+            [
+                "47534f743306afa6"
+            ]
+        ]
+    },
+    {
+        "id": "47534f743306afa6",
+        "type": "split",
+        "z": "31d44b269ecb986a",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 510,
+        "y": 120,
+        "wires": [
+            [
+                "1cc3f0351caf5c5e"
+            ]
+        ]
+    },
+    {
+        "id": "1cc3f0351caf5c5e",
+        "type": "function",
+        "z": "31d44b269ecb986a",
+        "name": "store starting balance at 9 am",
+        "func": "let balance_start = msg.payload[\"balance\"]\nnode.warn(balance_start) \n\nflow.set(\"start\", balance_start)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a9edf0137183839a",
+        "type": "inject",
+        "z": "31d44b269ecb986a",
+        "name": "Get current profit",
+        "props": [
+            {
+                "p": "query",
+                "v": "select * from balances where account like 'paper' order by unixtime desc limit 1",
+                "vt": "str"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 170,
+        "y": 180,
+        "wires": [
+            [
+                "e63e80cf67aca15c"
+            ]
+        ]
+    },
+    {
+        "id": "e63e80cf67aca15c",
+        "type": "postgresql",
+        "z": "31d44b269ecb986a",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 340,
+        "y": 180,
+        "wires": [
+            [
+                "132c846971d1de64"
+            ]
+        ]
+    },
+    {
+        "id": "132c846971d1de64",
+        "type": "split",
+        "z": "31d44b269ecb986a",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 470,
+        "y": 180,
+        "wires": [
+            [
+                "0095415ce00ab6b5"
+            ]
+        ]
+    },
+    {
+        "id": "0095415ce00ab6b5",
+        "type": "function",
+        "z": "31d44b269ecb986a",
+        "name": "calculate current profit",
+        "func": "let balance_start = flow.get(\"start\")\nlet balance_current = msg.payload[\"balance\"]\n\nlet profit = balance_current - balance_start\nnode.warn(\"Start: \" +balance_start+ \" Current: \" +balance_current+ \" Profit: \" +profit) \nglobal.set(\"day_profit\", profit)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 640,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e7b8effe3aa7b098",
+        "type": "pts_oauth_browser",
+        "z": "31d44b269ecb986a",
+        "callback": "",
+        "redirect": "",
+        "name": "Documentation Link",
+        "x": 360,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "04e1f0f90c30acf8",
+        "type": "inject",
+        "z": "31d44b269ecb986a",
+        "name": "Click Here to Open",
+        "props": [
+            {
+                "p": "redirect",
+                "v": "https://docs.google.com/document/d/1xeljzgRRY0pPp1dHd5_fbbattzkbXFVKT6eqLf0FtdE/view",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 40,
+        "wires": [
+            [
+                "e7b8effe3aa7b098"
+            ]
+        ]
+    },
+    {
+        "id": "b1d3c6bb07bab29b",
+        "type": "function",
+        "z": "31d44b269ecb986a",
+        "name": "filter on global profit",
+        "func": "// this filter will execute flows until day_target exceeded\n\nlet profit = global.get(\"day_profit\")\nlet day_target = 500\n\nif ( profit < day_target) {\nnode.warn(profit)}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7a2b71acdb765238",
+        "type": "inject",
+        "z": "31d44b269ecb986a",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 160,
+        "y": 240,
+        "wires": [
+            [
+                "b1d3c6bb07bab29b"
+            ]
+        ]
+    },
+    {
+        "id": "7455395cf269fb2b",
+        "type": "postgreSQLConfig",
+        "name": "",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "postgres",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "docker",
+        "userFieldType": "str",
+        "password": "docker",
+        "passwordFieldType": "str"
+    }
+]
