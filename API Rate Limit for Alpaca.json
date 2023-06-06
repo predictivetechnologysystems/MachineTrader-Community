@@ -1,0 +1,149 @@
+[
+    {
+        "id": "55ef56607b11c2e2",
+        "type": "tab",
+        "label": "alpaca ratelimit",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "114b292270f0991d",
+        "type": "inject",
+        "z": "55ef56607b11c2e2",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 100,
+        "wires": [
+            [
+                "af79667c9d60dc7f"
+            ]
+        ]
+    },
+    {
+        "id": "af79667c9d60dc7f",
+        "type": "alpaca-position-query",
+        "z": "55ef56607b11c2e2",
+        "conf": "c06cec183f9317f9",
+        "symbol": "",
+        "x": 330,
+        "y": 100,
+        "wires": [
+            [
+                "60e4b82540736c0d"
+            ]
+        ]
+    },
+    {
+        "id": "60e4b82540736c0d",
+        "type": "function",
+        "z": "55ef56607b11c2e2",
+        "name": "display rate limit remaining",
+        "func": "node.warn(\"msg.headers.x - ratelimit - remaining\")\nvar num = parseInt(msg[\"headers\"][\"x-ratelimit-remaining\"])\nmsg[\"headers\"][\"x-ratelimit-remaining\"] = num\nnode.warn(msg[\"headers\"][\"x-ratelimit-remaining\"])\n\n// store rate_limit as a global\nglobal.set(\"rate_limit\", num)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 600,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f39f79b3c444cce7",
+        "type": "pts_oauth_browser",
+        "z": "55ef56607b11c2e2",
+        "callback": "",
+        "redirect": "",
+        "name": "Documentation Link",
+        "x": 380,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "4ae4e4a0fc2144dc",
+        "type": "inject",
+        "z": "55ef56607b11c2e2",
+        "name": "Click Here to Open",
+        "props": [
+            {
+                "p": "redirect",
+                "v": "https://docs.google.com/document/d/1xeljzgRRY0pPp1dHd5_fbbattzkbXFVKT6eqLf0FtdE/view",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 170,
+        "y": 40,
+        "wires": [
+            [
+                "f39f79b3c444cce7"
+            ]
+        ]
+    },
+    {
+        "id": "9c312e7c10276f20",
+        "type": "function",
+        "z": "55ef56607b11c2e2",
+        "name": "rate limit function",
+        "func": "let rate_limit = global.get(\"rate_limit\")\nlet rate_target = 10\n\nif ( rate_limit < rate_target) {\nnode.warn(rate_limit) }\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ebeaf4f35834bb3c",
+        "type": "inject",
+        "z": "55ef56607b11c2e2",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 140,
+        "y": 160,
+        "wires": [
+            [
+                "9c312e7c10276f20"
+            ]
+        ]
+    },
+    {
+        "id": "c06cec183f9317f9",
+        "type": "alpaca-account",
+        "name": "paper",
+        "keyId": "USE-OAUTH-OR-REPLACE",
+        "paper": true
+    }
+]
