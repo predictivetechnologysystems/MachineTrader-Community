@@ -1,0 +1,82 @@
+[
+    {
+        "id": "f093fb0229bac8f2",
+        "type": "function",
+        "z": "ef72349e82798acf",
+        "name": "get last 500 closed paper orders",
+        "func": "/* Get Flow variables */\n\nlet ordertype = flow.get(\"orders\")\n//let limit  = flow.get(\"cnt\")\nordertype = \"all\"\n\n/* Setup alpaca request arguments */\n\nmsg.payload = {\n    status: ordertype, // \"open or closed\"\n    limit: \"1\", // default is 500\n\tdirection: \"desc\" //  \"asc or desc\"\n\n}\n\n//node.warn(msg.payload)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 560,
+        "wires": [
+            [
+                "30c39bb858728954"
+            ]
+        ]
+    },
+    {
+        "id": "30c39bb858728954",
+        "type": "alpaca-query-order",
+        "z": "ef72349e82798acf",
+        "conf": "c06cec183f9317f9",
+        "x": 640,
+        "y": 560,
+        "wires": [
+            [
+                "bc2a5bc16dae3987"
+            ]
+        ]
+    },
+    {
+        "id": "fa0e117f3f36dde4",
+        "type": "inject",
+        "z": "ef72349e82798acf",
+        "name": "Every min",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 190,
+        "y": 560,
+        "wires": [
+            [
+                "f093fb0229bac8f2"
+            ]
+        ]
+    },
+    {
+        "id": "bc2a5bc16dae3987",
+        "type": "debug",
+        "z": "ef72349e82798acf",
+        "name": "debug 444",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 810,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "c06cec183f9317f9",
+        "type": "alpaca-account",
+        "name": "paper",
+        "keyId": "USE-OAUTH-OR-REPLACE",
+        "paper": true
+    }
+]
