@@ -1,0 +1,1275 @@
+[
+    {
+        "id": "5aee3d64179fb08d",
+        "type": "tab",
+        "label": "File Import",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "076c687e83ff742e",
+        "type": "inject",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 280,
+        "y": 140,
+        "wires": [
+            [
+                "7723cd6ad2cc47c0"
+            ]
+        ]
+    },
+    {
+        "id": "908018b84f16014b",
+        "type": "debug",
+        "z": "5aee3d64179fb08d",
+        "name": "debug 450",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 630,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "f1ea764b318d2cc8",
+        "type": "postgresql",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 450,
+        "y": 240,
+        "wires": [
+            [
+                "3e5c53cad0785a78"
+            ]
+        ]
+    },
+    {
+        "id": "db2d08da8d3951b3",
+        "type": "inject",
+        "z": "5aee3d64179fb08d",
+        "name": "alpaca_assets query",
+        "props": [
+            {
+                "p": "query",
+                "v": "select count(*) from alpaca_assets;",
+                "vt": "str"
+            },
+            {
+                "p": "query1",
+                "v": "select * from alpaca_assets limit 5",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 270,
+        "y": 240,
+        "wires": [
+            [
+                "f1ea764b318d2cc8"
+            ]
+        ]
+    },
+    {
+        "id": "3e5c53cad0785a78",
+        "type": "debug",
+        "z": "5aee3d64179fb08d",
+        "name": "debug 451",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 630,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "a2a16dc6.fbd32",
+        "type": "function",
+        "z": "5aee3d64179fb08d",
+        "name": "Ready for next lines",
+        "func": "return [\n    msg.complete ? msg : null,\n    { tick: true },\n];\n",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1100,
+        "y": 380,
+        "wires": [
+            [
+                "87fbc09b.6deeb"
+            ],
+            [
+                "e6ec0f0a.388198"
+            ]
+        ]
+    },
+    {
+        "id": "436dce51.065f6",
+        "type": "csv",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "sep": ",",
+        "hdrin": true,
+        "hdrout": "none",
+        "multi": "mult",
+        "ret": "\\n",
+        "temp": "",
+        "skip": "0",
+        "strings": false,
+        "include_empty_strings": "",
+        "include_null_values": "",
+        "x": 590,
+        "y": 380,
+        "wires": [
+            [
+                "4127dd44.2d49d4"
+            ]
+        ]
+    },
+    {
+        "id": "4127dd44.2d49d4",
+        "type": "function",
+        "z": "5aee3d64179fb08d",
+        "name": "Format SQL",
+        "func": "if (msg.payload && msg.payload.length > 0) {\n    let payload = 'insert into alpaca_assets (id, symbol, name, alpaca_symbol, polygon_symbol, easy_to_borrow, exchange, shortable, fractionable, marginable, status, tradeable) VALUES ';\n    \n    for (const line of msg.payload) {\n        payload += `('${line.id}', '${line.symbol}', '${line.name}', '${line.alpaca_symbol}', '${line.polygon_symbol}', '${line.easy_to_borrow}', '${line.exchange}', '${line.shortable}', '${line.fractionable}', '${line.marginable}', '${line.status}', '${line.tradeable}'),`;\n        // payload += `('${line.time}', '${line.sensor}', '${line.data}'),`;\n    }\n    \n    msg.payload = payload.slice(0, - 1) + ';';\n    node.warn(msg.payload)\n}\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 380,
+        "wires": [
+            [
+                "65c0779b0f924c8b"
+            ]
+        ]
+    },
+    {
+        "id": "87fbc09b.6deeb",
+        "type": "debug",
+        "z": "5aee3d64179fb08d",
+        "name": "Done",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "_parts.lines",
+        "statusType": "msg",
+        "x": 1290,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "65c0779b0f924c8b",
+        "type": "postgresql",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "query": "{{{ msg.payload }}}",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 890,
+        "y": 380,
+        "wires": [
+            [
+                "a2a16dc6.fbd32"
+            ]
+        ]
+    },
+    {
+        "id": "dab93fe883a780ff",
+        "type": "inject",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "props": [
+            {
+                "p": "filename",
+                "v": "/data/store/alpaca_assets.csv",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 190,
+        "y": 380,
+        "wires": [
+            [
+                "7d5bd7f25aefc281"
+            ]
+        ]
+    },
+    {
+        "id": "7d5bd7f25aefc281",
+        "type": "file in",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "filename": "filename",
+        "filenameType": "msg",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 320,
+        "y": 380,
+        "wires": [
+            [
+                "e6ec0f0a.388198"
+            ]
+        ]
+    },
+    {
+        "id": "71d26711bfb3b818",
+        "type": "comment",
+        "z": "5aee3d64179fb08d",
+        "name": "count alpaca_assets",
+        "info": "",
+        "x": 250,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "ab84263b00f9fa84",
+        "type": "comment",
+        "z": "5aee3d64179fb08d",
+        "name": "insert alpaca_assets from csv",
+        "info": "",
+        "x": 280,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "f5d55c59ddb6f870",
+        "type": "inject",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "props": [
+            {
+                "p": "filename",
+                "v": "/data/store/ticker_financials.csv",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 170,
+        "y": 720,
+        "wires": [
+            [
+                "259a11ddb8b6b7cd"
+            ]
+        ]
+    },
+    {
+        "id": "259a11ddb8b6b7cd",
+        "type": "file in",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "filename": "filename",
+        "filenameType": "msg",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 300,
+        "y": 720,
+        "wires": [
+            [
+                "d4645d44afc44aee"
+            ]
+        ]
+    },
+    {
+        "id": "69c5cb123fdba316",
+        "type": "function",
+        "z": "5aee3d64179fb08d",
+        "name": "Ready for next lines",
+        "func": "return [\n    msg.complete ? msg : null,\n    { tick: true },\n];\n",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1140,
+        "y": 720,
+        "wires": [
+            [
+                "92993bc91276f862"
+            ],
+            [
+                "d4645d44afc44aee"
+            ]
+        ]
+    },
+    {
+        "id": "60fd43d3c11e8568",
+        "type": "csv",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "sep": ",",
+        "hdrin": true,
+        "hdrout": "none",
+        "multi": "mult",
+        "ret": "\\n",
+        "temp": "",
+        "skip": "0",
+        "strings": false,
+        "include_empty_strings": "",
+        "include_null_values": "",
+        "x": 620,
+        "y": 720,
+        "wires": [
+            [
+                "761e66789979c45f"
+            ]
+        ]
+    },
+    {
+        "id": "7c86e03553962533",
+        "type": "postgresql",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "query": "{{{ msg.payload }}}",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 930,
+        "y": 720,
+        "wires": [
+            [
+                "69c5cb123fdba316"
+            ]
+        ]
+    },
+    {
+        "id": "92993bc91276f862",
+        "type": "debug",
+        "z": "5aee3d64179fb08d",
+        "name": "Done",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "_parts.lines",
+        "statusType": "msg",
+        "x": 1370,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "761e66789979c45f",
+        "type": "function",
+        "z": "5aee3d64179fb08d",
+        "name": "Format SQL",
+        "func": "if (msg.payload && msg.payload.length > 0) {\n    let payload = 'insert into ticker_financials (symbol,stock_price_date,stock_price,startdate,enddate,filedate,cikcode,company,period,year,cost,eps,netcont,divs,netavail,netoper,netnonoper,deps,ebit,net,interst,rev,gp,taxdefer,taxbene,operexp,beneexp,partsec,lae,eqtni,ca,otfna,cl,a,nl,na,eatp,equity,fa,ncffa,ncffac,ncfia,ncfoac,ncffiac,ncfc,ncf,ncfoa,pe,current,acid,cash,cashflow,debt,debt_equity,interest_cover,asset_turn,grossmargin,opermargin,return_assets,return_equity,book_share,shares_out,cik,market_cap) VALUES ';\n    \n    for (const line of msg.payload) {\n        payload += `('${line.symbol}', '${line.stock_price_date}', '${line.stock_price}', '${line.startdate}', '${line.enddate}', '${line.filedate}', '${line.cikcode}', '${line.company}', '${line.period}', '${line.year}', '${line.cost}', '${line.eps}', '${line.netcont}', '${line.divs}', '${line.netavail}', '${line.netoper}', '${line.netnonoper}', '${line.deps}', '${line.ebit}', '${line.net}', '${line.interst}', '${line.rev}', '${line.gp}', '${line.taxdefer}', '${line.taxbene}', '${line.operexp}', '${line.beneexp}', '${line.partsec}', '${line.lae}', '${line.eqtni}', '${line.ca}', '${line.otfna}', '${line.cl}', '${line.a}', '${line.nl}', '${line.na}', '${line.eatp}', '${line.equity}', '${line.fa}', '${line.ncffa}', '${line.ncffac}', '${line.ncfia}', '${line.ncfoac}', '${line.ncffiac}', '${line.ncfc}', '${line.ncf}', '${line.ncfoa}', '${line.pe}', '${line.current}', '${line.acid}', '${line.cash}', '${line.cashflow}', '${line.debt}', '${line.debt_equity}', '${line.interest_cover}', '${line.asset_turn}', '${line.grossmargin}', '${line.opermargin}', '${line.return_assets}', '${line.return_equity}', '${line.book_share}', '${line.shares_out}', '${line.cik}', '${line.market_cap}'),`;\n    }\n    \n    msg.payload = payload.slice(0, - 1) + ';';\n    node.warn(msg.payload)\n}\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 760,
+        "y": 720,
+        "wires": [
+            [
+                "29247d122c62b896"
+            ]
+        ]
+    },
+    {
+        "id": "c195e9c088d67bd0",
+        "type": "comment",
+        "z": "5aee3d64179fb08d",
+        "name": "insert ticker_financials from csv",
+        "info": "",
+        "x": 290,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "aca448da5f7d718a",
+        "type": "inject",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "props": [
+            {
+                "p": "filename",
+                "v": "/data/store/polygon_tickers.csv",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 250,
+        "y": 1000,
+        "wires": [
+            [
+                "8f4080918080aeb3"
+            ]
+        ]
+    },
+    {
+        "id": "8f4080918080aeb3",
+        "type": "file in",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "filename": "filename",
+        "filenameType": "msg",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 380,
+        "y": 1000,
+        "wires": [
+            [
+                "a79826f6dc3db0e2"
+            ]
+        ]
+    },
+    {
+        "id": "36b8fd49c4203967",
+        "type": "function",
+        "z": "5aee3d64179fb08d",
+        "name": "Ready for next lines",
+        "func": "return [\n    msg.complete ? msg : null,\n    { tick: true },\n];\n",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1220,
+        "y": 1000,
+        "wires": [
+            [
+                "3f4d8532c64a3441"
+            ],
+            [
+                "a79826f6dc3db0e2"
+            ]
+        ]
+    },
+    {
+        "id": "dae0652ca3d62622",
+        "type": "csv",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "sep": ",",
+        "hdrin": true,
+        "hdrout": "none",
+        "multi": "mult",
+        "ret": "\\n",
+        "temp": "",
+        "skip": "0",
+        "strings": false,
+        "include_empty_strings": "",
+        "include_null_values": "",
+        "x": 640,
+        "y": 1000,
+        "wires": [
+            [
+                "3d19ef14be7945d0"
+            ]
+        ]
+    },
+    {
+        "id": "010ec6c0b1836076",
+        "type": "postgresql",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "query": "{{{ msg.payload }}}",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 940,
+        "y": 1000,
+        "wires": [
+            [
+                "e4f3552eaab29862"
+            ]
+        ]
+    },
+    {
+        "id": "3d19ef14be7945d0",
+        "type": "function",
+        "z": "5aee3d64179fb08d",
+        "name": "Format SQL",
+        "func": "if (msg.payload && msg.payload.length > 0) {\n    let payload = 'insert into polygon_tickers (ticker, name, market, locale, primary_exchange, type, active, currency_name, cik) VALUES ';\n    \n    for (const line of msg.payload) {\n        payload += `('${line.ticker}', '${line.name}', '${line.market}', '${line.locale}', '${line.primary_exchange}', '${line.type}', '${line.active}', '${line.currency_name}', '${line.cik}'),`;\n    }\n    \n    msg.payload = payload.slice(0, - 1) + ';';\n    node.warn(msg.payload)\n}\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 780,
+        "y": 1000,
+        "wires": [
+            [
+                "010ec6c0b1836076"
+            ]
+        ]
+    },
+    {
+        "id": "69dcd3bde3f5087f",
+        "type": "comment",
+        "z": "5aee3d64179fb08d",
+        "name": "insert polygon_tickers from csv",
+        "info": "",
+        "x": 310,
+        "y": 940,
+        "wires": []
+    },
+    {
+        "id": "3f4d8532c64a3441",
+        "type": "debug",
+        "z": "5aee3d64179fb08d",
+        "name": "Done",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "_parts.lines",
+        "statusType": "msg",
+        "x": 1390,
+        "y": 920,
+        "wires": []
+    },
+    {
+        "id": "7c30fb48.99cd2c",
+        "type": "http in",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "url": "/api/simple",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 260,
+        "y": 1120,
+        "wires": [
+            [
+                "3153fbd3.203a64"
+            ]
+        ]
+    },
+    {
+        "id": "3153fbd3.203a64",
+        "type": "template",
+        "z": "5aee3d64179fb08d",
+        "name": "html",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "<h1>Upload a file here:</h1>\n\n<form action=\"/api/upload\" method=\"POST\" enctype=\"multipart/form-data\">\n    <input type=\"file\" name=\"myFile\" />\n    <input type=\"submit\" value=\"Submit\">\n</form>",
+        "output": "str",
+        "x": 450,
+        "y": 1120,
+        "wires": [
+            [
+                "737e44d2.373a64"
+            ]
+        ]
+    },
+    {
+        "id": "737e44d2.373a64",
+        "type": "http response",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "x": 590,
+        "y": 1120,
+        "wires": []
+    },
+    {
+        "id": "46e01eea.4a46a",
+        "type": "comment",
+        "z": "5aee3d64179fb08d",
+        "name": "Simple",
+        "info": "",
+        "x": 230,
+        "y": 1080,
+        "wires": []
+    },
+    {
+        "id": "7d8e179a.283e4",
+        "type": "http response",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "x": 730,
+        "y": 1180,
+        "wires": []
+    },
+    {
+        "id": "25859a94.7d9976",
+        "type": "http in",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "url": "/api/upload",
+        "method": "post",
+        "upload": true,
+        "swaggerDoc": "",
+        "x": 260,
+        "y": 1180,
+        "wires": [
+            [
+                "d7e5df8b.97a4e8"
+            ]
+        ]
+    },
+    {
+        "id": "e1643981.20d7c8",
+        "type": "template",
+        "z": "5aee3d64179fb08d",
+        "name": "html",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "<p></p>File {{name}} uploaded !</p>\n\n<!-- <h2>Contents:</h2> -->\n\n<!-- <pre>{{{payload}}}</pre> -->",
+        "output": "str",
+        "x": 590,
+        "y": 1180,
+        "wires": [
+            [
+                "7d8e179a.283e4"
+            ]
+        ]
+    },
+    {
+        "id": "d7e5df8b.97a4e8",
+        "type": "function",
+        "z": "5aee3d64179fb08d",
+        "name": "toBase64",
+        "func": "msg.name = msg.req.files[0].originalname;\n\nif (msg.req.files[0].mimetype.includes('image')) {\n    msg.payload = `<img src=\"data:image/gif;base64,${msg.req.files[0].buffer.toString('base64')}\">`;\n} else {\n    msg.payload = msg.req.files[0].buffer.toString();\n}\nmsg.filename = \"/data/store/\" + msg.req.files[0].originalname\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 1180,
+        "wires": [
+            [
+                "e1643981.20d7c8",
+                "29e667772ff16b3a"
+            ]
+        ]
+    },
+    {
+        "id": "29e667772ff16b3a",
+        "type": "file",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "filename": "filename",
+        "filenameType": "msg",
+        "appendNewline": false,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 580,
+        "y": 1260,
+        "wires": [
+            [
+                "560d1bf4e4eeb5cc"
+            ]
+        ]
+    },
+    {
+        "id": "560d1bf4e4eeb5cc",
+        "type": "debug",
+        "z": "5aee3d64179fb08d",
+        "name": "debug 452",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 770,
+        "y": 1260,
+        "wires": []
+    },
+    {
+        "id": "7723cd6ad2cc47c0",
+        "type": "fs-ops-dir",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "path": "/data/store/",
+        "pathType": "str",
+        "filter": "*",
+        "filterType": "str",
+        "dir": "files",
+        "dirType": "msg",
+        "x": 440,
+        "y": 140,
+        "wires": [
+            [
+                "908018b84f16014b"
+            ]
+        ]
+    },
+    {
+        "id": "e6ec0f0a.388198",
+        "type": "chunks-to-lines",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "nbLines": "4096",
+        "linesFormat": "csv",
+        "decoder": "UTF-8",
+        "x": 460,
+        "y": 460,
+        "wires": [
+            [
+                "436dce51.065f6"
+            ]
+        ]
+    },
+    {
+        "id": "d4645d44afc44aee",
+        "type": "chunks-to-lines",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "nbLines": "4096",
+        "linesFormat": "csv",
+        "decoder": "UTF-8",
+        "x": 500,
+        "y": 780,
+        "wires": [
+            [
+                "60fd43d3c11e8568"
+            ]
+        ]
+    },
+    {
+        "id": "a79826f6dc3db0e2",
+        "type": "chunks-to-lines",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "nbLines": "4096",
+        "linesFormat": "csv",
+        "decoder": "UTF-8",
+        "x": 520,
+        "y": 1060,
+        "wires": [
+            [
+                "dae0652ca3d62622"
+            ]
+        ]
+    },
+    {
+        "id": "6d8b60794c9799cf",
+        "type": "comment",
+        "z": "5aee3d64179fb08d",
+        "name": "directory listing",
+        "info": "",
+        "x": 260,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "5e0244901a73e913",
+        "type": "postgresql",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 470,
+        "y": 540,
+        "wires": [
+            [
+                "2b2f054f8e639a61"
+            ]
+        ]
+    },
+    {
+        "id": "388e047f68513745",
+        "type": "inject",
+        "z": "5aee3d64179fb08d",
+        "name": "ticker_financials query",
+        "props": [
+            {
+                "p": "query",
+                "v": "select count(*) from ticker_financials;",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 280,
+        "y": 540,
+        "wires": [
+            [
+                "5e0244901a73e913"
+            ]
+        ]
+    },
+    {
+        "id": "2b2f054f8e639a61",
+        "type": "debug",
+        "z": "5aee3d64179fb08d",
+        "name": "debug 487",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 630,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "1494e936acc24daa",
+        "type": "comment",
+        "z": "5aee3d64179fb08d",
+        "name": "count ticker_financials",
+        "info": "",
+        "x": 260,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "21ae86aa14a98edc",
+        "type": "postgresql",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 510,
+        "y": 880,
+        "wires": [
+            [
+                "1e9cb8076d801a43"
+            ]
+        ]
+    },
+    {
+        "id": "91e938232a98e5fc",
+        "type": "inject",
+        "z": "5aee3d64179fb08d",
+        "name": "polygon_tickers query",
+        "props": [
+            {
+                "p": "query",
+                "v": "select count(*) from polygon_tickers;",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 300,
+        "y": 880,
+        "wires": [
+            [
+                "21ae86aa14a98edc"
+            ]
+        ]
+    },
+    {
+        "id": "1e9cb8076d801a43",
+        "type": "debug",
+        "z": "5aee3d64179fb08d",
+        "name": "debug 488",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 690,
+        "y": 880,
+        "wires": []
+    },
+    {
+        "id": "517f1d2a63def52a",
+        "type": "comment",
+        "z": "5aee3d64179fb08d",
+        "name": "count polygon_tickers",
+        "info": "",
+        "x": 280,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "e4f3552eaab29862",
+        "type": "delay",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1090,
+        "y": 940,
+        "wires": [
+            [
+                "36b8fd49c4203967"
+            ]
+        ]
+    },
+    {
+        "id": "29247d122c62b896",
+        "type": "delay",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "5",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 860,
+        "y": 660,
+        "wires": [
+            [
+                "7c86e03553962533"
+            ]
+        ]
+    },
+    {
+        "id": "36628842e75c4492",
+        "type": "function",
+        "z": "5aee3d64179fb08d",
+        "name": "Ready for next lines",
+        "func": "return [\n    msg.complete ? msg : null,\n    { tick: true },\n];\n",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1060,
+        "y": 1400,
+        "wires": [
+            [
+                "f742282159b4ed86"
+            ],
+            [
+                "3a7c0d443f67aebe"
+            ]
+        ]
+    },
+    {
+        "id": "380abfa9666fbd09",
+        "type": "csv",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "sep": ",",
+        "hdrin": true,
+        "hdrout": "none",
+        "multi": "mult",
+        "ret": "\\n",
+        "temp": "",
+        "skip": "0",
+        "strings": false,
+        "include_empty_strings": "",
+        "include_null_values": "",
+        "x": 580,
+        "y": 1400,
+        "wires": [
+            [
+                "bddaf4316dbc8463"
+            ]
+        ]
+    },
+    {
+        "id": "bddaf4316dbc8463",
+        "type": "function",
+        "z": "5aee3d64179fb08d",
+        "name": "Format SQL",
+        "func": "if (msg.payload && msg.payload.length > 0) {\n    let payload = 'insert into fred_ids_dailies (id, description) VALUES ';\n    \n    for (const line of msg.payload) {\n        payload += `('${line.id}', '${line.description}'),`;\n    }\n    \n    msg.payload = payload.slice(0, - 1) + ';';\n    node.warn(msg.payload)\n}\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 720,
+        "y": 1400,
+        "wires": [
+            [
+                "1950e6130f3df9b4"
+            ]
+        ]
+    },
+    {
+        "id": "f742282159b4ed86",
+        "type": "debug",
+        "z": "5aee3d64179fb08d",
+        "name": "Done",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "_parts.lines",
+        "statusType": "msg",
+        "x": 1250,
+        "y": 1380,
+        "wires": []
+    },
+    {
+        "id": "1950e6130f3df9b4",
+        "type": "postgresql",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "query": "{{{ msg.payload }}}",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 880,
+        "y": 1400,
+        "wires": [
+            [
+                "36628842e75c4492"
+            ]
+        ]
+    },
+    {
+        "id": "9439f1edd438bc93",
+        "type": "inject",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "props": [
+            {
+                "p": "filename",
+                "v": "/data/store/fredids.csv",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 190,
+        "y": 1400,
+        "wires": [
+            [
+                "f5a9e892ae07b83d"
+            ]
+        ]
+    },
+    {
+        "id": "f5a9e892ae07b83d",
+        "type": "file in",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "filename": "filename",
+        "filenameType": "msg",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 320,
+        "y": 1400,
+        "wires": [
+            [
+                "3a7c0d443f67aebe"
+            ]
+        ]
+    },
+    {
+        "id": "a19f07c8c89477af",
+        "type": "comment",
+        "z": "5aee3d64179fb08d",
+        "name": "insert fred_ids from csv",
+        "info": "",
+        "x": 220,
+        "y": 1340,
+        "wires": []
+    },
+    {
+        "id": "3a7c0d443f67aebe",
+        "type": "chunks-to-lines",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "nbLines": "4096",
+        "linesFormat": "csv",
+        "decoder": "UTF-8",
+        "x": 460,
+        "y": 1460,
+        "wires": [
+            [
+                "380abfa9666fbd09"
+            ]
+        ]
+    },
+    {
+        "id": "bccd6b378d07daa6",
+        "type": "inject",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "props": [
+            {
+                "p": "query",
+                "v": "select * from fred_ids_dailies",
+                "vt": "str"
+            },
+            {
+                "p": "query1",
+                "v": "update fred_ids_dailies set status = 1",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 210,
+        "y": 1500,
+        "wires": [
+            [
+                "c8a6aed587ea5e17"
+            ]
+        ]
+    },
+    {
+        "id": "c8a6aed587ea5e17",
+        "type": "postgresql",
+        "z": "5aee3d64179fb08d",
+        "name": "",
+        "query": "{{{ msg.payload }}}",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 370,
+        "y": 1500,
+        "wires": [
+            [
+                "180c2b327945bdbe"
+            ]
+        ]
+    },
+    {
+        "id": "180c2b327945bdbe",
+        "type": "debug",
+        "z": "5aee3d64179fb08d",
+        "name": "debug 489",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 530,
+        "y": 1500,
+        "wires": []
+    },
+    {
+        "id": "7455395cf269fb2b",
+        "type": "postgreSQLConfig",
+        "name": "",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "postgres",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "100",
+        "maxFieldType": "num",
+        "idle": "10000",
+        "idleFieldType": "num",
+        "connectionTimeout": "100000",
+        "connectionTimeoutFieldType": "num",
+        "user": "docker",
+        "userFieldType": "str",
+        "password": "docker",
+        "passwordFieldType": "str"
+    }
+]
