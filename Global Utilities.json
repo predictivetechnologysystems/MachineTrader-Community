@@ -1,0 +1,1023 @@
+[
+    {
+        "id": "9dfc0e947da8f0a3",
+        "type": "tab",
+        "label": "Globals/Utilities",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "78265475b24b0cbd",
+        "type": "inject",
+        "z": "9dfc0e947da8f0a3",
+        "name": "Set Time",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 120,
+        "y": 940,
+        "wires": [
+            [
+                "b871a260222bf3b1"
+            ]
+        ]
+    },
+    {
+        "id": "39f83a34d1369153",
+        "type": "comment",
+        "z": "9dfc0e947da8f0a3",
+        "name": "Failsafe flow for liquidating any positions > specifiedd qty. LIVE ACCOUNT ONLY.",
+        "info": "",
+        "x": 320,
+        "y": 880,
+        "wires": []
+    },
+    {
+        "id": "8db62dbee7740aec",
+        "type": "alpaca-position-query",
+        "z": "9dfc0e947da8f0a3",
+        "conf": "810ce3520dc18040",
+        "symbol": "",
+        "x": 570,
+        "y": 940,
+        "wires": [
+            [
+                "886e59c452fc13f0"
+            ]
+        ]
+    },
+    {
+        "id": "886e59c452fc13f0",
+        "type": "split",
+        "z": "9dfc0e947da8f0a3",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 750,
+        "y": 940,
+        "wires": [
+            [
+                "6a2990fc82e5089d"
+            ]
+        ]
+    },
+    {
+        "id": "6a2990fc82e5089d",
+        "type": "function",
+        "z": "9dfc0e947da8f0a3",
+        "name": "display output",
+        "func": "msg.symbol = msg.payload[\"symbol\"]\nmsg.qty = msg.payload[\"qty\"]\nnode.warn(\"Symbol: \" +msg.symbol+ \" Qty: \" +msg.qty)\nlet temp = ''\n\nif (msg.qty > 10){ node.warn(\"Reduce Portfolio Size\")\n\n        if (msg.qty < 0) {\n        msg.side = 'buy'\n        msg.qty = msg.qty * -1\n         }\n\n    // create a unique clientid with unixtime\n    let d = Date.now()\n    let client_order_id = msg.symbol + d\n    msg.clientorderid = client_order_id // passes this variable in the flow \n\n\n    temp = {\n        \"symbol\": msg.symbol,\n        \"qty\": msg.qty,\n        \"side\": msg.side,\n        \"type\": 'market',\n        \"client_order_id\": client_order_id,\n        \"time_in_force\": \"gtc\"\n    };\n\nmsg.payload = temp\nnode.warn(msg.payload)\nreturn msg;\n    }\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 900,
+        "y": 940,
+        "wires": [
+            [
+                "a27b2b12f45903bb"
+            ]
+        ]
+    },
+    {
+        "id": "a27b2b12f45903bb",
+        "type": "alpaca-order",
+        "z": "9dfc0e947da8f0a3",
+        "conf": "810ce3520dc18040",
+        "x": 1070,
+        "y": 940,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b871a260222bf3b1",
+        "type": "function",
+        "z": "9dfc0e947da8f0a3",
+        "name": "trading interval 9:30 - 4 pm",
+        "func": "let d = new Date();\nlet hour = d.getHours();\nlet min = d.getMinutes();\nlet day = d.getDay();\nlet sec = d.getSeconds();\n\n//node.warn(\"Day: \" +day+ \" Hour: \" +hour+ \" Minute: \" +min+ \" Seconds: \" +sec)\n\n// this will run during trading 9:30 - 4:00 pm\n if ((day > 0 && day < 6 && hour > 9 && hour < 16) || (day > 0 && day < 6 && hour > 8 && hour < 10 && min > 29 && min < 60)) {  \n\nnode.warn(\"Market Open\")\n\n\nreturn msg;\n}\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 940,
+        "wires": [
+            [
+                "8db62dbee7740aec"
+            ]
+        ]
+    },
+    {
+        "id": "4c093e13e24c624c",
+        "type": "inject",
+        "z": "9dfc0e947da8f0a3",
+        "name": "Get live acct starting balance",
+        "props": [
+            {
+                "p": "query",
+                "v": "select * from balances where account like 'live' order by unixtime desc limit 1",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 06 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 230,
+        "y": 460,
+        "wires": [
+            [
+                "0a2cf11d059a704c"
+            ]
+        ]
+    },
+    {
+        "id": "0a2cf11d059a704c",
+        "type": "postgresql",
+        "z": "9dfc0e947da8f0a3",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 440,
+        "y": 460,
+        "wires": [
+            [
+                "0fe231053982dd3c"
+            ]
+        ]
+    },
+    {
+        "id": "77b77f34efbf862a",
+        "type": "inject",
+        "z": "9dfc0e947da8f0a3",
+        "name": "Get current profit live",
+        "props": [
+            {
+                "p": "query",
+                "v": "select * from balances where account like 'live' order by unixtime desc limit 1",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "0 9-15 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 200,
+        "y": 560,
+        "wires": [
+            [
+                "ac13788ef47d2826"
+            ]
+        ]
+    },
+    {
+        "id": "ac13788ef47d2826",
+        "type": "postgresql",
+        "z": "9dfc0e947da8f0a3",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 380,
+        "y": 560,
+        "wires": [
+            [
+                "850b832ad14f327c"
+            ]
+        ]
+    },
+    {
+        "id": "850b832ad14f327c",
+        "type": "split",
+        "z": "9dfc0e947da8f0a3",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 510,
+        "y": 560,
+        "wires": [
+            [
+                "8dd6abf7b8190853"
+            ]
+        ]
+    },
+    {
+        "id": "8dd6abf7b8190853",
+        "type": "function",
+        "z": "9dfc0e947da8f0a3",
+        "name": "calculate current profit",
+        "func": "let balance_start = flow.get(\"start_live\")\nlet balance_current = msg.payload[\"balance\"]\n\nlet profit = balance_current - balance_start\nnode.warn(\"Start: \" +balance_start+ \" Current: \" +balance_current+ \" Profit: \" +profit) \nglobal.set(\"live_profit\", profit)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 680,
+        "y": 560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c8fddbc8a9d07df6",
+        "type": "pts_oauth_browser",
+        "z": "9dfc0e947da8f0a3",
+        "callback": "",
+        "redirect": "",
+        "name": "Documentation Link",
+        "x": 400,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "79293305a550050f",
+        "type": "inject",
+        "z": "9dfc0e947da8f0a3",
+        "name": "Click Here to Open",
+        "props": [
+            {
+                "p": "redirect",
+                "v": "https://docs.google.com/document/d/1xeljzgRRY0pPp1dHd5_fbbattzkbXFVKT6eqLf0FtdE/view",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 190,
+        "y": 420,
+        "wires": [
+            [
+                "c8fddbc8a9d07df6"
+            ]
+        ]
+    },
+    {
+        "id": "820d56bcaded3ea2",
+        "type": "function",
+        "z": "9dfc0e947da8f0a3",
+        "name": "filter on global profit",
+        "func": "let profit = global.get(\"day_profit\")\nlet day_target = 500\n\nif ( profit < day_target) {\nnode.warn(profit)}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 700,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4dd5c0365a96e67a",
+        "type": "inject",
+        "z": "9dfc0e947da8f0a3",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 160,
+        "y": 700,
+        "wires": [
+            [
+                "820d56bcaded3ea2"
+            ]
+        ]
+    },
+    {
+        "id": "fed0736be354a253",
+        "type": "comment",
+        "z": "9dfc0e947da8f0a3",
+        "name": "Alpaca Rate Limit. Alpaca only allows 200 queries per minute. This global variable tracks the current rate limit remaining.",
+        "info": "",
+        "x": 490,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "e8949fe96a72b8c1",
+        "type": "inject",
+        "z": "9dfc0e947da8f0a3",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 260,
+        "wires": [
+            [
+                "3511d754a33ace1f"
+            ]
+        ]
+    },
+    {
+        "id": "3511d754a33ace1f",
+        "type": "alpaca-position-query",
+        "z": "9dfc0e947da8f0a3",
+        "conf": "c06cec183f9317f9",
+        "symbol": "",
+        "x": 330,
+        "y": 260,
+        "wires": [
+            [
+                "87356ade4c1fb37b"
+            ]
+        ]
+    },
+    {
+        "id": "87356ade4c1fb37b",
+        "type": "function",
+        "z": "9dfc0e947da8f0a3",
+        "name": "display rate limit remaining",
+        "func": "//node.warn(\"msg.headers.x - ratelimit - remaining\")\nvar num = parseInt(msg[\"headers\"][\"x-ratelimit-remaining\"])\nmsg[\"headers\"][\"x-ratelimit-remaining\"] = num\nnode.warn(msg[\"headers\"][\"x-ratelimit-remaining\"])\n\n// store rate_limit as a global\nglobal.set(\"rate_limit\", num)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 580,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b3a6d9e06a168c7f",
+        "type": "pts_oauth_browser",
+        "z": "9dfc0e947da8f0a3",
+        "callback": "",
+        "redirect": "",
+        "name": "Documentation Link",
+        "x": 400,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "83b1d1691ae75bca",
+        "type": "inject",
+        "z": "9dfc0e947da8f0a3",
+        "name": "Click Here to Open",
+        "props": [
+            {
+                "p": "redirect",
+                "v": "https://docs.google.com/document/d/1xeljzgRRY0pPp1dHd5_fbbattzkbXFVKT6eqLf0FtdE/view",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 190,
+        "y": 220,
+        "wires": [
+            [
+                "b3a6d9e06a168c7f"
+            ]
+        ]
+    },
+    {
+        "id": "b89d3399a289033c",
+        "type": "function",
+        "z": "9dfc0e947da8f0a3",
+        "name": "rate limit function",
+        "func": "let rate_limit = global.get(\"rate_limit\")\nlet rate_target = 10\n\nif ( rate_limit > rate_target) {\nnode.warn(\"Remaining cycles: \" +rate_limit) }\n\nelse { node.warn(\"Rate limit exceeded: \" +rate_limit)}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2a60ba122a045859",
+        "type": "inject",
+        "z": "9dfc0e947da8f0a3",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 160,
+        "y": 300,
+        "wires": [
+            [
+                "b89d3399a289033c"
+            ]
+        ]
+    },
+    {
+        "id": "c235fe8c976499e3",
+        "type": "comment",
+        "z": "9dfc0e947da8f0a3",
+        "name": "Track profitability throughout the day for an account",
+        "info": "",
+        "x": 270,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "be78c91a4fe7e593",
+        "type": "alpaca-account-query",
+        "z": "9dfc0e947da8f0a3",
+        "conf": "810ce3520dc18040",
+        "x": 380,
+        "y": 1060,
+        "wires": [
+            [
+                "17d34ceb087a990d"
+            ]
+        ]
+    },
+    {
+        "id": "47d83a7fe00b429c",
+        "type": "inject",
+        "z": "9dfc0e947da8f0a3",
+        "name": "Store metrics",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 190,
+        "y": 1060,
+        "wires": [
+            [
+                "be78c91a4fe7e593"
+            ]
+        ]
+    },
+    {
+        "id": "8f7afea80ee47f9f",
+        "type": "comment",
+        "z": "9dfc0e947da8f0a3",
+        "name": "Margin Account Warnings: LIVE ACCOUNT ONLY",
+        "info": "",
+        "x": 200,
+        "y": 1020,
+        "wires": []
+    },
+    {
+        "id": "7f41811650688816",
+        "type": "comment",
+        "z": "9dfc0e947da8f0a3",
+        "name": "Maintatence_margin must be > than equity or house call is issued",
+        "info": "",
+        "x": 330,
+        "y": 1120,
+        "wires": []
+    },
+    {
+        "id": "71f382cece0527fd",
+        "type": "comment",
+        "z": "9dfc0e947da8f0a3",
+        "name": "RegT buying power must be > 0 at EOD",
+        "info": "",
+        "x": 250,
+        "y": 1200,
+        "wires": []
+    },
+    {
+        "id": "17d34ceb087a990d",
+        "type": "function",
+        "z": "9dfc0e947da8f0a3",
+        "name": "set globals",
+        "func": "let regT = msg.payload[\"regt_buying_power\"]\nlet equity = msg.payload[\"equity\"]\nlet maintMargin = msg.payload[\"maintenance_margin\"]\nglobal.set(\"regT\", regT)\nglobal.set(\"equity\", equity)\nglobal.set(\"maintMargin\", maintMargin)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 1060,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "aa8220fa171bc4d8",
+        "type": "inject",
+        "z": "9dfc0e947da8f0a3",
+        "name": "Get regT",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "regT",
+        "payloadType": "global",
+        "x": 200,
+        "y": 1240,
+        "wires": [
+            [
+                "26c823a4cfe1359d"
+            ]
+        ]
+    },
+    {
+        "id": "26c823a4cfe1359d",
+        "type": "function",
+        "z": "9dfc0e947da8f0a3",
+        "name": "regT function",
+        "func": "let regT = msg.payload\n\nif (regT > 0){ node.warn(\"regT available. Safe to make trades\")}\nelse { node.warn(\"regT margin not available\")}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 1240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ed19229d5c722b4d",
+        "type": "inject",
+        "z": "9dfc0e947da8f0a3",
+        "name": "Get maintMargin",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "maintMargin",
+        "payloadType": "global",
+        "x": 200,
+        "y": 1160,
+        "wires": [
+            [
+                "3564910fab7a7a85"
+            ]
+        ]
+    },
+    {
+        "id": "3564910fab7a7a85",
+        "type": "function",
+        "z": "9dfc0e947da8f0a3",
+        "name": "regT function",
+        "func": "let mm = msg.payload\nlet equity = global.get(\"equity\")\n\nlet surplus = equity - mm\n\nif (surplus > 0){ node.warn(\"Maintenance margin is available. Safe to make trades\")}\nelse { node.warn(\"Maintenance margin not available\")}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 1160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "02746e5309af9a18",
+        "type": "polygon-marketinfo",
+        "z": "9dfc0e947da8f0a3",
+        "conf": "8a426fd8cd37146c",
+        "x": 310,
+        "y": 80,
+        "wires": [
+            [
+                "ba90c9657d29e0ec"
+            ]
+        ]
+    },
+    {
+        "id": "c197ab7b6083607a",
+        "type": "inject",
+        "z": "9dfc0e947da8f0a3",
+        "name": "Min",
+        "props": [],
+        "repeat": "60",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 80,
+        "wires": [
+            [
+                "02746e5309af9a18"
+            ]
+        ]
+    },
+    {
+        "id": "bd30f25059e89b53",
+        "type": "comment",
+        "z": "9dfc0e947da8f0a3",
+        "name": "Market Status",
+        "info": "",
+        "x": 150,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "ba90c9657d29e0ec",
+        "type": "function",
+        "z": "9dfc0e947da8f0a3",
+        "name": "Store market globals",
+        "func": "let afterHours = msg.payload[\"afterHours\"]\nlet earlyHours = msg.payload[\"earlyHours\"]\nlet market = msg.payload[\"market\"]\nglobal.set(\"market\", market) \nif ( market == 'open'){\nnode.warn(\"the market is open\")}\nelse { node.warn(\"the market is closed\") }\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "57e95fd09291ac1f",
+        "type": "switch",
+        "z": "9dfc0e947da8f0a3",
+        "name": "market status",
+        "property": "market",
+        "propertyType": "global",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "open",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "closed",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 900,
+        "y": 80,
+        "wires": [
+            [
+                "a15c78c7315ae378"
+            ],
+            [
+                "5460dbcaeaac166a"
+            ]
+        ]
+    },
+    {
+        "id": "2182cb6d1a1ba541",
+        "type": "inject",
+        "z": "9dfc0e947da8f0a3",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 750,
+        "y": 80,
+        "wires": [
+            [
+                "57e95fd09291ac1f"
+            ]
+        ]
+    },
+    {
+        "id": "a15c78c7315ae378",
+        "type": "function",
+        "z": "9dfc0e947da8f0a3",
+        "name": "open",
+        "func": "node.warn(\"the market is open\")\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1050,
+        "y": 60,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5460dbcaeaac166a",
+        "type": "function",
+        "z": "9dfc0e947da8f0a3",
+        "name": "closed",
+        "func": "node.warn(\"the market is closed\")\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1050,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2b783ee611429440",
+        "type": "inject",
+        "z": "9dfc0e947da8f0a3",
+        "name": "Get paper acct starting balance",
+        "props": [
+            {
+                "p": "query",
+                "v": "select * from balances where account like 'paper' order by unixtime desc limit 1",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 06 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 230,
+        "y": 500,
+        "wires": [
+            [
+                "431273931cec35d1"
+            ]
+        ]
+    },
+    {
+        "id": "431273931cec35d1",
+        "type": "postgresql",
+        "z": "9dfc0e947da8f0a3",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 440,
+        "y": 500,
+        "wires": [
+            [
+                "250dd44adcf8ef8a"
+            ]
+        ]
+    },
+    {
+        "id": "76baa361244b0b6b",
+        "type": "function",
+        "z": "9dfc0e947da8f0a3",
+        "name": "store starting balance at 6 am",
+        "func": "let balance_start = msg.payload[\"balance\"]\nnode.warn(\"Start live: \" + balance_start) \n\nflow.set(\"start_live\", balance_start)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a28306df08a30bf9",
+        "type": "function",
+        "z": "9dfc0e947da8f0a3",
+        "name": "store starting balance at 6 am",
+        "func": "let balance_start = msg.payload[\"balance\"]\nnode.warn(\"Start paper: \" +balance_start) \n\nflow.set(\"start_paper\", balance_start)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 500,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0fe231053982dd3c",
+        "type": "split",
+        "z": "9dfc0e947da8f0a3",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 570,
+        "y": 460,
+        "wires": [
+            [
+                "76baa361244b0b6b"
+            ]
+        ]
+    },
+    {
+        "id": "250dd44adcf8ef8a",
+        "type": "split",
+        "z": "9dfc0e947da8f0a3",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 570,
+        "y": 500,
+        "wires": [
+            [
+                "a28306df08a30bf9"
+            ]
+        ]
+    },
+    {
+        "id": "c0d0525dcdeb0634",
+        "type": "inject",
+        "z": "9dfc0e947da8f0a3",
+        "name": "Get current profit paper",
+        "props": [
+            {
+                "p": "query",
+                "v": "select * from balances where account like 'paper' order by unixtime desc limit 1",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "0 9-15 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 190,
+        "y": 600,
+        "wires": [
+            [
+                "a39c047f8f3574c6"
+            ]
+        ]
+    },
+    {
+        "id": "a39c047f8f3574c6",
+        "type": "postgresql",
+        "z": "9dfc0e947da8f0a3",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 380,
+        "y": 600,
+        "wires": [
+            [
+                "2e38f6851b54cb24"
+            ]
+        ]
+    },
+    {
+        "id": "2e38f6851b54cb24",
+        "type": "split",
+        "z": "9dfc0e947da8f0a3",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 510,
+        "y": 600,
+        "wires": [
+            [
+                "a005faf971589841"
+            ]
+        ]
+    },
+    {
+        "id": "a005faf971589841",
+        "type": "function",
+        "z": "9dfc0e947da8f0a3",
+        "name": "calculate current profit",
+        "func": "let balance_start = flow.get(\"start_paper\")\nlet balance_current = msg.payload[\"balance\"]\n\nlet profit = balance_current - balance_start\nnode.warn(\"Start: \" +balance_start+ \" Current: \" +balance_current+ \" Profit: \" +profit) \nglobal.set(\"paper_profit\", profit)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 680,
+        "y": 600,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "810ce3520dc18040",
+        "type": "alpaca-account",
+        "name": "live",
+        "keyId": "USE-OAUTH-OR-REPLACE",
+        "paper": false
+    },
+    {
+        "id": "7455395cf269fb2b",
+        "type": "postgreSQLConfig",
+        "name": "",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "postgres",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "docker",
+        "userFieldType": "str",
+        "password": "docker",
+        "passwordFieldType": "str"
+    },
+    {
+        "id": "c06cec183f9317f9",
+        "type": "alpaca-account",
+        "name": "paper",
+        "keyId": "USE-OAUTH-OR-REPLACE",
+        "paper": true
+    },
+    {
+        "id": "8a426fd8cd37146c",
+        "type": "polygon-account",
+        "name": "Polygon Key"
+    }
+]
