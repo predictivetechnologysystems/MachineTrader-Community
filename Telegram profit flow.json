@@ -1,0 +1,288 @@
+[
+    {
+        "id": "2e9cf7dc8482b465",
+        "type": "tab",
+        "label": "Telegram ",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "d744f2dbd9f1b5de",
+        "type": "comment",
+        "z": "2e9cf7dc8482b465",
+        "name": "Set up a Telegram Bot",
+        "info": "",
+        "x": 160,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "c343529993f81573",
+        "type": "comment",
+        "z": "2e9cf7dc8482b465",
+        "name": "Botname: danielsavageBot",
+        "info": "",
+        "x": 170,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "f1a188bc5750fc66",
+        "type": "comment",
+        "z": "2e9cf7dc8482b465",
+        "name": "user name: danielsavage_bot",
+        "info": "",
+        "x": 180,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "cb246167b9a265ab",
+        "type": "comment",
+        "z": "2e9cf7dc8482b465",
+        "name": "token: 6130145143:AAF66fG4NkNYJynZE2uYJWxUhGe86DCjhxg",
+        "info": "",
+        "x": 300,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "73c1bdada6887bde",
+        "type": "comment",
+        "z": "2e9cf7dc8482b465",
+        "name": "Group Chat ID: '701317180'",
+        "info": "",
+        "x": 180,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "15fd497c1d91d4fb",
+        "type": "inject",
+        "z": "2e9cf7dc8482b465",
+        "name": "Report profit throughout the day",
+        "props": [
+            {
+                "p": "payload.type",
+                "v": "",
+                "vt": "date"
+            }
+        ],
+        "repeat": "3600",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 220,
+        "y": 260,
+        "wires": [
+            [
+                "375d61a8900ea4d5"
+            ]
+        ]
+    },
+    {
+        "id": "375d61a8900ea4d5",
+        "type": "switch",
+        "z": "2e9cf7dc8482b465",
+        "name": "market status",
+        "property": "market",
+        "propertyType": "global",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "open",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "closed",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 460,
+        "y": 260,
+        "wires": [
+            [
+                "47279ec542b1e8dd"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "47279ec542b1e8dd",
+        "type": "function",
+        "z": "2e9cf7dc8482b465",
+        "name": "telegram send",
+        "func": "let profit = global.get(\"live_profit\")\nprofit = profit.toFixed(2)\nnode.warn(\"Current Profit: \" + profit)\nmsg.dtbp = \"Current Profit [dansavage-live]: \" +profit\n\nmsg.payload = {}\nmsg.payload.chatId = \"701317180\"\nmsg.payload.type = 'message'\nmsg.payload.content = msg.dtbp\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 640,
+        "y": 260,
+        "wires": [
+            [
+                "a68abd16e0aea91f"
+            ]
+        ]
+    },
+    {
+        "id": "8403f21a61e82990",
+        "type": "debug",
+        "z": "2e9cf7dc8482b465",
+        "name": "display",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 980,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "a68abd16e0aea91f",
+        "type": "telegram sender",
+        "z": "2e9cf7dc8482b465",
+        "name": "",
+        "bot": "4adf58357350c033",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 820,
+        "y": 260,
+        "wires": [
+            [
+                "8403f21a61e82990"
+            ]
+        ]
+    },
+    {
+        "id": "6e3df484eb8ae487",
+        "type": "inject",
+        "z": "2e9cf7dc8482b465",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "profit",
+        "payloadType": "global",
+        "x": 170,
+        "y": 320,
+        "wires": [
+            [
+                "8deddbc99f07c503"
+            ]
+        ]
+    },
+    {
+        "id": "8deddbc99f07c503",
+        "type": "debug",
+        "z": "2e9cf7dc8482b465",
+        "name": "debug 487",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 330,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "b0c8524cbce74f58",
+        "type": "comment",
+        "z": "2e9cf7dc8482b465",
+        "name": "Set up a Telegram Bot",
+        "info": "",
+        "x": 880,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "baa280fd89e87a6e",
+        "type": "comment",
+        "z": "2e9cf7dc8482b465",
+        "name": "Botname: [bot name]",
+        "info": "",
+        "x": 880,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "13801d4ca529203e",
+        "type": "comment",
+        "z": "2e9cf7dc8482b465",
+        "name": "user name: [username_bot]",
+        "info": "",
+        "x": 890,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "171343d90ec99428",
+        "type": "comment",
+        "z": "2e9cf7dc8482b465",
+        "name": "token: [xxxxx  ]",
+        "info": "",
+        "x": 850,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "c1d20708f97c2b5a",
+        "type": "comment",
+        "z": "2e9cf7dc8482b465",
+        "name": "Group Chat ID: 'xxxxx'",
+        "info": "",
+        "x": 880,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "4adf58357350c033",
+        "type": "telegram bot",
+        "botname": "danielsavageBot",
+        "usernames": "",
+        "chatids": "",
+        "baseapiurl": "",
+        "updatemode": "polling",
+        "pollinterval": "300",
+        "usesocks": false,
+        "sockshost": "",
+        "socksprotocol": "socks5",
+        "socksport": "6667",
+        "socksusername": "anonymous",
+        "sockspassword": "",
+        "bothost": "",
+        "botpath": "",
+        "localbotport": "8443",
+        "publicbotport": "8443",
+        "privatekey": "",
+        "certificate": "",
+        "useselfsignedcertificate": false,
+        "sslterminated": false,
+        "verboselogging": false
+    }
+]
