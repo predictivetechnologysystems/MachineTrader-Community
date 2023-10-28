@@ -10,7 +10,7 @@ Click the Admin button in the upper right of the Home page of your instance. Thi
 
 Click the inject node on the top fow which will activate the Alpaca Oauth routine.  Login into your Alpaca account and follow the instructions here: https://drive.google.com/file/d/1vAUkXuiP4CGUszLROUvCPBdG5Lx0T0I0/view
 
-Once you Alpaca account is authorized, test by clicking the "Test Live Key" and "Test Paper Key" inject nodes and account information will be displayed to your right in the debug panel.
+Once you Alpaca account is authorized, test by clicking the "Test Live Keys" and "Test Paper Keys" inject nodes and account information will be displayed to your right in the debug panel.
 
 <img width="1010" alt="Screenshot 2023-03-11 at 9 03 21 AM" src="https://user-images.githubusercontent.com/79699033/224489148-43a98b28-4ab5-4718-964d-26138c3cd26a.png">
 
