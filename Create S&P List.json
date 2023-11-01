@@ -1,0 +1,1307 @@
+[
+    {
+        "id": "7766a78145274edf",
+        "type": "tab",
+        "label": "s & p",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "04732eb9b1218895",
+        "type": "function",
+        "z": "7766a78145274edf",
+        "name": "create table",
+        "func": "msg.query = \"create table IF NOT EXISTS sandplist (symbol VARCHAR(10) PRIMARY KEY, name VARCHAR(100), cik VARCHAR(20), shares_out BIGINT, siccode VARCHAR(10), price FLOAT, lastprice FLOAT, change FLOAT, pctchange FLOAT, marketcap BIGINT, weight FLOAT)\"\n//msg.query = \"drop table sandplist \"\n//msg.query = \"select * from sandplist where cik is not null\"\n//msg.query = \"select count(*) from sandplist where cik is null \"\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 290,
+        "y": 140,
+        "wires": [
+            [
+                "fdd0786e155df373"
+            ]
+        ]
+    },
+    {
+        "id": "b57ce2e5f8c8ebd2",
+        "type": "polygon-tickler-details-rest",
+        "z": "7766a78145274edf",
+        "conf": "eef6c3a7a3d811ce",
+        "symbol": "",
+        "x": 380,
+        "y": 700,
+        "wires": [
+            [
+                "dfb9ca93fb666ef3"
+            ]
+        ]
+    },
+    {
+        "id": "dfb9ca93fb666ef3",
+        "type": "function",
+        "z": "7766a78145274edf",
+        "name": "update",
+        "func": "//node.warn(msg.payload.results)\nmsg.cnt = 2\nlet name = ''\nlet cik = ''\nlet marketcap = ''\nlet shares = ''\nlet sic = ''\nlet sql = ''\n\n\nfor (let i = 0; i < msg.cnt; i++) {\n  ticker = msg.payload.results.ticker;\n  name = msg.payload.results.name;\n  cik = msg.payload.results.cik;\n  market = msg.payload.results.market_cap;\n  market = market.toFixed(0)\n  shares = msg.payload.results.share_class_shares_outstanding;\n  sic = msg.payload.results.sic_code;\n  sql += \"update sandplist set name = '\" +name+ \"', cik = '\" +cik+ \"', marketcap = '\" +market+ \"', shares_out = '\" +shares+ \"', siccode = '\" +sic+ \"' where symbol = '\" +ticker+ \"';\\n\" \n}\n\nnode.warn(sql)\nmsg.query = sql\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 580,
+        "y": 700,
+        "wires": [
+            [
+                "abb17d62dcd10b48"
+            ]
+        ]
+    },
+    {
+        "id": "538ad6b0d2686401",
+        "type": "debug",
+        "z": "7766a78145274edf",
+        "name": "debug 790",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 610,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "679604878040977f",
+        "type": "inject",
+        "z": "7766a78145274edf",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 140,
+        "wires": [
+            [
+                "04732eb9b1218895"
+            ]
+        ]
+    },
+    {
+        "id": "fdd0786e155df373",
+        "type": "postgresql",
+        "z": "7766a78145274edf",
+        "name": "",
+        "query": "SELECT * FROM ;",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 450,
+        "y": 140,
+        "wires": [
+            [
+                "538ad6b0d2686401"
+            ]
+        ]
+    },
+    {
+        "id": "6bf475d27f36761f",
+        "type": "function",
+        "z": "7766a78145274edf",
+        "name": "ticker list",
+        "func": "msg.payload = 'A,AAL,AAPL,ABBV,ABNB,ABT,ACGL,ACN,ADBE,ADI,ADM,ADP,ADSK,AEE,AEP,AES,AFL,AIG,AIZ,AJG,AKAM,ALB,ALGN,ALK,ALL,ALLE,AMAT,AMCR,AMD,AME,AMGN,AMP,AMT,AMZN,ANET,ANSS,AON,AOS,APA,APD,APH,APTV,ARE,ATO,ATVI,AVB,AVGO,AVY,AWK,AXON,AXP,AZO,BA,BAC,BALL,BAX,BBWI,BBY,BDX,BEN,BF.B,BG,BIIB,BIO,BK,BKNG,BKR,BLK,BMY,BR,BRK.B,BRO,BSX,BWA,BX,BXP,C,CAG,CAH,CARR,CAT,CB,CBOE,CBRE,CCI,CCL,CDAY,CDNS,CDW,CE,CEG,CF,CFG,CHD,CHRW,CHTR,CI,CINF,CL,CLX,CMA,CMCSA,CME,CMG,CMI,CMS,CNC,CNP,COF,COO,COP,COR,COST,CPB,CPRT,CPT,CRL,CRM,CSCO,CSGP,CSX,CTAS,CTLT,CTRA,CTSH,CTVA,CVS,CVX,CZR,D,DAL,DD,DE,DFS,DG,DGX,DHI,DHR,DIS,DLR,DLTR,DOV,DOW,DPZ,DRI,DTE,DUK,DVA,DVN,DXCM,EA,EBAY,ECL,ED,EFX,EG,EIX,EL,ELV,EMN,EMR,ENPH,EOG,EPAM,EQIX,EQR,EQT,ES,ESS,ETN,ETR,ETSY,EVRG,EW,EXC,EXPD,EXPE,EXR,F,FANG,FAST,FCX,FDS,FDX,FE,FFIV,FI,FICO,FIS,FITB,FLT,FMC,FOX,FOXA,FRT,FSLR,FTNT,FTV,GD,GE,GEHC,GEN,GILD,GIS,GL,GLW,GM,GNRC,GOOG,GOOGL,GPC,GPN,GRMN,GS,GWW,HAL,HAS,HBAN,HCA,HD,HES,HIG,HII,HLT,HOLX,HON,HPE,HPQ,HRL,HSIC,HST,HSY,HUM,HWM,IBM,ICE,IDXX,IEX,IFF,ILMN,INCY,INTC,INTU,INVH,IP,IPG,IQV,IR,IRM,ISRG,IT,ITW,IVZ,J,JBHT,JCI,JKHY,JNJ,JNPR,JPM,K,KDP,KEY,KEYS,KHC,KIM,KLAC,KMB,KMI,KMX,KO,KR,KVUE,L,LDOS,LEN,LH,LHX,LIN,LKQ,LLY,LMT,LNT,LOW,LRCX,LUV,LVS,LW,LYB,LYV,MA,MAA,MAR,MAS,MCD,MCHP,MCK,MCO,MDLZ,MDT,MET,META,MGM,MHK,MKC,MKTX,MLM,MMC,MMM,MNST,MO,MOH,MOS,MPC,MPWR,MRK,MRNA,MRO,MS,MSCI,MSFT,MSI,MTB,MTCH,MTD,MU,NCLH,NDAQ,NDSN,NEE,NEM,NFLX,NI,NKE,NOC,NOW,NRG,NSC,NTAP,NTRS,NUE,NVDA,NVR,NWS,NWSA,NXPI,O,ODFL,OGN,OKE,OMC,ON,ORCL,ORLY,OTIS,OXY,PANW,PARA,PAYC,PAYX,PCAR,PCG,PEAK,PEG,PEP,PFE,PFG,PG,PGR,PH,PHM,PKG,PLD,PM,PNC,PNR,PNW,PODD,POOL,PPG,PPL,PRU,PSA,PSX,PTC,PWR,PXD,PYPL,QCOM,QRVO,RCL,REG,REGN,RF,RHI,RJF,RL,RMD,ROK,ROL,ROP,ROST,RSG,RTX,RVTY,SBAC,SBUX,SCHW,SEDG,SEE,SHW,SJM,SLB,SNA,SNPS,SO,SPG,SPGI,SRE,STE,STLD,STT,STX,STZ,SWK,SWKS,SYF,SYK,SYY,T,TAP,TDG,TDY,TECH,TEL,TER,TFC,TFX,TGT,TJX,TMO,TMUS,TPR,TRGP,TRMB,TROW,TRV,TSCO,TSLA,TSN,TT,TTWO,TXN,TXT,TYL,UAL,UDR,UHS,ULTA,UNH,UNP,UPS,URI,USB,V,VFC,VICI,VLO,VLTO,VMC,VRSK,VRSN,VRTX,VTR,VTRS,VZ,WAB,WAT,WBA,WBD,WDC,WEC,WELL,WFC,WHR,WM,WMB,WMT,WRB,WRK,WST,WTW,WY,WYNN,XEL,XOM,XRAY,XYL,YUM,ZBH,ZBRA,ZION,ZTS'\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 540,
+        "wires": [
+            [
+                "fbcb76879d3b88d7"
+            ]
+        ]
+    },
+    {
+        "id": "fedc120706560653",
+        "type": "inject",
+        "z": "7766a78145274edf",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 540,
+        "wires": [
+            [
+                "6bf475d27f36761f"
+            ]
+        ]
+    },
+    {
+        "id": "fbcb76879d3b88d7",
+        "type": "split",
+        "z": "7766a78145274edf",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 410,
+        "y": 540,
+        "wires": [
+            [
+                "53f3aacdca4d0f41"
+            ]
+        ]
+    },
+    {
+        "id": "53f3aacdca4d0f41",
+        "type": "function",
+        "z": "7766a78145274edf",
+        "name": "insert",
+        "func": "//node.warn(msg.payload)\nlet ticker = msg.payload\nmsg.query = \"insert into sandplist (symbol) values ('\" +ticker+ \"');\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 530,
+        "y": 540,
+        "wires": [
+            [
+                "85575e9cede9c2cd"
+            ]
+        ]
+    },
+    {
+        "id": "85575e9cede9c2cd",
+        "type": "postgresql",
+        "z": "7766a78145274edf",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 660,
+        "y": 540,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1128d0ddfd9d6e42",
+        "type": "function",
+        "z": "7766a78145274edf",
+        "name": "prep",
+        "func": "\nlet symbol = msg.payload[\"symbol\"]\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 190,
+        "y": 700,
+        "wires": [
+            [
+                "b57ce2e5f8c8ebd2"
+            ]
+        ]
+    },
+    {
+        "id": "8feb72ee2874b7a1",
+        "type": "inject",
+        "z": "7766a78145274edf",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 640,
+        "wires": [
+            [
+                "ad2214fdecfb57e8"
+            ]
+        ]
+    },
+    {
+        "id": "ad2214fdecfb57e8",
+        "type": "function",
+        "z": "7766a78145274edf",
+        "name": "select",
+        "func": "msg.query = \"select symbol from sandplist\"\nmsg.cnt = 503\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 640,
+        "wires": [
+            [
+                "936af706625d30eb"
+            ]
+        ]
+    },
+    {
+        "id": "936af706625d30eb",
+        "type": "postgresql",
+        "z": "7766a78145274edf",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 400,
+        "y": 640,
+        "wires": [
+            [
+                "cf85993e0abd1e05"
+            ]
+        ]
+    },
+    {
+        "id": "cf85993e0abd1e05",
+        "type": "split",
+        "z": "7766a78145274edf",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 530,
+        "y": 640,
+        "wires": [
+            [
+                "360c6bd6d296197c"
+            ]
+        ]
+    },
+    {
+        "id": "abb17d62dcd10b48",
+        "type": "postgresql",
+        "z": "7766a78145274edf",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 720,
+        "y": 700,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "360c6bd6d296197c",
+        "type": "delay",
+        "z": "7766a78145274edf",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 670,
+        "y": 640,
+        "wires": [
+            [
+                "1128d0ddfd9d6e42"
+            ]
+        ]
+    },
+    {
+        "id": "5c21e8b06fe0de1c",
+        "type": "alpaca-data-last-multi-trade",
+        "z": "7766a78145274edf",
+        "conf": "40cd0fc67c376e22",
+        "symbol": "",
+        "name": "",
+        "x": 1010,
+        "y": 860,
+        "wires": [
+            [
+                "cf027289bd3b8a00"
+            ]
+        ]
+    },
+    {
+        "id": "cf027289bd3b8a00",
+        "type": "function",
+        "z": "7766a78145274edf",
+        "name": "update current price",
+        "func": "let sql = ''\n\nfor (const [key, value] of Object.entries(msg.payload)) {\n  msg.ticker = key\n  msg.price = value.p;\n  msg.size = value.s;\n  msg.date = value.t;\n  sql += \"update sandplist set price = \" +msg.price+ \" where symbol =  '\" +msg.ticker+ \"';\\n\"\n  \n}\n\nnode.warn(sql)\nmsg.query = sql\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1280,
+        "y": 860,
+        "wires": [
+            [
+                "e3741117653b04c8"
+            ]
+        ]
+    },
+    {
+        "id": "e3741117653b04c8",
+        "type": "postgresql",
+        "z": "7766a78145274edf",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1460,
+        "y": 860,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b8410448d33c2ee0",
+        "type": "function",
+        "z": "7766a78145274edf",
+        "name": "select",
+        "func": "let x = msg.payload\nx = x + 100\nmsg.query = \"select symbol from sandplist where cik is not null limit 100 offset \" +x+ \";\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 860,
+        "wires": [
+            [
+                "4905b8a7228cfbe2",
+                "35f1bd074b73ac75"
+            ]
+        ]
+    },
+    {
+        "id": "35f1bd074b73ac75",
+        "type": "postgresql",
+        "z": "7766a78145274edf",
+        "name": "",
+        "query": "SELECT * FROM ;",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 610,
+        "y": 860,
+        "wires": [
+            [
+                "1219c52b00c7fd3d"
+            ]
+        ]
+    },
+    {
+        "id": "1219c52b00c7fd3d",
+        "type": "function",
+        "z": "7766a78145274edf",
+        "name": "send to alpaca",
+        "func": "//node.warn(msg.payload)\nmsg.cnt = 500\nlet ticker = ''\nlet tickers = ''\n\n\nmsg.payload.forEach((element) => {\n    // node.warn(element.symbol);\n      tickers += element.symbol+\",\"\n    \n});\n\n\n//node.warn(tickers)\nmsg.symbol = tickers\nmsg.feed = 'sip'\n\nnode.warn(msg.symbol)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 780,
+        "y": 860,
+        "wires": [
+            [
+                "5c21e8b06fe0de1c"
+            ]
+        ]
+    },
+    {
+        "id": "6a62457e6ed69de6",
+        "type": "loop",
+        "z": "7766a78145274edf",
+        "name": "",
+        "kind": "fcnt",
+        "count": "5",
+        "initial": "1",
+        "step": "1",
+        "condition": "",
+        "conditionType": "js",
+        "when": "before",
+        "enumeration": "enum",
+        "enumerationType": "msg",
+        "limit": "",
+        "loopPayload": "loop-index",
+        "finalPayload": "final-count",
+        "x": 330,
+        "y": 920,
+        "wires": [
+            [],
+            [
+                "b8410448d33c2ee0"
+            ]
+        ]
+    },
+    {
+        "id": "4905b8a7228cfbe2",
+        "type": "delay",
+        "z": "7766a78145274edf",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 560,
+        "y": 920,
+        "wires": [
+            [
+                "6a62457e6ed69de6"
+            ]
+        ]
+    },
+    {
+        "id": "85e15246733b10b1",
+        "type": "comment",
+        "z": "7766a78145274edf",
+        "name": "get current price",
+        "info": "",
+        "x": 120,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "9e1d0ed10f20d839",
+        "type": "inject",
+        "z": "7766a78145274edf",
+        "name": "GO",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "count",
+        "payloadType": "str",
+        "x": 130,
+        "y": 1100,
+        "wires": [
+            [
+                "ef25852921b210d5"
+            ]
+        ]
+    },
+    {
+        "id": "c4717b2926d2a8e6",
+        "type": "loop",
+        "z": "7766a78145274edf",
+        "name": "",
+        "kind": "fcnt",
+        "count": "503",
+        "initial": "1",
+        "step": "1",
+        "condition": "",
+        "conditionType": "js",
+        "when": "before",
+        "enumeration": "enum",
+        "enumerationType": "msg",
+        "limit": "",
+        "loopPayload": "loop-index",
+        "finalPayload": "final-count",
+        "x": 270,
+        "y": 1200,
+        "wires": [
+            [],
+            [
+                "ef25852921b210d5"
+            ]
+        ]
+    },
+    {
+        "id": "a7213a5e04d7f774",
+        "type": "delay",
+        "z": "7766a78145274edf",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "0.1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 530,
+        "y": 1200,
+        "wires": [
+            [
+                "c4717b2926d2a8e6"
+            ]
+        ]
+    },
+    {
+        "id": "ef25852921b210d5",
+        "type": "function",
+        "z": "7766a78145274edf",
+        "name": "select",
+        "func": "let x = msg.payload\nx = x + 1\nmsg.query = \"select symbol from sandplist limit 1 offset \" +x+ \";\"\n//node.warn(msg.query)\n\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 1100,
+        "wires": [
+            [
+                "a052fed7b9576345",
+                "a7213a5e04d7f774"
+            ]
+        ]
+    },
+    {
+        "id": "a052fed7b9576345",
+        "type": "postgresql",
+        "z": "7766a78145274edf",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 420,
+        "y": 1100,
+        "wires": [
+            [
+                "5ca65128b5f7c40e"
+            ]
+        ]
+    },
+    {
+        "id": "d6295e9a380447e2",
+        "type": "function",
+        "z": "7766a78145274edf",
+        "name": "display payload",
+        "func": "//node.warn(msg.payload)\n\nlet price = 0\n\n\n//node.warn(msg.payload.results.length)\nfor (var i=0; i< msg.payload.results.length;i++)\n {\n     price = msg.payload.results[i].price\n }\n\n//node.warn(\"Price: \" +price)\nmsg.query = \"update sandplist set lastprice = \" +price+ \" where symbol = '\" +msg.symbol+ \"';\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1100,
+        "y": 1100,
+        "wires": [
+            [
+                "ea5313469144e092"
+            ]
+        ]
+    },
+    {
+        "id": "87cca8276bfc5158",
+        "type": "alpaca-data-trades",
+        "z": "7766a78145274edf",
+        "conf": "6e7785dd8b931bb9",
+        "symbol": "",
+        "start": "",
+        "end": "",
+        "limit": "",
+        "feed": "",
+        "name": "",
+        "x": 900,
+        "y": 1100,
+        "wires": [
+            [
+                "d6295e9a380447e2"
+            ]
+        ]
+    },
+    {
+        "id": "db8d158a48515697",
+        "type": "function",
+        "z": "7766a78145274edf",
+        "name": "Alpaca request",
+        "func": "msg.symbol = msg.payload[\"symbol\"]\n\nvar date = new Date();\nmsg.end = date.toISOString();\n//node.warn(\"End: \" +msg.end)\n\n//node.warn(msg.symbol)\nmsg.start = '2022-10-10T0:00:00Z'\nmsg.end =   '2022-10-11T0:00:00Z'\nmsg.limit = 1\nmsg.feed = 'sip'\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 700,
+        "y": 1100,
+        "wires": [
+            [
+                "87cca8276bfc5158"
+            ]
+        ]
+    },
+    {
+        "id": "5ca65128b5f7c40e",
+        "type": "split",
+        "z": "7766a78145274edf",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 550,
+        "y": 1100,
+        "wires": [
+            [
+                "db8d158a48515697"
+            ]
+        ]
+    },
+    {
+        "id": "ea5313469144e092",
+        "type": "postgresql",
+        "z": "7766a78145274edf",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1260,
+        "y": 1100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d4ff97791da30001",
+        "type": "function",
+        "z": "7766a78145274edf",
+        "name": "update price change",
+        "func": "msg.query = \"update sandplist set change = price - lastprice\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 260,
+        "wires": [
+            [
+                "d6777669615c1b19"
+            ]
+        ]
+    },
+    {
+        "id": "d04a819ea5fa1d44",
+        "type": "function",
+        "z": "7766a78145274edf",
+        "name": "update pct price change",
+        "func": "msg.query = \"update sandplist set pctchange = change / lastprice where lastprice > 0\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 260,
+        "wires": [
+            [
+                "556ece02881cbd1c"
+            ]
+        ]
+    },
+    {
+        "id": "5e52041ce0604198",
+        "type": "inject",
+        "z": "7766a78145274edf",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 260,
+        "wires": [
+            [
+                "d4ff97791da30001"
+            ]
+        ]
+    },
+    {
+        "id": "d6777669615c1b19",
+        "type": "postgresql",
+        "z": "7766a78145274edf",
+        "name": "",
+        "query": "SELECT * FROM ;",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 490,
+        "y": 260,
+        "wires": [
+            [
+                "d04a819ea5fa1d44"
+            ]
+        ]
+    },
+    {
+        "id": "556ece02881cbd1c",
+        "type": "postgresql",
+        "z": "7766a78145274edf",
+        "name": "",
+        "query": "SELECT * FROM ;",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 890,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "146de88db99434c2",
+        "type": "comment",
+        "z": "7766a78145274edf",
+        "name": "Get price year ago",
+        "info": "",
+        "x": 150,
+        "y": 1040,
+        "wires": []
+    },
+    {
+        "id": "0111f4dd6d018fca",
+        "type": "comment",
+        "z": "7766a78145274edf",
+        "name": "add tickers to sandplist table",
+        "info": "",
+        "x": 180,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "56d7ba02dee915bc",
+        "type": "function",
+        "z": "7766a78145274edf",
+        "name": "sum total market cap",
+        "func": "msg.query = \"select sum(marketcap) from sandplist\"\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 300,
+        "wires": [
+            [
+                "39772d8824f3ed85"
+            ]
+        ]
+    },
+    {
+        "id": "8a3e6ef3ee73ad8a",
+        "type": "inject",
+        "z": "7766a78145274edf",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 300,
+        "wires": [
+            [
+                "56d7ba02dee915bc"
+            ]
+        ]
+    },
+    {
+        "id": "39772d8824f3ed85",
+        "type": "postgresql",
+        "z": "7766a78145274edf",
+        "name": "",
+        "query": "SELECT * FROM ;",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 490,
+        "y": 300,
+        "wires": [
+            [
+                "2581a1b8b8153226"
+            ]
+        ]
+    },
+    {
+        "id": "2581a1b8b8153226",
+        "type": "debug",
+        "z": "7766a78145274edf",
+        "name": "debug 792",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "f348732795c0db7d",
+        "type": "comment",
+        "z": "7766a78145274edf",
+        "name": "total S&P marketcap: 40,393,989,455,731",
+        "info": "",
+        "x": 940,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "3e7874371f5d3728",
+        "type": "function",
+        "z": "7766a78145274edf",
+        "name": "cacl market cap weight",
+        "func": "//msg.query = \"update sandplist set weight = (marketcap / 40393989455731)\"\nmsg.query = \"update sandplist set weight = (marketcap / 403939894)\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 340,
+        "wires": [
+            [
+                "bfed11cfbf27a613"
+            ]
+        ]
+    },
+    {
+        "id": "fd1c578cc42396ba",
+        "type": "inject",
+        "z": "7766a78145274edf",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 340,
+        "wires": [
+            [
+                "3e7874371f5d3728"
+            ]
+        ]
+    },
+    {
+        "id": "bfed11cfbf27a613",
+        "type": "postgresql",
+        "z": "7766a78145274edf",
+        "name": "",
+        "query": "SELECT * FROM ;",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 510,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3b9a14337a4196ca",
+        "type": "comment",
+        "z": "7766a78145274edf",
+        "name": "Run these flows after all prices have been updated below.",
+        "info": "",
+        "x": 270,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "ac283feeaa26762e",
+        "type": "comment",
+        "z": "7766a78145274edf",
+        "name": "Create the sandplist table",
+        "info": "",
+        "x": 170,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "0ac4bc5473c2c65b",
+        "type": "alpaca-data-last-multi-trade",
+        "z": "7766a78145274edf",
+        "conf": "40cd0fc67c376e22",
+        "symbol": "",
+        "name": "",
+        "x": 810,
+        "y": 800,
+        "wires": [
+            [
+                "4826972787b20803"
+            ]
+        ]
+    },
+    {
+        "id": "4826972787b20803",
+        "type": "function",
+        "z": "7766a78145274edf",
+        "name": "update current price",
+        "func": "let sql = ''\n\nfor (const [key, value] of Object.entries(msg.payload)) {\n  msg.ticker = key\n  msg.price = value.p;\n  msg.size = value.s;\n  msg.date = value.t;\n  sql += \"update sandplist set price = \" +msg.price+ \" where symbol =  '\" +msg.ticker+ \"';\\n\"\n  \n}\n\nnode.warn(sql)\nmsg.query = sql\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1080,
+        "y": 800,
+        "wires": [
+            [
+                "5849ba377a214752"
+            ]
+        ]
+    },
+    {
+        "id": "5849ba377a214752",
+        "type": "postgresql",
+        "z": "7766a78145274edf",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1260,
+        "y": 800,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "fc98dfe2f9e3f771",
+        "type": "postgresql",
+        "z": "7766a78145274edf",
+        "name": "",
+        "query": "SELECT * FROM ;",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 410,
+        "y": 800,
+        "wires": [
+            [
+                "d3d178e3e34eae76"
+            ]
+        ]
+    },
+    {
+        "id": "d3d178e3e34eae76",
+        "type": "function",
+        "z": "7766a78145274edf",
+        "name": "send to alpaca",
+        "func": "//node.warn(msg.payload)\nmsg.cnt = 500\nlet ticker = ''\nlet tickers = ''\n\n\nmsg.payload.forEach((element) => {\n    // node.warn(element.symbol);\n      tickers += element.symbol+\",\"\n    \n});\n\n\n//node.warn(tickers)\nmsg.symbol = tickers\nmsg.feed = 'sip'\n\nnode.warn(msg.symbol)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 580,
+        "y": 800,
+        "wires": [
+            [
+                "0ac4bc5473c2c65b"
+            ]
+        ]
+    },
+    {
+        "id": "7a02d653f527f64c",
+        "type": "function",
+        "z": "7766a78145274edf",
+        "name": "select",
+        "func": "msg.query = \"select symbol from sandplist where cik is not null limit 100 offset 0;\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 800,
+        "wires": [
+            [
+                "fc98dfe2f9e3f771"
+            ]
+        ]
+    },
+    {
+        "id": "7112399bc9369219",
+        "type": "inject",
+        "z": "7766a78145274edf",
+        "name": "GO",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "count",
+        "payloadType": "str",
+        "x": 130,
+        "y": 800,
+        "wires": [
+            [
+                "7a02d653f527f64c",
+                "4e4ea2346d700fbc"
+            ]
+        ]
+    },
+    {
+        "id": "4e4ea2346d700fbc",
+        "type": "delay",
+        "z": "7766a78145274edf",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 240,
+        "y": 860,
+        "wires": [
+            [
+                "6a62457e6ed69de6"
+            ]
+        ]
+    },
+    {
+        "id": "d8601c0a3332531c",
+        "type": "comment",
+        "z": "7766a78145274edf",
+        "name": "update tickers with company data",
+        "info": "",
+        "x": 200,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "23f2e2c0eb9f97a9",
+        "type": "function",
+        "z": "7766a78145274edf",
+        "name": "get top list",
+        "func": "msg.query = \"select * from sandplist where pctchange is not null order by pctchange desc limit 20\"\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 380,
+        "wires": [
+            [
+                "c3167548cf600703"
+            ]
+        ]
+    },
+    {
+        "id": "dc70f94a624a7f42",
+        "type": "inject",
+        "z": "7766a78145274edf",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 380,
+        "wires": [
+            [
+                "23f2e2c0eb9f97a9"
+            ]
+        ]
+    },
+    {
+        "id": "c3167548cf600703",
+        "type": "postgresql",
+        "z": "7766a78145274edf",
+        "name": "",
+        "query": "SELECT * FROM ;",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 430,
+        "y": 380,
+        "wires": [
+            [
+                "617156f3292adb86"
+            ]
+        ]
+    },
+    {
+        "id": "9b10ec556d58e27a",
+        "type": "function",
+        "z": "7766a78145274edf",
+        "name": "Display top 20 companies' performance",
+        "func": "msg.symbol = msg.payload[\"symbol\"]\nmsg.name = msg.payload[\"name\"]\nmsg.price = msg.payload[\"price\"]\npctchange = msg.payload[\"pctchange\"]\npctchange = pctchange * 100\nmsg.pctchange = pctchange.toFixed(2)\nweight = msg.payload[\"weight\"]\nweight = weight / 1000\nmsg.weight = weight.toFixed(4)\n\nnode.warn(\"Symbol: \" +msg.symbol+ \" Company: \" +msg.name+ \" Pct Change: \" +msg.pctchange+ \"% Pct of Index: \" +msg.weight+ \"%\")\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 8,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 800,
+        "y": 380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "617156f3292adb86",
+        "type": "split",
+        "z": "7766a78145274edf",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 570,
+        "y": 380,
+        "wires": [
+            [
+                "9b10ec556d58e27a"
+            ]
+        ]
+    },
+    {
+        "id": "eef6c3a7a3d811ce",
+        "type": "polygon-account",
+        "name": "jollybaskara"
+    },
+    {
+        "id": "7455395cf269fb2b",
+        "type": "postgreSQLConfig",
+        "name": "",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "postgres",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "docker",
+        "userFieldType": "str",
+        "password": "docker",
+        "passwordFieldType": "str"
+    },
+    {
+        "id": "40cd0fc67c376e22",
+        "type": "alpaca-account",
+        "name": "paper",
+        "keyId": "USE-OAUTH-OR-REPLACE",
+        "paper": true
+    },
+    {
+        "id": "6e7785dd8b931bb9",
+        "type": "alpaca-account",
+        "name": "Live",
+        "keyId": "PKW9OB4NY7PL2KAZ696T",
+        "paper": false
+    }
+]
