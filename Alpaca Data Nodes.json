@@ -1,0 +1,726 @@
+[
+    {
+        "id": "c08b7b483681cad9",
+        "type": "tab",
+        "label": "Alpaca Nodes",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "e9a32b854472ef3e",
+        "type": "alpaca-data-last-multi-trade",
+        "z": "c08b7b483681cad9",
+        "conf": "ea487431d1a89557",
+        "symbol": "",
+        "name": "",
+        "x": 510,
+        "y": 160,
+        "wires": [
+            [
+                "6bdd4fcb5f46e89f"
+            ]
+        ]
+    },
+    {
+        "id": "ed1798741ace22d4",
+        "type": "alpaca-data-last-quote",
+        "z": "c08b7b483681cad9",
+        "conf": "ea487431d1a89557",
+        "symbol": "",
+        "name": "",
+        "x": 490,
+        "y": 300,
+        "wires": [
+            [
+                "946e5c2d17be08f2"
+            ]
+        ]
+    },
+    {
+        "id": "8db945501a0a5c51",
+        "type": "alpaca-data-last-multi-quote",
+        "z": "c08b7b483681cad9",
+        "conf": "ea487431d1a89557",
+        "symbol": "",
+        "name": "",
+        "x": 510,
+        "y": 340,
+        "wires": [
+            [
+                "86b1bca06e1d8f77"
+            ]
+        ]
+    },
+    {
+        "id": "f0fdfaa95aae2a34",
+        "type": "alpaca-data-last-bar",
+        "z": "c08b7b483681cad9",
+        "conf": "ea487431d1a89557",
+        "symbol": "",
+        "name": "",
+        "x": 500,
+        "y": 440,
+        "wires": [
+            [
+                "3130c8ea96576f1d"
+            ]
+        ]
+    },
+    {
+        "id": "e39c750255800acd",
+        "type": "alpaca-data-last-multi-bar",
+        "z": "c08b7b483681cad9",
+        "conf": "ea487431d1a89557",
+        "symbol": "",
+        "start": "",
+        "end": "",
+        "limit": "",
+        "timeframe": "",
+        "feed": "",
+        "adjustment": "",
+        "name": "",
+        "x": 520,
+        "y": 480,
+        "wires": [
+            [
+                "79c206315c930101"
+            ]
+        ]
+    },
+    {
+        "id": "15d4dfc6d8ece1a6",
+        "type": "alpaca-data-last-trade",
+        "z": "c08b7b483681cad9",
+        "conf": "ea487431d1a89557",
+        "symbol": "",
+        "name": "",
+        "x": 490,
+        "y": 120,
+        "wires": [
+            [
+                "787ef7409bf196c7"
+            ]
+        ]
+    },
+    {
+        "id": "07d495ad1f95318d",
+        "type": "alpaca-data-trades",
+        "z": "c08b7b483681cad9",
+        "conf": "ea487431d1a89557",
+        "symbol": "",
+        "start": "",
+        "end": "",
+        "limit": "",
+        "feed": "",
+        "name": "",
+        "x": 480,
+        "y": 200,
+        "wires": [
+            [
+                "0d44c9a0e4206daf"
+            ]
+        ]
+    },
+    {
+        "id": "a103334ea58ddf4a",
+        "type": "alpaca-range-bars",
+        "z": "c08b7b483681cad9",
+        "conf": "ea487431d1a89557",
+        "symbol": "",
+        "start": "",
+        "end": "",
+        "timeframe": "",
+        "name": "",
+        "x": 490,
+        "y": 520,
+        "wires": [
+            [
+                "e5540e237314ed99"
+            ]
+        ]
+    },
+    {
+        "id": "96d3639f7836d561",
+        "type": "alpaca-crypto-trades",
+        "z": "c08b7b483681cad9",
+        "conf": "ea487431d1a89557",
+        "symbol": "",
+        "start": "",
+        "end": "",
+        "limit": "",
+        "feed": "",
+        "name": "",
+        "x": 560,
+        "y": 700,
+        "wires": [
+            [
+                "81249e51cad61881"
+            ]
+        ]
+    },
+    {
+        "id": "b079a2738568d1dc",
+        "type": "function",
+        "z": "c08b7b483681cad9",
+        "name": "Alpaca request - crypto",
+        "func": "//let symbol = msg.payload.symbol\n\n//msg.symbol = msg.payload[\"symbol\"]\n//let symbol_type = msg.payload[\"symbol_type\"]\n//let interval = msg.payload[\"interval\"]\n\n\nlet symbol = msg.symbol.replace(\"X:\",\"\");\nvar regex = /[A-Z]{3}/g;\nvar found = symbol.match(regex)\nmsg.symbol = found[0]+\"/\"+found[1]\n\n// testing\n// msg.symbol = 'BTC/USD'\n// var symbol_type = 'stocks'\n// var interval = 'min'\n\n\nmsg.timeframe = msg.interval\nlet feed = global.get(\"datatype\")\n\nif (feed == 'sip') { msg.feed = 'sip' }\nelse { msg.feed = 'iex' }\nmsg.limit = 10000\n\n\nif (msg.timeframe == null) { msg.timeframe = '1Min' }\nif (msg.timeframe == 'min') { msg.timeframe = '1Min' }\nif (msg.timeframe == 'day') { msg.timeframe = '1Day' }\n// we could add 1Hour and 1Sec with the \"ZAlpaca Range\" Node\n//node.warn(\"Interval: \" +interval+ \" Asset: \" +symbol_type+ \" msg.timeframe: \" +msg.timeframe)\n\n\n\nvar date = new Date();\nlet wkday = date.toString();\nwkday = wkday.substring(0, 3);\n//node.warn(wkday)\n\n\nvar nowDate = new Date();\nvar oneMinAgo = new Date(nowDate.setMinutes(nowDate.getMinutes() - 600));\n//node.warn(\"Start: \" +oneHourAgo)\nmsg.start = oneMinAgo.toISOString();\n\nvar nowDate = new Date();\nvar zeroMinAgo = new Date(nowDate.setMinutes(nowDate.getMinutes() - 0));\n//node.warn(\"End: \" +oneHourAgo)\nmsg.end = zeroMinAgo.toISOString();\n\n\nnode.warn(\"Day: \" +wkday+ \" Symbol: \" +msg.symbol+ \" From: \" + msg.start + \" To: \" + msg.end + \" Timeframe: \" + msg.timeframe + \" Feed: \" + msg.feed)\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 700,
+        "wires": [
+            [
+                "96d3639f7836d561"
+            ]
+        ]
+    },
+    {
+        "id": "6c21440407049fdf",
+        "type": "inject",
+        "z": "c08b7b483681cad9",
+        "name": "stock sec",
+        "props": [
+            {
+                "p": "symbol",
+                "v": "ETH/USD",
+                "vt": "str"
+            },
+            {
+                "p": "symbol_type",
+                "v": "crypto",
+                "vt": "str"
+            },
+            {
+                "p": "timeframe",
+                "v": "sec",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 120,
+        "y": 700,
+        "wires": [
+            [
+                "b079a2738568d1dc"
+            ]
+        ]
+    },
+    {
+        "id": "81249e51cad61881",
+        "type": "debug",
+        "z": "c08b7b483681cad9",
+        "name": "debug 916",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 750,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "9e1f523a39eedaee",
+        "type": "comment",
+        "z": "c08b7b483681cad9",
+        "name": "Trades",
+        "info": "",
+        "x": 90,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "6525eb10f6deb481",
+        "type": "function",
+        "z": "c08b7b483681cad9",
+        "name": "symbol, feed",
+        "func": "msg.symbol = 'AAPL';\nmsg.feed = 'sip' //  default is iex\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 120,
+        "wires": [
+            [
+                "15d4dfc6d8ece1a6"
+            ]
+        ]
+    },
+    {
+        "id": "bc91b4761570a6c7",
+        "type": "function",
+        "z": "c08b7b483681cad9",
+        "name": "symbol, feed",
+        "func": "\nmsg.symbol = \"AAPL,MSFT,GOOG\";\n\nmsg.feed = 'sip'\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 160,
+        "wires": [
+            [
+                "e9a32b854472ef3e"
+            ]
+        ]
+    },
+    {
+        "id": "1b16e05971ca2a37",
+        "type": "inject",
+        "z": "c08b7b483681cad9",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 160,
+        "wires": [
+            [
+                "bc91b4761570a6c7"
+            ]
+        ]
+    },
+    {
+        "id": "d4008fa66cf08d91",
+        "type": "function",
+        "z": "c08b7b483681cad9",
+        "name": "symbol, feed",
+        "func": "// requires a date range\nmsg.symbol = 'AAPL';\nmsg.feed = 'sip'\nmsg.start = '2023-11-16T0:00:00Z'\nmsg.end = '2023-11-16T15:00:00Z'\nmsg.limit = 100\nmsg.timeframe = \"1Min\" //  1Day, 1Hour, 1Min, 1Sec\n\n//use these functions to get date dynamically\n//var nowDate = new Date();\n//    var oneMinAgo = new Date(nowDate.setMinutes(nowDate.getMinutes() - 1));\n//    msg.start = oneMinAgo.toISOString();\n\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 200,
+        "wires": [
+            [
+                "07d495ad1f95318d"
+            ]
+        ]
+    },
+    {
+        "id": "25f7692c63e76cfe",
+        "type": "inject",
+        "z": "c08b7b483681cad9",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 200,
+        "wires": [
+            [
+                "d4008fa66cf08d91"
+            ]
+        ]
+    },
+    {
+        "id": "e543bad988cdacda",
+        "type": "inject",
+        "z": "c08b7b483681cad9",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 120,
+        "wires": [
+            [
+                "6525eb10f6deb481"
+            ]
+        ]
+    },
+    {
+        "id": "787ef7409bf196c7",
+        "type": "function",
+        "z": "c08b7b483681cad9",
+        "name": "output",
+        "func": "node.warn(msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "43cfc798c4d9c9d2",
+        "type": "comment",
+        "z": "c08b7b483681cad9",
+        "name": "Quotes",
+        "info": "",
+        "x": 90,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "34f3206519e86f68",
+        "type": "comment",
+        "z": "c08b7b483681cad9",
+        "name": "Bars",
+        "info": "",
+        "x": 90,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "6bdd4fcb5f46e89f",
+        "type": "function",
+        "z": "c08b7b483681cad9",
+        "name": "output",
+        "func": "node.warn(msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0d44c9a0e4206daf",
+        "type": "function",
+        "z": "c08b7b483681cad9",
+        "name": "output",
+        "func": "node.warn(msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 650,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "46b32bae3ab1a0fe",
+        "type": "function",
+        "z": "c08b7b483681cad9",
+        "name": "symbol, feed",
+        "func": "msg.symbol = 'AAPL';\nmsg.feed = 'sip' //  default is iex\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 300,
+        "wires": [
+            [
+                "ed1798741ace22d4"
+            ]
+        ]
+    },
+    {
+        "id": "90caec1ad14130fc",
+        "type": "inject",
+        "z": "c08b7b483681cad9",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 300,
+        "wires": [
+            [
+                "46b32bae3ab1a0fe"
+            ]
+        ]
+    },
+    {
+        "id": "50a73ddf33e95cd5",
+        "type": "function",
+        "z": "c08b7b483681cad9",
+        "name": "symbol, feed",
+        "func": "msg.symbol = 'AAPL';\nmsg.feed = 'sip' //  default is iex\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 340,
+        "wires": [
+            [
+                "8db945501a0a5c51"
+            ]
+        ]
+    },
+    {
+        "id": "5fd0a3e2157facfc",
+        "type": "inject",
+        "z": "c08b7b483681cad9",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 340,
+        "wires": [
+            [
+                "50a73ddf33e95cd5"
+            ]
+        ]
+    },
+    {
+        "id": "2917578a832f0849",
+        "type": "function",
+        "z": "c08b7b483681cad9",
+        "name": "symbol, feed",
+        "func": "msg.symbol = 'AAPL';\nmsg.feed = 'sip' //  default is iex\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 290,
+        "y": 440,
+        "wires": [
+            [
+                "f0fdfaa95aae2a34"
+            ]
+        ]
+    },
+    {
+        "id": "a3e72bf7acb7d057",
+        "type": "function",
+        "z": "c08b7b483681cad9",
+        "name": "symbol, feed",
+        "func": "\nmsg.symbol = \"AAPL,MSFT,GOOG\";\n\nmsg.feed = 'sip'\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 290,
+        "y": 480,
+        "wires": [
+            [
+                "e39c750255800acd"
+            ]
+        ]
+    },
+    {
+        "id": "f701b77aab36dd76",
+        "type": "inject",
+        "z": "c08b7b483681cad9",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 480,
+        "wires": [
+            [
+                "a3e72bf7acb7d057"
+            ]
+        ]
+    },
+    {
+        "id": "bd55fc2a16815900",
+        "type": "function",
+        "z": "c08b7b483681cad9",
+        "name": "symbol, feed",
+        "func": "// requires a date range\nmsg.symbol = 'AAPL';\nmsg.feed = 'sip'\nmsg.start = '2023-11-16T0:00:00Z'\nmsg.end = '2023-11-16T15:00:00Z'\nmsg.limit = 100\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 290,
+        "y": 520,
+        "wires": [
+            [
+                "a103334ea58ddf4a"
+            ]
+        ]
+    },
+    {
+        "id": "7e8a4a20a69a4c1f",
+        "type": "inject",
+        "z": "c08b7b483681cad9",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 520,
+        "wires": [
+            [
+                "bd55fc2a16815900"
+            ]
+        ]
+    },
+    {
+        "id": "47208cab88bdf6a4",
+        "type": "inject",
+        "z": "c08b7b483681cad9",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 440,
+        "wires": [
+            [
+                "2917578a832f0849"
+            ]
+        ]
+    },
+    {
+        "id": "946e5c2d17be08f2",
+        "type": "function",
+        "z": "c08b7b483681cad9",
+        "name": "output",
+        "func": "node.warn(msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "86b1bca06e1d8f77",
+        "type": "function",
+        "z": "c08b7b483681cad9",
+        "name": "output",
+        "func": "node.warn(msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3130c8ea96576f1d",
+        "type": "function",
+        "z": "c08b7b483681cad9",
+        "name": "output",
+        "func": "node.warn(msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "79c206315c930101",
+        "type": "function",
+        "z": "c08b7b483681cad9",
+        "name": "output",
+        "func": "node.warn(msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e5540e237314ed99",
+        "type": "function",
+        "z": "c08b7b483681cad9",
+        "name": "output",
+        "func": "node.warn(msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 650,
+        "y": 520,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ea487431d1a89557",
+        "type": "alpaca-account",
+        "name": "machinetrader",
+        "keyId": "PKQRP984U4YQ6JQJG6JJ",
+        "paper": true
+    }
+]
