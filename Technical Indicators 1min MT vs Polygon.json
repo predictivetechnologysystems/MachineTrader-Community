@@ -1,0 +1,1439 @@
+[
+    {
+        "id": "b5cae24b8536905a",
+        "type": "tab",
+        "label": "One Minute Indicators - SPY",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "40591d922b607d57",
+        "type": "function",
+        "z": "b5cae24b8536905a",
+        "name": "RSI Calculation",
+        "func": "msg.window = 14 // default is 14\n\n// alternately change all nul values to 0 before running\nmsg.query = \"select * from \" +msg.table+ \" where pctchange is not null order by unixtime desc limit \" +msg.window+ \";\"\n//node.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 360,
+        "wires": [
+            [
+                "07b0c6ab64a286bd"
+            ]
+        ]
+    },
+    {
+        "id": "07b0c6ab64a286bd",
+        "type": "postgresql",
+        "z": "b5cae24b8536905a",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 460,
+        "y": 360,
+        "wires": [
+            [
+                "f32442d41778170b"
+            ]
+        ]
+    },
+    {
+        "id": "f32442d41778170b",
+        "type": "function",
+        "z": "b5cae24b8536905a",
+        "name": "retrieve array",
+        "func": "//node.warn(msg.payload)\n\n\nlet changes = []\n\nfor (var i = 0; i < msg.payload.length; i++) {\n    changes.push( msg.payload[i][\"pctchange\"])\n}\n\nmsg.changes = changes\n//node.warn(changes)\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 610,
+        "y": 360,
+        "wires": [
+            [
+                "ba1cdbb43fdd0897"
+            ]
+        ]
+    },
+    {
+        "id": "ba1cdbb43fdd0897",
+        "type": "function",
+        "z": "b5cae24b8536905a",
+        "name": "store RSI",
+        "func": "let changes = msg.changes\nmsg.ux = flow.get(\"ux\")\n\nconst poschanges = changes.filter((change) => change>0);\n//node.warn(\"Pos changes: \" +poschanges)\n\n\nconst negchanges = changes.filter((change) => change < 0);\n//node.warn(\"Neg changes: \" +negchanges)\n\nmsg.avgpos = (eval(poschanges.join('+')) / poschanges.length) \n\nmsg.avgneg = (eval(negchanges.join('+')) / negchanges.length) * -1\n\n\nlet div = msg.avgpos / msg.avgneg\nlet div1 = 1 + div\nlet div2 = 100 / div1\nlet rsi = 100 - div2\nmsg.rsi = rsi.toFixed(0)\n//node.warn(\"Msgpos: \" + msg.avgpos + \" Msgneg: \" + msg.avgneg+ \" RSI: \" +msg.rsi)\n\n\n//if (msg.rsi > 0){\n//node.warn(\"Msgpos: \" + msg.avgpos + \" Msgneg: \" + msg.avgneg+ \" RSI: \" +msg.rsi)\nmsg.query = \"update \" +msg.table+ \" set rsi = \" + msg.rsi + \" where unixtime = \" + msg.ux + \";\"\nnode.warn(msg.query)\nreturn msg; \n//}\n\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 760,
+        "y": 360,
+        "wires": [
+            [
+                "58315f532f7c09a7"
+            ]
+        ]
+    },
+    {
+        "id": "58315f532f7c09a7",
+        "type": "postgresql",
+        "z": "b5cae24b8536905a",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 900,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6f4783ea09e97266",
+        "type": "function",
+        "z": "b5cae24b8536905a",
+        "name": "MACD Calc",
+        "func": "msg.window = 26 // long window\n\nmsg.query = \"select * from \" +msg.table+ \" where price is not null order by unixtime desc limit \" +msg.window+ \";\"\n//node.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 290,
+        "y": 460,
+        "wires": [
+            [
+                "372c73cc73355815"
+            ]
+        ]
+    },
+    {
+        "id": "372c73cc73355815",
+        "type": "postgresql",
+        "z": "b5cae24b8536905a",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 460,
+        "y": 460,
+        "wires": [
+            [
+                "9bd2bf5eca25ec85"
+            ]
+        ]
+    },
+    {
+        "id": "9bd2bf5eca25ec85",
+        "type": "function",
+        "z": "b5cae24b8536905a",
+        "name": "create array",
+        "func": "//node.warn(msg.payload)\n\n\nlet longprices = []\n\nfor (var i = 0; i < msg.payload.length; i++) {\n    longprices.push( msg.payload[i][\"price\"])\n}\n\nmsg.longprices = longprices\n//node.warn(msg.longprices)\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 610,
+        "y": 460,
+        "wires": [
+            [
+                "f03c95092e57b68d"
+            ]
+        ]
+    },
+    {
+        "id": "f03c95092e57b68d",
+        "type": "function",
+        "z": "b5cae24b8536905a",
+        "name": "Long Average",
+        "func": "let longprice = msg.longprices\nlongprice = longprice.slice(0, -1);\n\nvar longprices = JSON.parse(\"[\"+longprice+\"]\");\n\nmsg.longavg = (eval(longprices.join('+')) / longprices.length) \n//node.warn(\"LongSMA: \" +msg.longavg)\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 780,
+        "y": 460,
+        "wires": [
+            [
+                "77125f6800622ca3"
+            ]
+        ]
+    },
+    {
+        "id": "77125f6800622ca3",
+        "type": "function",
+        "z": "b5cae24b8536905a",
+        "name": "get short array",
+        "func": "msg.window = 12 // short window\n\nmsg.query = \"select * from \" + msg.table + \" where price is not null order by unixtime desc limit \" +msg.window+ \";\"\n//node.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 520,
+        "wires": [
+            [
+                "3c1824692e36bcda"
+            ]
+        ]
+    },
+    {
+        "id": "3c1824692e36bcda",
+        "type": "postgresql",
+        "z": "b5cae24b8536905a",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 660,
+        "y": 520,
+        "wires": [
+            [
+                "ae459d7817471535"
+            ]
+        ]
+    },
+    {
+        "id": "467de44f1177d53d",
+        "type": "function",
+        "z": "b5cae24b8536905a",
+        "name": "calculate bands",
+        "func": "// msg.avg is the moving average price for the past 20 seconds\n\nmsg.avg = flow.get(\"avg\") \nmsg.std = flow.get(\"std\") * 2\nmsg.avg = Number(msg.avg)\nmsg.std = Number(msg.std)\n//node.warn(\"Avg: \" +msg.avg+ \" Std: \" +msg.std)\n\nmsg.ux = flow.get(\"ux\")\nmsg.bbul = msg.avg + msg.std\nmsg.bbll = msg.avg - msg.std \nmsg.ux = flow.get(\"ux\")\nmsg.symbol = flow.get(\"symbol\")\n\nmsg.query = \"update \" + msg.table + \" set bbul = \" +msg.bbul+ \", bbll = \" +msg.bbll+ \" where unixtime = \" + msg.ux + \";\"\n//node.warn(msg.query)\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 800,
+        "wires": [
+            [
+                "bc1c89dfed4fe8b8"
+            ]
+        ]
+    },
+    {
+        "id": "36f4c23c1a8bc536",
+        "type": "function",
+        "z": "b5cae24b8536905a",
+        "name": "Bollinger Bands",
+        "func": "msg.ux = flow.get(\"ux\")\nmsg.window = 20\n\nmsg.query = \"select * from \" + msg.table + \" order by unixtime desc limit \" +msg.window+ \";\"\n//node.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 700,
+        "wires": [
+            [
+                "5a6b612fbf333308",
+                "965e942f7c7b6eb2"
+            ]
+        ]
+    },
+    {
+        "id": "5a6b612fbf333308",
+        "type": "postgresql",
+        "z": "b5cae24b8536905a",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 520,
+        "y": 700,
+        "wires": [
+            [
+                "c87fd0349f803001"
+            ]
+        ]
+    },
+    {
+        "id": "c87fd0349f803001",
+        "type": "function",
+        "z": "b5cae24b8536905a",
+        "name": "create array",
+        "func": "//node.warn(msg.payload)\n\n\nlet prices = []\n\nfor (var i = 0; i < msg.payload.length; i++) {\n    prices.push( msg.payload[i][\"price\"])\n}\n\nmsg.prices = prices\n//node.warn(prices)\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 700,
+        "wires": [
+            [
+                "c7fc8003f767e13b",
+                "bf6166b144e611f4"
+            ]
+        ]
+    },
+    {
+        "id": "bf6166b144e611f4",
+        "type": "function",
+        "z": "b5cae24b8536905a",
+        "name": "Average",
+        "func": "let price = msg.prices\nprice = price.slice(0, -1);\n//node.warn(price)\n\nvar prices = JSON.parse(\"[\"+price+\"]\");\n//node.warn(prices)\n\nmsg.avg = (eval(prices.join('+')) / prices.length) \n//node.warn(\"Average: \" +msg.avg)\nmsg.query = \"update \" + msg.table + \" set avg = \" +msg.avg+ \" where unixtime = \" + msg.ux + \";\"\n//node.warn(msg.query)\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 840,
+        "y": 740,
+        "wires": [
+            [
+                "1c9c86ea31471c39",
+                "d6eed33b9b69635f"
+            ]
+        ]
+    },
+    {
+        "id": "1c9c86ea31471c39",
+        "type": "change",
+        "z": "b5cae24b8536905a",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "avg",
+                "pt": "flow",
+                "to": "avg",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1010,
+        "y": 780,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c7fc8003f767e13b",
+        "type": "function",
+        "z": "b5cae24b8536905a",
+        "name": "Std dev",
+        "func": "let price = msg.prices\nprice = price.slice(0, -1);\n//node.warn(price)\nvar prices = JSON.parse(\"[\"+price+\"]\");\n//node.warn(prices)\n\n// Javascript program to calculate the \n// standard deviation of an array\nfunction StandardDeviation(arr) {\n \n    // Creating the mean with Array.reduce\n    let mean = arr.reduce((acc, curr) => {\n        return acc + curr\n    }, 0) / arr.length;\n \n    // Assigning (value - mean) ^ 2 to\n    // every array item\n    arr = arr.map((k) => {\n        return (k - mean) ** 2\n    });\n \n    // Calculating the sum of updated array \n    let sum = arr.reduce((acc, curr) => acc + curr, 0);\n \n    // Calculating the variance\n    let variance = sum / arr.length\n \n    // Returning the standard deviation\n    return Math.sqrt(sum / arr.length)\n}\n\nmsg.std = (StandardDeviation(prices))\n//node.warn(\"Std: \" +msg.std)\nmsg.query = \"update \" + msg.table + \" set bbstd = \" +msg.std+ \" where unixtime = \" +msg.ux+ \";\"\n//node.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 840,
+        "y": 680,
+        "wires": [
+            [
+                "c7fe28ae6547de23",
+                "152d7e5754f2984f"
+            ]
+        ]
+    },
+    {
+        "id": "c7fe28ae6547de23",
+        "type": "change",
+        "z": "b5cae24b8536905a",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "std",
+                "pt": "flow",
+                "to": "std",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "symbol",
+                "pt": "flow",
+                "to": "symbol",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "ux",
+                "pt": "flow",
+                "to": "ux",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1020,
+        "y": 640,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "965e942f7c7b6eb2",
+        "type": "delay",
+        "z": "b5cae24b8536905a",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "0.2",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 490,
+        "y": 800,
+        "wires": [
+            [
+                "467de44f1177d53d"
+            ]
+        ]
+    },
+    {
+        "id": "bc1c89dfed4fe8b8",
+        "type": "postgresql",
+        "z": "b5cae24b8536905a",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 840,
+        "y": 800,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "02c8c744a572cd09",
+        "type": "postgresql",
+        "z": "b5cae24b8536905a",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1340,
+        "y": 520,
+        "wires": [
+            [
+                "913338958e471afe"
+            ]
+        ]
+    },
+    {
+        "id": "30dde1ea37efdcf0",
+        "type": "function",
+        "z": "b5cae24b8536905a",
+        "name": "Store macd in table",
+        "func": "msg.ux = flow.get(\"ux\")\nmsg.symbol = flow.get(\"symbol\")\nmsg.longEMA = msg.longavg\nmsg.shortEMA = msg.shortavg\nmsg.macd = msg.shortEMA - msg.longEMA\n\n//msg.query = \"update macd set macd = shortEMA - longEMA;\"\nmsg.query = \"update \" + msg.table + \" set macd = \" +msg.macd+  \" where unixtime = \" +msg.ux+ \";\"\nnode.warn(msg.query)    \nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1170,
+        "y": 520,
+        "wires": [
+            [
+                "02c8c744a572cd09"
+            ]
+        ]
+    },
+    {
+        "id": "152d7e5754f2984f",
+        "type": "postgresql",
+        "z": "b5cae24b8536905a",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1000,
+        "y": 680,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d6eed33b9b69635f",
+        "type": "postgresql",
+        "z": "b5cae24b8536905a",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1000,
+        "y": 740,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b59d36292702f0d5",
+        "type": "postgresql",
+        "z": "b5cae24b8536905a",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 800,
+        "y": 580,
+        "wires": [
+            [
+                "ce33ff4ab947b286"
+            ]
+        ]
+    },
+    {
+        "id": "26e567c4b5f21ece",
+        "type": "function",
+        "z": "b5cae24b8536905a",
+        "name": "signal line",
+        "func": "let signalwindow = 9\nmsg.ux = flow.get(\"ux\")\nmsg.query = \"select * from \" + msg.table + \" where unixtime < \" +msg.ux+ \" and macd is not null order by unixtime desc limit \" +signalwindow+ \";\"\nnode.warn(msg.query)    \nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 580,
+        "wires": [
+            [
+                "b59d36292702f0d5"
+            ]
+        ]
+    },
+    {
+        "id": "913338958e471afe",
+        "type": "delay",
+        "z": "b5cae24b8536905a",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "0.1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 510,
+        "y": 580,
+        "wires": [
+            [
+                "26e567c4b5f21ece"
+            ]
+        ]
+    },
+    {
+        "id": "ce33ff4ab947b286",
+        "type": "function",
+        "z": "b5cae24b8536905a",
+        "name": "create array",
+        "func": "//node.warn(msg.payload)\n\n\nlet prices = []\n\nfor (var i = 0; i < msg.payload.length; i++) {\n    prices.push( msg.payload[i][\"macd\"])\n}\n\nmsg.prices = prices\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 950,
+        "y": 580,
+        "wires": [
+            [
+                "efd106d53f52c80b"
+            ]
+        ]
+    },
+    {
+        "id": "efd106d53f52c80b",
+        "type": "function",
+        "z": "b5cae24b8536905a",
+        "name": "Average",
+        "func": "//node.warn(msg.prices)\nlet price = msg.prices\nprice = price.slice(0, -1);\n//node.warn(price)\n\nvar prices = JSON.parse(\"[\"+price+\"]\");\n\nmsg.avg = (eval(prices.join('+')) / prices.length) \n\n//node.warn(\"Signal: \" +msg.avg+ \" Prices array: \" +prices)\n\n\nmsg.query = \"update \" + msg.table + \" set signal = \" +msg.avg+ \" where unixtime = \" +msg.ux+ \";\"\n//node.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1100,
+        "y": 580,
+        "wires": [
+            [
+                "fb77c2292f400db9"
+            ]
+        ]
+    },
+    {
+        "id": "fb77c2292f400db9",
+        "type": "postgresql",
+        "z": "b5cae24b8536905a",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1240,
+        "y": 580,
+        "wires": [
+            [
+                "14695ddb3afe3911"
+            ]
+        ]
+    },
+    {
+        "id": "ae459d7817471535",
+        "type": "function",
+        "z": "b5cae24b8536905a",
+        "name": "create array",
+        "func": "//node.warn(msg.payload)\n\n\nlet prices = []\n\nfor (var i = 0; i < msg.payload.length; i++) {\n    prices.push( msg.payload[i][\"price\"])\n}\n\nmsg.prices = prices\n//node.warn(prices)\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 520,
+        "wires": [
+            [
+                "5c1118e9f81af813"
+            ]
+        ]
+    },
+    {
+        "id": "5c1118e9f81af813",
+        "type": "function",
+        "z": "b5cae24b8536905a",
+        "name": "Short Average",
+        "func": "let price = msg.prices\nprice = price.slice(0, -1);\n//node.warn(price)\n\nvar prices = JSON.parse(\"[\"+price+\"]\");\n//node.warn(prices)\n\nmsg.shortavg = (eval(prices.join('+')) / prices.length) \n//node.warn(\"ShortSMA: \" +msg.shortavg)\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 980,
+        "y": 520,
+        "wires": [
+            [
+                "30dde1ea37efdcf0"
+            ]
+        ]
+    },
+    {
+        "id": "14695ddb3afe3911",
+        "type": "function",
+        "z": "b5cae24b8536905a",
+        "name": "Update hist",
+        "func": "msg.query = \"update \" + msg.table + \" set hist = signal - macd where unixtime = \" +msg.ux+ \";\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1390,
+        "y": 580,
+        "wires": [
+            [
+                "ae57bdcdf0a74479"
+            ]
+        ]
+    },
+    {
+        "id": "ae57bdcdf0a74479",
+        "type": "postgresql",
+        "z": "b5cae24b8536905a",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1540,
+        "y": 580,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0f091ae7029792be",
+        "type": "http in",
+        "z": "b5cae24b8536905a",
+        "name": "/api/indicators_compared",
+        "url": "/api/indicators_compared",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 170,
+        "y": 1300,
+        "wires": [
+            [
+                "33a4d0e44eea1e42"
+            ]
+        ]
+    },
+    {
+        "id": "33a4d0e44eea1e42",
+        "type": "function",
+        "z": "b5cae24b8536905a",
+        "name": "export query",
+        "func": "msg.query = \"select * from indicators_compared order by unixtime limit 20000 offset 0\"\n//msg.query = \"select * from technical_indicators order by unixtime limit 20000 offset 0\"\n//msg.query = \"select * from technical_indicators order by unixtime limit 20000 offset 20001\"\n//msg.query = \"select * from technical_indicators order by unixtime limit 20000 offset 40001\"\n//msg.query = \"select * from technical_indicators where unixtime > 1702132935 order by unixtime limit 10000 offset 0\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 1300,
+        "wires": [
+            [
+                "b5338fb6757b32c5"
+            ]
+        ]
+    },
+    {
+        "id": "0c281d06a3c21cab",
+        "type": "http response",
+        "z": "b5cae24b8536905a",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 990,
+        "y": 1300,
+        "wires": []
+    },
+    {
+        "id": "48324cc36a06b50c",
+        "type": "csv",
+        "z": "b5cae24b8536905a",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 710,
+        "y": 1300,
+        "wires": [
+            [
+                "f24b0c7217c953c7"
+            ]
+        ]
+    },
+    {
+        "id": "f24b0c7217c953c7",
+        "type": "file",
+        "z": "b5cae24b8536905a",
+        "name": "write report",
+        "filename": "./data/store/rsi.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 850,
+        "y": 1300,
+        "wires": [
+            [
+                "0c281d06a3c21cab"
+            ]
+        ]
+    },
+    {
+        "id": "b5338fb6757b32c5",
+        "type": "postgresql",
+        "z": "b5cae24b8536905a",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 560,
+        "y": 1300,
+        "wires": [
+            [
+                "48324cc36a06b50c"
+            ]
+        ]
+    },
+    {
+        "id": "5184037da3754c69",
+        "type": "function",
+        "z": "b5cae24b8536905a",
+        "name": "display indicators_compared",
+        "func": "msg.query = \"truncate table indicators_compared\"\nmsg.query = \"select * from indicators_compared order by unixtime desc limit 60\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 1100,
+        "wires": [
+            [
+                "0d8c14f03c37d1e2"
+            ]
+        ]
+    },
+    {
+        "id": "af12756e65a19df3",
+        "type": "inject",
+        "z": "b5cae24b8536905a",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 140,
+        "y": 1100,
+        "wires": [
+            [
+                "5184037da3754c69"
+            ]
+        ]
+    },
+    {
+        "id": "0d8c14f03c37d1e2",
+        "type": "postgresql",
+        "z": "b5cae24b8536905a",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 580,
+        "y": 1100,
+        "wires": [
+            [
+                "4d6dc1e7040d588e"
+            ]
+        ]
+    },
+    {
+        "id": "4d6dc1e7040d588e",
+        "type": "debug",
+        "z": "b5cae24b8536905a",
+        "name": "debug 923",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 730,
+        "y": 1100,
+        "wires": []
+    },
+    {
+        "id": "53c5df32c672f404",
+        "type": "function",
+        "z": "b5cae24b8536905a",
+        "name": "create indicators_compared",
+        "func": "msg.query = \"CREATE TABLE IF NOT EXISTS indicators_compared (symbol VARCHAR(10), unixtime BIGINT PRIMARY KEY,currentdt VARCHAR(100), price FLOAT,lastprice FLOAT,\"\nmsg.query += \" change FLOAT,pctchange FLOAT,rsi INT, macd FLOAT,signal FLOAT,hist FLOAT,bbstd FLOAT, bbul FLOAT,bbll FLOAT, avg FLOAT,rsi2 INT, macd2 FLOAT,\"\nmsg.query += \" signal2 FLOAT,hist2 FLOAT);\"\n//msg.query = \"drop table oneminprice\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 980,
+        "wires": [
+            [
+                "5c7898366809faa3"
+            ]
+        ]
+    },
+    {
+        "id": "a195d17cb8383e55",
+        "type": "inject",
+        "z": "b5cae24b8536905a",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 980,
+        "wires": [
+            [
+                "53c5df32c672f404"
+            ]
+        ]
+    },
+    {
+        "id": "5c7898366809faa3",
+        "type": "postgresql",
+        "z": "b5cae24b8536905a",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 520,
+        "y": 980,
+        "wires": [
+            [
+                "a178767ddc34927a"
+            ]
+        ]
+    },
+    {
+        "id": "a178767ddc34927a",
+        "type": "debug",
+        "z": "b5cae24b8536905a",
+        "name": "debug 924",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 690,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "241913907692abd4",
+        "type": "comment",
+        "z": "b5cae24b8536905a",
+        "name": "Create indicators_compared",
+        "info": "",
+        "x": 180,
+        "y": 940,
+        "wires": []
+    },
+    {
+        "id": "f0befceb24489a94",
+        "type": "function",
+        "z": "b5cae24b8536905a",
+        "name": "get  last price",
+        "func": "// one minute ago\nmsg.lastux = msg.ux - 60\nmsg.query = \"select * from \" +msg.table+ \" where unixtime = \" +msg.lastux+ \";\"\n//node.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
+        "y": 280,
+        "wires": [
+            [
+                "4babc5b3839ca354"
+            ]
+        ]
+    },
+    {
+        "id": "4babc5b3839ca354",
+        "type": "postgresql",
+        "z": "b5cae24b8536905a",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 860,
+        "y": 280,
+        "wires": [
+            [
+                "6a1d5b8499dc9229"
+            ]
+        ]
+    },
+    {
+        "id": "272484b22367336d",
+        "type": "function",
+        "z": "b5cae24b8536905a",
+        "name": "update lastprice",
+        "func": "//node.warn(msg.payload)\nmsg.lastprice = msg.payload[\"price\"]\nmsg.change = msg.price - msg.lastprice\nmsg.pctchange = (msg.change / msg.price) * 100\nmsg.query = \"update \" +msg.table+ \" set lastprice = \" +msg.lastprice+ \", change = \" +msg.change+ \", pctchange = \" +msg.pctchange+ \" where unixtime = \" +msg.ux+ \";\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1140,
+        "y": 280,
+        "wires": [
+            [
+                "8f84bafadf8fc25e"
+            ]
+        ]
+    },
+    {
+        "id": "6a1d5b8499dc9229",
+        "type": "split",
+        "z": "b5cae24b8536905a",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 990,
+        "y": 280,
+        "wires": [
+            [
+                "272484b22367336d"
+            ]
+        ]
+    },
+    {
+        "id": "8f84bafadf8fc25e",
+        "type": "postgresql",
+        "z": "b5cae24b8536905a",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1300,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "421942fdb6e93d0d",
+        "type": "function-npm",
+        "z": "b5cae24b8536905a",
+        "name": "Hist vars",
+        "func": "let symbol = msg.symbol\nlet shortwindow = 12\nlet longwindow = 26\nlet signalwindow = 9\nlet cnt = 1\nlet d = new Date().toJSON().slice(0, 10);\n//node.warn(d)\n\n\nlet timestamp = d\nlet timespan = 'minute'\n\n\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: symbol,\n    shortwindow: shortwindow,\n    longwindow: longwindow,\n    signalwindow: signalwindow,\n    limit: cnt,\n    timestamp: timestamp,\n    timespan: timespan,\n}\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 780,
+        "y": 180,
+        "wires": [
+            [
+                "c778e7e7bf5c931c"
+            ]
+        ]
+    },
+    {
+        "id": "43994d6f35b597e3",
+        "type": "function",
+        "z": "b5cae24b8536905a",
+        "name": "store Hist",
+        "func": "//node.warn(msg.payload)\n\nlet ux = 0;\nlet macd = 0;\nlet signal = 0;\nlet hist = 0;\nlet item = 0;\n\nfor (item of msg.payload.results.values) {\n    ux = item.timestamp;\n    macd = item.value;\n    signal = item.signal;\n    hist = item.histogram;\n\n    var unixTimestamp = ux;\n    var d = new Date(unixTimestamp);\n    let lt = d.toLocaleTimeString(\"en-US\");\n    let ld = d.toLocaleDateString(\"en-US\");\n\n    signal = signal.toFixed(3);\n    macd = macd.toFixed(3);\n    hist = hist.toFixed(3);\n    msg.signal = signal;\n    msg.hist = hist;\n    msg.macd = macd;\n    msg.signal = signal;\n}\n\n//node.warn(\"RSI: \" +msg.rsi+ \" Signal: \" +msg.signal+ \" Hist: \" +msg.hist+ \" MACD: \" +msg.macd)\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 3,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1100,
+        "y": 180,
+        "wires": [
+            [
+                "e70e823b8296967c",
+                "40591d922b607d57",
+                "6f4783ea09e97266",
+                "36f4c23c1a8bc536"
+            ]
+        ]
+    },
+    {
+        "id": "c778e7e7bf5c931c",
+        "type": "polygon-macd",
+        "z": "b5cae24b8536905a",
+        "conf": "5e182d3d7b808c42",
+        "symbol": "",
+        "timestamp": "",
+        "timespan": "minute",
+        "shortwindow": "",
+        "longwindow": "",
+        "signalwindow": "",
+        "limit": "",
+        "x": 940,
+        "y": 180,
+        "wires": [
+            [
+                "43994d6f35b597e3"
+            ]
+        ]
+    },
+    {
+        "id": "3eeca7ba5a7c9460",
+        "type": "function-npm",
+        "z": "b5cae24b8536905a",
+        "name": "RSI vars",
+        "func": "msg.table = \"indicators_compared\"\nlet ux = (Date.now()) / 1000\nmsg.ux = ux.toFixed(0)\n\nlet window = 9\nlet cnt = 1\nlet d = new Date().toJSON().slice(0, 10);\n//node.warn(d)\n\n\nlet timestamp = d\nlet timespan = 'minute'\n\n\n/* Setup polygon request arguments */\nmsg.payload = {\n    symbol: msg.symbol,\n    window: window,\n    limit: cnt,\n    timestamp: timestamp,\n    timespan: timespan,\n}\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 320,
+        "y": 180,
+        "wires": [
+            [
+                "02871a05f78de184",
+                "71c8bab33b8865b2"
+            ]
+        ]
+    },
+    {
+        "id": "02871a05f78de184",
+        "type": "polygon-rsi",
+        "z": "b5cae24b8536905a",
+        "conf": "5e182d3d7b808c42",
+        "symbol": "",
+        "timestamp": "",
+        "timespan": "minute",
+        "window": "",
+        "limit": "",
+        "x": 490,
+        "y": 180,
+        "wires": [
+            [
+                "631b5281c71af2d7"
+            ]
+        ]
+    },
+    {
+        "id": "5a054247a2a2d9e3",
+        "type": "inject",
+        "z": "b5cae24b8536905a",
+        "name": "Set Ticker",
+        "props": [
+            {
+                "p": "symbol",
+                "v": "SPY",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "*/1 4-19 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 180,
+        "wires": [
+            [
+                "3eeca7ba5a7c9460"
+            ]
+        ]
+    },
+    {
+        "id": "631b5281c71af2d7",
+        "type": "function",
+        "z": "b5cae24b8536905a",
+        "name": "store RSI",
+        "func": "//node.warn(msg.payload.results)\n\n\nlet rsi = 0\nlet item = 0\n\n\nfor (item of msg.payload.results.values) {\n\n    msg.uxts = item.timestamp / 1000\n    rsi = item.value\n\n    rsi = rsi.toFixed(2)\n    msg.rsi = rsi\n\n//    node.warn(\"RSI: \" +msg.rsi)\n}\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 1,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 640,
+        "y": 180,
+        "wires": [
+            [
+                "421942fdb6e93d0d"
+            ]
+        ]
+    },
+    {
+        "id": "e70e823b8296967c",
+        "type": "function",
+        "z": "b5cae24b8536905a",
+        "name": "insert into indicators_compared",
+        "func": "msg.price = global.get(\"spymin\")\n\nnode.warn(\"RSI: \" +msg.rsi+ \" Signal: \" +msg.signal+ \" Hist: \" +msg.hist+ \" MACD: \" +msg.macd)\n\nmsg.query = \"insert into \" +msg.table+ \" (symbol, unixtime, currentdt, rsi2, macd2, hist2, signal2, price) values \"\nmsg.query += \" ('\" +msg.symbol+ \"',\" +msg.ux+ \", TO_TIMESTAMP(\" +msg.ux+ \"),\" +msg.rsi+ \",\" +msg.macd+ \",\" +msg.hist+ \",\" +msg.signal+ \",\" +msg.price+ \");\"    \nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 280,
+        "wires": [
+            [
+                "6a95725415c5ad42"
+            ]
+        ]
+    },
+    {
+        "id": "6a95725415c5ad42",
+        "type": "postgresql",
+        "z": "b5cae24b8536905a",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 560,
+        "y": 280,
+        "wires": [
+            [
+                "f0befceb24489a94"
+            ]
+        ]
+    },
+    {
+        "id": "9363aa0e3d6798da",
+        "type": "function",
+        "z": "b5cae24b8536905a",
+        "name": "truncate indicators_compared",
+        "func": "msg.query = \"truncate table indicators_compared\"\nnode.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 1200,
+        "wires": [
+            [
+                "18aec198acd67b3f"
+            ]
+        ]
+    },
+    {
+        "id": "f8961f74d10dbdb1",
+        "type": "inject",
+        "z": "b5cae24b8536905a",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 140,
+        "y": 1200,
+        "wires": [
+            [
+                "9363aa0e3d6798da"
+            ]
+        ]
+    },
+    {
+        "id": "18aec198acd67b3f",
+        "type": "postgresql",
+        "z": "b5cae24b8536905a",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 560,
+        "y": 1200,
+        "wires": [
+            [
+                "7411a97a881beeab"
+            ]
+        ]
+    },
+    {
+        "id": "7411a97a881beeab",
+        "type": "debug",
+        "z": "b5cae24b8536905a",
+        "name": "debug 926",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 710,
+        "y": 1200,
+        "wires": []
+    },
+    {
+        "id": "71c8bab33b8865b2",
+        "type": "change",
+        "z": "b5cae24b8536905a",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "ux",
+                "pt": "flow",
+                "to": "ux",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 490,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f4685a2d67dcbc93",
+        "type": "comment",
+        "z": "b5cae24b8536905a",
+        "name": "get Polygon technical indicators using the \"jolly\" key",
+        "info": "",
+        "x": 450,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "478e30c3f8c6a146",
+        "type": "comment",
+        "z": "b5cae24b8536905a",
+        "name": "Display indicators_compared",
+        "info": "",
+        "x": 180,
+        "y": 1060,
+        "wires": []
+    },
+    {
+        "id": "342775a218b20216",
+        "type": "comment",
+        "z": "b5cae24b8536905a",
+        "name": "Truncate indicators_compared",
+        "info": "",
+        "x": 180,
+        "y": 1160,
+        "wires": []
+    },
+    {
+        "id": "aee6247e696ab780",
+        "type": "comment",
+        "z": "b5cae24b8536905a",
+        "name": "Download indicators_compared",
+        "info": "",
+        "x": 190,
+        "y": 1260,
+        "wires": []
+    },
+    {
+        "id": "7455395cf269fb2b",
+        "type": "postgreSQLConfig",
+        "name": "",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "postgres",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "docker",
+        "userFieldType": "str",
+        "password": "docker",
+        "passwordFieldType": "str"
+    },
+    {
+        "id": "5e182d3d7b808c42",
+        "type": "polygon-account",
+        "name": "jolly"
+    }
+]
