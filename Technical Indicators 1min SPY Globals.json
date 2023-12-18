@@ -1,0 +1,200 @@
+[
+    {
+        "id": "8a60c9149f1f5fa9",
+        "type": "inject",
+        "z": "9dfc0e947da8f0a3",
+        "name": "GO",
+        "props": [],
+        "repeat": "60",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 90,
+        "y": 2180,
+        "wires": [
+            [
+                "6f747585a3098503"
+            ]
+        ]
+    },
+    {
+        "id": "3efa0418458a5f77",
+        "type": "comment",
+        "z": "9dfc0e947da8f0a3",
+        "name": "Store SPY Global prices every minute",
+        "info": "",
+        "x": 170,
+        "y": 2120,
+        "wires": []
+    },
+    {
+        "id": "6f747585a3098503",
+        "type": "function",
+        "z": "9dfc0e947da8f0a3",
+        "name": "trading interval  M-F 4AM - 8PM",
+        "func": "let d = new Date();\n\nlet hour = d.getHours();\nlet min = d.getMinutes();\nlet day = d.getDay(); // day of the week\nlet sec = d.getSeconds();\n\n//node.warn(\"Date: \" +d+ \" Day: \" +day+ \" Hour: \" +hour+ \" Minute: \" +min+ \" Seconds: \" +sec)\n\n// this will run during trading 9:30 - 10:30 am\n// if ((day > 0 && day < 6 && hour > 9 && hour < 11) || (day > 0 && day < 6 && hour > 8 && hour < 10 && min > 29 && min < 60)) {  \n\n// this will run during trading 9:30 - 4:00 pm\n// if ((day > 0 && day < 6 && hour > 9 && hour < 16) || (day > 0 && day < 6 && hour > 8 && hour < 10 && min > 29 && min < 60)) {  \n\n// this runs 9 am - 4 pm\n//if ( day > 0 && day < 6 && hour > 8 && hour < 16 ) { \n\n// this runs 4 am - 8 pm\n\n if (day > 0 && day < 6 && hour > 3 && hour < 21) { \n\n// this runs 6 am - 8 pm\n//if (day > 0 && day < 6 && hour > 5 && hour < 21) { \n\n//node.warn(\"Market Open\")\nreturn msg;\n }",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 290,
+        "y": 2180,
+        "wires": [
+            [
+                "c8c5a15602ca7022",
+                "2c07a58dd67f10bd"
+            ]
+        ]
+    },
+    {
+        "id": "c8c5a15602ca7022",
+        "type": "function",
+        "z": "9dfc0e947da8f0a3",
+        "name": "symbol, feed",
+        "func": "msg.spymin = global.get(\"spy_current\")\n//node.warn(msg.spymin)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 530,
+        "y": 2140,
+        "wires": [
+            [
+                "540e3eb40a77565d",
+                "c63b93fada86c3a8"
+            ]
+        ]
+    },
+    {
+        "id": "540e3eb40a77565d",
+        "type": "change",
+        "z": "9dfc0e947da8f0a3",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "spymin",
+                "pt": "global",
+                "to": "spymin",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 730,
+        "y": 2100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c63b93fada86c3a8",
+        "type": "delay",
+        "z": "9dfc0e947da8f0a3",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "minutes",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 700,
+        "y": 2140,
+        "wires": [
+            [
+                "97f0d3921ebe09de"
+            ]
+        ]
+    },
+    {
+        "id": "97f0d3921ebe09de",
+        "type": "change",
+        "z": "9dfc0e947da8f0a3",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "spy_lastmin",
+                "pt": "global",
+                "to": "spymin",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 880,
+        "y": 2140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0e87ebf51518e1a8",
+        "type": "change",
+        "z": "9dfc0e947da8f0a3",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "spy_minchange",
+                "pt": "global",
+                "to": "spychange",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "spy_minpctchange",
+                "pt": "global",
+                "to": "spypctchange",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 700,
+        "y": 2200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2c07a58dd67f10bd",
+        "type": "function",
+        "z": "9dfc0e947da8f0a3",
+        "name": "calc change",
+        "func": "msg.spyprice = global.get(\"spymin\")\nmsg.spylastprice = global.get(\"spylastmin\")\n\nmsg.spychange = msg.spyprice - msg.spylastprice\n\n\n// manage null values\nif (msg.spychange == null) { msg.spychange = 0 }\nif (isNaN(msg.spychange)) msg.spychange = 0;\n\n// correct for bad data < or > $1 price spychange \n//if ((msg.spychange > 0.5) || (msg.spychange < -0.5)) {\n//    msg.spychange = 0\n//}\n\nmsg.spychange = msg.spychange.toFixed(4)\nmsg.spypctchange = (msg.spychange / msg.spyprice) * 100\n\n//node.warn(\"Price: \" + msg.spyprice + \" Last Price: \" + msg.spylastprice + \" Change: \" + msg.spychange + \" Pct Change: \" + msg.spypctchange)\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 530,
+        "y": 2200,
+        "wires": [
+            [
+                "0e87ebf51518e1a8"
+            ]
+        ]
+    }
+]
