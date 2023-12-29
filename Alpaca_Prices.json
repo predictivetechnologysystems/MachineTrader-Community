@@ -1,0 +1,1710 @@
+[
+    {
+        "id": "505066468048d4de",
+        "type": "tab",
+        "label": "Alpaca Prices",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "b68e263d0015bc3c",
+        "type": "alpaca-data-last-multi-trade",
+        "z": "505066468048d4de",
+        "conf": "ea487431d1a89557",
+        "symbol": "",
+        "name": "",
+        "x": 570,
+        "y": 380,
+        "wires": [
+            [
+                "f0e123d657f60abf"
+            ]
+        ]
+    },
+    {
+        "id": "f0e123d657f60abf",
+        "type": "function",
+        "z": "505066468048d4de",
+        "name": "Get prices",
+        "func": "// Get the UNIX time in milliseconds\nlet datetime = new Date()\nlet timunix = datetime.getTime()\n\n// Get the Alpaca price object\nlet pricalp = msg.payload\n\n// Get the price object names (keys)\nlet symbola = Object.keys(pricalp)\n// node.warn(\"symbola = \" + symbola)\n\n// Postgres queries\n// let querys = \"INSERT INTO pricet (timestamp, AAPL_time, AAPL_price, AAPL_volume, MSFT_time, MSFT_price, MSFT_volume, GOOG_time, GOOG_price, GOOG_volume) VALUES (\" + timunix\n// let querys = \"INSERT INTO pricet (timestamp, AAPL_price, AAPL_volume, MSFT_price, MSFT_volume, GOOG_price, GOOG_volume) VALUES (\" + timunix\n\n// Create first part of the postgres query\nlet querys = \"INSERT INTO pricet (timestamp\"\n// Add the fields to postgres query in loop\nsymbola.forEach((symboln) => {\n    querys += \", \" + symboln + \"_price, \" + symboln + \"_volume\"\n}) // end forEach\nquerys += \") VALUES (\" + timunix\n\n// Add the data to the postgres query in loop\nlet datas = {} // Data for symbol\nlet pricec = {} // Current prices for all tickers\nsymbola.forEach((symboln) => {\n    // Get the price object for symboln\n    datas = pricalp[symboln]\n    // querys += \", \" + Date.parse(datas.t) + \", \" + datas.p + \", \" + datas.s\n    querys += \", \" + datas.p + \", \" + datas.s\n    pricec[symboln] = datas.p\n    // node.warn(symboln + \" price = \" + datas.p)\n}) // end forEach\nquerys += \")\"\nglobal.set(\"pricec\", pricec) // Set the current prices for all tickers\n\n// querys += \", \" + goog.t + \", \" + goog.p + \", \" + goog.s + \")\"\n// node.warn(\"Query = \" + querys)\n\nmsg.query = querys\nmsg.payload = pricec\n\nreturn msg\n\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 850,
+        "y": 380,
+        "wires": [
+            [
+                "eebba94524353727",
+                "6907d48e5dad5f32"
+            ]
+        ]
+    },
+    {
+        "id": "43b87639d571f50d",
+        "type": "comment",
+        "z": "505066468048d4de",
+        "name": "Insert prices into tables",
+        "info": "",
+        "x": 140,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "6907d48e5dad5f32",
+        "type": "link out",
+        "z": "505066468048d4de",
+        "name": "Updated prices",
+        "mode": "link",
+        "links": [
+            "3df20a9d464d4891",
+            "0bb28df002a2d9d0"
+        ],
+        "x": 1015,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "eebba94524353727",
+        "type": "postgresql",
+        "z": "505066468048d4de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1060,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "466a7bfac4615aa0",
+        "type": "comment",
+        "z": "505066468048d4de",
+        "name": "Create flow variables",
+        "info": "",
+        "x": 140,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "524d98f36e66641b",
+        "type": "inject",
+        "z": "505066468048d4de",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 100,
+        "wires": [
+            [
+                "911cbe7977aacefe"
+            ]
+        ]
+    },
+    {
+        "id": "911cbe7977aacefe",
+        "type": "function",
+        "z": "505066468048d4de",
+        "name": "Create flow variables",
+        "func": "// Collect prices in extended hours?\nflow.set(\"extended_hours\", false)\nnode.warn(\"Collect prices in extended hours = \" + flow.get(\"extended_hours\"))\n\n// String with tickers to collect prices\nflow.set(\"symbolv\", \"AAPL,MSFT,GOOG,SPY,QQQ,XLK,SVXY,VXX,USO,TLT\")\nnode.warn(\"Trading symbols = \" + flow.get(\"symbolv\"))\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "fa5dc3249c8daf22",
+        "type": "inject",
+        "z": "505066468048d4de",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 160,
+        "wires": [
+            [
+                "a08f99679e4e710f"
+            ]
+        ]
+    },
+    {
+        "id": "a08f99679e4e710f",
+        "type": "function",
+        "z": "505066468048d4de",
+        "name": "Print flow variables",
+        "func": "node.warn(\"Collect prices in extended hours = \" + flow.get(\"extended_hours\"))\n\nnode.warn(\"Trading symbols = \" + flow.get(\"symbolv\"))\n\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3df20a9d464d4891",
+        "type": "link in",
+        "z": "505066468048d4de",
+        "name": "Get prices",
+        "links": [
+            "6907d48e5dad5f32"
+        ],
+        "x": 75,
+        "y": 640,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "05e327a3087e6a58",
+        "type": "function",
+        "z": "505066468048d4de",
+        "name": "Get GOOG price from payload",
+        "func": "// Current price\nlet pricobj = msg.payload\nlet symboln = \"GOOG\"\n// Get the price for symboln\nlet pricegoog = pricobj[symboln]\nnode.warn(symboln + \" price = \" + pricegoog)\n\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 640,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7cb5b23806e060b3",
+        "type": "function",
+        "z": "505066468048d4de",
+        "name": "Get GOOG price from global",
+        "func": "// Current price\nlet pricec = global.get(\"pricec\")\nlet symboln = \"GOOG\"\nnode.warn(symboln + \" price = \" + pricec[symboln])\n\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 580,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b8f147432ca5b714",
+        "type": "inject",
+        "z": "505066468048d4de",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 580,
+        "wires": [
+            [
+                "7cb5b23806e060b3"
+            ]
+        ]
+    },
+    {
+        "id": "7bf0ce9f8062dab5",
+        "type": "inject",
+        "z": "505066468048d4de",
+        "name": "",
+        "props": [],
+        "repeat": "1",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 380,
+        "wires": [
+            [
+                "d43746ca2e77d82b"
+            ]
+        ]
+    },
+    {
+        "id": "d43746ca2e77d82b",
+        "type": "function-npm",
+        "z": "505066468048d4de",
+        "name": "Get symbol",
+        "func": "let market_open = global.get(\"market_open\")\n// let liquidatem = global.get(\"liquidatem\")\n// let warmupm = global.get(\"warmupm\")\nlet earlyHours = global.get(\"earlyHours\")\nlet afterHours = global.get(\"afterHours\")\nlet extended_hours = (flow.get(\"extended_hours\") && ((earlyHours || afterHours)))\n\n// Trade if either the market is open or if extended_hours\nif (market_open || extended_hours) {\n    msg.symbol = flow.get(\"symbolv\")\n    msg.feed = \"sip\"\n    return msg\n} // end if\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 310,
+        "y": 380,
+        "wires": [
+            [
+                "b68e263d0015bc3c"
+            ]
+        ]
+    },
+    {
+        "id": "04ca7a3d7cdf7b8d",
+        "type": "inject",
+        "z": "505066468048d4de",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 520,
+        "wires": [
+            [
+                "289bf6b17ea2b6ac"
+            ]
+        ]
+    },
+    {
+        "id": "289bf6b17ea2b6ac",
+        "type": "function",
+        "z": "505066468048d4de",
+        "name": "Get current prices from global",
+        "func": "// Get the current prices\nlet pricobj = global.get(\"pricec\")\n\n// Get the price object names (keys)\nlet symbolv = Object.keys(pricobj)\n\nlet pricesymb = 0\nsymbolv.forEach((symboln) => {\n    // Get the price for symboln\n    pricesymb = pricobj[symboln]\n    node.warn(symboln + \" price = \" + pricesymb)\n}) // end forEach\n\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 520,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "cc0917773e9b055d",
+        "type": "http in",
+        "z": "505066468048d4de",
+        "name": "/api/download_spyseconds",
+        "url": "/api/download_spyseconds",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 180,
+        "y": 1300,
+        "wires": [
+            [
+                "8f110b465302948a"
+            ]
+        ]
+    },
+    {
+        "id": "ec5a23f16e243706",
+        "type": "http response",
+        "z": "505066468048d4de",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 1130,
+        "y": 1300,
+        "wires": []
+    },
+    {
+        "id": "e650434854f7740c",
+        "type": "csv",
+        "z": "505066468048d4de",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 810,
+        "y": 1300,
+        "wires": [
+            [
+                "7187c57460256efb"
+            ]
+        ]
+    },
+    {
+        "id": "8f110b465302948a",
+        "type": "function",
+        "z": "505066468048d4de",
+        "name": "Export spyseconds",
+        "func": "msg.query = \"SELECT timestamp, spy_price, spy_volume FROM pricet\"\nnode.warn(msg.query)\nreturn msg",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 1300,
+        "wires": [
+            [
+                "24ddd289190d62bd"
+            ]
+        ]
+    },
+    {
+        "id": "7187c57460256efb",
+        "type": "file",
+        "z": "505066468048d4de",
+        "name": "write report",
+        "filename": "/data/store/output.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 970,
+        "y": 1300,
+        "wires": [
+            [
+                "ec5a23f16e243706"
+            ]
+        ]
+    },
+    {
+        "id": "24ddd289190d62bd",
+        "type": "postgresql",
+        "z": "505066468048d4de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 640,
+        "y": 1300,
+        "wires": [
+            [
+                "e650434854f7740c"
+            ]
+        ]
+    },
+    {
+        "id": "8c41478da15cca6b",
+        "type": "comment",
+        "z": "505066468048d4de",
+        "name": "Download price tables to CSV files",
+        "info": "",
+        "x": 180,
+        "y": 1220,
+        "wires": []
+    },
+    {
+        "id": "873555073fa41772",
+        "type": "http in",
+        "z": "505066468048d4de",
+        "name": "/api/download_aaplseconds",
+        "url": "/api/download_aaplseconds",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 180,
+        "y": 1740,
+        "wires": [
+            [
+                "b48640deb0923631"
+            ]
+        ]
+    },
+    {
+        "id": "c919030e1a95d6f3",
+        "type": "http response",
+        "z": "505066468048d4de",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 1130,
+        "y": 1740,
+        "wires": []
+    },
+    {
+        "id": "92b0137b40d17289",
+        "type": "csv",
+        "z": "505066468048d4de",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 810,
+        "y": 1740,
+        "wires": [
+            [
+                "9635b190f39d258b"
+            ]
+        ]
+    },
+    {
+        "id": "b48640deb0923631",
+        "type": "function",
+        "z": "505066468048d4de",
+        "name": "Export aaplseconds",
+        "func": "msg.query = \"SELECT timestamp, aapl_price, aapl_volume FROM pricet\"\nnode.warn(msg.query)\nreturn msg",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 1740,
+        "wires": [
+            [
+                "4c03c1086c87dc43"
+            ]
+        ]
+    },
+    {
+        "id": "9635b190f39d258b",
+        "type": "file",
+        "z": "505066468048d4de",
+        "name": "write report",
+        "filename": "/data/store/output.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 970,
+        "y": 1740,
+        "wires": [
+            [
+                "c919030e1a95d6f3"
+            ]
+        ]
+    },
+    {
+        "id": "4c03c1086c87dc43",
+        "type": "postgresql",
+        "z": "505066468048d4de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 640,
+        "y": 1740,
+        "wires": [
+            [
+                "92b0137b40d17289"
+            ]
+        ]
+    },
+    {
+        "id": "d2696d1bf4b00bcf",
+        "type": "http in",
+        "z": "505066468048d4de",
+        "name": "/api/download_vxxseconds",
+        "url": "/api/download_vxxseconds",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 180,
+        "y": 1600,
+        "wires": [
+            [
+                "c1650a8222869567"
+            ]
+        ]
+    },
+    {
+        "id": "b4d59a2d49d81e6a",
+        "type": "http response",
+        "z": "505066468048d4de",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 1130,
+        "y": 1600,
+        "wires": []
+    },
+    {
+        "id": "4d9e04dc5df4e152",
+        "type": "csv",
+        "z": "505066468048d4de",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 810,
+        "y": 1600,
+        "wires": [
+            [
+                "713ae21ec5dc124c"
+            ]
+        ]
+    },
+    {
+        "id": "c1650a8222869567",
+        "type": "function",
+        "z": "505066468048d4de",
+        "name": "Export vxxseconds",
+        "func": "msg.query = \"SELECT timestamp, vxx_price, vxx_volume FROM pricet\"\nnode.warn(msg.query)\nreturn msg",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 1600,
+        "wires": [
+            [
+                "3912a01ac6337d1d"
+            ]
+        ]
+    },
+    {
+        "id": "713ae21ec5dc124c",
+        "type": "file",
+        "z": "505066468048d4de",
+        "name": "write report",
+        "filename": "/data/store/output.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 970,
+        "y": 1600,
+        "wires": [
+            [
+                "b4d59a2d49d81e6a"
+            ]
+        ]
+    },
+    {
+        "id": "3912a01ac6337d1d",
+        "type": "postgresql",
+        "z": "505066468048d4de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 640,
+        "y": 1600,
+        "wires": [
+            [
+                "4d9e04dc5df4e152"
+            ]
+        ]
+    },
+    {
+        "id": "339f03523d8f218e",
+        "type": "http in",
+        "z": "505066468048d4de",
+        "name": "/api/download_svxyseconds",
+        "url": "/api/download_svxyseconds",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 180,
+        "y": 1660,
+        "wires": [
+            [
+                "af41433047c71fb5"
+            ]
+        ]
+    },
+    {
+        "id": "f2ccce0c9ff968e5",
+        "type": "http response",
+        "z": "505066468048d4de",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 1130,
+        "y": 1660,
+        "wires": []
+    },
+    {
+        "id": "82eea07212f2474d",
+        "type": "csv",
+        "z": "505066468048d4de",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 810,
+        "y": 1660,
+        "wires": [
+            [
+                "a5a67eda70ec0be2"
+            ]
+        ]
+    },
+    {
+        "id": "af41433047c71fb5",
+        "type": "function",
+        "z": "505066468048d4de",
+        "name": "Export svxyseconds",
+        "func": "msg.query = \"SELECT timestamp, svxy_price, svxy_volume FROM pricet\"\nnode.warn(msg.query)\nreturn msg",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 1660,
+        "wires": [
+            [
+                "9f5d413f5fc135aa"
+            ]
+        ]
+    },
+    {
+        "id": "a5a67eda70ec0be2",
+        "type": "file",
+        "z": "505066468048d4de",
+        "name": "write report",
+        "filename": "/data/store/output.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 970,
+        "y": 1660,
+        "wires": [
+            [
+                "f2ccce0c9ff968e5"
+            ]
+        ]
+    },
+    {
+        "id": "9f5d413f5fc135aa",
+        "type": "postgresql",
+        "z": "505066468048d4de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 640,
+        "y": 1660,
+        "wires": [
+            [
+                "82eea07212f2474d"
+            ]
+        ]
+    },
+    {
+        "id": "e991703e20f9a8f9",
+        "type": "http in",
+        "z": "505066468048d4de",
+        "name": "/api/download_xlkseconds",
+        "url": "/api/download_xlkseconds",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 170,
+        "y": 1420,
+        "wires": [
+            [
+                "e228a22b1f78482d"
+            ]
+        ]
+    },
+    {
+        "id": "1f9cd58f171b53b1",
+        "type": "http response",
+        "z": "505066468048d4de",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 1130,
+        "y": 1420,
+        "wires": []
+    },
+    {
+        "id": "cff04b988fc4ee52",
+        "type": "csv",
+        "z": "505066468048d4de",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 810,
+        "y": 1420,
+        "wires": [
+            [
+                "1c96302fbad5b106"
+            ]
+        ]
+    },
+    {
+        "id": "e228a22b1f78482d",
+        "type": "function",
+        "z": "505066468048d4de",
+        "name": "Export xlkseconds",
+        "func": "msg.query = \"SELECT timestamp, xlk_price, xlk_volume FROM pricet\"\nnode.warn(msg.query)\nreturn msg",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 1420,
+        "wires": [
+            [
+                "1747a864c79cb6f4"
+            ]
+        ]
+    },
+    {
+        "id": "1c96302fbad5b106",
+        "type": "file",
+        "z": "505066468048d4de",
+        "name": "write report",
+        "filename": "/data/store/output.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 970,
+        "y": 1420,
+        "wires": [
+            [
+                "1f9cd58f171b53b1"
+            ]
+        ]
+    },
+    {
+        "id": "1747a864c79cb6f4",
+        "type": "postgresql",
+        "z": "505066468048d4de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 640,
+        "y": 1420,
+        "wires": [
+            [
+                "cff04b988fc4ee52"
+            ]
+        ]
+    },
+    {
+        "id": "0ebd5fd737e70e0f",
+        "type": "http in",
+        "z": "505066468048d4de",
+        "name": "/api/download_tltseconds",
+        "url": "/api/download_tltseconds",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 170,
+        "y": 1480,
+        "wires": [
+            [
+                "49c40e30d571be4e"
+            ]
+        ]
+    },
+    {
+        "id": "0d1b04de589141b4",
+        "type": "http response",
+        "z": "505066468048d4de",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 1130,
+        "y": 1480,
+        "wires": []
+    },
+    {
+        "id": "d3b7b9b67f62f643",
+        "type": "csv",
+        "z": "505066468048d4de",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 810,
+        "y": 1480,
+        "wires": [
+            [
+                "251661406840e44d"
+            ]
+        ]
+    },
+    {
+        "id": "49c40e30d571be4e",
+        "type": "function",
+        "z": "505066468048d4de",
+        "name": "Export tltseconds",
+        "func": "msg.query = \"SELECT timestamp, tlt_price, tlt_volume FROM pricet\"\nnode.warn(msg.query)\nreturn msg",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 1480,
+        "wires": [
+            [
+                "4fa21aa833e73b44"
+            ]
+        ]
+    },
+    {
+        "id": "251661406840e44d",
+        "type": "file",
+        "z": "505066468048d4de",
+        "name": "write report",
+        "filename": "/data/store/output.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 970,
+        "y": 1480,
+        "wires": [
+            [
+                "0d1b04de589141b4"
+            ]
+        ]
+    },
+    {
+        "id": "4fa21aa833e73b44",
+        "type": "postgresql",
+        "z": "505066468048d4de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 640,
+        "y": 1480,
+        "wires": [
+            [
+                "d3b7b9b67f62f643"
+            ]
+        ]
+    },
+    {
+        "id": "b1ac8f3945008bb4",
+        "type": "http in",
+        "z": "505066468048d4de",
+        "name": "/api/download_usoseconds",
+        "url": "/api/download_usoseconds",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 180,
+        "y": 1540,
+        "wires": [
+            [
+                "d7e213ccbc67e363"
+            ]
+        ]
+    },
+    {
+        "id": "92d4de668b702137",
+        "type": "http response",
+        "z": "505066468048d4de",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 1130,
+        "y": 1540,
+        "wires": []
+    },
+    {
+        "id": "28e97eb445f26884",
+        "type": "csv",
+        "z": "505066468048d4de",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 810,
+        "y": 1540,
+        "wires": [
+            [
+                "2d67f9698e90d173"
+            ]
+        ]
+    },
+    {
+        "id": "d7e213ccbc67e363",
+        "type": "function",
+        "z": "505066468048d4de",
+        "name": "Export usoseconds",
+        "func": "msg.query = \"SELECT timestamp, uso_price, uso_volume FROM pricet\"\nnode.warn(msg.query)\nreturn msg",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 1540,
+        "wires": [
+            [
+                "42c0fe49fc676406"
+            ]
+        ]
+    },
+    {
+        "id": "2d67f9698e90d173",
+        "type": "file",
+        "z": "505066468048d4de",
+        "name": "write report",
+        "filename": "/data/store/output.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 970,
+        "y": 1540,
+        "wires": [
+            [
+                "92d4de668b702137"
+            ]
+        ]
+    },
+    {
+        "id": "42c0fe49fc676406",
+        "type": "postgresql",
+        "z": "505066468048d4de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 640,
+        "y": 1540,
+        "wires": [
+            [
+                "28e97eb445f26884"
+            ]
+        ]
+    },
+    {
+        "id": "573cfc7bd088ffbc",
+        "type": "http in",
+        "z": "505066468048d4de",
+        "name": "/api/download_msftseconds",
+        "url": "/api/download_msftseconds",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 180,
+        "y": 1800,
+        "wires": [
+            [
+                "47a244ba82a37a7d"
+            ]
+        ]
+    },
+    {
+        "id": "56496804c8ce56fb",
+        "type": "http response",
+        "z": "505066468048d4de",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 1130,
+        "y": 1800,
+        "wires": []
+    },
+    {
+        "id": "089cf4a61bdc86c5",
+        "type": "csv",
+        "z": "505066468048d4de",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 810,
+        "y": 1800,
+        "wires": [
+            [
+                "c4adec900f40b54c"
+            ]
+        ]
+    },
+    {
+        "id": "47a244ba82a37a7d",
+        "type": "function",
+        "z": "505066468048d4de",
+        "name": "Export msftseconds",
+        "func": "msg.query = \"SELECT timestamp, msft_price, msft_volume FROM pricet\"\nnode.warn(msg.query)\nreturn msg",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 1800,
+        "wires": [
+            [
+                "6c503947a00dd27c"
+            ]
+        ]
+    },
+    {
+        "id": "c4adec900f40b54c",
+        "type": "file",
+        "z": "505066468048d4de",
+        "name": "write report",
+        "filename": "/data/store/output.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 970,
+        "y": 1800,
+        "wires": [
+            [
+                "56496804c8ce56fb"
+            ]
+        ]
+    },
+    {
+        "id": "6c503947a00dd27c",
+        "type": "postgresql",
+        "z": "505066468048d4de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 640,
+        "y": 1800,
+        "wires": [
+            [
+                "089cf4a61bdc86c5"
+            ]
+        ]
+    },
+    {
+        "id": "93e513269fc62d4f",
+        "type": "http in",
+        "z": "505066468048d4de",
+        "name": "/api/download_googseconds",
+        "url": "/api/download_googseconds",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 180,
+        "y": 1860,
+        "wires": [
+            [
+                "e575df255715bd3e"
+            ]
+        ]
+    },
+    {
+        "id": "ed13f2ee47a38776",
+        "type": "http response",
+        "z": "505066468048d4de",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 1130,
+        "y": 1860,
+        "wires": []
+    },
+    {
+        "id": "3f294a25bd7cf9b1",
+        "type": "csv",
+        "z": "505066468048d4de",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 810,
+        "y": 1860,
+        "wires": [
+            [
+                "4315c0fde528a814"
+            ]
+        ]
+    },
+    {
+        "id": "e575df255715bd3e",
+        "type": "function",
+        "z": "505066468048d4de",
+        "name": "Export googseconds",
+        "func": "msg.query = \"SELECT timestamp, goog_price, goog_volume FROM pricet\"\nnode.warn(msg.query)\nreturn msg",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 1860,
+        "wires": [
+            [
+                "6d8259f8a670b9f0"
+            ]
+        ]
+    },
+    {
+        "id": "4315c0fde528a814",
+        "type": "file",
+        "z": "505066468048d4de",
+        "name": "write report",
+        "filename": "/data/store/output.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 970,
+        "y": 1860,
+        "wires": [
+            [
+                "ed13f2ee47a38776"
+            ]
+        ]
+    },
+    {
+        "id": "6d8259f8a670b9f0",
+        "type": "postgresql",
+        "z": "505066468048d4de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 640,
+        "y": 1860,
+        "wires": [
+            [
+                "3f294a25bd7cf9b1"
+            ]
+        ]
+    },
+    {
+        "id": "28765880b685f3fa",
+        "type": "function",
+        "z": "505066468048d4de",
+        "name": "Export qqqseconds",
+        "func": "msg.query = \"SELECT timestamp, qqq_price, qqq_volume FROM pricet\"\nnode.warn(msg.query)\nreturn msg",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 1360,
+        "wires": [
+            [
+                "d50fc989fa0a6cb0"
+            ]
+        ]
+    },
+    {
+        "id": "d50fc989fa0a6cb0",
+        "type": "postgresql",
+        "z": "505066468048d4de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 640,
+        "y": 1360,
+        "wires": [
+            [
+                "d0f4ba32c88250b6"
+            ]
+        ]
+    },
+    {
+        "id": "73f6c3aacb0e3eff",
+        "type": "http in",
+        "z": "505066468048d4de",
+        "name": "/api/download_qqqseconds",
+        "url": "/api/download_qqqseconds",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 180,
+        "y": 1360,
+        "wires": [
+            [
+                "28765880b685f3fa"
+            ]
+        ]
+    },
+    {
+        "id": "e26a9b7666aeb1dc",
+        "type": "http response",
+        "z": "505066468048d4de",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 1130,
+        "y": 1360,
+        "wires": []
+    },
+    {
+        "id": "d0f4ba32c88250b6",
+        "type": "csv",
+        "z": "505066468048d4de",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 810,
+        "y": 1360,
+        "wires": [
+            [
+                "030c0a4e06f3b5ea"
+            ]
+        ]
+    },
+    {
+        "id": "030c0a4e06f3b5ea",
+        "type": "file",
+        "z": "505066468048d4de",
+        "name": "write report",
+        "filename": "/data/store/output.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 970,
+        "y": 1360,
+        "wires": [
+            [
+                "e26a9b7666aeb1dc"
+            ]
+        ]
+    },
+    {
+        "id": "849b8fb80d0ee2d1",
+        "type": "function",
+        "z": "505066468048d4de",
+        "name": "Erase/Delete the price table pricet",
+        "func": "// Erase all the price data from the table pricet\nmsg.query = \"TRUNCATE TABLE pricet\"\n\n// Delete the table pricet\n// msg.query = \"DROP TABLE pricet\"\n\nnode.warn(msg.query)\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 840,
+        "wires": [
+            [
+                "ddac41a2024e5347"
+            ]
+        ]
+    },
+    {
+        "id": "ddac41a2024e5347",
+        "type": "postgresql",
+        "z": "505066468048d4de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 620,
+        "y": 840,
+        "wires": [
+            [
+                "0064ed05aa298007"
+            ]
+        ]
+    },
+    {
+        "id": "a4d803089cd02041",
+        "type": "inject",
+        "z": "505066468048d4de",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 1000,
+        "wires": [
+            [
+                "2a479fa711ad63fc"
+            ]
+        ]
+    },
+    {
+        "id": "2a479fa711ad63fc",
+        "type": "function",
+        "z": "505066468048d4de",
+        "name": "Print price tables",
+        "func": "msg.query = \"SELECT * FROM pricet\" // + \"LIMIT 5\"\nnode.warn(msg.query)\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 1000,
+        "wires": [
+            [
+                "49fe792d54e2a224"
+            ]
+        ]
+    },
+    {
+        "id": "49fe792d54e2a224",
+        "type": "postgresql",
+        "z": "505066468048d4de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 540,
+        "y": 1000,
+        "wires": [
+            [
+                "d67932d298917b39"
+            ]
+        ]
+    },
+    {
+        "id": "d67932d298917b39",
+        "type": "debug",
+        "z": "505066468048d4de",
+        "name": "debug 919",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 730,
+        "y": 1000,
+        "wires": []
+    },
+    {
+        "id": "0064ed05aa298007",
+        "type": "debug",
+        "z": "505066468048d4de",
+        "name": "debug 920",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 810,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "7fa85613b79fdd83",
+        "type": "comment",
+        "z": "505066468048d4de",
+        "name": "Create price table",
+        "info": "",
+        "x": 130,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "90d3c5f280bf7ca1",
+        "type": "inject",
+        "z": "505066468048d4de",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "00 03 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 840,
+        "wires": [
+            [
+                "849b8fb80d0ee2d1"
+            ]
+        ]
+    },
+    {
+        "id": "6b3a45d12daafaed",
+        "type": "function",
+        "z": "505066468048d4de",
+        "name": "Create the price table pricet",
+        "func": "// Write query to create the price table pricet - tedious\n// msg.query = \"CREATE TABLE IF NOT EXISTS pricet (timestamp BIGINT, AAPL_time BIGINT, AAPL_price FLOAT, AAPL_volume INT, MSFT_time BIGINT, MSFT_price FLOAT, MSFT_volume INT, GOOG_time BIGINT, GOOG_price FLOAT, GOOG_volume INT)\"\n\n\n// Or perform a loop to write the query string for creating the price table pricet\n\n// Split the string symbolv\nlet symbolv = flow.get(\"symbolv\")\nsymbolv = symbolv.split(\",\")\n\n// Loop to create the price table pricet\nlet querys = \"CREATE TABLE IF NOT EXISTS pricet (timestamp BIGINT\"\nsymbolv.forEach((symboln) => {\n    querys += \", \" + symboln + \"_price FLOAT, \" + symboln + \"_volume INT\"\n}) // end forEach\nquerys += \")\"\nmsg.query = querys\n\nnode.warn(msg.query)\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 920,
+        "wires": [
+            [
+                "132f343660747bab"
+            ]
+        ]
+    },
+    {
+        "id": "132f343660747bab",
+        "type": "postgresql",
+        "z": "505066468048d4de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 620,
+        "y": 920,
+        "wires": [
+            [
+                "7b81e8bc8cb2506e"
+            ]
+        ]
+    },
+    {
+        "id": "7b81e8bc8cb2506e",
+        "type": "debug",
+        "z": "505066468048d4de",
+        "name": "debug 925",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 810,
+        "y": 920,
+        "wires": []
+    },
+    {
+        "id": "dd828a1adcde387a",
+        "type": "inject",
+        "z": "505066468048d4de",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 920,
+        "wires": [
+            [
+                "6b3a45d12daafaed"
+            ]
+        ]
+    },
+    {
+        "id": "9ab95a2954dc9c15",
+        "type": "function",
+        "z": "505066468048d4de",
+        "name": "Get GOOG prices",
+        "func": "// Get the UNIX time in milliseconds\nlet datetime = new Date()\nlet timunix = datetime.getTime()\n\n// Get the price object\nlet pricobj = msg.payload\n\n// Get the price object for GOOG\nlet goog = pricobj.GOOG\n// Get the integer timestamp from the Alpaca source\nlet timesource = Date.parse(goog.t)\nnode.warn(\"UNIX time = \" + timunix + \" / GOOG time = \" + timesource + \" / price = \" + goog.p + \" / volume = \" + goog.s)\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ea487431d1a89557",
+        "type": "alpaca-account",
+        "name": "machinetrader",
+        "keyId": "PKQRP984U4YQ6JQJG6JJ",
+        "paper": true
+    },
+    {
+        "id": "7455395cf269fb2b",
+        "type": "postgreSQLConfig",
+        "name": "",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "postgres",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "docker",
+        "userFieldType": "str",
+        "password": "docker",
+        "passwordFieldType": "str"
+    }
+]

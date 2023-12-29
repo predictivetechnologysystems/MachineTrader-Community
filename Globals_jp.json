@@ -1,0 +1,413 @@
+[
+    {
+        "id": "e4dcc3ac612a51da",
+        "type": "tab",
+        "label": "Globals",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "fdc188b60b5545f6",
+        "type": "function",
+        "z": "e4dcc3ac612a51da",
+        "name": "Check if market is open",
+        "func": "node.warn(\"Market open is \" + global.get(\"market_open\"))\nnode.warn(\"Warmup is \" + global.get(\"warmupm\"))\nnode.warn(\"Liquidate is \" + global.get(\"liquidatem\"))\nnode.warn(\"earlyHours \" + global.get(\"earlyHours\"))\nnode.warn(\"afterHours is \" + global.get(\"afterHours\"))\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "46d620d4f769a49d",
+        "type": "inject",
+        "z": "e4dcc3ac612a51da",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 180,
+        "wires": [
+            [
+                "fdc188b60b5545f6"
+            ]
+        ]
+    },
+    {
+        "id": "8580b6da0bf956a7",
+        "type": "comment",
+        "z": "e4dcc3ac612a51da",
+        "name": "Open and close the market",
+        "info": "",
+        "x": 150,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "84afb7dcc4dec669",
+        "type": "function",
+        "z": "e4dcc3ac612a51da",
+        "name": "Open/Close the market",
+        "func": "// Extract variables about the state of the market\nlet earlyHours = msg.payload[\"earlyHours\"]\nlet afterHours = msg.payload[\"afterHours\"]\nlet isopen = msg.payload[\"market\"]\n\n// Set variables about the state of the market\nglobal.set(\"earlyHours\", earlyHours)\nglobal.set(\"afterHours\", afterHours)\nnode.warn(\"earlyHours = \" + earlyHours)\nnode.warn(\"isopen = \" + isopen)\nnode.warn(\"afterHours = \" + afterHours)\n\nif (isopen == \"open\") {\n    global.set(\"market_open\", true)\n    node.warn(\"Market is open\")\n} else {\n    global.set(\"market_open\", false)\n    node.warn(\"Market is closed\")\n} // end if\n\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 770,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3e4afbaa18d1a347",
+        "type": "inject",
+        "z": "e4dcc3ac612a51da",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "29 09 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 500,
+        "wires": [
+            [
+                "457733b72d30a563"
+            ]
+        ]
+    },
+    {
+        "id": "f6939b60b366884f",
+        "type": "inject",
+        "z": "e4dcc3ac612a51da",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "31 09 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 560,
+        "wires": [
+            [
+                "159ecd642054af96"
+            ]
+        ]
+    },
+    {
+        "id": "bc74eba57e19eb2a",
+        "type": "function",
+        "z": "e4dcc3ac612a51da",
+        "name": "Show warmup and liquidation",
+        "func": "// global.set(\"warmupm\", false)\n// global.set(\"liquidatem\", false)\nnode.warn(\"In warmup is \" + global.get(\"warmupm\"))\nnode.warn(\"Liquidate is \" + global.get(\"liquidatem\"))\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 860,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9cfe7d950b1e27c0",
+        "type": "inject",
+        "z": "e4dcc3ac612a51da",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 860,
+        "wires": [
+            [
+                "bc74eba57e19eb2a"
+            ]
+        ]
+    },
+    {
+        "id": "576f45b64c5b6aa8",
+        "type": "function",
+        "z": "e4dcc3ac612a51da",
+        "name": "Open the market manually",
+        "func": "global.set(\"market_open\", true)\nnode.warn(\"Market is open\")\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f04ae88444b7d508",
+        "type": "comment",
+        "z": "e4dcc3ac612a51da",
+        "name": "Set warmup period just after market open",
+        "info": "",
+        "x": 200,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "b00faf2ba31bbafa",
+        "type": "inject",
+        "z": "e4dcc3ac612a51da",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "*/30 4-19 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 100,
+        "wires": [
+            [
+                "12cb01ae62760d28"
+            ]
+        ]
+    },
+    {
+        "id": "e50fd32fe9eed92c",
+        "type": "polygon-marketinfo",
+        "z": "e4dcc3ac612a51da",
+        "conf": "20ec97da638e3fda",
+        "x": 510,
+        "y": 100,
+        "wires": [
+            [
+                "84afb7dcc4dec669"
+            ]
+        ]
+    },
+    {
+        "id": "a0e6ddf2c292be50",
+        "type": "inject",
+        "z": "e4dcc3ac612a51da",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 240,
+        "wires": [
+            [
+                "576f45b64c5b6aa8"
+            ]
+        ]
+    },
+    {
+        "id": "044b6e078827c5bb",
+        "type": "function",
+        "z": "e4dcc3ac612a51da",
+        "name": "Close the market manually",
+        "func": "global.set(\"market_open\", false)\nnode.warn(\"Market is closed\")\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "44f2c6154c6def7c",
+        "type": "inject",
+        "z": "e4dcc3ac612a51da",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 300,
+        "wires": [
+            [
+                "044b6e078827c5bb"
+            ]
+        ]
+    },
+    {
+        "id": "159ecd642054af96",
+        "type": "function",
+        "z": "e4dcc3ac612a51da",
+        "name": "End the warmup",
+        "func": "// End the warmup period\nglobal.set(\"warmupm\", false)\nnode.warn(\"Warmup is \" + global.get(\"warmupm\"))\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "457733b72d30a563",
+        "type": "function",
+        "z": "e4dcc3ac612a51da",
+        "name": "Start the warmup",
+        "func": "// Start the warmup period for the first minute\n// if (global.get(\"market_open\")) {\n    global.set(\"warmupm\", true)\n    node.warn(\"Warmup is \" + global.get(\"warmupm\"))\n// } // end if\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 500,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4eb4d229b5400f10",
+        "type": "function",
+        "z": "e4dcc3ac612a51da",
+        "name": "End liquidation period",
+        "func": "// End the liquidation period\nglobal.set(\"liquidatem\", false)\nnode.warn(\"Liquidate is \" + global.get(\"liquidatem\"))\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 800,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "740ba81a9b1439b9",
+        "type": "inject",
+        "z": "e4dcc3ac612a51da",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "59 15 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 740,
+        "wires": [
+            [
+                "e20ba04d46756390"
+            ]
+        ]
+    },
+    {
+        "id": "5c565fd194ab71a9",
+        "type": "inject",
+        "z": "e4dcc3ac612a51da",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "00 16 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 800,
+        "wires": [
+            [
+                "4eb4d229b5400f10"
+            ]
+        ]
+    },
+    {
+        "id": "78d2789365ebd23f",
+        "type": "comment",
+        "z": "e4dcc3ac612a51da",
+        "name": "Set liquidation period in last minute before market close",
+        "info": "",
+        "x": 240,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "e20ba04d46756390",
+        "type": "function",
+        "z": "e4dcc3ac612a51da",
+        "name": "Set liquidation true",
+        "func": "// Set the liquidation period in the last minute\nif (global.get(\"market_open\")) {\n    global.set(\"liquidatem\", true)\n    node.warn(\"Liquidate is \" + global.get(\"liquidatem\"))\n} // end if\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 740,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "12cb01ae62760d28",
+        "type": "delay",
+        "z": "e4dcc3ac612a51da",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 300,
+        "y": 100,
+        "wires": [
+            [
+                "e50fd32fe9eed92c"
+            ]
+        ]
+    },
+    {
+        "id": "20ec97da638e3fda",
+        "type": "polygon-account",
+        "name": "Jolly"
+    }
+]
