@@ -27,14 +27,14 @@
         "type": "function",
         "z": "505066468048d4de",
         "name": "Get prices",
-        "func": "// Get the UNIX time in milliseconds\nlet datetime = new Date()\nlet timunix = datetime.getTime()\n\n// Get the Alpaca price object\nlet pricalp = msg.payload\n\n// Get the price object names (keys)\nlet symbola = Object.keys(pricalp)\n// node.warn(\"symbola = \" + symbola)\n\n// Postgres queries\n// let querys = \"INSERT INTO pricet (timestamp, AAPL_time, AAPL_price, AAPL_volume, MSFT_time, MSFT_price, MSFT_volume, GOOG_time, GOOG_price, GOOG_volume) VALUES (\" + timunix\n// let querys = \"INSERT INTO pricet (timestamp, AAPL_price, AAPL_volume, MSFT_price, MSFT_volume, GOOG_price, GOOG_volume) VALUES (\" + timunix\n\n// Create first part of the postgres query\nlet querys = \"INSERT INTO pricet (timestamp\"\n// Add the fields to postgres query in loop\nsymbola.forEach((symboln) => {\n    querys += \", \" + symboln + \"_price, \" + symboln + \"_volume\"\n}) // end forEach\nquerys += \") VALUES (\" + timunix\n\n// Add the data to the postgres query in loop\nlet datas = {} // Data for symbol\nlet pricec = {} // Current prices for all tickers\nsymbola.forEach((symboln) => {\n    // Get the price object for symboln\n    datas = pricalp[symboln]\n    // querys += \", \" + Date.parse(datas.t) + \", \" + datas.p + \", \" + datas.s\n    querys += \", \" + datas.p + \", \" + datas.s\n    pricec[symboln] = datas.p\n    // node.warn(symboln + \" price = \" + datas.p)\n}) // end forEach\nquerys += \")\"\nglobal.set(\"pricec\", pricec) // Set the current prices for all tickers\n\n// querys += \", \" + goog.t + \", \" + goog.p + \", \" + goog.s + \")\"\n// node.warn(\"Query = \" + querys)\n\nmsg.query = querys\nmsg.payload = pricec\n\nreturn msg\n\n",
+        "func": "// Get the machine time in milliseconds\nlet datetime = new Date()\nlet timem = datetime.getTime()\n\n// Get the Alpaca price object\nlet pricobj = msg.payload\n\n// Get the price object names (keys)\nlet symbola = Object.keys(pricobj)\n// node.warn(\"symbola = \" + symbola)\n\n// Postgres queries\n// let querys = \"INSERT INTO pricet (timestamp, AAPL_time, AAPL_price, AAPL_volume, MSFT_time, MSFT_price, MSFT_volume, GOOG_time, GOOG_price, GOOG_volume) VALUES (\" + timem\n// let querys = \"INSERT INTO pricet (timestamp, AAPL_price, AAPL_volume, MSFT_price, MSFT_volume, GOOG_price, GOOG_volume) VALUES (\" + timem\n\n// Create first part of the postgres query\nlet querys = \"INSERT INTO pricet (timestamp\"\n// Add the fields to postgres query in loop\nsymbola.forEach((symboln) => {\n    querys += \", \" + symboln + \"_price, \" + symboln + \"_volume\"\n}) // end forEach\nquerys += \") VALUES (\" + timem\n\n// Add the data to the postgres query in loop\nlet datas = {} // Data for symbol\nlet pricec = {} // Current prices for all tickers\nsymbola.forEach((symboln) => {\n    // Get the price object for symboln\n    datas = pricobj[symboln]\n    // querys += \", \" + Date.parse(datas.t) + \", \" + datas.p + \", \" + datas.s\n    querys += \", \" + datas.p + \", \" + datas.s\n    pricec[symboln] = datas.p\n    // node.warn(symboln + \" price = \" + datas.p)\n}) // end forEach\nquerys += \")\"\nglobal.set(\"pricec\", pricec) // Set the current prices for all tickers\n\n// querys += \", \" + goog.t + \", \" + goog.p + \", \" + goog.s + \")\"\n// node.warn(\"Query = \" + querys)\n\nmsg.query = querys\nmsg.pricec = pricec\n\nreturn msg\n\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 850,
+        "x": 830,
         "y": 380,
         "wires": [
             [
@@ -60,10 +60,13 @@
         "name": "Updated prices",
         "mode": "link",
         "links": [
+            "1d154443ac672b2b",
+            "3b80a30fe05ad2ef",
             "3df20a9d464d4891",
-            "0bb28df002a2d9d0"
+            "b7eaa8c117231d61",
+            "bb0434020a46ce72"
         ],
-        "x": 1015,
+        "x": 995,
         "y": 420,
         "wires": []
     },
@@ -77,7 +80,7 @@
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 1060,
+        "x": 1040,
         "y": 340,
         "wires": [
             []
@@ -186,7 +189,7 @@
         "type": "function",
         "z": "505066468048d4de",
         "name": "Get GOOG price from payload",
-        "func": "// Current price\nlet pricobj = msg.payload\nlet symboln = \"GOOG\"\n// Get the price for symboln\nlet pricegoog = pricobj[symboln]\nnode.warn(symboln + \" price = \" + pricegoog)\n\n",
+        "func": "// Current price\nlet pricec = msg.pricec\nlet symboln = \"GOOG\"\n// Get the price for symboln\nlet pricegoog = pricec[symboln]\nnode.warn(symboln + \" price = \" + pricegoog)\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -295,7 +298,7 @@
         "type": "function",
         "z": "505066468048d4de",
         "name": "Get current prices from global",
-        "func": "// Get the current prices\nlet pricobj = global.get(\"pricec\")\n\n// Get the price object names (keys)\nlet symbolv = Object.keys(pricobj)\n\nlet pricesymb = 0\nsymbolv.forEach((symboln) => {\n    // Get the price for symboln\n    pricesymb = pricobj[symboln]\n    node.warn(symboln + \" price = \" + pricesymb)\n}) // end forEach\n\n",
+        "func": "// Get the current prices\nlet pricec = global.get(\"pricec\")\n\n// Get the price object names (keys)\nlet symbolv = Object.keys(pricec)\n\nlet pricesymb = 0\nsymbolv.forEach((symboln) => {\n    // Get the price for symboln\n    node.warn(symboln + \" price = \" + pricec[symboln])\n}) // end forEach\n\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -1432,15 +1435,15 @@
         "id": "849b8fb80d0ee2d1",
         "type": "function",
         "z": "505066468048d4de",
-        "name": "Erase/Delete the price table pricet",
-        "func": "// Erase all the price data from the table pricet\nmsg.query = \"TRUNCATE TABLE pricet\"\n\n// Delete the table pricet\n// msg.query = \"DROP TABLE pricet\"\n\nnode.warn(msg.query)\nreturn msg\n",
+        "name": "Erase the price table pricet",
+        "func": "// Erase all the price data from the table pricet\nmsg.query = \"TRUNCATE TABLE pricet\"\n\nnode.warn(msg.query)\nreturn msg\n",
         "outputs": 1,
         "timeout": "",
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 380,
+        "x": 360,
         "y": 840,
         "wires": [
             [
@@ -1458,7 +1461,7 @@
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 620,
+        "x": 600,
         "y": 840,
         "wires": [
             [
@@ -1478,7 +1481,7 @@
         "onceDelay": 0.1,
         "topic": "",
         "x": 130,
-        "y": 1000,
+        "y": 1020,
         "wires": [
             [
                 "2a479fa711ad63fc"
@@ -1498,7 +1501,7 @@
         "finalize": "",
         "libs": [],
         "x": 330,
-        "y": 1000,
+        "y": 1020,
         "wires": [
             [
                 "49fe792d54e2a224"
@@ -1515,8 +1518,8 @@
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 540,
-        "y": 1000,
+        "x": 600,
+        "y": 1020,
         "wires": [
             [
                 "d67932d298917b39"
@@ -1535,8 +1538,8 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 730,
-        "y": 1000,
+        "x": 790,
+        "y": 1020,
         "wires": []
     },
     {
@@ -1551,7 +1554,7 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 810,
+        "x": 790,
         "y": 840,
         "wires": []
     },
@@ -1589,7 +1592,7 @@
         "type": "function",
         "z": "505066468048d4de",
         "name": "Create the price table pricet",
-        "func": "// Write query to create the price table pricet - tedious\n// msg.query = \"CREATE TABLE IF NOT EXISTS pricet (timestamp BIGINT, AAPL_time BIGINT, AAPL_price FLOAT, AAPL_volume INT, MSFT_time BIGINT, MSFT_price FLOAT, MSFT_volume INT, GOOG_time BIGINT, GOOG_price FLOAT, GOOG_volume INT)\"\n\n\n// Or perform a loop to write the query string for creating the price table pricet\n\n// Split the string symbolv\nlet symbolv = flow.get(\"symbolv\")\nsymbolv = symbolv.split(\",\")\n\n// Loop to create the price table pricet\nlet querys = \"CREATE TABLE IF NOT EXISTS pricet (timestamp BIGINT\"\nsymbolv.forEach((symboln) => {\n    querys += \", \" + symboln + \"_price FLOAT, \" + symboln + \"_volume INT\"\n}) // end forEach\nquerys += \")\"\nmsg.query = querys\n\nnode.warn(msg.query)\nreturn msg\n",
+        "func": "// Write query to create the price table pricet - tedious\n// msg.query = \"CREATE TABLE IF NOT EXISTS pricet (timestamp BIGINT, AAPL_time BIGINT, AAPL_price FLOAT, AAPL_volume INT, MSFT_time BIGINT, MSFT_price FLOAT, MSFT_volume INT, GOOG_time BIGINT, GOOG_price FLOAT, GOOG_volume INT)\"\n\n\n// Or perform a loop to write the query string for creating the price table pricet\n\n// Split the string symbolv\nlet symbolv = flow.get(\"symbolv\")\nsymbolv = symbolv.split(\",\")\n\n// Loop to create the price table pricet\nlet querys = \"CREATE TABLE IF NOT EXISTS pricet (timestamp BIGINT\"\nsymbolv.forEach((symboln) => {\n    querys += \", \" + symboln + \"_price FLOAT, \" + symboln + \"_volume INT\"\n}) // end forEach\nquerys += \")\"\nnode.warn(querys)\n\nmsg.query = querys\nreturn msg\n",
         "outputs": 1,
         "timeout": "",
         "noerr": 0,
@@ -1597,7 +1600,7 @@
         "finalize": "",
         "libs": [],
         "x": 360,
-        "y": 920,
+        "y": 960,
         "wires": [
             [
                 "132f343660747bab"
@@ -1614,8 +1617,8 @@
         "split": false,
         "rowsPerMsg": 1,
         "outputs": 1,
-        "x": 620,
-        "y": 920,
+        "x": 600,
+        "y": 960,
         "wires": [
             [
                 "7b81e8bc8cb2506e"
@@ -1634,8 +1637,8 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 810,
-        "y": 920,
+        "x": 790,
+        "y": 960,
         "wires": []
     },
     {
@@ -1650,7 +1653,7 @@
         "onceDelay": 0.1,
         "topic": "",
         "x": 130,
-        "y": 920,
+        "y": 960,
         "wires": [
             [
                 "6b3a45d12daafaed"
@@ -1662,17 +1665,90 @@
         "type": "function",
         "z": "505066468048d4de",
         "name": "Get GOOG prices",
-        "func": "// Get the UNIX time in milliseconds\nlet datetime = new Date()\nlet timunix = datetime.getTime()\n\n// Get the price object\nlet pricobj = msg.payload\n\n// Get the price object for GOOG\nlet goog = pricobj.GOOG\n// Get the integer timestamp from the Alpaca source\nlet timesource = Date.parse(goog.t)\nnode.warn(\"UNIX time = \" + timunix + \" / GOOG time = \" + timesource + \" / price = \" + goog.p + \" / volume = \" + goog.s)\n",
+        "func": "// Get the machine time in milliseconds\nlet datetime = new Date()\nlet timem = datetime.getTime()\n\n// Get the price object\nlet pricobj = msg.payload\n\n// Get the price object for GOOG\nlet goog = pricobj.GOOG\n// Get the integer timestamp from the Alpaca source\nlet timesource = Date.parse(goog.t)\nnode.warn(\"Machine time = \" + timem + \" / GOOG time = \" + timesource + \" / price = \" + goog.p + \" / volume = \" + goog.s)\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 870,
+        "x": 850,
         "y": 480,
         "wires": [
             []
+        ]
+    },
+    {
+        "id": "4ba8430b106276d6",
+        "type": "function",
+        "z": "505066468048d4de",
+        "name": "Delete the price table pricet",
+        "func": "// Delete the table pricet\nmsg.query = \"DROP TABLE pricet\"\n\nnode.warn(msg.query)\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 900,
+        "wires": [
+            [
+                "93988e3b4e64786c"
+            ]
+        ]
+    },
+    {
+        "id": "93988e3b4e64786c",
+        "type": "postgresql",
+        "z": "505066468048d4de",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 600,
+        "y": 900,
+        "wires": [
+            [
+                "c0e42b5e6df05162"
+            ]
+        ]
+    },
+    {
+        "id": "c0e42b5e6df05162",
+        "type": "debug",
+        "z": "505066468048d4de",
+        "name": "debug 931",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 790,
+        "y": 900,
+        "wires": []
+    },
+    {
+        "id": "4dc83b66805637b3",
+        "type": "inject",
+        "z": "505066468048d4de",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 900,
+        "wires": [
+            [
+                "4ba8430b106276d6"
+            ]
         ]
     },
     {

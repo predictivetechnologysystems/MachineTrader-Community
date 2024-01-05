@@ -1,0 +1,102 @@
+[
+    {
+        "id": "6f782989d0b5585e",
+        "type": "tab",
+        "label": "RSI",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "17fe18577f5c4a2b",
+        "type": "comment",
+        "z": "6f782989d0b5585e",
+        "name": "Calculate the RSI",
+        "info": "",
+        "x": 140,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "bb0434020a46ce72",
+        "type": "link in",
+        "z": "6f782989d0b5585e",
+        "name": "RSI In",
+        "links": [
+            "6907d48e5dad5f32"
+        ],
+        "x": 185,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "596c074bb92a39b5",
+        "type": "inject",
+        "z": "6f782989d0b5585e",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 140,
+        "wires": [
+            [
+                "3938edec93d3e397"
+            ]
+        ]
+    },
+    {
+        "id": "3938edec93d3e397",
+        "type": "function",
+        "z": "6f782989d0b5585e",
+        "name": "Initialize RSI parameters",
+        "func": "// Create a string with the ticker for RSI\nflow.set(\"symboln\", \"AAPL\")\n\n// Set the length of the RSI look-back interval\nlet lookb = 14\nflow.set(\"lookb\", lookb) // Look-back interval length\nnode.warn(\"Look-back interval = \" + flow.get(\"lookb\"))\n\n// Set the number of RSI calculations that have been performed\nlet numcalc = 0\nflow.set(\"numcalc\", numcalc)\n\n// Initialize the average gains and losses\nflow.set(\"gainm\", 0) // Average gain\nflow.set(\"lossm\", 0) // Average loss\n\n// Create an empty queue for stock returns\n// The queue contains lookb stock returns\nlet dataq = Array(lookb).fill(0)\n// Set the position of the end of the queue\nlet endq = lookb - 1\nflow.set(\"dataq\", dataq)\nflow.set(\"endq\", endq)\nnode.warn(\"Data queue = \" + flow.get(\"dataq\"))\nnode.warn(\"End of queue = \" + (1+flow.get(\"endq\")))\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "88351bc48b288e30",
+        "type": "link out",
+        "z": "6f782989d0b5585e",
+        "name": "RSI Out",
+        "mode": "link",
+        "links": [],
+        "x": 515,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "c7f16175ad012260",
+        "type": "function",
+        "z": "6f782989d0b5585e",
+        "name": "Calculate the RSI",
+        "func": "/*\nCalculating the Relative Strength Index (RSI).\n\nThe following website provides a good explanation of the RSI calculation:\n\nhttps://school.stockcharts.com/doku.php?id=technical_indicators:relative_strength_index_rsi\n\n\nThe RSI depends on the trailing average gain (gainm) and the trailing average loss (lossm).\n\nThe average gains and losses are calculated from the gains and losses over a look-back interval (lookb), \nwhich is often chosen to be 14 time periods (days, minutes, etc.) \n\nThe current gains and losses are always expressed as non-negative values:\n\n    gain(t) = max(r(t), 0)\n    loss(t) = max(-r(t), 0)\n\nWhere r(t) is the current return at time t.\n\nIn the initial warmup interval (say the first 250 time periods), the averages \nare calculated as the averages of the gains and losses over the look-back interval:\n\n    gainm(t) = Sum( gain(t) ... gain(t-lookb+1) ) / lookb\n    lossm(t) = Sum( loss(t) ... loss(t-lookb+1) ) / lookb\n\nAfter the initial warmup interval, the average gains and losses are calculated \nrecursively, similar to the exponential moving average (EMA): \n\n    gainm(t) = ( (lookb-1) * gainm(t-1)  + gain(t) ) / lookb\n    lossm(t) = ( (lookb-1) * lossm(t-1)  + loss(t) ) / lookb\n\nThe advantage of the recursive calculation is that it doesn't require maintaining \nan array of recent gains and losses.  \nOnly the the most recent gains and losses are needed to update the averages.  \n\n\nThe RSI is then calculated from the average gains and losses as:\n\n            100 * gainm(t)\n    RSI = ---------------------\n           gainm(t) + lossm(t)\n\nThe RSI value is between 0 and 100 - it is said to oscillate between these extremes.\nIf the average gain is equal to zero, then RSI = 0.\nIf the average loss is equal to zero, then RSI = 100.\nIf the average gains and losses are equal, then RSI = 50.\nIf the gains are greater than the losses, then RSI > 50.  \nIf the gains are less than the losses, then RSI < 50.  \n\nSome traders interpret the condition RSI > 80 as indicating that the prices are overbought (too high).\nSome traders interpret the condition RSI < 20 as indicating that the prices are oversold (too low).\n\n*/\n\n// Get the current prices for all tickers\nlet pricec = msg.pricec\nlet symboln = flow.get(\"symboln\")\n// Get the price for symboln\npricec = pricec[symboln]\nnode.warn(symboln + \" new price = \" + pricec)\nlet pricep = flow.get(\"pricep\") // Get the previous price\nflow.set(\"pricep\", pricec) // Set the current price\n\n// Get the number of RSI calculations that have been performed\nlet numcalc = flow.get(\"numcalc\")\n// Set the number of RSI calculations for warmup\nlet warmupc = 250\n\n// Get the length of the RSI look-back interval\nlet lookb = flow.get(\"lookb\") // Look-back interval length\n\n// Calculate the dollar return\nlet retc = 0 // Set first return to zero\nif (numcalc > 0) {\n    retc = (pricec - pricep)\n} // end if\nnumcalc += 1\nflow.set(\"numcalc\", numcalc)\n\n// Get the average gain and loss\nlet gainm = flow.get(\"gainm\") // Average gain\nlet lossm = flow.get(\"lossm\") // Average loss\n\n// Update the average gain and loss\nif (numcalc < warmupc) {\n    // Calculate the averages from the returns queue\n    let dataq = flow.get(\"dataq\")\n    let endq = flow.get(\"endq\")\n\n    // Add the return to the queue\n    dataq[endq] = retc\n    if (endq > 0)\n        endq = endq - 1\n    else\n        endq = lookb - 1\n\n    flow.set(\"dataq\", dataq)\n    flow.set(\"endq\", endq)\n\n    // Sum up the returns queue\n    gainm = 0\n    lossm = 0\n    for (var i = lookb; i--;) {\n        gainm += Math.max(dataq[i], 0)\n        lossm += Math.max(-dataq[i], 0)\n    } // end for\n    gainm = gainm / lookb\n    lossm = lossm / lookb\n} else {\n    // Update the averages using a recursive formula\n    gainm = ((lookb - 1) * gainm + Math.max(retc, 0)) / lookb\n    lossm = ((lookb - 1) * lossm + Math.max(-retc, 0)) / lookb\n} // end if\n\n// Update the average gain and loss\nflow.set(\"gainm\", gainm)\nflow.set(\"lossm\", lossm)\nnode.warn(\"Average gain = \" + gainm.toPrecision(7) + \" / Loss = \" + lossm.toPrecision(7))\n\n// Calculate the RSI\nlet rsi = 0\nif ((gainm + lossm) > 0)\n    rsi = 100 * gainm / (gainm + lossm)\nnode.warn(\"RSI = \" + rsi.toPrecision(7))\n\nmsg.rsi = rsi\nreturn msg\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 220,
+        "wires": [
+            [
+                "88351bc48b288e30"
+            ]
+        ]
+    }
+]
