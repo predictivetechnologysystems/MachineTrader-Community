@@ -1,0 +1,121 @@
+[
+    {
+        "id": "7d6d10f26368d0ac",
+        "type": "tab",
+        "label": "Loop",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "b8dbb8b011abfa77",
+        "type": "loop",
+        "z": "7d6d10f26368d0ac",
+        "name": "",
+        "kind": "fcnt",
+        "count": "",
+        "initial": "",
+        "step": "",
+        "condition": "",
+        "conditionType": "js",
+        "when": "before",
+        "enumeration": "enum",
+        "enumerationType": "msg",
+        "limit": "",
+        "loopPayload": "loop-index",
+        "finalPayload": "final-count",
+        "x": 390,
+        "y": 180,
+        "wires": [
+            [],
+            [
+                "ad8954cd87299bba"
+            ]
+        ]
+    },
+    {
+        "id": "30b9088167fd8676",
+        "type": "inject",
+        "z": "7d6d10f26368d0ac",
+        "name": "Inputs",
+        "props": [
+            {
+                "p": "count",
+                "v": "5",
+                "vt": "num"
+            },
+            {
+                "p": "initial",
+                "v": "1",
+                "vt": "num"
+            },
+            {
+                "p": "step",
+                "v": "1",
+                "vt": "num"
+            },
+            {
+                "p": "limit",
+                "v": "1000000",
+                "vt": "num"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 180,
+        "wires": [
+            [
+                "b8dbb8b011abfa77"
+            ]
+        ]
+    },
+    {
+        "id": "0eab6687238ebdd5",
+        "type": "function",
+        "z": "7d6d10f26368d0ac",
+        "name": "display outputs",
+        "func": "let index = msg.loop.index\nlet count = msg.loop.count\nlet key = msg.loop.key\nlet initial = msg.loop.initial\nlet stop = msg.loop.stop\n\nlet broken = msg.loop.broken\nlet timeout = msg.loop.timeout\n//let passed_total = msg.loop.passed.total\n//let passed_last = msg.loop.passed.last\nlet restarts = msg.loop.restarts\n\nnode.warn(\"Index: \" +index)\n\n/*node.warn(\"Count: \" + count)\nnode.warn(\"Key: \" + key)\nnode.warn(\"Initial: \" + initial)\nnode.warn(\"Stop: \" + stop)\n*/\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 260,
+        "wires": [
+            [
+                "b8dbb8b011abfa77"
+            ]
+        ]
+    },
+    {
+        "id": "ad8954cd87299bba",
+        "type": "delay",
+        "z": "7d6d10f26368d0ac",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 270,
+        "y": 260,
+        "wires": [
+            [
+                "0eab6687238ebdd5"
+            ]
+        ]
+    }
+]
