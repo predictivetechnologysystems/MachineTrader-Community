@@ -1,0 +1,640 @@
+[
+    {
+        "id": "a24220a28435c222",
+        "type": "tab",
+        "label": "Alpaca Crypto ETF Prices",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "41e5afe67e0fc91e",
+        "type": "alpaca-data-last-multi-trade",
+        "z": "a24220a28435c222",
+        "conf": "61bce7f78a75ae7d",
+        "symbol": "",
+        "name": "",
+        "x": 350,
+        "y": 240,
+        "wires": [
+            [
+                "0bee4aea9ec2af23"
+            ]
+        ]
+    },
+    {
+        "id": "0bee4aea9ec2af23",
+        "type": "function",
+        "z": "a24220a28435c222",
+        "name": "Get prices",
+        "func": "// Get the machine time in milliseconds\nlet datetime = new Date()\nlet timem = datetime.getTime()\n\n// Get the Alpaca price object\nlet pricobj = msg.payload\n\n// Get the price object names (keys)\nlet symbola = Object.keys(pricobj)\n// node.warn(\"symbola = \" + symbola)\n\n\n// Create first part of the postgres query\nlet querys = \"INSERT INTO pricecrypto (timestamp\"\n\n// Add the fields to postgres query in loop\nsymbola.forEach((symboln) => {\n    querys += \", \" + symboln + \"_price, \" + symboln + \"_volume\"\n}) // end forEach\nquerys += \") VALUES (\" + timem\n\n// Add the data to the postgres query in loop\nlet datas = {} // Data for symbol\nlet pricec = {} // Current prices for all tickers\n\nsymbola.forEach((symboln) => {\n    // Get the price object for symboln\n    datas = pricobj[symboln]\n    // querys += \", \" + Date.parse(datas.t) + \", \" + datas.p + \", \" + datas.s\n    querys += \", \" + datas.p + \", \" + datas.s\n    pricec[symboln] = datas.p\n    // node.warn(symboln + \" price = \" + datas.p)\n}) // end forEach\nquerys += \")\"\nglobal.set(\"pricec\", pricec) // Set the current prices for all tickers\n\n// querys += \", \" + goog.t + \", \" + goog.p + \", \" + goog.s + \")\"\n// node.warn(\"Query = \" + querys)\n\nmsg.query = querys\nmsg.pricec = pricec\n\nreturn msg\n\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 240,
+        "wires": [
+            [
+                "2a470496b7310b68"
+            ]
+        ]
+    },
+    {
+        "id": "6e6389994e6472f4",
+        "type": "comment",
+        "z": "a24220a28435c222",
+        "name": "Insert prices into tables",
+        "info": "",
+        "x": 140,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "2a470496b7310b68",
+        "type": "postgresql",
+        "z": "a24220a28435c222",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 740,
+        "y": 240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8f297c89600645c7",
+        "type": "comment",
+        "z": "a24220a28435c222",
+        "name": "Create flow variables",
+        "info": "",
+        "x": 140,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "a5c5e2b5a7d9de59",
+        "type": "inject",
+        "z": "a24220a28435c222",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 80,
+        "wires": [
+            [
+                "c09fe9f3a85baeca"
+            ]
+        ]
+    },
+    {
+        "id": "c09fe9f3a85baeca",
+        "type": "function",
+        "z": "a24220a28435c222",
+        "name": "Create flow variables",
+        "func": "// Collect prices in extended hours?\nflow.set(\"extended_hours\", false)\nnode.warn(\"Collect prices in extended hours = \" + flow.get(\"extended_hours\"))\n\n// String with tickers to collect prices\nflow.set(\"symbolv\", \"ARKB,BITB,IBIT,HODL,EZBC,BTCO,FBTC,BTCW,BRRR,DEFI,GBTC\")\nnode.warn(\"Trading symbols = \" + flow.get(\"symbolv\"))\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "be44acbd96e982f7",
+        "type": "inject",
+        "z": "a24220a28435c222",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 120,
+        "wires": [
+            [
+                "d80d792e589e989b"
+            ]
+        ]
+    },
+    {
+        "id": "d80d792e589e989b",
+        "type": "function",
+        "z": "a24220a28435c222",
+        "name": "Print flow variables",
+        "func": "node.warn(\"Collect prices in extended hours = \" + flow.get(\"extended_hours\"))\n\nnode.warn(\"Trading symbols = \" + flow.get(\"symbolv\"))\n\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9e2e0f2062cb119d",
+        "type": "inject",
+        "z": "a24220a28435c222",
+        "name": "Set Inputs",
+        "props": [
+            {
+                "p": "symbol",
+                "v": "symbolv",
+                "vt": "flow"
+            },
+            {
+                "p": "feed",
+                "v": "iex",
+                "vt": "str"
+            }
+        ],
+        "repeat": "1",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 240,
+        "wires": [
+            [
+                "41e5afe67e0fc91e"
+            ]
+        ]
+    },
+    {
+        "id": "d42a37d3ac490f62",
+        "type": "http in",
+        "z": "a24220a28435c222",
+        "name": "crypto_etfs",
+        "url": "/api/crypto_etfs",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 100,
+        "y": 620,
+        "wires": [
+            [
+                "3e939a38e55bb3fa"
+            ]
+        ]
+    },
+    {
+        "id": "c69d9c4ab3cc5cb7",
+        "type": "http response",
+        "z": "a24220a28435c222",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 990,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "9b3d81f7f25e6f9d",
+        "type": "csv",
+        "z": "a24220a28435c222",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 670,
+        "y": 620,
+        "wires": [
+            [
+                "7f9940f970682a9f"
+            ]
+        ]
+    },
+    {
+        "id": "3e939a38e55bb3fa",
+        "type": "function",
+        "z": "a24220a28435c222",
+        "name": "Export pricecrypto table",
+        "func": "msg.query = \"SELECT * FROM pricecrypto\"\nnode.warn(msg.query)\nreturn msg",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 620,
+        "wires": [
+            [
+                "9560711604928b80"
+            ]
+        ]
+    },
+    {
+        "id": "7f9940f970682a9f",
+        "type": "file",
+        "z": "a24220a28435c222",
+        "name": "write report",
+        "filename": "/data/store/output.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 830,
+        "y": 620,
+        "wires": [
+            [
+                "c69d9c4ab3cc5cb7"
+            ]
+        ]
+    },
+    {
+        "id": "9560711604928b80",
+        "type": "postgresql",
+        "z": "a24220a28435c222",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 500,
+        "y": 620,
+        "wires": [
+            [
+                "9b3d81f7f25e6f9d"
+            ]
+        ]
+    },
+    {
+        "id": "fe6bc1e816391423",
+        "type": "comment",
+        "z": "a24220a28435c222",
+        "name": "Download price tables to CSV files",
+        "info": "",
+        "x": 160,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "955a7ac6f1058b12",
+        "type": "function",
+        "z": "a24220a28435c222",
+        "name": "Erase the price table pricecrypto",
+        "func": "// Erase all the price data from the table pricet\nmsg.query = \"TRUNCATE TABLE pricecrypto\"\n\nnode.warn(msg.query)\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 360,
+        "wires": [
+            [
+                "e4e1e976b0872053"
+            ]
+        ]
+    },
+    {
+        "id": "e4e1e976b0872053",
+        "type": "postgresql",
+        "z": "a24220a28435c222",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 600,
+        "y": 360,
+        "wires": [
+            [
+                "45dfd31f628c3f14"
+            ]
+        ]
+    },
+    {
+        "id": "2a3b3ae8ce5082d9",
+        "type": "inject",
+        "z": "a24220a28435c222",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 480,
+        "wires": [
+            [
+                "8bbea626ffd764ca"
+            ]
+        ]
+    },
+    {
+        "id": "8bbea626ffd764ca",
+        "type": "function",
+        "z": "a24220a28435c222",
+        "name": "Print price tables",
+        "func": "msg.query = \"SELECT * FROM pricecrypto\" // + \"LIMIT 5\"\nnode.warn(msg.query)\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 480,
+        "wires": [
+            [
+                "7ca9edcdac472e28"
+            ]
+        ]
+    },
+    {
+        "id": "7ca9edcdac472e28",
+        "type": "postgresql",
+        "z": "a24220a28435c222",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 600,
+        "y": 480,
+        "wires": [
+            [
+                "7268b7fd99b5f9c5"
+            ]
+        ]
+    },
+    {
+        "id": "7268b7fd99b5f9c5",
+        "type": "debug",
+        "z": "a24220a28435c222",
+        "name": "debug 919",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 790,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "45dfd31f628c3f14",
+        "type": "debug",
+        "z": "a24220a28435c222",
+        "name": "debug 920",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 790,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "6008bd1a4aac1a7a",
+        "type": "comment",
+        "z": "a24220a28435c222",
+        "name": "Create price table",
+        "info": "",
+        "x": 130,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "c10b6a448c28ebb9",
+        "type": "inject",
+        "z": "a24220a28435c222",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "00 03 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 360,
+        "wires": [
+            [
+                "955a7ac6f1058b12"
+            ]
+        ]
+    },
+    {
+        "id": "02503470cadbb95c",
+        "type": "function",
+        "z": "a24220a28435c222",
+        "name": "Create the price table pricecrypto",
+        "func": "// Write query to create the price table pricet - tedious\n// msg.query = \"CREATE TABLE IF NOT EXISTS pricet (timestamp BIGINT, AAPL_time BIGINT, AAPL_price FLOAT, AAPL_volume INT, MSFT_time BIGINT, MSFT_price FLOAT, MSFT_volume INT, GOOG_time BIGINT, GOOG_price FLOAT, GOOG_volume INT)\"\n\n\n// Or perform a loop to write the query string for creating the price table pricet\n\n// Split the string symbolv\nlet symbolv = flow.get(\"symbolv\")\nsymbolv = symbolv.split(\",\")\n\n// Loop to create the price table pricet\nlet querys = \"CREATE TABLE IF NOT EXISTS pricecrypto (timestamp BIGINT\"\nsymbolv.forEach((symboln) => {\n    querys += \", \" + symboln + \"_price FLOAT, \" + symboln + \"_volume INT\"\n}) // end forEach\nquerys += \")\"\nnode.warn(querys)\n\nmsg.query = querys\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 440,
+        "wires": [
+            [
+                "422577ce467cf35a"
+            ]
+        ]
+    },
+    {
+        "id": "422577ce467cf35a",
+        "type": "postgresql",
+        "z": "a24220a28435c222",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 600,
+        "y": 440,
+        "wires": [
+            [
+                "cc9ddefdd8fecce1"
+            ]
+        ]
+    },
+    {
+        "id": "cc9ddefdd8fecce1",
+        "type": "debug",
+        "z": "a24220a28435c222",
+        "name": "debug 925",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 790,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "a9cd4e44c9be83c8",
+        "type": "inject",
+        "z": "a24220a28435c222",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 440,
+        "wires": [
+            [
+                "02503470cadbb95c"
+            ]
+        ]
+    },
+    {
+        "id": "3022052e920456dd",
+        "type": "function",
+        "z": "a24220a28435c222",
+        "name": "Delete the price table pricecrypto",
+        "func": "// Delete the table pricet\nmsg.query = \"DROP TABLE pricecrypto\"\n\nnode.warn(msg.query)\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 400,
+        "wires": [
+            [
+                "1ee196e24432752d"
+            ]
+        ]
+    },
+    {
+        "id": "1ee196e24432752d",
+        "type": "postgresql",
+        "z": "a24220a28435c222",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 600,
+        "y": 400,
+        "wires": [
+            [
+                "125a3361fe9b1d17"
+            ]
+        ]
+    },
+    {
+        "id": "125a3361fe9b1d17",
+        "type": "debug",
+        "z": "a24220a28435c222",
+        "name": "debug 931",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 790,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "659e7d51a053f803",
+        "type": "inject",
+        "z": "a24220a28435c222",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 400,
+        "wires": [
+            [
+                "3022052e920456dd"
+            ]
+        ]
+    },
+    {
+        "id": "61bce7f78a75ae7d",
+        "type": "alpaca-account",
+        "name": "machinetrader",
+        "keyId": "PKQRP984U4YQ6JQJG6JJ",
+        "paper": true
+    },
+    {
+        "id": "7455395cf269fb2b",
+        "type": "postgreSQLConfig",
+        "name": "",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "postgres",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "docker",
+        "userFieldType": "str",
+        "password": "docker",
+        "passwordFieldType": "str"
+    }
+]
