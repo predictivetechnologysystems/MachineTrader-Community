@@ -1,0 +1,73 @@
+[
+    {
+        "id": "6b4853104f540c62",
+        "type": "alpaca-asset-query",
+        "z": "6b4c83aa7b50e2d7",
+        "conf": "61bce7f78a75ae7d",
+        "x": 710,
+        "y": 80,
+        "wires": [
+            [
+                "a3e73903960288ce"
+            ]
+        ]
+    },
+    {
+        "id": "d94a2f2db552efb8",
+        "type": "inject",
+        "z": "6b4c83aa7b50e2d7",
+        "name": "",
+        "props": [
+            {
+                "p": "symbol",
+                "v": "GBTC",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 550,
+        "y": 80,
+        "wires": [
+            [
+                "6b4853104f540c62"
+            ]
+        ]
+    },
+    {
+        "id": "a3e73903960288ce",
+        "type": "debug",
+        "z": "6b4c83aa7b50e2d7",
+        "name": "debug 1044",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 890,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "b513dc1f137a3cc4",
+        "type": "comment",
+        "z": "6b4c83aa7b50e2d7",
+        "name": "Check to see if shortable",
+        "info": "",
+        "x": 590,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "61bce7f78a75ae7d",
+        "type": "alpaca-account",
+        "name": "machinetrader",
+        "keyId": "PKQRP984U4YQ6JQJG6JJ",
+        "paper": true
+    }
+]
