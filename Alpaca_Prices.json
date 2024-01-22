@@ -27,7 +27,7 @@
         "type": "function",
         "z": "505066468048d4de",
         "name": "Get prices",
-        "func": "// Get the machine time in milliseconds\nlet datetime = new Date()\nlet timem = datetime.getTime()\n\n// Get the Alpaca price object\nlet pricobj = msg.payload\n\n// Get the price object names (keys)\nlet symbola = Object.keys(pricobj)\n// node.warn(\"symbola = \" + symbola)\n\n// Postgres queries\n// let querys = \"INSERT INTO pricet (timestamp, AAPL_time, AAPL_price, AAPL_volume, MSFT_time, MSFT_price, MSFT_volume, GOOG_time, GOOG_price, GOOG_volume) VALUES (\" + timem\n// let querys = \"INSERT INTO pricet (timestamp, AAPL_price, AAPL_volume, MSFT_price, MSFT_volume, GOOG_price, GOOG_volume) VALUES (\" + timem\n\n// Create first part of the postgres query\nlet querys = \"INSERT INTO pricet (timestamp\"\n// Add the fields to postgres query in loop\nsymbola.forEach((symboln) => {\n    querys += \", \" + symboln + \"_price, \" + symboln + \"_volume\"\n}) // end forEach\nquerys += \") VALUES (\" + timem\n\n// Add the data to the postgres query in loop\nlet datas = {} // Data for symbol\nlet pricec = {} // Current prices for all tickers\nsymbola.forEach((symboln) => {\n    // Get the price object for symboln\n    datas = pricobj[symboln]\n    // querys += \", \" + Date.parse(datas.t) + \", \" + datas.p + \", \" + datas.s\n    querys += \", \" + datas.p + \", \" + datas.s\n    pricec[symboln] = datas.p\n    // node.warn(symboln + \" price = \" + datas.p)\n}) // end forEach\nquerys += \")\"\nglobal.set(\"pricec\", pricec) // Set the current prices for all tickers\n\n// querys += \", \" + goog.t + \", \" + goog.p + \", \" + goog.s + \")\"\n// node.warn(\"Query = \" + querys)\n\nmsg.query = querys\nmsg.pricec = pricec\n\nreturn msg\n\n",
+        "func": "// Get the machine time in milliseconds\nlet datetime = new Date()\nlet timem = datetime.getTime()\n\n// Get the Alpaca price object\nlet pricobj = msg.payload\n\n// Get the price object names (keys)\nlet symbola = Object.keys(pricobj)\n// node.warn(\"symbola = \" + symbola)\n\n// Postgres queries\n// let querys = \"INSERT INTO pricet (timestamp, AAPL_time, AAPL_price, AAPL_volume, MSFT_time, MSFT_price, MSFT_volume, GOOG_time, GOOG_price, GOOG_volume) VALUES (\" + timem\n// let querys = \"INSERT INTO pricet (timestamp, AAPL_price, AAPL_volume, MSFT_price, MSFT_volume, GOOG_price, GOOG_volume) VALUES (\" + timem\n\n// Create first part of the postgres query\nlet querys = \"INSERT INTO pricet (timestamp\"\n// Add the fields to postgres query in loop\nsymbola.forEach((symboln) => {\n    querys += \", \" + symboln + \"_price, \" + symboln + \"_volume\"\n}) // end forEach\nquerys += \") VALUES (\" + timem\n\n// Add the data to the postgres query in loop\nlet datas = {} // Data for symbol\nlet pricestocks = {} // Current prices for all tickers\nsymbola.forEach((symboln) => {\n    // Get the price object for symboln\n    datas = pricobj[symboln]\n    // querys += \", \" + Date.parse(datas.t) + \", \" + datas.p + \", \" + datas.s\n    querys += \", \" + datas.p + \", \" + datas.s\n    pricestocks[symboln] = datas.p\n    // node.warn(symboln + \" price = \" + datas.p)\n}) // end forEach\nquerys += \")\"\nglobal.set(\"pricestocks\", pricestocks) // Set the current prices for all tickers\n\n// querys += \", \" + goog.t + \", \" + goog.p + \", \" + goog.s + \")\"\n// node.warn(\"Query = \" + querys)\n\nmsg.query = querys\nmsg.pricestocks = pricestocks\n\nreturn msg\n\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -57,14 +57,13 @@
         "id": "6907d48e5dad5f32",
         "type": "link out",
         "z": "505066468048d4de",
-        "name": "Updated prices",
+        "name": "Prices out",
         "mode": "link",
         "links": [
             "1d154443ac672b2b",
-            "3b80a30fe05ad2ef",
             "3df20a9d464d4891",
-            "b7eaa8c117231d61",
-            "bb0434020a46ce72"
+            "b5a6c407eb1d251f",
+            "b7eaa8c117231d61"
         ],
         "x": 995,
         "y": 420,
@@ -188,15 +187,15 @@
         "id": "05e327a3087e6a58",
         "type": "function",
         "z": "505066468048d4de",
-        "name": "Get GOOG price from payload",
-        "func": "// Current price\nlet pricec = msg.pricec\nlet symboln = \"GOOG\"\n// Get the price for symboln\nlet pricegoog = pricec[symboln]\nnode.warn(symboln + \" price = \" + pricegoog)\n",
+        "name": "Get GOOG price from msg",
+        "func": "// Get the current prices for all stocks from msg\nlet pricestocks = msg.pricestocks\n\n// Get the current price for GOOG\nlet symboln = \"GOOG\"\nlet pricegoog = pricestocks[symboln]\nnode.warn(symboln + \" price = \" + pricegoog)\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 370,
+        "x": 360,
         "y": 640,
         "wires": [
             []
@@ -207,7 +206,7 @@
         "type": "function",
         "z": "505066468048d4de",
         "name": "Get GOOG price from global",
-        "func": "// Current price\nlet pricec = global.get(\"pricec\")\nlet symboln = \"GOOG\"\nnode.warn(symboln + \" price = \" + pricec[symboln])\n\n",
+        "func": "// Get the current prices for all the stocks from global variable\nlet pricestocks = global.get(\"pricestocks\")\n\n// Get the current price for GOOG\nlet symboln = \"GOOG\"\nnode.warn(symboln + \" price = \" + pricestocks[symboln])\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -254,23 +253,7 @@
         "y": 380,
         "wires": [
             [
-                "d43746ca2e77d82b"
-            ]
-        ]
-    },
-    {
-        "id": "d43746ca2e77d82b",
-        "type": "function-npm",
-        "z": "505066468048d4de",
-        "name": "Get symbol",
-        "func": "let market_open = global.get(\"market_open\")\n// let liquidatem = global.get(\"liquidatem\")\n// let warmupm = global.get(\"warmupm\")\nlet earlyHours = global.get(\"earlyHours\")\nlet afterHours = global.get(\"afterHours\")\nlet extended_hours = (flow.get(\"extended_hours\") && ((earlyHours || afterHours)))\n\n// Trade if either the market is open or if extended_hours\nif (market_open || extended_hours) {\n    msg.symbol = flow.get(\"symbolv\")\n    msg.feed = \"sip\"\n    return msg\n} // end if\n\n",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 310,
-        "y": 380,
-        "wires": [
-            [
-                "b68e263d0015bc3c"
+                "9ef3cd5db3578cc6"
             ]
         ]
     },
@@ -298,7 +281,7 @@
         "type": "function",
         "z": "505066468048d4de",
         "name": "Get current prices from global",
-        "func": "// Get the current prices\nlet pricec = global.get(\"pricec\")\n\n// Get the price object names (keys)\nlet symbolv = Object.keys(pricec)\n\nlet pricesymb = 0\nsymbolv.forEach((symboln) => {\n    // Get the price for symboln\n    node.warn(symboln + \" price = \" + pricec[symboln])\n}) // end forEach\n\n",
+        "func": "// Get the current prices\nlet pricestocks = global.get(\"pricestocks\")\n\n// Get the price object names (keys)\nlet symbolv = Object.keys(pricestocks)\n\nsymbolv.forEach((symboln) => {\n    // Get the price for symboln\n    node.warn(symboln + \" price = \" + pricestocks[symboln])\n}) // end forEach\n\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -1748,6 +1731,26 @@
         "wires": [
             [
                 "4ba8430b106276d6"
+            ]
+        ]
+    },
+    {
+        "id": "9ef3cd5db3578cc6",
+        "type": "function",
+        "z": "505066468048d4de",
+        "name": "Get symbol",
+        "func": "let market_open = global.get(\"market_open\")\n// let liquidatem = global.get(\"liquidatem\")\n// let warmupm = global.get(\"warmupm\")\nlet earlyHours = global.get(\"earlyHours\")\nlet afterHours = global.get(\"afterHours\")\nlet extended_hours = (flow.get(\"extended_hours\") && ((earlyHours || afterHours)))\n\n// Trade if either the market is open or if extended_hours\nif (market_open || extended_hours) {\n    msg.symbol = flow.get(\"symbolv\")\n    msg.feed = \"sip\"\n    return msg\n} // end if\n\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 380,
+        "wires": [
+            [
+                "b68e263d0015bc3c"
             ]
         ]
     },
