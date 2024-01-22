@@ -1,0 +1,211 @@
+[
+    {
+        "id": "f25ddbabfa1ea4fa",
+        "type": "inject",
+        "z": "64012452534340b1",
+        "name": "All Tickers",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "symbolv",
+        "payloadType": "flow",
+        "x": 200,
+        "y": 1340,
+        "wires": [
+            [
+                "de4ce44a8308b09b"
+            ]
+        ]
+    },
+    {
+        "id": "c361fe2722a373a6",
+        "type": "alpaca-position-query",
+        "z": "64012452534340b1",
+        "conf": "6982dfaa5ff2b9a4",
+        "symbol": "",
+        "x": 450,
+        "y": 1380,
+        "wires": [
+            [
+                "5f3d0ffc0c83ebd8"
+            ]
+        ]
+    },
+    {
+        "id": "1ad798ae42894b44",
+        "type": "inject",
+        "z": "64012452534340b1",
+        "name": "Display All Positions",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 230,
+        "y": 1380,
+        "wires": [
+            [
+                "c361fe2722a373a6"
+            ]
+        ]
+    },
+    {
+        "id": "dbe7fccda718ed31",
+        "type": "comment",
+        "z": "64012452534340b1",
+        "name": "Sample Flows to liquidate all tickers for testing",
+        "info": "",
+        "x": 300,
+        "y": 1300,
+        "wires": []
+    },
+    {
+        "id": "de4ce44a8308b09b",
+        "type": "split",
+        "z": "64012452534340b1",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 330,
+        "y": 1340,
+        "wires": [
+            [
+                "b7225be96ec6d44c"
+            ]
+        ]
+    },
+    {
+        "id": "f0bac87f586781d0",
+        "type": "debug",
+        "z": "64012452534340b1",
+        "name": "debug 1054",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1210,
+        "y": 1340,
+        "wires": []
+    },
+    {
+        "id": "7c902cbcc046bc91",
+        "type": "function",
+        "z": "64012452534340b1",
+        "name": "Trading Logic",
+        "func": "//node.warn(msg.payload)\nmsg.symbol = msg.payload.symbol\nmsg.qty = msg.payload.qty\nnode.warn(\"Symbol: \" + msg.symbol + \"\\nQty: \" + msg.qty)\n\n// create a unique clientid with unixtime\nlet d = Date.now()\nlet client_order_id = msg.symbol + d\nmsg.clientorderid = client_order_id // passes this variable in the flow \nlet temp = ''\nif(msg.qty>0){\n    temp = {\n        \"symbol\": msg.symbol,\n        \"qty\": msg.qty,\n        \"side\": 'sell',\n        \"type\": 'market',\n        \"client_order_id\": client_order_id,\n        //\"limit_price\": price,\n        \"time_in_force\": \"gtc\"\n    };\n}\n\nelse if(msg.qty<0){\n    temp = {\n        \"symbol\": msg.symbol,\n        \"qty\": -msg.qty,\n        \"side\": 'buy',\n        \"type\": 'market',\n        \"client_order_id\": client_order_id,\n        //\"limit_price\": price,\n        \"time_in_force\": \"gtc\"\n    };\n}\nmsg.payload = temp\n//node.warn(msg.payload)\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 880,
+        "y": 1340,
+        "wires": [
+            [
+                "9996f11febcafa90"
+            ]
+        ]
+    },
+    {
+        "id": "9996f11febcafa90",
+        "type": "alpaca-order",
+        "z": "64012452534340b1",
+        "conf": "6982dfaa5ff2b9a4",
+        "x": 1050,
+        "y": 1340,
+        "wires": [
+            [
+                "f0bac87f586781d0"
+            ]
+        ]
+    },
+    {
+        "id": "7fcd86965c85e334",
+        "type": "alpaca-position-query",
+        "z": "64012452534340b1",
+        "conf": "6982dfaa5ff2b9a4",
+        "symbol": "",
+        "x": 670,
+        "y": 1340,
+        "wires": [
+            [
+                "7c902cbcc046bc91"
+            ]
+        ]
+    },
+    {
+        "id": "b7225be96ec6d44c",
+        "type": "function",
+        "z": "64012452534340b1",
+        "name": "function 42",
+        "func": "msg.symbol = msg.payload\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 1340,
+        "wires": [
+            [
+                "7fcd86965c85e334"
+            ]
+        ]
+    },
+    {
+        "id": "5f3d0ffc0c83ebd8",
+        "type": "function",
+        "z": "64012452534340b1",
+        "name": "Display Position Information",
+        "func": "if(msg.payload.length == 0){\n    node.warn(\"No positions held.\")\n}\nelse{\n    node.warn(msg.payload)\n    for(let i=0; i<msg.payload.length;i++){\n        node.warn(\"Symbol: \" + msg.payload[i][\"symbol\"] + \"\\nPosition: \" + msg.payload[i][\"qty\"] + \"\\nCurrent Price: \" + msg.payload[i][\"current_price\"])\n    }\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 700,
+        "y": 1380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6982dfaa5ff2b9a4",
+        "type": "alpaca-account",
+        "name": "alpaca 01",
+        "keyId": "PKVFUNM71XFJ6JJS7KJN",
+        "paper": true
+    }
+]

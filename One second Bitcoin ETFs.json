@@ -1,0 +1,1058 @@
+[
+    {
+        "id": "e88982579da02278",
+        "type": "tab",
+        "label": "One Second Bitcoin ETFs",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "3c9ba3c1dd8763ef",
+        "type": "comment",
+        "z": "e88982579da02278",
+        "name": "Create oneminprices table (for all symbols)  ",
+        "info": "",
+        "x": 220,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "3d8ddde6642234da",
+        "type": "comment",
+        "z": "e88982579da02278",
+        "name": "Download price tables to CSV files",
+        "info": "",
+        "x": 180,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "6380f7ca0b232444",
+        "type": "http in",
+        "z": "e88982579da02278",
+        "name": "onesecprices",
+        "url": "/api/onesecprices",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 110,
+        "y": 680,
+        "wires": [
+            [
+                "3b53b35feaf97f66"
+            ]
+        ]
+    },
+    {
+        "id": "3b79b462b0921a9d",
+        "type": "http response",
+        "z": "e88982579da02278",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 930,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "dc5a9ca731e46eba",
+        "type": "csv",
+        "z": "e88982579da02278",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 630,
+        "y": 680,
+        "wires": [
+            [
+                "6851aa29245a3555"
+            ]
+        ]
+    },
+    {
+        "id": "3b53b35feaf97f66",
+        "type": "function",
+        "z": "e88982579da02278",
+        "name": "Export onesecprices",
+        "func": "msg.query = \"SELECT * from onesecprices order by datetime limit 20000 offset 0\"\nnode.warn(msg.query)\nreturn msg",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 680,
+        "wires": [
+            [
+                "91c2b1d9a92c4e30"
+            ]
+        ]
+    },
+    {
+        "id": "6851aa29245a3555",
+        "type": "file",
+        "z": "e88982579da02278",
+        "name": "write report",
+        "filename": "/data/store/output.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 770,
+        "y": 680,
+        "wires": [
+            [
+                "3b79b462b0921a9d"
+            ]
+        ]
+    },
+    {
+        "id": "91c2b1d9a92c4e30",
+        "type": "postgresql",
+        "z": "e88982579da02278",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 500,
+        "y": 680,
+        "wires": [
+            [
+                "dc5a9ca731e46eba"
+            ]
+        ]
+    },
+    {
+        "id": "164b09fb618f0cec",
+        "type": "http in",
+        "z": "e88982579da02278",
+        "name": "onesecprices2",
+        "url": "/api/onesecprices2",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 120,
+        "y": 720,
+        "wires": [
+            [
+                "bbbc90a4f4d8a426"
+            ]
+        ]
+    },
+    {
+        "id": "79ac5650b1c98a04",
+        "type": "http response",
+        "z": "e88982579da02278",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 930,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "ddecc5f5fefbe029",
+        "type": "csv",
+        "z": "e88982579da02278",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 630,
+        "y": 720,
+        "wires": [
+            [
+                "f6b0684681711361"
+            ]
+        ]
+    },
+    {
+        "id": "bbbc90a4f4d8a426",
+        "type": "function",
+        "z": "e88982579da02278",
+        "name": "Export onesecprices2",
+        "func": "msg.query = \"SELECT * from onesecprices order by datetime limit 20000 offset 20000\"\nnode.warn(msg.query)\nreturn msg",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 720,
+        "wires": [
+            [
+                "a884e5543ed9b8b7"
+            ]
+        ]
+    },
+    {
+        "id": "f6b0684681711361",
+        "type": "file",
+        "z": "e88982579da02278",
+        "name": "write report",
+        "filename": "/data/store/output.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 770,
+        "y": 720,
+        "wires": [
+            [
+                "79ac5650b1c98a04"
+            ]
+        ]
+    },
+    {
+        "id": "a884e5543ed9b8b7",
+        "type": "postgresql",
+        "z": "e88982579da02278",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 500,
+        "y": 720,
+        "wires": [
+            [
+                "ddecc5f5fefbe029"
+            ]
+        ]
+    },
+    {
+        "id": "28b245690e15494f",
+        "type": "http in",
+        "z": "e88982579da02278",
+        "name": "onesecprices3",
+        "url": "/api/onesecprices3",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 120,
+        "y": 760,
+        "wires": [
+            [
+                "6c8e00783fd1bb0e"
+            ]
+        ]
+    },
+    {
+        "id": "53daa031e7cbb341",
+        "type": "http response",
+        "z": "e88982579da02278",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 930,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "12ecefe37308e548",
+        "type": "csv",
+        "z": "e88982579da02278",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 630,
+        "y": 760,
+        "wires": [
+            [
+                "27b046fc2b7560c7"
+            ]
+        ]
+    },
+    {
+        "id": "6c8e00783fd1bb0e",
+        "type": "function",
+        "z": "e88982579da02278",
+        "name": "Export onesecprices3",
+        "func": "msg.query = \"SELECT * from onesecprices order by datetime limit 20000 offset 40000\"\nnode.warn(msg.query)\nreturn msg",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 760,
+        "wires": [
+            [
+                "65c9314b777db90c"
+            ]
+        ]
+    },
+    {
+        "id": "27b046fc2b7560c7",
+        "type": "file",
+        "z": "e88982579da02278",
+        "name": "write report",
+        "filename": "/data/store/output.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 770,
+        "y": 760,
+        "wires": [
+            [
+                "53daa031e7cbb341"
+            ]
+        ]
+    },
+    {
+        "id": "65c9314b777db90c",
+        "type": "postgresql",
+        "z": "e88982579da02278",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 500,
+        "y": 760,
+        "wires": [
+            [
+                "12ecefe37308e548"
+            ]
+        ]
+    },
+    {
+        "id": "e4eb76e6bd77de98",
+        "type": "loop",
+        "z": "e88982579da02278",
+        "name": "",
+        "kind": "fcnt",
+        "count": "",
+        "initial": "",
+        "step": "",
+        "condition": "",
+        "conditionType": "js",
+        "when": "before",
+        "enumeration": "enum",
+        "enumerationType": "msg",
+        "limit": "",
+        "loopPayload": "loop-index",
+        "finalPayload": "final-count",
+        "x": 670,
+        "y": 320,
+        "wires": [
+            [],
+            [
+                "1f59ccc76d37284b"
+            ]
+        ]
+    },
+    {
+        "id": "a8535c5bb4c55485",
+        "type": "inject",
+        "z": "e88982579da02278",
+        "name": "Add Rows to onesecprices at 4am",
+        "props": [
+            {
+                "p": "count",
+                "v": "57500",
+                "vt": "num"
+            },
+            {
+                "p": "initial",
+                "v": "57600",
+                "vt": "num"
+            },
+            {
+                "p": "step",
+                "v": "1",
+                "vt": "num"
+            },
+            {
+                "p": "limit",
+                "v": "100000000",
+                "vt": "num"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 04 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 220,
+        "y": 320,
+        "wires": [
+            [
+                "a2f6545b8dd64f8d"
+            ]
+        ]
+    },
+    {
+        "id": "1f59ccc76d37284b",
+        "type": "function",
+        "z": "e88982579da02278",
+        "name": "display outputs",
+        "func": "let index = msg.loop.index\n\n// testing\n//let ux = flow.get(\"uxtest\")\n\nlet ux = flow.get(\"ux\")\nnode.warn(\"Millisecs Ux: \" +ux)\n\nlet uxs = ux / 1000\nlet uxn = ux + 1000\n\nflow.set(\"ux\", uxn) \nux = ux / 1000\nux = ux.toFixed(0)\n\nmsg.query = \"insert into onesecprices (unixtime) values (\" + ux + \") ON CONFLICT DO NOTHING;\"\n//node.warn(msg.query)\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 880,
+        "y": 320,
+        "wires": [
+            [
+                "32ba5fdd82ef0f9e"
+            ]
+        ]
+    },
+    {
+        "id": "a2f6545b8dd64f8d",
+        "type": "change",
+        "z": "e88982579da02278",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "ux",
+                "pt": "flow",
+                "to": "",
+                "tot": "date"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 450,
+        "y": 320,
+        "wires": [
+            [
+                "e4eb76e6bd77de98"
+            ]
+        ]
+    },
+    {
+        "id": "32ba5fdd82ef0f9e",
+        "type": "postgresql",
+        "z": "e88982579da02278",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1040,
+        "y": 320,
+        "wires": [
+            [
+                "e4eb76e6bd77de98"
+            ]
+        ]
+    },
+    {
+        "id": "e1de287e3374d117",
+        "type": "comment",
+        "z": "e88982579da02278",
+        "name": "Insert record for each second with starting unix time for 4 AM  (each row = 1 second)",
+        "info": "",
+        "x": 350,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "6451dd73fb49d9ad",
+        "type": "comment",
+        "z": "e88982579da02278",
+        "name": "Insert prices into tables",
+        "info": "",
+        "x": 160,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "612c964df0deb35e",
+        "type": "inject",
+        "z": "e88982579da02278",
+        "name": "Set Inputs",
+        "props": [
+            {
+                "p": "symbol",
+                "v": "symbolv",
+                "vt": "flow"
+            },
+            {
+                "p": "feed",
+                "v": "sip",
+                "vt": "str"
+            }
+        ],
+        "repeat": "1",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 170,
+        "y": 560,
+        "wires": [
+            [
+                "7d089d6586068c24"
+            ]
+        ]
+    },
+    {
+        "id": "487913f1b6d7e590",
+        "type": "alpaca-data-last-multi-trade",
+        "z": "e88982579da02278",
+        "conf": "61bce7f78a75ae7d",
+        "symbol": "",
+        "name": "",
+        "x": 690,
+        "y": 560,
+        "wires": [
+            [
+                "150109491b161ea2"
+            ]
+        ]
+    },
+    {
+        "id": "150109491b161ea2",
+        "type": "function",
+        "z": "e88982579da02278",
+        "name": "Get prices",
+        "func": "//node.warn(msg.payload)\n\n// Get the Alpaca price object\nlet pricobj = msg.payload\n\n// Get the price object names (keys)\nlet symbola = Object.keys(pricobj)\n// node.warn(\"symbola = \" + symbola)\n\n\n// Add the data to the postgres query in loop\nlet datas = {} // Data for symbol\nlet pricec = {} // Current prices for all tickers\nlet price = 0\nlet size = 0\nlet symbolp = 0\nlet symbolv = 0\nlet querys = ''\nlet t \nlet ux\nlet dt\n\nsymbola.forEach((symboln) => {\n    // Get the price object for symboln\n    datas = pricobj[symboln]\n    price = datas.p\n    size = datas.s\n    t = datas.t\n    ux = new Date(t);\n    ux = ux.getTime();\n    dt = ux / 1000\n    dt = dt.toFixed(0)\n \n    symboln = symboln.toLowerCase()\n    querys += \"Update onesecprices set datetime = '\" +t+ \"',\" +symboln+ \"_price = \" +price+ \", \" +symboln+ \"_volume = \" +size+ \" where unixtime = '\" +dt+ \"'\\n;\"\n}\n\n) // end forEach\n\nmsg.query = querys\n//node.warn(msg.query)\n\nreturn msg\n\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 910,
+        "y": 560,
+        "wires": [
+            [
+                "53fa2ce1c9cdb690"
+            ]
+        ]
+    },
+    {
+        "id": "53fa2ce1c9cdb690",
+        "type": "postgresql",
+        "z": "e88982579da02278",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1060,
+        "y": 560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7d089d6586068c24",
+        "type": "function",
+        "z": "e88982579da02278",
+        "name": "trading interval  M-F 4 am - 8PM",
+        "func": "let d = new Date();\n\nlet hour = d.getHours();\nlet min = d.getMinutes();\nlet day = d.getDay(); // day of the week\nlet sec = d.getSeconds();\n\n// this runs 4 am - 8 pm\nif (day > 0 && day < 6 && hour > 3 && hour < 21) { \n\n//node.warn(\"Date: \" +d+ \" Day: \" +day+ \" Hour: \" +hour+ \" Minute: \" +min+ \" Seconds: \" +sec)\n\n// this will run during trading 9:30 - 10:30 am\n// if ((day > 0 && day < 6 && hour > 9 && hour < 11) || (day > 0 && day < 6 && hour > 8 && hour < 10 && min > 29 && min < 60)) {  \n\n// this will run during trading 9:30 - 11:00 am\n// if ((day > 0 && day < 6 && hour > 9 && hour < 12) || (day > 0 && day < 6 && hour > 8 && hour < 10 && min > 29 && min < 60)) {  \n\n\n// this will run during trading 9:30 - 4:00 pm\n// if ((day > 0 && day < 6 && hour > 9 && hour < 16) || (day > 0 && day < 6 && hour > 8 && hour < 10 && min > 29 && min < 60)) {  \n// Tues - Friday\n// if ((day > 1 && day < 6 && hour > 9 && hour < 16) || (day > 1 && day < 6 && hour > 8 && hour < 10 && min > 29 && min < 60)) {  \n\n// this runs 9 am - 4 pm\n//if ( day > 0 && day < 6 && hour > 8 && hour < 16 ) { \n\n// this runs 6 am - 8 pm\n//if (day > 0 && day < 6 && hour > 5 && hour < 21) { \n\n//node.warn(\"Market Open\")\n\n\nreturn msg;\n }",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 560,
+        "wires": [
+            [
+                "487913f1b6d7e590"
+            ]
+        ]
+    },
+    {
+        "id": "29e0358ba877815d",
+        "type": "comment",
+        "z": "e88982579da02278",
+        "name": "Enter list of symbols",
+        "info": "",
+        "x": 150,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "a7b39ce49047ab8e",
+        "type": "inject",
+        "z": "e88982579da02278",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 60,
+        "wires": [
+            [
+                "04659da7a6dc798a"
+            ]
+        ]
+    },
+    {
+        "id": "04659da7a6dc798a",
+        "type": "function",
+        "z": "e88982579da02278",
+        "name": "Create flow variables",
+        "func": "// String with tickers to collect prices\nflow.set(\"symbolv\", \"ARKB,BITB,IBIT,HODL,EZBC,BTCO,FBTC,BTCW,BRRR,DEFI,GBTC\")\nnode.warn(\"Trading symbols = \" + flow.get(\"symbolv\"))\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 60,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "afe5916e3555ca4f",
+        "type": "alpaca-asset-query",
+        "z": "e88982579da02278",
+        "conf": "61bce7f78a75ae7d",
+        "x": 1010,
+        "y": 60,
+        "wires": [
+            [
+                "bb31b8cab0abadae"
+            ]
+        ]
+    },
+    {
+        "id": "1952efe910656bdc",
+        "type": "inject",
+        "z": "e88982579da02278",
+        "name": "GO",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "symbolv",
+        "payloadType": "flow",
+        "x": 530,
+        "y": 60,
+        "wires": [
+            [
+                "fddc25a70db52920"
+            ]
+        ]
+    },
+    {
+        "id": "bb31b8cab0abadae",
+        "type": "debug",
+        "z": "e88982579da02278",
+        "name": "Display",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1180,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "d9239496c8532c1b",
+        "type": "comment",
+        "z": "e88982579da02278",
+        "name": "Check ETF details",
+        "info": "",
+        "x": 550,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "fddc25a70db52920",
+        "type": "split",
+        "z": "e88982579da02278",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 650,
+        "y": 60,
+        "wires": [
+            [
+                "ed0b096979f016ee"
+            ]
+        ]
+    },
+    {
+        "id": "ed0b096979f016ee",
+        "type": "function",
+        "z": "e88982579da02278",
+        "name": "get volumes, std ",
+        "func": "msg.symbol = msg.payload\n//node.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 60,
+        "wires": [
+            [
+                "afe5916e3555ca4f"
+            ]
+        ]
+    },
+    {
+        "id": "9cc970592b259708",
+        "type": "postgresql",
+        "z": "e88982579da02278",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 560,
+        "y": 200,
+        "wires": [
+            [
+                "3c36ace090ac8d57"
+            ]
+        ]
+    },
+    {
+        "id": "3c36ace090ac8d57",
+        "type": "debug",
+        "z": "e88982579da02278",
+        "name": "Display",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 700,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "625e6c44a18b4870",
+        "type": "inject",
+        "z": "e88982579da02278",
+        "name": "GO",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "symbolv",
+        "payloadType": "flow",
+        "x": 130,
+        "y": 200,
+        "wires": [
+            [
+                "2967ea0b0d4e4a41"
+            ]
+        ]
+    },
+    {
+        "id": "2967ea0b0d4e4a41",
+        "type": "function",
+        "z": "e88982579da02278",
+        "name": "Create the price table onesecprices",
+        "func": "\n// Split the string symbolv\nlet symbolv = flow.get(\"symbolv\")\nsymbolv = symbolv.split(\",\")\n\n// Loop to create the price table pricet\nlet querys = \"CREATE TABLE IF NOT EXISTS onesecprices (datetime VARCHAR(100), unixtime BIGINT\"\nsymbolv.forEach((symboln) => {\n    querys += \", \" + symboln + \"_price FLOAT, \" + symboln + \"_volume INT\"\n}) // end forEach\nquerys += \", PRIMARY KEY (unixtime));\"\nnode.warn(querys)\n\nmsg.query = querys\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 200,
+        "wires": [
+            [
+                "9cc970592b259708"
+            ]
+        ]
+    },
+    {
+        "id": "95c352b95fabb7ac",
+        "type": "comment",
+        "z": "e88982579da02278",
+        "name": "Display the table ",
+        "info": "",
+        "x": 140,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "396777e3dbea5bbb",
+        "type": "postgresql",
+        "z": "e88982579da02278",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 480,
+        "y": 440,
+        "wires": [
+            [
+                "374b5565b737149b"
+            ]
+        ]
+    },
+    {
+        "id": "374b5565b737149b",
+        "type": "debug",
+        "z": "e88982579da02278",
+        "name": "Display",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 620,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "cf016d97ced1c982",
+        "type": "inject",
+        "z": "e88982579da02278",
+        "name": "GO",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "symbolv",
+        "payloadType": "flow",
+        "x": 130,
+        "y": 440,
+        "wires": [
+            [
+                "8cc13f405d9c5b71"
+            ]
+        ]
+    },
+    {
+        "id": "8cc13f405d9c5b71",
+        "type": "function",
+        "z": "e88982579da02278",
+        "name": "Display onesecprices",
+        "func": "msg.query = \"select * from onesecprices order by unixtime desc limit 10\"\nmsg.query = \"select * from onesecprices where unixtime = 1705591137;\"\n//msg.query = \"drop table onesecprices\"\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 440,
+        "wires": [
+            [
+                "396777e3dbea5bbb"
+            ]
+        ]
+    },
+    {
+        "id": "05c65ffc7aafba20",
+        "type": "comment",
+        "z": "e88982579da02278",
+        "name": "Erase the table at 3 AM ",
+        "info": "",
+        "x": 140,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "ed5e29863a4c6a9f",
+        "type": "postgresql",
+        "z": "e88982579da02278",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 460,
+        "y": 880,
+        "wires": [
+            [
+                "e6f525936738e88a"
+            ]
+        ]
+    },
+    {
+        "id": "e6f525936738e88a",
+        "type": "debug",
+        "z": "e88982579da02278",
+        "name": "Display",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 600,
+        "y": 880,
+        "wires": []
+    },
+    {
+        "id": "7a0b6c56329199c2",
+        "type": "inject",
+        "z": "e88982579da02278",
+        "name": "GO",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 03 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "symbolv",
+        "payloadType": "flow",
+        "x": 110,
+        "y": 880,
+        "wires": [
+            [
+                "daf1cbb1b2043e52"
+            ]
+        ]
+    },
+    {
+        "id": "daf1cbb1b2043e52",
+        "type": "function",
+        "z": "e88982579da02278",
+        "name": "Truncate onesecprices",
+        "func": "msg.query = \"truncate table onesecprices;\"\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 880,
+        "wires": [
+            [
+                "ed5e29863a4c6a9f"
+            ]
+        ]
+    },
+    {
+        "id": "7455395cf269fb2b",
+        "type": "postgreSQLConfig",
+        "name": "",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "postgres",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "docker",
+        "userFieldType": "str",
+        "password": "docker",
+        "passwordFieldType": "str"
+    },
+    {
+        "id": "61bce7f78a75ae7d",
+        "type": "alpaca-account",
+        "name": "machinetrader",
+        "keyId": "PKQRP984U4YQ6JQJG6JJ",
+        "paper": true
+    }
+]

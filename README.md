@@ -8,7 +8,7 @@ Before attempting to upload any of these json scripts, we highly recommend revie
 
 Click the Admin button in the upper right of the Home page of your instance. This opens a browser tab in the backend (you may need to login again). Click the "home" tab.
 
-Click the inject node on the top fow which will activate the Alpaca Oauth routine.  Login into your Alpaca account and follow the instructions here: https://drive.google.com/file/d/1vAUkXuiP4CGUszLROUvCPBdG5Lx0T0I0/view
+Click the inject node on the top fow which will activate the Alpaca Oauth routine.  Login into your Alpaca account and follow the instructions here: https://docs.google.com/presentation/d/1wSJjo8ojZbnq4jLO0NZZK3i98j80M-14VS9bV-XrPrw/edit?usp=sharing
 
 Once you Alpaca account is authorized, test by clicking the "Test Live Keys" and "Test Paper Keys" inject nodes and account information will be displayed to your right in the debug panel.
 

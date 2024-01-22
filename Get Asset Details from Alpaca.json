@@ -1,0 +1,458 @@
+[
+    {
+        "id": "b7b59526d1ece0ce",
+        "type": "tab",
+        "label": "Get Asset Details",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "3466579c0f8a7ff7",
+        "type": "comment",
+        "z": "b7b59526d1ece0ce",
+        "name": "Add tickers",
+        "info": "",
+        "x": 150,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "62679a716f39297d",
+        "type": "inject",
+        "z": "b7b59526d1ece0ce",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 180,
+        "wires": [
+            [
+                "4ed1d31402e33121"
+            ]
+        ]
+    },
+    {
+        "id": "4ed1d31402e33121",
+        "type": "function",
+        "z": "b7b59526d1ece0ce",
+        "name": "Create flow variables",
+        "func": "// Collect prices in extended hours?\nflow.set(\"extended_hours\", false)\nnode.warn(\"Collect prices in extended hours = \" + flow.get(\"extended_hours\"))\n\n// String with tickers to collect prices\nflow.set(\"symbolv\", \"WLAN,EARI,INTK,CRCW,AITX,VTXB,SPZI,IGPK\")\nnode.warn(\"Trading symbols = \" + flow.get(\"symbolv\"))\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1ab6de87d61004b0",
+        "type": "inject",
+        "z": "b7b59526d1ece0ce",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 220,
+        "wires": [
+            [
+                "b456bc98c9517299"
+            ]
+        ]
+    },
+    {
+        "id": "b456bc98c9517299",
+        "type": "function",
+        "z": "b7b59526d1ece0ce",
+        "name": "Print flow variables",
+        "func": "node.warn(\"Collect prices in extended hours = \" + flow.get(\"extended_hours\"))\n\nnode.warn(\"Trading symbols = \" + flow.get(\"symbolv\"))\n\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0226e6ecef0c04b0",
+        "type": "inject",
+        "z": "b7b59526d1ece0ce",
+        "name": "Set Inputs",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "symbol1",
+                "v": "IWM",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "symbolv",
+        "payloadType": "flow",
+        "x": 160,
+        "y": 340,
+        "wires": [
+            [
+                "1039359a719591c4"
+            ]
+        ]
+    },
+    {
+        "id": "9fbc830954cee337",
+        "type": "alpaca-asset-query",
+        "z": "b7b59526d1ece0ce",
+        "conf": "61bce7f78a75ae7d",
+        "x": 610,
+        "y": 340,
+        "wires": [
+            [
+                "0a8984447df8ef90"
+            ]
+        ]
+    },
+    {
+        "id": "76942fbe36b02909",
+        "type": "function",
+        "z": "b7b59526d1ece0ce",
+        "name": "prep Alpaca",
+        "func": "msg.symbol = msg.payload\nmsg.feed = 'iex'\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 340,
+        "wires": [
+            [
+                "9fbc830954cee337"
+            ]
+        ]
+    },
+    {
+        "id": "1039359a719591c4",
+        "type": "split",
+        "z": "b7b59526d1ece0ce",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 290,
+        "y": 340,
+        "wires": [
+            [
+                "76942fbe36b02909"
+            ]
+        ]
+    },
+    {
+        "id": "9cab6be4a0cf1f81",
+        "type": "function",
+        "z": "b7b59526d1ece0ce",
+        "name": "Create assets",
+        "func": "msg.symbol = msg.payload\nmsg.query = \"create table IF NOT EXISTS assets (symbol VARCHAR(10), id VARCHAR(100), class varchar(10), exchange VARCHAR(10), \"\nmsg.query += \" name VARCHAR(200), status VARCHAR(10), tradable VARCHAR(5), marginable VARCHAR(5), maint_margin INT, shortable VARCHAR(5), easy_to_borrow VARCHAR(5), fractionable VARCHAR(5));\"\n//msg.query = \"drop table assets\"\n//msg.query = \"select * from assets\"\n//msg.query = \"truncate table assets\"\nnode.warn(msg.query)\nreturn msg",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 80,
+        "wires": [
+            [
+                "3b0995f19d291c79"
+            ]
+        ]
+    },
+    {
+        "id": "dbae9fb7fa2b8e06",
+        "type": "inject",
+        "z": "b7b59526d1ece0ce",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 80,
+        "wires": [
+            [
+                "9cab6be4a0cf1f81"
+            ]
+        ]
+    },
+    {
+        "id": "3b0995f19d291c79",
+        "type": "postgresql",
+        "z": "b7b59526d1ece0ce",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 540,
+        "y": 80,
+        "wires": [
+            [
+                "f90170a1c8b1ed7e"
+            ]
+        ]
+    },
+    {
+        "id": "f90170a1c8b1ed7e",
+        "type": "debug",
+        "z": "b7b59526d1ece0ce",
+        "name": "debug 1064",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 690,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "50e9e9ccb52a8435",
+        "type": "postgresql",
+        "z": "b7b59526d1ece0ce",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 980,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0a8984447df8ef90",
+        "type": "function",
+        "z": "b7b59526d1ece0ce",
+        "name": "insert into assets",
+        "func": "//node.warn(msg.payload)\nlet symbol = msg.payload[\"symbol\"]\nlet id = msg.payload[\"id\"]\nlet classes = msg.payload[\"class\"]\nlet exchange = msg.payload[\"exchange\"]\nlet name = msg.payload[\"name\"]\nlet status = msg.payload[\"status\"]\nlet tradable = msg.payload[\"tradable\"]\nlet marginable = msg.payload[\"marginable\"]\nlet maint_margin = msg.payload[\"maintenance_margin_requirement\"]\nlet shortable = msg.payload[\"shortable\"]\nlet easy_to_borrow = msg.payload[\"easy_to_borrow\"]\nlet fractionable = msg.payload[\"fractionable\"]\n\nmsg.query = \"insert into assets (symbol, id, class, exchange,  name, status, tradable, marginable, maint_margin, shortable, easy_to_borrow, fractionable) values (\"\nmsg.query += \"'\" + symbol + \"','\" + id + \"','\" + classes + \"','\" + exchange + \"','\" + name + \"','\" + status + \"','\" + tradable + \"','\" + marginable + \"','\" + maint_margin + \"','\" + shortable + \"','\" + easy_to_borrow + \"','\" + fractionable + \"');\"\nnode.warn(msg.query)\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 340,
+        "wires": [
+            [
+                "50e9e9ccb52a8435"
+            ]
+        ]
+    },
+    {
+        "id": "89e931779d34c348",
+        "type": "http in",
+        "z": "b7b59526d1ece0ce",
+        "name": "assets",
+        "url": "/api/assets",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 110,
+        "y": 460,
+        "wires": [
+            [
+                "ceab0762e6841521"
+            ]
+        ]
+    },
+    {
+        "id": "da79f41b9892bcd8",
+        "type": "http response",
+        "z": "b7b59526d1ece0ce",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 890,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "8a3ddff03a85f81a",
+        "type": "csv",
+        "z": "b7b59526d1ece0ce",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 590,
+        "y": 460,
+        "wires": [
+            [
+                "41ebe5764608969d"
+            ]
+        ]
+    },
+    {
+        "id": "ceab0762e6841521",
+        "type": "function",
+        "z": "b7b59526d1ece0ce",
+        "name": "Export assets",
+        "func": "msg.query = \"SELECT * from assets order by symbol\"\nnode.warn(msg.query)\nreturn msg",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 460,
+        "wires": [
+            [
+                "82abf1ea5019db58"
+            ]
+        ]
+    },
+    {
+        "id": "41ebe5764608969d",
+        "type": "file",
+        "z": "b7b59526d1ece0ce",
+        "name": "write report",
+        "filename": "/data/store/output.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 730,
+        "y": 460,
+        "wires": [
+            [
+                "da79f41b9892bcd8"
+            ]
+        ]
+    },
+    {
+        "id": "82abf1ea5019db58",
+        "type": "postgresql",
+        "z": "b7b59526d1ece0ce",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 460,
+        "y": 460,
+        "wires": [
+            [
+                "8a3ddff03a85f81a"
+            ]
+        ]
+    },
+    {
+        "id": "e1c64a35366ec890",
+        "type": "comment",
+        "z": "b7b59526d1ece0ce",
+        "name": "Create assets table",
+        "info": "",
+        "x": 170,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "168f4f740f5136fa",
+        "type": "comment",
+        "z": "b7b59526d1ece0ce",
+        "name": "Export/downlaod .csv file",
+        "info": "",
+        "x": 170,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "c27f7874e5a982f0",
+        "type": "comment",
+        "z": "b7b59526d1ece0ce",
+        "name": "Get Asset details from Alpaca",
+        "info": "",
+        "x": 180,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "61bce7f78a75ae7d",
+        "type": "alpaca-account",
+        "name": "machinetrader",
+        "keyId": "PKQRP984U4YQ6JQJG6JJ",
+        "paper": true
+    },
+    {
+        "id": "7455395cf269fb2b",
+        "type": "postgreSQLConfig",
+        "name": "",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "postgres",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "docker",
+        "userFieldType": "str",
+        "password": "docker",
+        "passwordFieldType": "str"
+    }
+]
