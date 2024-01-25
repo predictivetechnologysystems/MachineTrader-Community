@@ -1,0 +1,397 @@
+[
+    {
+        "id": "bf0f58aadec0ece9",
+        "type": "comment",
+        "z": "9dfc0e947da8f0a3",
+        "name": "store Last Trade values in globals",
+        "info": "",
+        "x": 170,
+        "y": 1540,
+        "wires": []
+    },
+    {
+        "id": "9cba0d18194fed3c",
+        "type": "inject",
+        "z": "9dfc0e947da8f0a3",
+        "name": "1Sec - Live",
+        "props": [],
+        "repeat": "1",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 1720,
+        "wires": [
+            [
+                "5c50b359f0ae629f"
+            ]
+        ]
+    },
+    {
+        "id": "0870625582afc9b8",
+        "type": "alpaca-position-query",
+        "z": "9dfc0e947da8f0a3",
+        "conf": "810ce3520dc18040",
+        "symbol": "",
+        "x": 550,
+        "y": 1720,
+        "wires": [
+            [
+                "0ff8c26c7dfa879b"
+            ]
+        ]
+    },
+    {
+        "id": "0ff8c26c7dfa879b",
+        "type": "function",
+        "z": "9dfc0e947da8f0a3",
+        "name": "store positions",
+        "func": "//node.warn(msg.payload)\nmsg.obj = msg.payload\n//node.warn(msg.obj)\n\nlet symbol = msg.payload[\"symbol\"]\nglobal.set(\"positionsLive\", msg.obj)\n\nreturn msg; return msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 760,
+        "y": 1720,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5c50b359f0ae629f",
+        "type": "change",
+        "z": "9dfc0e947da8f0a3",
+        "name": "Initialize positions",
+        "rules": [
+            {
+                "t": "set",
+                "p": "positionsLIve",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 330,
+        "y": 1720,
+        "wires": [
+            [
+                "0870625582afc9b8"
+            ]
+        ]
+    },
+    {
+        "id": "ee9987926c77a9df",
+        "type": "inject",
+        "z": "9dfc0e947da8f0a3",
+        "name": "1Sec - Paper",
+        "props": [],
+        "repeat": "1",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 140,
+        "y": 1760,
+        "wires": [
+            [
+                "9d26b9f7ebe92289"
+            ]
+        ]
+    },
+    {
+        "id": "712f9c1c4d268e0a",
+        "type": "alpaca-position-query",
+        "z": "9dfc0e947da8f0a3",
+        "conf": "c06cec183f9317f9",
+        "symbol": "",
+        "x": 550,
+        "y": 1760,
+        "wires": [
+            [
+                "6f03b46809d5f4a7"
+            ]
+        ]
+    },
+    {
+        "id": "9d26b9f7ebe92289",
+        "type": "change",
+        "z": "9dfc0e947da8f0a3",
+        "name": "Initialize positions",
+        "rules": [
+            {
+                "t": "set",
+                "p": "positionsPaper",
+                "pt": "global",
+                "to": "",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 330,
+        "y": 1760,
+        "wires": [
+            [
+                "712f9c1c4d268e0a"
+            ]
+        ]
+    },
+    {
+        "id": "6f03b46809d5f4a7",
+        "type": "function",
+        "z": "9dfc0e947da8f0a3",
+        "name": "store positions",
+        "func": "//node.warn(msg.payload)\nmsg.obj = msg.payload\n//node.warn(msg.obj)\n\nlet symbol = msg.payload[\"symbol\"]\nglobal.set(\"positionsPaper\", msg.obj)\n\nreturn msg; return msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 760,
+        "y": 1760,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "657220f74c65ab47",
+        "type": "inject",
+        "z": "9dfc0e947da8f0a3",
+        "name": "Set Inputs",
+        "props": [
+            {
+                "p": "symbol",
+                "v": "tickersStocks",
+                "vt": "flow"
+            },
+            {
+                "p": "feed",
+                "v": "sip",
+                "vt": "str"
+            }
+        ],
+        "repeat": "1",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 1580,
+        "wires": [
+            [
+                "64e3f4322436e5b4"
+            ]
+        ]
+    },
+    {
+        "id": "dc31402c67b396aa",
+        "type": "alpaca-data-crypto-last-trade",
+        "z": "9dfc0e947da8f0a3",
+        "conf": "61bce7f78a75ae7d",
+        "symbol": "",
+        "name": "",
+        "x": 370,
+        "y": 1620,
+        "wires": [
+            [
+                "ad5c25b8d4632ee4"
+            ]
+        ]
+    },
+    {
+        "id": "5a8a9acc0c68bfd8",
+        "type": "inject",
+        "z": "9dfc0e947da8f0a3",
+        "name": "Set Inputs",
+        "props": [
+            {
+                "p": "symbol1",
+                "v": "tickersCryptos",
+                "vt": "flow"
+            },
+            {
+                "p": "feed",
+                "v": "sip",
+                "vt": "str"
+            },
+            {
+                "p": "symbol",
+                "v": "ETH/USD",
+                "vt": "str"
+            }
+        ],
+        "repeat": "1",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 1620,
+        "wires": [
+            [
+                "dc31402c67b396aa"
+            ]
+        ]
+    },
+    {
+        "id": "64e3f4322436e5b4",
+        "type": "function",
+        "z": "9dfc0e947da8f0a3",
+        "name": "M-F 4 am - 8PM",
+        "func": "let d = new Date();\n\nlet hour = d.getHours();\nlet min = d.getMinutes();\nlet day = d.getDay(); // day of the week\nlet sec = d.getSeconds();\n\n//node.warn(\"Date: \" +d+ \" Day: \" +day+ \" Hour: \" +hour+ \" Minute: \" +min+ \" Seconds: \" +sec)\n\n// this will run during trading 4 am - 8 pp \n{\n if ((day > 0 && day < 6 && hour > 3 && hour < 21)) \n\nreturn msg;\n}\n\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 1580,
+        "wires": [
+            [
+                "f1f7cb2adbfa4fed"
+            ]
+        ]
+    },
+    {
+        "id": "35560b92d331ece7",
+        "type": "function",
+        "z": "9dfc0e947da8f0a3",
+        "name": "store globals ",
+        "func": "//node.warn(msg.payload)\n\n// Get the Alpaca price object\nlet pricobj = msg.payload\n\n//node.warn(pricec)\nglobal.set(\"lastTrades\", pricobj) // Set the current prices for all tickers\n\nreturn msg",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 770,
+        "y": 1580,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f1f7cb2adbfa4fed",
+        "type": "alpaca-data-last-multi-trade",
+        "z": "9dfc0e947da8f0a3",
+        "conf": "61bce7f78a75ae7d",
+        "symbol": "",
+        "name": "",
+        "x": 550,
+        "y": 1580,
+        "wires": [
+            [
+                "35560b92d331ece7"
+            ]
+        ]
+    },
+    {
+        "id": "0b7e49e97cab42f6",
+        "type": "comment",
+        "z": "9dfc0e947da8f0a3",
+        "name": "Enter list of symbols to track",
+        "info": "",
+        "x": 160,
+        "y": 1420,
+        "wires": []
+    },
+    {
+        "id": "d9a586982f6782a8",
+        "type": "inject",
+        "z": "9dfc0e947da8f0a3",
+        "name": "GO",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 1480,
+        "wires": [
+            [
+                "c41ff1e7f3e0e666"
+            ]
+        ]
+    },
+    {
+        "id": "c41ff1e7f3e0e666",
+        "type": "function",
+        "z": "9dfc0e947da8f0a3",
+        "name": "Create flow variables tickersStocks and tickersCryptos",
+        "func": "// String with tickers to collect prices\nflow.set(\"tickersStocks\", \"AAPL,SPY,QQQ,TQQQ,SQQQ,SPXL,SPXS,ARKB,BITB,IBIT,HODL,EZBC,BTCO,FBTC,BTCW,BRRR,DEFI,GBTC\")\nflow.set(\"tickersCryptos\", \"ETH/USD,BTC/USD\")\n\nnode.warn(\"Trading symbols = \" + flow.get(\"tickersStocks\"))\nnode.warn(\"Trading cryptos = \" + flow.get(\"tickersCryptos\"))\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 1480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ad5c25b8d4632ee4",
+        "type": "function",
+        "z": "9dfc0e947da8f0a3",
+        "name": "store globals ",
+        "func": "//node.warn(msg.payload)\n\n// Get the Alpaca price object\nlet pricobj = msg.payload\n\n//node.warn(pricec)\nglobal.set(\"lastCryptos\", pricobj) // Set the current prices for all tickers\nreturn msg",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 1620,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "25453868cee67896",
+        "type": "comment",
+        "z": "9dfc0e947da8f0a3",
+        "name": "store positions in globals",
+        "info": "",
+        "x": 150,
+        "y": 1680,
+        "wires": []
+    },
+    {
+        "id": "810ce3520dc18040",
+        "type": "alpaca-account",
+        "name": "live",
+        "keyId": "AK2L6R6UV2NSY5475SC6",
+        "paper": false
+    },
+    {
+        "id": "c06cec183f9317f9",
+        "type": "alpaca-account",
+        "name": "paper",
+        "keyId": "PKFIHC2PS8EVLNY5L0RP",
+        "paper": true
+    },
+    {
+        "id": "61bce7f78a75ae7d",
+        "type": "alpaca-account",
+        "name": "machinetrader",
+        "keyId": "PKQRP984U4YQ6JQJG6JJ",
+        "paper": true
+    }
+]
