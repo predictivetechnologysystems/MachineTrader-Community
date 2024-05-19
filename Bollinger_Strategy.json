@@ -1,0 +1,2283 @@
+[
+    {
+        "id": "58ebf8403c4c39b7",
+        "type": "tab",
+        "label": "Bollinger Strategy",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "feb1650014bcfdd8",
+        "type": "comment",
+        "z": "58ebf8403c4c39b7",
+        "name": "Create the flow variables - Click the gray Inject nodes",
+        "info": "",
+        "x": 240,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "3dbbec9a2148efa0",
+        "type": "inject",
+        "z": "58ebf8403c4c39b7",
+        "name": "Run once",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 140,
+        "y": 420,
+        "wires": [
+            [
+                "0cbbb60f0e271b54"
+            ]
+        ]
+    },
+    {
+        "id": "0cbbb60f0e271b54",
+        "type": "function",
+        "z": "58ebf8403c4c39b7",
+        "name": "Create flow variables",
+        "func": "flow.set(\"strategyName\", \"Bollinger Strategy\")\nnode.warn(\"Strategy name = \" + flow.get(\"strategyName\"))\n\n// flow.set(\"symbolName\", \"SPY\")\n// node.warn(\"Trading symbol = \" + flow.get(\"symbolName\"))\n\nflow.set(\"tradExtended\", false)\nnode.warn(\"Extended hours = \" + flow.get(\"tradExtended\"))\n\n// Position limit - the maximum number of shares\nflow.set(\"posLimit\", 2000)\nnode.warn(\"Position limit = \" + flow.get(\"posLimit\"))\n\n// Trade limit - the maximum number of trades in same direction\nflow.set(\"tradeLimit\", 100)\nnode.warn(\"Trade limit = \" + flow.get(\"tradeLimit\"))\n\n// Wait time before next trade\nflow.set(\"waitime\", 0)\n\n// Fast lambda decay factor for EMA\nflow.set(\"lambdaFast\", 0.5)\nnode.warn(\"Fast lambda = \" + flow.get(\"lambdaFast\"))\n\n// Slow lambda decay factor for EMA\nflow.set(\"lambdaSlow\", 0.95)\nnode.warn(\"Slow lambda = \" + flow.get(\"lambdaSlow\"))\n\n// Volatility floor in dollars\nflow.set(\"volFloor\", 0.2)\nnode.warn(\"Volatility floor = \" + flow.get(\"volFloor\"))\n\n// Z-score thresholds\nflow.set(\"threshl\", -1.0)\nnode.warn(\"Lower threshold = \" + flow.get(\"threshl\"))\nflow.set(\"threshu\", 1.0)\nnode.warn(\"Upper threshold = \" + flow.get(\"threshu\"))\nflow.set(\"threshZscore\", 1.5)\nnode.warn(\"Z-score threshold = \" + flow.get(\"threshZscore\"))\nflow.set(\"threshStop\", 1000.0)\nnode.warn(\"Stop-loss threshold = \" + flow.get(\"threshStop\"))\nflow.set(\"threshDoubled\", 2.0) // Double down threshold\nnode.warn(\"Double down threshold = \" + flow.get(\"threshDoubled\"))\nflow.set(\"threshScrub\", 5.0) // Threshold for bad data\nnode.warn(\"Bad data threshold = \" + flow.get(\"threshScrub\"))\n\n// In-the-money liquidation threshold\nflow.set(\"threshProfit\", 1)\nnode.warn(\"In-the-money liquidation threshold = \" + flow.get(\"threshProfit\"))\n\nflow.set(\"timeSip\", 0)\n\n// Define trade tables\nflow.set(\"tableNames\", [\n    \"tableSubmits\", // Submitted trades\n    \"tableFills\", // Filled trades\n])\n\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 420,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7649bab0e62d8f7b",
+        "type": "function",
+        "z": "58ebf8403c4c39b7",
+        "name": "Initialize the prices",
+        "func": "// Initialize the prices just after the market open.\n// This is performed on a daily basis.\n\nnode.warn(\"Initializing the prices\")\n\n// Get the current price\nlet priceCurrent = msg.priceCurrent\n\n// Initialize the trailing maximum and minimum prices\n// flow.set(\"priceMax\", priceCurrent)\n// flow.set(\"priceMin\", priceCurrent)\n// node.warn(\"Maximum price = \" + flow.get(\"priceMax\"))\n// node.warn(\"Minimum price = \" + flow.get(\"priceMin\"))\n\n// Initialize the submit and fill prices\nflow.set(\"priceSubmit\", priceCurrent) // Set the submit price\nflow.set(\"priceFill\", priceCurrent) // Set the fill price\nflow.set(\"pricePrevious\", priceCurrent) // Set the previous price\n// node.warn(\"Current price = \" + flow.get(\"priceCurrent\") + \" / Previous price = \" + flow.get(\"pricePrevious\"))\n// Initialize fast and slow EMA prices\n// flow.set(\"priceFast\", priceCurrent) // Fast EMA price\n// node.warn(\"Fast EMA price = \" + flow.get(\"priceFast\"))\n// flow.set(\"priceSlow\", priceCurrent) // Slow EMA price\n// node.warn(\"Slow EMA price = \" + flow.get(\"priceSlow\"))\n// flow.set(\"priceFastp\", priceCurrent) // Previous fast EMA price\n// node.warn(\"Previous fast EMA price = \" + flow.get(\"priceFastp\"))\n\n// let priceVol = Math.sqrt(flow.get(\"priceVar\"))\n// flow.set(\"pricesell\", priceCurrent + priceVol) // Reset the sell price\n// flow.set(\"pricebuy\", priceCurrent - priceVol) // Reset the buy price\n\nnode.warn(\"Finished initializing the prices\")\n\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 800,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "dda2cc36e66ac19c",
+        "type": "comment",
+        "z": "58ebf8403c4c39b7",
+        "name": "Initialize the technical indicators and prices - Don't click, runs automatically",
+        "info": "",
+        "x": 300,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "c4b1b7f069450141",
+        "type": "comment",
+        "z": "58ebf8403c4c39b7",
+        "name": "Manage the trades tables",
+        "info": "",
+        "x": 150,
+        "y": 2140,
+        "wires": []
+    },
+    {
+        "id": "23db4b828c5ab547",
+        "type": "inject",
+        "z": "58ebf8403c4c39b7",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 610,
+        "y": 420,
+        "wires": [
+            [
+                "26be0a141d37f99a"
+            ]
+        ]
+    },
+    {
+        "id": "26be0a141d37f99a",
+        "type": "function",
+        "z": "58ebf8403c4c39b7",
+        "name": "Print flow variables",
+        "func": "node.warn(\"Strategy name = \" + flow.get(\"strategyName\"))\nnode.warn(\"Trading symbol = \" + flow.get(\"symbolName\"))\nnode.warn(\"Extended hours = \" + flow.get(\"tradExtended\"))\nnode.warn(\"Fast lambda = \" + flow.get(\"lambdaFast\"))\nnode.warn(\"Slow lambda = \" + flow.get(\"lambdaSlow\"))\nnode.warn(\"Volatility floor = \" + flow.get(\"volFloor\"))\nnode.warn(\"Z-score threshold = \" + flow.get(\"threshZscore\"))\nnode.warn(\"Lower threshold = \" + flow.get(\"threshl\"))\nnode.warn(\"Upper threshold = \" + flow.get(\"threshu\"))\nnode.warn(\"Threshold bad = \" + flow.get(\"threshScrub\"))\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 420,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c6c0bd039166b21b",
+        "type": "function",
+        "z": "58ebf8403c4c39b7",
+        "name": "Update tech indicators",
+        "func": "// Update the technical indicators\n\n// Get the machine time in milliseconds\n// let timeDate = new Date()\n// let timeMillisec = timeDate.getTime()\n\n// Get the stock symbol for trading\n// let symbolName = flow.get(\"symbolName\")\nlet symbolName = msg.symbolName\nflow.set(\"symbolName\", symbolName)\n// node.warn(\"Current symbol = \" + symbolName)\n\nlet priceCurrent = msg.priceCurrent // Get the current price\nflow.set(\"priceCurrent\", priceCurrent)\n// node.warn(\"UI / Current price = \" + priceCurrent + \" / Previous = \" + pricePrevious)\n\n// Limit trading to 9:30 - 16:00\nlet marketOpen = global.get(\"marketOpen\")\nlet liquidateMode = global.get(\"liquidateMode\")\nlet warmupMode = global.get(\"warmupMode\")\nlet earlyHours = global.get(\"earlyHours\")\nlet afterHours = global.get(\"afterHours\")\nlet inExtended = (flow.get(\"tradExtended\") && ((earlyHours || afterHours)))\n\n// Trade if either the market is open or if inExtended, and if not in warmup or liquidate mode\nif ((marketOpen || inExtended) && (!(warmupMode || liquidateMode))) {\n\n    // Get the EMA prices\n    // let priceFast = flow.get(\"priceFast\") // Get the fast EMA price\n    let pricEMA = msg.pricEMA // Get the EMA price\n    let priceSubmit = flow.get(\"priceSubmit\") // Get the last trade submit price\n    // let priceFill = flow.get(\"priceFill\") // Get the last trade fill price\n\n    // Get the price volatility\n    let priceVol = msg.priceVolEMA // Get the price volatility\n    // node.warn(\"Current price = \" + priceCurrent + \" / Vol = \" + priceVol.toPrecision(4))\n    // Calculate the z-score using the last trade submit or fill price\n    // let zScore = (priceCurrent - priceSubmit) / priceVol\n    // Calculate the z-score using the EMA price\n    let zScore = (priceCurrent - pricEMA) / priceVol\n    msg.zScore = zScore\n    node.warn(\"Z-score = \" + zScore.toPrecision(4) + \" / Price = \" + priceCurrent.toPrecision(5) + \" / pricEMA = \" + pricEMA.toPrecision(5) + \" / Submit = \" + priceSubmit + \" / Vol = \" + priceVol.toPrecision(4))\n\n    // Insert the technical indicators into the table techindic\n    // msg.query = \"INSERT INTO techindic (timeMillisec, priceCurrent, priceVol, zScore) VALUES ('\" + timeMillisec + \"', '\" + priceCurrent + \"', '\" + priceVol + \"', '\" + zScore + \"')\"\n\n    return msg\n\n} else {\n    // Set the current number of shares to trade to zero\n    flow.set(\"numShares\", 0)\n} // end if\n\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 980,
+        "wires": [
+            [
+                "17270213096b6ed2"
+            ]
+        ]
+    },
+    {
+        "id": "e571bc387df1123b",
+        "type": "inject",
+        "z": "58ebf8403c4c39b7",
+        "name": "Run once",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 140,
+        "y": 500,
+        "wires": [
+            [
+                "5516f06973da8b9c"
+            ]
+        ]
+    },
+    {
+        "id": "5516f06973da8b9c",
+        "type": "function",
+        "z": "58ebf8403c4c39b7",
+        "name": "Create table tableSubmits",
+        "func": "// Create tableSubmits table with submitted trades\nmsg.query = \"CREATE TABLE IF NOT EXISTS tableSubmits (timeSubmit text, milliseconds BIGINT, symbolName text, orderType text, sidev text, qty INT, posCurrent INT, priceSubmit FLOAT, tradeLogic text, zScore FLOAT, priceVol FLOAT, pnlUnreal FLOAT, pnlReal FLOAT, pnlDrawdown FLOAT)\"\n\nnode.warn(msg.query)\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 500,
+        "wires": [
+            [
+                "409a7d5bc55b486c"
+            ]
+        ]
+    },
+    {
+        "id": "409a7d5bc55b486c",
+        "type": "postgresql",
+        "z": "58ebf8403c4c39b7",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 580,
+        "y": 500,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6a939878673b40eb",
+        "type": "inject",
+        "z": "58ebf8403c4c39b7",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 2440,
+        "wires": [
+            [
+                "12f2c06d9024e2a1"
+            ]
+        ]
+    },
+    {
+        "id": "12f2c06d9024e2a1",
+        "type": "function",
+        "z": "58ebf8403c4c39b7",
+        "name": "Print fill trades table",
+        "func": "// Print tableFills table\nmsg.query = \"SELECT * FROM tableFills\"\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 2440,
+        "wires": [
+            [
+                "52020f64fdd97141"
+            ]
+        ]
+    },
+    {
+        "id": "52020f64fdd97141",
+        "type": "postgresql",
+        "z": "58ebf8403c4c39b7",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 560,
+        "y": 2440,
+        "wires": [
+            [
+                "f9dcc8852d75d20d"
+            ]
+        ]
+    },
+    {
+        "id": "bb1c888655ae2f33",
+        "type": "inject",
+        "z": "58ebf8403c4c39b7",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 2500,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3f1135b04fcfa651",
+        "type": "function",
+        "z": "58ebf8403c4c39b7",
+        "name": "Insert MSFT into trades table",
+        "func": "let symbolName = \"MSFT\"\nlet timeDate = new Date()\nlet timeSubmit = timeDate.getTime()\nlet timefill = timeSubmit + 2\nlet pnlv = 3.0\nlet orderType = \"market\"\nlet sidev = \"sell\"\nlet priceFill = 180.5\nlet priceCurrent = 181.5\nlet retVolEMA = 0.08\nlet pricez = 2.5\nlet pricezp = 1.5\nlet qty = 100\nlet qtyfill = 1\nlet posCurrent = 3\nlet posDecay = 1.5\nlet liquido = true\nlet threshProfit = 2\n\n\n// msg.query = \"insert into priceFill values ('\" + timestamp + \"', '\" + symbolName + \"')\"\n\n// msg.query = \"insert into aapl_ticks (timestamp, priceFill, volume) values \"('\" + timestamp + \"', '\" + priceFill + \"', '\" + qty + \"')\"\n\nmsg.query = \"insert into tableSubmits (timeSubmit, symbolName, posCurrent, pnlv, retVolEMA, threshProfit, liquido, pricez, pricezp, posDecay, orderType, sidev, priceCurrent) values ('\" + timeSubmit + \"', '\" + symbolName + \"', '\" + posCurrent + \"', '\" + pnlv + \"', '\" + retVolEMA + \"', '\" + threshProfit + \"', '\" + liquido + \"', '\" + pricez + \"', '\" + pricezp + \"', '\" + posDecay + \"', '\" + orderType + \"', '\" + sidev + \"', '\" + priceCurrent + \"')\"\n\n// msg.query = \"insert into priceFill (timeSubmit, timefill, symbolName, orderType, sidev, priceFill, qty, qtyfill, pricelast, zScore, posCurrent) values('\" + timeSubmit + \"', '\" + timefill + \"', '\" + symbolName + \"', '\" + orderType + \"', '\" + sidev + \"', '\" + priceFill + \"', '\" + qty + \"', '\" + qtyfill + \"', '\" + priceCurrent + \"', '\" + pricez + \"', '\" + posCurrent + \"')\"\n\n\n// msg.query = \"insert into priceFill values \"('\" + timestamp + \"', '\" + timestamp + \"', '\" + symbolName + \"', '\" + orderType + \"', '\" + sidev + \"', '\" + priceFill + \"', '\" + 1 + \"', '\" + 1 + \"')\"\n\n// msg.query = \"insert into priceFill values \"('\" + timestamp + \"', '\" + symbolName + \"')\"\n\n// msg.query = \"insert into priceFill values \"('\" + symbolName + \"', '\" + tradExtended + \"')\"\n\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 2500,
+        "wires": [
+            [
+                "a6e385187562d3ba"
+            ]
+        ]
+    },
+    {
+        "id": "a6e385187562d3ba",
+        "type": "postgresql",
+        "z": "58ebf8403c4c39b7",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 620,
+        "y": 2500,
+        "wires": [
+            [
+                "1c5f0c653b53e523"
+            ]
+        ]
+    },
+    {
+        "id": "1c5f0c653b53e523",
+        "type": "debug",
+        "z": "58ebf8403c4c39b7",
+        "name": "debug 424",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 810,
+        "y": 2500,
+        "wires": []
+    },
+    {
+        "id": "f9dcc8852d75d20d",
+        "type": "debug",
+        "z": "58ebf8403c4c39b7",
+        "name": "debug 425",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 750,
+        "y": 2440,
+        "wires": []
+    },
+    {
+        "id": "a9311ea4cb20e427",
+        "type": "link out",
+        "z": "58ebf8403c4c39b7",
+        "name": "Updated EWMA",
+        "mode": "link",
+        "links": [
+            "03e095183bd59c0e",
+            "618c4b586f8e494d",
+            "678933779a2799fe"
+        ],
+        "x": 735,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "033aeade0bd26f02",
+        "type": "comment",
+        "z": "58ebf8403c4c39b7",
+        "name": "Run the trading strategy - Don't click, runs automatically",
+        "info": "",
+        "x": 250,
+        "y": 1120,
+        "wires": []
+    },
+    {
+        "id": "581042800b174437",
+        "type": "alpaca-order",
+        "z": "58ebf8403c4c39b7",
+        "conf": "c06cec183f9317f9",
+        "x": 790,
+        "y": 1220,
+        "wires": [
+            [
+                "5ae9b01e18022069"
+            ]
+        ]
+    },
+    {
+        "id": "6c1f124b745bf0c4",
+        "type": "function",
+        "z": "58ebf8403c4c39b7",
+        "name": "Confirm trades",
+        "func": "// let timeDate = new Date()\n// let timestamp = timeDate.getTime()\n\nlet timefill = msg.payload[\"filled_at\"]\nlet symbolName = msg.payload[\"symbol\"]\nlet orderType = msg.payload[\"order_type\"]\nlet sidev = msg.payload[\"side\"]\nlet priceFill = Number(msg.payload[\"filled_avg_price\"])\nlet qty = Number(msg.payload[\"qty\"])\nlet numFilled = Number(msg.payload[\"filled_qty\"])\n\n// Set pendingTrade=false after a response from Alpaca,\n// either if the trade was confirmed or rejected.\nflow.set(\"pendingTrade\", false)\n\n// Get the current position\nlet posCurrent = flow.get(\"posCurrent\")\n// Number of shares traded with sign\nlet numTraded = numFilled\n\n// Check if the trade was filled by Alpaca\nif ((numFilled == 0) || (priceFill == null) || (priceFill == 0) || (priceFill == undefined) || isNaN(priceFill)) {\n    // The trade was not filled by Alpaca\n    node.warn(\"Trade was not filled\")\n    // Reset the fill price if Alpaca returned null\n    // priceFill = priceSubmit\n    // qty = 1\n} else {\n    // The trade was filled by Alpaca\n    node.warn(\"Trade was filled \" + \"/ priceFill = \" + priceFill)\n    // Set the fill price\n    flow.set(\"priceFill\", priceFill)\n\n    // Get the current pending number of shares to trade\n    let numShares = flow.get(\"numShares\")\n    node.warn(\"numShares = \" + numShares)\n    if (sidev == \"sell\") {\n        numTraded = -numFilled\n    } else if (sidev == \"buy\") {\n        // numTraded = numFilled\n        // Flip the fill price to negative price if it's a buy trade\n        priceFill = -priceFill // Buy - negative price\n    } // end if\n    // Update the current position\n    posCurrent += numTraded\n    // Update the current pending number of shares to trade\n    numShares -= numTraded\n    \n    // Set the current position\n    flow.set(\"posCurrent\", posCurrent) // Set the position\n    // Set the current pending number of shares to trade\n    flow.set(\"numShares\", numShares)\n\n    // Get the open position queue.\n    // The open position queue is an array with the prices of the open positions.\n    // Long positions have negative purchase prices, \n    // while short positions have positive sell prices.\n    // At any given time, the position queue is either empty, \n    // or it contains only long positions or only short positions.\n    // For example, if the position queue contains only long positions, \n    // then another buy trade adds to the queue, and a sell trade removes \n    // a long position from the queue.\n\n    // Get the open position queue.\n    let positionQueue = flow.get(\"positionQueue\")\n    // Get the realized PnL\n    let pnlReal = flow.get(\"pnlReal\")\n\n\n    // Update the open position queue\n    if ((positionQueue.length == 0) || ((priceFill*positionQueue[0]) > 0)) {\n        // If the position queue is empty or if the positions are in the \n        // same direction as the new trade, then add the trade to the queue.\n        for (let i = 0; i < numFilled; i++) {\n            positionQueue.push(priceFill)\n        } // end for\n    } else {\n        // If the queue contains positions in the opposite direction to the new trade, \n        // then match the new trade with the existing position from the queue, \n        // and update the realized PnL.\n        let priceQueue = 0 // Price from queue\n        for (let i = 0; i < numFilled; i++) {\n            priceQueue = positionQueue.pop() // Get price from queue\n            pnlReal += (priceQueue + priceFill)\n        } // end for\n    } // end if\n\n    // Update the realized PnL\n    flow.set(\"pnlReal\", pnlReal)\n    // Update the open position queue\n    flow.set(\"positionQueue\", positionQueue)\n\n\n} // end if\n\n\n// Update the tableFills table\n\nlet timeSubmit = flow.get(\"timeSubmit\") // Get the submit time as ISO date string\nlet timeMillisec = flow.get(\"timeMillisec\") // Get the submit machine time in milliseconds\n// let priceSubmit = flow.get(\"priceSubmit\") // Get the submit price\nlet priceCurrent = flow.get(\"priceCurrent\") // Get the last price\nlet zScore = flow.get(\"zScore\") // Get the z-score\n\n// Create the Postgres query string\nmsg.query = \"INSERT INTO tableFills (timeSubmit, milliseconds, timefill, symbolName, orderType, side, priceFill, qty, qtyfill, pricelast, zScore, posCurrent) VALUES ('\" + timeSubmit + \"', \" + timeMillisec + \", '\" + timefill + \"', '\" + symbolName + \"', '\" + orderType + \"', '\" + sidev + \"', \" + priceFill + \", \" + qty + \", \" + numTraded + \", \" + priceCurrent + \", \" + zScore + \", \" + posCurrent + \")\"\n// node.warn(\"timeSubmit = \" + timeSubmit + \" / timefill = \" + timefill + \" / symbolName = \" + symbolName + \" / orderType = \" + orderType + \" / side = \" + sidev + \" / priceFill = \" + priceFill + \" / qty = \" + qty + \" / numFilled = \" + numTraded + \" / pricelast = \" + priceCurrent + \" / z-score = \" + zScore + \" / posCurrent = \" + posCurrent)\n\nreturn msg\n    \n\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 760,
+        "y": 1880,
+        "wires": [
+            [
+                "866ff5b39bb5dc7a"
+            ]
+        ]
+    },
+    {
+        "id": "866ff5b39bb5dc7a",
+        "type": "postgresql",
+        "z": "58ebf8403c4c39b7",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 980,
+        "y": 1880,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0efd3fca884ce5c6",
+        "type": "alpaca-query-order",
+        "z": "58ebf8403c4c39b7",
+        "conf": "c06cec183f9317f9",
+        "x": 560,
+        "y": 1880,
+        "wires": [
+            [
+                "6c1f124b745bf0c4"
+            ]
+        ]
+    },
+    {
+        "id": "fde6c92f6e5b4475",
+        "type": "function",
+        "z": "58ebf8403c4c39b7",
+        "name": "Get trade ID",
+        "func": "let tradeid = msg.payload[\"id\"]\n// node.warn(\"Trade ID = \" + tradeid)\n\nmsg.id = tradeid\n\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 210,
+        "y": 1880,
+        "wires": [
+            [
+                "bc78c33e5b3bcdeb"
+            ]
+        ]
+    },
+    {
+        "id": "bc78c33e5b3bcdeb",
+        "type": "delay",
+        "z": "58ebf8403c4c39b7",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 380,
+        "y": 1880,
+        "wires": [
+            [
+                "0efd3fca884ce5c6"
+            ]
+        ]
+    },
+    {
+        "id": "7e9d7e89ac54244d",
+        "type": "inject",
+        "z": "58ebf8403c4c39b7",
+        "name": "Liquidate 15:59",
+        "props": [],
+        "repeat": "",
+        "crontab": "59 15 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": "1",
+        "topic": "",
+        "x": 160,
+        "y": 1480,
+        "wires": [
+            [
+                "9b0e4dd5c5699e72"
+            ]
+        ]
+    },
+    {
+        "id": "6eaa51d73a405197",
+        "type": "function",
+        "z": "58ebf8403c4c39b7",
+        "name": "Liquidate positions",
+        "func": "// Get timestamp when order was submitted\nlet timeDate = new Date()\n// Get the machine time in milliseconds\nlet timeMillisec = timeDate.getTime() // Machine time in milliseconds\nlet timeSubmit = timeDate.toISOString() // ISO date - a string, not a date object\nflow.set(\"timeSubmit\", timeSubmit) // Set the timeSubmit as ISO date string\nflow.set(\"timeMillisec\", timeMillisec) // Set the timeSubmit machine time in milliseconds\n\n\n// Get symbol\nlet symbolName = flow.get(\"symbolName\")\n\n// Get the current position from Alpaca - the number of shares\nlet posCurrent = msg.payload[\"qty\"]\n// Get the current position - the number of shares\n// let posCurrent = flow.get(\"posCurrent\")\n\n// Set the current pending number of shares to trade\nflow.set(\"numShares\", -posCurrent)\n// Set pendingTrade=true after a trade has been submitted\nflow.set(\"pendingTrade\", true)\n\n\n// Get the prices\nlet priceCurrent = flow.get(\"priceCurrent\") // Get the current price\nlet priceSubmit = priceCurrent\nflow.set(\"priceSubmit\", priceSubmit) // Set the submit price\n// flow.set(\"priceFill\", priceCurrent) // Set the fill price\n// The unwind price\nlet priceTrade = 0\n\n// Calculate the trade side\nlet sidev = \"nothing to trade\"\n// Buy shares to go flat\nif (posCurrent < 0) {\n    // Buy back short position and go flat\n    sidev = \"buy\"\n    // Update the unwind price\n    priceTrade = (-priceCurrent)\n} else if (posCurrent > 0) {\n    // Sell shares to go flat\n    sidev = \"sell\"\n    // Update the unwind price\n    priceTrade = priceCurrent\n} // end if\n\n// The number of shares to trade\nlet numSubmit = Math.abs(posCurrent)\n// Define the array of market orders\nlet orderType = \"market\"\nlet tradeOrder = {\n    \"symbol\": symbolName,\n    \"qty\": numSubmit,\n    \"side\": sidev,\n    \"type\": orderType,\n    \"time_in_force\": \"gtc\"\n} // end tradeOrder\n\n// Get the realized PnL\nlet pnlReal = flow.get(\"pnlReal\")\n// Get the open position queue\nlet positionQueue = flow.get(\"positionQueue\")\n\n// Update the realized PnL and the open position queue\nfor (var i = positionQueue.length; i--;) {\n    let pricel = positionQueue.pop()\n    pnlReal += (pricel + priceTrade)\n} // end for\n\nnode.warn(\"Trading \" + posCurrent + \" shares of \" + symbolName)\n\n// The open positions are all closed\n// Update the current position\n// flow.set(\"posCurrent\", 0) // Set the position\n// msg.posCurrent = 0\nlet pnlUnreal = 0\n// flow.set(\"pnlUnreal\", pnlUnreal)\n// let pnlTotal = pnlReal + pnlUnreal\n// node.warn(\"PnL real = \" + pnlReal.toPrecision(4) + \" / Unrealized = \" + pnlUnreal.toPrecision(4) + \" / Total = \" + pnlTotal.toPrecision(4))\n\n// Create the Postgres query for updating the tableSubmits table\n// node.warn(\"Current position for \" + symbolName + \" = \" + posDecay)\n// node.warn(\"Target position = \" + posTarget)\nlet zScore = flow.get(\"zScore\") // Get the z-score\nlet tradeLogic = \"liquidate\"\nlet priceVol = flow.get(\"priceVol\") // Get the volatility\nlet pnlDrawdown = flow.get(\"pnlDrawdown\") // Get the PnL drawdown\n\nmsg.query = \"INSERT INTO tableSubmits (timeSubmit, milliseconds, symbolName, orderType, sidev, qty, posCurrent, priceSubmit, tradeLogic, zScore, priceVol, pnlUnreal, pnlReal, pnlDrawdown) VALUES ('\" + timeSubmit + \"', \" + timeMillisec + \", '\" + symbolName + \"', '\" + orderType + \"', '\" + sidev + \"', \" + (-posCurrent) + \", \" + 0 + \", \" + priceSubmit + \", '\" + tradeLogic + \"', \" + zScore + \", \" + priceVol + \", \" + pnlUnreal + \", \" + pnlReal + \", \" + pnlDrawdown + \")\"\n// msg.query = \"INSERT INTO tableSubmits (timeSubmit, milliseconds, symbolName, orderType, sidev, qty, posCurrent, priceSubmit, zScore, pnlUnreal, pnlReal) VALUES ('\" + timeSubmit + \"', \" + timeMillisec + \", '\" + symbolName + \"', '\" + orderType + \"', '\" + sidev + \"', \" + (-posCurrent) + \", \" + 0 + \", \" + priceSubmit + \", \" + zScore + \", \" + pnlUnreal + \", \" + pnlReal + \")\"\n\nmsg.payload = tradeOrder\n\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 970,
+        "y": 1480,
+        "wires": [
+            [
+                "b6fe434d87329ca3",
+                "03cc001cf58d0d40"
+            ]
+        ]
+    },
+    {
+        "id": "e84f29ea6f7c3e8d",
+        "type": "alpaca-position-query",
+        "z": "58ebf8403c4c39b7",
+        "conf": "c06cec183f9317f9",
+        "x": 730,
+        "y": 1480,
+        "wires": [
+            [
+                "6eaa51d73a405197"
+            ]
+        ]
+    },
+    {
+        "id": "9b0e4dd5c5699e72",
+        "type": "delay",
+        "z": "58ebf8403c4c39b7",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "7",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 340,
+        "y": 1480,
+        "wires": [
+            [
+                "45db1be0bb6b1fa4"
+            ]
+        ]
+    },
+    {
+        "id": "9910f90cf0fcacc8",
+        "type": "comment",
+        "z": "58ebf8403c4c39b7",
+        "name": "Liquidate stock positions at the end of the day",
+        "info": "",
+        "x": 210,
+        "y": 1380,
+        "wires": []
+    },
+    {
+        "id": "45db1be0bb6b1fa4",
+        "type": "function",
+        "z": "58ebf8403c4c39b7",
+        "name": "Get symbol",
+        "func": "// Liquidate positions if liquidate mode is TRUE and if the market is open\nif (global.get(\"liquidateMode\") && global.get(\"marketOpen\")) {\n    msg.payload = {\n        \"symbol\": flow.get(\"symbolName\"),\n    }\n    return msg\n} // end if\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 1480,
+        "wires": [
+            [
+                "e84f29ea6f7c3e8d"
+            ]
+        ]
+    },
+    {
+        "id": "79571dd4af7da97e",
+        "type": "comment",
+        "z": "58ebf8403c4c39b7",
+        "name": "Confirm trades and insert into fill trades table",
+        "info": "",
+        "x": 210,
+        "y": 1800,
+        "wires": []
+    },
+    {
+        "id": "5ae9b01e18022069",
+        "type": "link out",
+        "z": "58ebf8403c4c39b7",
+        "name": "Bollinger ladder",
+        "mode": "link",
+        "links": [
+            "d630ed11a90c280d"
+        ],
+        "x": 925,
+        "y": 1220,
+        "wires": []
+    },
+    {
+        "id": "d630ed11a90c280d",
+        "type": "link in",
+        "z": "58ebf8403c4c39b7",
+        "name": "Insert into trades table",
+        "links": [
+            "5ae9b01e18022069",
+            "27d67e5dd067bd76"
+        ],
+        "x": 75,
+        "y": 1880,
+        "wires": [
+            [
+                "fde6c92f6e5b4475"
+            ]
+        ]
+    },
+    {
+        "id": "03cc001cf58d0d40",
+        "type": "alpaca-order",
+        "z": "58ebf8403c4c39b7",
+        "conf": "c06cec183f9317f9",
+        "x": 1250,
+        "y": 1500,
+        "wires": [
+            [
+                "27d67e5dd067bd76"
+            ]
+        ]
+    },
+    {
+        "id": "27d67e5dd067bd76",
+        "type": "link out",
+        "z": "58ebf8403c4c39b7",
+        "name": "Liquidate AAPL positions",
+        "mode": "link",
+        "links": [
+            "d630ed11a90c280d"
+        ],
+        "x": 1365,
+        "y": 1500,
+        "wires": []
+    },
+    {
+        "id": "e5d199caa233a147",
+        "type": "http in",
+        "z": "58ebf8403c4c39b7",
+        "name": "/api/download_aapl_fills",
+        "url": "/api/download_aapl_fills",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 170,
+        "y": 3140,
+        "wires": [
+            [
+                "361c641f8fd91168"
+            ]
+        ]
+    },
+    {
+        "id": "c1c5977d36b6a5ed",
+        "type": "http response",
+        "z": "58ebf8403c4c39b7",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 1110,
+        "y": 3140,
+        "wires": []
+    },
+    {
+        "id": "5a08cbdd665ced99",
+        "type": "csv",
+        "z": "58ebf8403c4c39b7",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 790,
+        "y": 3140,
+        "wires": [
+            [
+                "ee2f36e1b9000b61"
+            ]
+        ]
+    },
+    {
+        "id": "361c641f8fd91168",
+        "type": "function",
+        "z": "58ebf8403c4c39b7",
+        "name": "Export fills table",
+        "func": "msg.query = \"SELECT * FROM tableFills\"\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 3140,
+        "wires": [
+            [
+                "06909a6f6d3f9b9d"
+            ]
+        ]
+    },
+    {
+        "id": "ee2f36e1b9000b61",
+        "type": "file",
+        "z": "58ebf8403c4c39b7",
+        "name": "write report",
+        "filename": "/data/store/output.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 950,
+        "y": 3140,
+        "wires": [
+            [
+                "c1c5977d36b6a5ed"
+            ]
+        ]
+    },
+    {
+        "id": "06909a6f6d3f9b9d",
+        "type": "postgresql",
+        "z": "58ebf8403c4c39b7",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 640,
+        "y": 3140,
+        "wires": [
+            [
+                "5a08cbdd665ced99"
+            ]
+        ]
+    },
+    {
+        "id": "c0c4ba76d6bc4b9a",
+        "type": "comment",
+        "z": "58ebf8403c4c39b7",
+        "name": "Download tables to CSV files",
+        "info": "",
+        "x": 160,
+        "y": 3080,
+        "wires": []
+    },
+    {
+        "id": "cfe78cca88dc8260",
+        "type": "http in",
+        "z": "58ebf8403c4c39b7",
+        "name": "/api/download_aapl_techindic",
+        "url": "/api/download_aapl_techindic",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 180,
+        "y": 3300,
+        "wires": [
+            [
+                "ec27583ed2160d81"
+            ]
+        ]
+    },
+    {
+        "id": "a20994fdda5d0d85",
+        "type": "http response",
+        "z": "58ebf8403c4c39b7",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 1110,
+        "y": 3300,
+        "wires": []
+    },
+    {
+        "id": "f2e0d658e3ca5a93",
+        "type": "csv",
+        "z": "58ebf8403c4c39b7",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 790,
+        "y": 3300,
+        "wires": [
+            [
+                "72f59299d80cc5e0"
+            ]
+        ]
+    },
+    {
+        "id": "ec27583ed2160d81",
+        "type": "function",
+        "z": "58ebf8403c4c39b7",
+        "name": "Export techindic table",
+        "func": "msg.query = \"SELECT * FROM techindic\"\n// msg.query = \"SELECT timest, pricelast, retVarEMA, priceFast, zScore FROM techindic\"\n// msg.query = \"SELECT * FROM techindic LIMIT 10000\"\n// msg.query = \"SELECT * FROM techindic LIMIT 10000 OFFSET 10000\"\n\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 3300,
+        "wires": [
+            [
+                "b35f39f8d683177a"
+            ]
+        ]
+    },
+    {
+        "id": "72f59299d80cc5e0",
+        "type": "file",
+        "z": "58ebf8403c4c39b7",
+        "name": "write report",
+        "filename": "/data/store/output.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 950,
+        "y": 3300,
+        "wires": [
+            [
+                "a20994fdda5d0d85"
+            ]
+        ]
+    },
+    {
+        "id": "b35f39f8d683177a",
+        "type": "postgresql",
+        "z": "58ebf8403c4c39b7",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 640,
+        "y": 3300,
+        "wires": [
+            [
+                "f2e0d658e3ca5a93"
+            ]
+        ]
+    },
+    {
+        "id": "678933779a2799fe",
+        "type": "link in",
+        "z": "58ebf8403c4c39b7",
+        "name": "link in 47",
+        "links": [
+            "a9311ea4cb20e427"
+        ],
+        "x": 95,
+        "y": 1220,
+        "wires": [
+            [
+                "51289233c48bc2b7"
+            ]
+        ]
+    },
+    {
+        "id": "57bc1033da0f24b4",
+        "type": "telegram sender",
+        "z": "58ebf8403c4c39b7",
+        "name": "",
+        "bot": "a52cf3a03e6f3d99",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 1000,
+        "y": 3480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8aa42bf227cad10f",
+        "type": "inject",
+        "z": "58ebf8403c4c39b7",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 150,
+        "y": 3480,
+        "wires": [
+            [
+                "1b87bb7eaa80dfcb"
+            ]
+        ]
+    },
+    {
+        "id": "afc98189f84c26db",
+        "type": "function",
+        "z": "58ebf8403c4c39b7",
+        "name": "Telegram",
+        "func": "// Get timestamp when order was submitted\nlet timeDate = new Date()\nlet timeSubmit = timeDate.getTime() // Machine time in milliseconds\n\n// Get the stock symbol for trading\nlet symbolName = flow.get(\"symbolName\")\n// node.warn(\"Current symbol = \" + symbolName)\n\n// Get the current position from Alpaca - the number of shares\nlet posCurrent = Number(msg.payload[\"qty\"])\n// Get the unrealized pnl\nlet pnlv = msg.payload[\"unrealized_intraday_pl\"]\npnlv = Math.round(100*pnlv)/100\n\n// Prepare payload\nif ((posCurrent > 100) || (Math.abs(pnlv) > 100)) {\n    msg.payload = {}\n    msg.payload.chatId = -4082788288;\n    msg.payload.type = \"message\"\n    msg.payload.content = symbolName + \" position = \" + posCurrent + \" PnL = \" + pnlv\n    return msg;\n} // end if\n\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 800,
+        "y": 3480,
+        "wires": [
+            [
+                "57bc1033da0f24b4"
+            ]
+        ]
+    },
+    {
+        "id": "9506e35800eaa010",
+        "type": "comment",
+        "z": "58ebf8403c4c39b7",
+        "name": "Telegram alerts",
+        "info": "",
+        "x": 120,
+        "y": 3420,
+        "wires": []
+    },
+    {
+        "id": "7f97987c12bf0ca4",
+        "type": "alpaca-position-query",
+        "z": "58ebf8403c4c39b7",
+        "conf": "c06cec183f9317f9",
+        "symbol": "",
+        "x": 570,
+        "y": 3480,
+        "wires": [
+            [
+                "afc98189f84c26db"
+            ]
+        ]
+    },
+    {
+        "id": "1b87bb7eaa80dfcb",
+        "type": "function",
+        "z": "58ebf8403c4c39b7",
+        "name": "Get symbol",
+        "func": "// Trade if the market is open, after the warmup period is over, and if not in the last minute liquidate mode\n// if (global.get(\"marketOpen\") && !global.get(\"warmupMode\") && !global.get(\"liquidateMode\")) {\n// if (global.get(\"marketOpen\")) {\n\nlet marketOpen = global.get(\"marketOpen\")\nlet liquidateMode = global.get(\"liquidateMode\")\nlet warmupMode = global.get(\"warmupMode\")\nlet earlyHours = global.get(\"earlyHours\")\nlet afterHours = global.get(\"afterHours\")\nlet tradExtended = (flow.get(\"tradExtended\") && ((earlyHours || afterHours)))\n\n// Trade if not in warmup or liquidate mode, and if either the market is open or if tradExtended\nif ((!warmupMode) && (!liquidateMode) && (marketOpen || tradExtended)) {\n    msg.payload = {\n        \"symbol\": flow.get(\"symbolName\"),\n    }\n    return msg\n} // end if\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 3480,
+        "wires": [
+            [
+                "7f97987c12bf0ca4"
+            ]
+        ]
+    },
+    {
+        "id": "7728e69d606e100d",
+        "type": "postgresql",
+        "z": "58ebf8403c4c39b7",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 780,
+        "y": 1160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1736f10622180d27",
+        "type": "inject",
+        "z": "58ebf8403c4c39b7",
+        "name": "3 AM",
+        "props": [],
+        "repeat": "",
+        "crontab": "00 03 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 2200,
+        "wires": [
+            [
+                "5fc8f4d1adb57425"
+            ]
+        ]
+    },
+    {
+        "id": "80896c8be87d1bec",
+        "type": "function",
+        "z": "58ebf8403c4c39b7",
+        "name": "Erase or Delete trade tables",
+        "func": "let tablen = msg.payload\n\n// Erase all the data from the table tablen\nmsg.query = \"TRUNCATE TABLE \" + tablen\n\n// Delete the table tablen\n// msg.query = \"DROP TABLE \" + tablen\n\nnode.warn(msg.query)\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 740,
+        "y": 2200,
+        "wires": [
+            [
+                "d85d858ea83beaa6"
+            ]
+        ]
+    },
+    {
+        "id": "d85d858ea83beaa6",
+        "type": "postgresql",
+        "z": "58ebf8403c4c39b7",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 960,
+        "y": 2200,
+        "wires": [
+            [
+                "56015809122bbeba"
+            ]
+        ]
+    },
+    {
+        "id": "5fc8f4d1adb57425",
+        "type": "function-npm",
+        "z": "58ebf8403c4c39b7",
+        "name": "Get trade tables",
+        "func": "msg.payload = flow.get(\"tableNames\")\n\nreturn msg\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 320,
+        "y": 2200,
+        "wires": [
+            [
+                "1341b9b875d83df9"
+            ]
+        ]
+    },
+    {
+        "id": "1341b9b875d83df9",
+        "type": "split",
+        "z": "58ebf8403c4c39b7",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 510,
+        "y": 2200,
+        "wires": [
+            [
+                "80896c8be87d1bec"
+            ]
+        ]
+    },
+    {
+        "id": "56015809122bbeba",
+        "type": "debug",
+        "z": "58ebf8403c4c39b7",
+        "name": "debug 476",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1150,
+        "y": 2200,
+        "wires": []
+    },
+    {
+        "id": "1549a49d196077b0",
+        "type": "inject",
+        "z": "58ebf8403c4c39b7",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 2380,
+        "wires": [
+            [
+                "37e0e539047fefe1"
+            ]
+        ]
+    },
+    {
+        "id": "9a8ce6fab24401c0",
+        "type": "function",
+        "z": "58ebf8403c4c39b7",
+        "name": "Print trade tables",
+        "func": "let tablen = msg.payload\nnode.warn(\"Table = \" + tablen)\nmsg.query = \"SELECT * FROM \" + tablen + \" LIMIT 5\"\n// node.warn(msg.query)\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
+        "y": 2380,
+        "wires": [
+            [
+                "edaba6d764afbccd"
+            ]
+        ]
+    },
+    {
+        "id": "edaba6d764afbccd",
+        "type": "postgresql",
+        "z": "58ebf8403c4c39b7",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 920,
+        "y": 2380,
+        "wires": [
+            [
+                "4457debac72a021d"
+            ]
+        ]
+    },
+    {
+        "id": "4457debac72a021d",
+        "type": "debug",
+        "z": "58ebf8403c4c39b7",
+        "name": "debug 477",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1110,
+        "y": 2380,
+        "wires": []
+    },
+    {
+        "id": "4f80730ddda5ada4",
+        "type": "split",
+        "z": "58ebf8403c4c39b7",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 510,
+        "y": 2380,
+        "wires": [
+            [
+                "9a8ce6fab24401c0"
+            ]
+        ]
+    },
+    {
+        "id": "37e0e539047fefe1",
+        "type": "function-npm",
+        "z": "58ebf8403c4c39b7",
+        "name": "Get trade tables",
+        "func": "msg.payload = flow.get(\"tableNames\")\n\nreturn msg\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 320,
+        "y": 2380,
+        "wires": [
+            [
+                "4f80730ddda5ada4"
+            ]
+        ]
+    },
+    {
+        "id": "56b888ed2058fa0c",
+        "type": "http in",
+        "z": "58ebf8403c4c39b7",
+        "name": "/api/download_aapl_submits",
+        "url": "/api/download_aapl_submits",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 180,
+        "y": 3220,
+        "wires": [
+            [
+                "ecc3fb54ce422bf1"
+            ]
+        ]
+    },
+    {
+        "id": "6e74cd69d93b130f",
+        "type": "http response",
+        "z": "58ebf8403c4c39b7",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json",
+            "Content-Disposition": "attachment; filename=\"output.csv\""
+        },
+        "x": 1110,
+        "y": 3220,
+        "wires": []
+    },
+    {
+        "id": "c523eda36ffba11c",
+        "type": "csv",
+        "z": "58ebf8403c4c39b7",
+        "name": "",
+        "sep": ",",
+        "hdrin": false,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": " ",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 790,
+        "y": 3220,
+        "wires": [
+            [
+                "e5e6a9fdb8b65277"
+            ]
+        ]
+    },
+    {
+        "id": "ecc3fb54ce422bf1",
+        "type": "function",
+        "z": "58ebf8403c4c39b7",
+        "name": "Export submits table",
+        "func": "msg.query = \"SELECT * FROM tableSubmits\"\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 3220,
+        "wires": [
+            [
+                "6aab1591f9df9f99"
+            ]
+        ]
+    },
+    {
+        "id": "e5e6a9fdb8b65277",
+        "type": "file",
+        "z": "58ebf8403c4c39b7",
+        "name": "write report",
+        "filename": "/data/store/output.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 950,
+        "y": 3220,
+        "wires": [
+            [
+                "6e74cd69d93b130f"
+            ]
+        ]
+    },
+    {
+        "id": "6aab1591f9df9f99",
+        "type": "postgresql",
+        "z": "58ebf8403c4c39b7",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 640,
+        "y": 3220,
+        "wires": [
+            [
+                "c523eda36ffba11c"
+            ]
+        ]
+    },
+    {
+        "id": "4196848b7f00acd5",
+        "type": "function",
+        "z": "58ebf8403c4c39b7",
+        "name": "Submit trade orders",
+        "func": "// Get the current pending number of shares to trade\n// let numShares = msg.numShares\nlet numShares = flow.get(\"numShares\")\n// node.warn(\"numShares = \" + numShares)\nlet pendingTrade = flow.get(\"pendingTrade\")\n\nif ((numShares != 0) && !pendingTrade) {\n    // Submit trade orders only if there are some shares to trade and no pending trade\n\n    // Get timestamp when order was submitted\n    let timeDate = new Date()\n    // Get the machine time in milliseconds\n    let timeMillisec = timeDate.getTime() // Machine time in milliseconds\n    let timeSubmit = timeDate.toISOString() // ISO date - a string, not a date object\n    flow.set(\"timeSubmit\", timeSubmit) // Set the timeSubmit as ISO date string\n    flow.set(\"timeMillisec\", timeMillisec) // Set the timeSubmit machine time in milliseconds\n    msg.timeSubmit = timeSubmit\n    msg.timeMillisec = timeMillisec\n\n    // Trade in extended hours?\n    let earlyHours = global.get(\"earlyHours\")\n    let afterHours = global.get(\"afterHours\")\n    let tradExtended = (flow.get(\"tradExtended\") && ((earlyHours || afterHours)))\n\n    // Get the stock symbol for trading\n    let symbolName = flow.get(\"symbolName\")\n    // let symbolName = msg.symbolName\n    // node.warn(\"Current symbol = \" + symbolName)\n    let priceCurrent = msg.priceCurrent // Get the current price\n\n    // Get the current position\n    let posCurrent = flow.get(\"posCurrent\")\n\n    // Set the submit price\n    let priceSubmit = priceCurrent\n    flow.set(\"priceSubmit\", priceSubmit) // Set the submit price\n    msg.priceSubmit = priceSubmit\n\n    let signi = Math.sign(posCurrent) // Sign of the current position\n    let signf = Math.sign(numShares + posCurrent) // Sign of the target position\n    // node.warn(\"signi = \" + signi)\n\n    // Calculate numSubmit = the number of shares to submit to trade now in this cycle\n    let numSubmit = 0\n    // Would trading the whole numShares flip the current position?\n    if ((signi == 0) || (signf == 0) || (signf == signi)) { // Does not flip the current position\n        // The numShares doesn't flip the current position, so trade whole amount in single order\n        numSubmit = numShares\n    } else { // Flips the current position\n        // Trading the whole numShares would flip the current position\n        // Just unwind the current position\n        numSubmit = -posCurrent\n    } // end if\n\n    // The trade direction: buy or sell\n    let sidev = \"\"\n\n    if (numSubmit > 0) {\n    // Buy because the number of shares to trade is greater than zero\n        node.warn(\"Buy shares\")\n        // node.warn(\"Current position for \" + symbolName + \" = \" + posDecay)\n        // node.warn(\"Target position = \" + posTarget)\n        sidev = \"buy\"\n    } else if (numSubmit < 0) {\n        // Sell because the number of shares to trade is less than zero\n        node.warn(\"Sell shares\")\n        // node.warn(\"Current position for \" + symbolName + \" = \" + posDecay)\n        // node.warn(\"Target position = \" + posTarget)\n        sidev = \"sell\"\n    } else {\n        // node.warn(\"Current position is correct\")\n        // node.warn(\"Current position for \" + symbolName + \" = \" + posDecay)\n        // node.warn(\"Target position = \" + posTarget)\n    } // end if\n\n    // Create the trade order\n    // let numSubmitAbs = Math.abs(numSubmit) // The absolute number of shares to trade\n    let orderType = \"market\"\n    let tradeOrder = {\n        \"symbol\": symbolName,\n        \"qty\": Math.abs(numSubmit),\n        \"side\": sidev,\n        \"type\": orderType,\n        \"tradExtended\": tradExtended,\n        \"time_in_force\": \"day\"\n    } // end tradeOrder\n    node.warn(\"Trade order = \" + JSON.stringify(tradeOrder))\n\n    // Update the tableSubmits table with a Postgres query\n    // node.warn(\"Current position for \" + symbolName + \" = \" + posDecay)\n    // node.warn(\"Target position = \" + posTarget)\n    // let zScore = flow.get(\"zScore\") // Get the z-score\n    let zScore = msg.zScore // Get the z-score\n    let tradeLogic = flow.get(\"tradeLogic\") // Get the trade logic\n    let priceVol = msg.priceVolEMA // Get the volatility\n    let pnlDrawdown = flow.get(\"pnlDrawdown\") // Get the PnL drawdown\n    // Get the realized PnL\n    let pnlReal = flow.get(\"pnlReal\")\n    // Get the unrealized PnL\n    let pnlUnreal = flow.get(\"pnlUnreal\")\n    msg.query = \"INSERT INTO tableSubmits (timeSubmit, milliseconds, symbolName, orderType, sidev, qty, posCurrent, priceSubmit, tradeLogic, zScore, priceVol, pnlUnreal, pnlReal, pnlDrawdown) VALUES ('\" + timeSubmit + \"', \" + timeMillisec + \", '\" + symbolName + \"', '\" + orderType + \"', '\" + sidev + \"', \" + numSubmit + \", \" + posCurrent + \", \" + priceSubmit + \", '\" + tradeLogic + \"', \" + zScore + \", \" + priceVol + \", \" + pnlUnreal + \", \" + pnlReal + \", \" + pnlDrawdown + \")\"\n    // node.warn(\"msg.query = \" + msg.query)\n\n    msg.payload = tradeOrder\n\n    // Set pendingTrade=true after a trade has been submitted\n    flow.set(\"pendingTrade\", true)\n    return msg\n\n} // end if\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 1220,
+        "wires": [
+            [
+                "7728e69d606e100d",
+                "581042800b174437"
+            ]
+        ]
+    },
+    {
+        "id": "808394b86575bac1",
+        "type": "link in",
+        "z": "58ebf8403c4c39b7",
+        "name": "Get prices",
+        "links": [
+            "80335ba03b15bcbb"
+        ],
+        "x": 165,
+        "y": 980,
+        "wires": [
+            [
+                "c6c0bd039166b21b"
+            ]
+        ]
+    },
+    {
+        "id": "8715e7f881d1c6d3",
+        "type": "inject",
+        "z": "58ebf8403c4c39b7",
+        "name": "09:29",
+        "props": [],
+        "repeat": "",
+        "crontab": "29 09 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": "1",
+        "topic": "",
+        "x": 130,
+        "y": 740,
+        "wires": [
+            [
+                "1e358eb8f6b3f15b"
+            ]
+        ]
+    },
+    {
+        "id": "1e358eb8f6b3f15b",
+        "type": "function",
+        "z": "58ebf8403c4c39b7",
+        "name": "Initialize flow variables",
+        "func": "// Initialize the flow variables before the market open.\n// This is performed on a daily basis.\n\nnode.warn(\"Initializing the flow variables\")\n\n// pendingTrade=true after a trade has been submitted\n// pendingTrade=false after a trade has been confirmed\nflow.set(\"pendingTrade\", false)\n\n// Initialize the current pending number of shares to trade to zero\nflow.set(\"numShares\", 0)\n\n// The previous price was not valid (bad) - so accept the current price\nflow.set(\"priceValid\", false)\n\n// Initialize the current position\nflow.set(\"posCurrent\", 0)\n// Initialize the past position\nflow.set(\"posPrevious\", 0)\n// Initialize the decaying past position\nflow.set(\"posDecay\", 0)\n\n// Set the number of buys and sells in the same direction\nflow.set(\"numBuys\", 0)\nflow.set(\"numSells\", 0)\n// flow.set(\"numTrades\", 0)\n\n// The open position queue is an array with the prices of the open positions.\n// Long positions have negative purchase prices, while short positions have positive sell prices.\n// At any given time, the position queue is either empty, or it contains only long positions \n// or only short positions.\n// For example, if the position queue contains only long positions, then another buy trade \n// adds to the queue, and a sell trade removes a long position from the queue.\n//\n// Create empty open position queue\nflow.set(\"positionQueue\", [])\n// Initialize the realized PnL\nflow.set(\"pnlReal\", 0.0)\n// node.warn(\"Open position queue length = \" + flow.get(\"positionQueue\").length)\n// Initialize the maximum unrealized PnL\nflow.set(\"pnlMax\", 0.0)\nflow.set(\"pnlDrawdown\", 0.0)\n\n// The variance multiplication factor varfact multiplies the squared returns, \n// so that the volatility is closer to about 10 cents in calm markets, \n// and to about 30 cents in volatile markets.\n// The variance is equal to the sum of the squared one-second returns, which are very small.\n// So the variance and the volatility would also be very small, \n// if they weren't scaled up by the variance multiplication factor.\nflow.set(\"varfact\", 1)\n\n// Set the minimum and maximum z-scores\nflow.set(\"zScore\", 0) // Z-score\nflow.set(\"zScorep\", 0) // Previous z-score\nflow.set(\"zScoremax\", 0) // Set the maximum z-score\nflow.set(\"zScoremin\", 0) // Set the minimum z-score\n\nnode.warn(\"Finished initializing the flow variables\")\n\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 740,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b6fe434d87329ca3",
+        "type": "postgresql",
+        "z": "58ebf8403c4c39b7",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 1240,
+        "y": 1440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "17270213096b6ed2",
+        "type": "function",
+        "z": "58ebf8403c4c39b7",
+        "name": "Unrealized PnL",
+        "func": "// Calculate the unrealized PnL\n\n// Get the open position queue\nlet positionQueue = flow.get(\"positionQueue\")\n// Sum up the open positions\nlet sumQueue = 0\nlet lenQueue = positionQueue.length\nfor (var i = lenQueue; i--;) {\n    sumQueue += positionQueue[i]\n} // end for\n// node.warn(\"positionQueue = \" + positionQueue)\n// node.warn(\"Sign = \" + Math.sign(sumQueue) + \" / Sum = \" + sumQueue)\n\n// Get the current price\n// let priceCurrent = flow.get(\"priceCurrent\")\nlet priceCurrent = msg.priceCurrent\n\n// Calculate the unrealized PnL\n// If (sumQueue > 0) then buy back short open position\n// If (sumQueue < 0) then sell long open position\nlet pnlUnreal = sumQueue - Math.sign(sumQueue) * lenQueue * priceCurrent\n\n// Get the realized PnL\nlet pnlReal = flow.get(\"pnlReal\")\n// Print the total PnL\nlet pnlTotal = pnlReal + pnlUnreal\nnode.warn(\"PnL real = \" + pnlReal.toPrecision(4) + \" / Unrealized = \" + pnlUnreal.toPrecision(4) + \" / Total = \" + pnlTotal.toPrecision(4))\n\n// Return the unrealized PnL\nmsg.pnlUnreal = pnlUnreal\nflow.set(\"pnlUnreal\", pnlUnreal)\n\n// Get the current position - the number of shares\nlet posCurrent = flow.get(\"posCurrent\")\n// Get the maximum unrealized PnL in this position\nlet pnlMax = flow.get(\"pnlMax\")\n\n// Define the PnL drawdown from its maximum\nlet pnlDrawdown = 0\n// If the position is zero, then reset the maximum unrealized PnL to zero\nif (posCurrent == 0) {\n    // pnlUnreal = 0\n    // flow.set(\"pnlUnreal\", pnlUnreal)\n    pnlMax = 0\n} else {\n    // Update the maximum unrealized PnL\n    pnlMax = Math.max(pnlUnreal, pnlMax)\n    // Update the PnL drawdown and scale it to one share\n    pnlDrawdown = (pnlMax - pnlUnreal) / Math.abs(posCurrent)\n} // end if\nnode.warn(\"pnlDrawdown = \" + pnlDrawdown.toPrecision(4))\nmsg.pnlMax = pnlMax\nflow.set(\"pnlMax\", pnlMax)\nmsg.pnlDrawdown = pnlDrawdown\nflow.set(\"pnlDrawdown\", pnlDrawdown)\n\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 580,
+        "y": 980,
+        "wires": [
+            [
+                "a9311ea4cb20e427"
+            ]
+        ]
+    },
+    {
+        "id": "4b42b02cb8ac4425",
+        "type": "inject",
+        "z": "58ebf8403c4c39b7",
+        "name": "Run once",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 140,
+        "y": 560,
+        "wires": [
+            [
+                "c25c48c280f5a8c4"
+            ]
+        ]
+    },
+    {
+        "id": "c25c48c280f5a8c4",
+        "type": "function",
+        "z": "58ebf8403c4c39b7",
+        "name": "Create table tableFills",
+        "func": "// Create tableFills table with filled trades\nmsg.query = \"CREATE TABLE IF NOT EXISTS tableFills (timeSubmit text, milliseconds BIGINT, timefill text, symbolName text, orderType text, side text, priceFill FLOAT, qty INT, qtyfill INT, pricelast FLOAT, zScore FLOAT, posCurrent INT)\"\n\nnode.warn(msg.query)\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 560,
+        "wires": [
+            [
+                "6e232c244bdc7f01"
+            ]
+        ]
+    },
+    {
+        "id": "6e232c244bdc7f01",
+        "type": "postgresql",
+        "z": "58ebf8403c4c39b7",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 580,
+        "y": 560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "adc395a6c930a1f2",
+        "type": "inject",
+        "z": "58ebf8403c4c39b7",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 2260,
+        "wires": [
+            [
+                "ac47cc8c7fbdd320"
+            ]
+        ]
+    },
+    {
+        "id": "ac47cc8c7fbdd320",
+        "type": "function",
+        "z": "58ebf8403c4c39b7",
+        "name": "Delete table tableSubmits",
+        "func": "// Erase all the data from the table tableSubmits\n// msg.query = \"TRUNCATE TABLE tableSubmits\"\n// Delete all the data from the table tableSubmits\nmsg.query = \"DROP TABLE tableSubmits\"\n\nnode.warn(msg.query)\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 2260,
+        "wires": [
+            [
+                "70c499c4d30e1892"
+            ]
+        ]
+    },
+    {
+        "id": "70c499c4d30e1892",
+        "type": "postgresql",
+        "z": "58ebf8403c4c39b7",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 560,
+        "y": 2260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "da5cc938f849a7f1",
+        "type": "inject",
+        "z": "58ebf8403c4c39b7",
+        "name": "Liquidate now",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "1",
+        "topic": "",
+        "x": 150,
+        "y": 1540,
+        "wires": [
+            [
+                "7a9732a9e2147015"
+            ]
+        ]
+    },
+    {
+        "id": "7a9732a9e2147015",
+        "type": "function",
+        "z": "58ebf8403c4c39b7",
+        "name": "Get symbol",
+        "func": "// Liquidate positions if the market is open\nif (global.get(\"marketOpen\")) {\n    msg.payload = {\n        \"symbol\": flow.get(\"symbolName\"),\n    }\n    return msg\n} // end if\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 1540,
+        "wires": [
+            [
+                "e84f29ea6f7c3e8d"
+            ]
+        ]
+    },
+    {
+        "id": "09867b25b3e7e2ac",
+        "type": "inject",
+        "z": "58ebf8403c4c39b7",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "1",
+        "topic": "",
+        "x": 830,
+        "y": 1660,
+        "wires": [
+            [
+                "91814edd1ab48972"
+            ]
+        ]
+    },
+    {
+        "id": "91814edd1ab48972",
+        "type": "function",
+        "z": "58ebf8403c4c39b7",
+        "name": "Sell 1 share",
+        "func": "// Get timestamp when order was submitted\nlet timeDate = new Date()\n// Get the machine time in milliseconds\nlet timeMillisec = timeDate.getTime() // Machine time in milliseconds\nlet timeSubmit = timeDate.toISOString() // ISO date - a string, not a date object\nflow.set(\"timeSubmit\", timeSubmit) // Set the timeSubmit as ISO date string\nflow.set(\"timeMillisec\", timeMillisec) // Set the timeSubmit machine time in milliseconds\n\n\n// Get symbol\nlet symbolName = flow.get(\"symbolName\")\n// Get the current position - the number of shares\nlet posCurrent = flow.get(\"posCurrent\")\n\n// Get the prices\nlet priceCurrent = flow.get(\"priceCurrent\") // Get the current price\nlet priceSubmit = priceCurrent\n\n// Get the PnLs\nlet pnlReal = flow.get(\"pnlReal\")\nlet pnlUnreal = flow.get(\"pnlUnreal\")\n\n// Define the trade order\nlet sidev = \"sell\"\nlet orderType = \"market\"\nlet numShares = -1\nlet tradeOrder = {\n    \"symbol\": symbolName,\n    \"qty\": -numShares,\n    \"side\": sidev,\n    \"type\": orderType,\n    \"time_in_force\": \"gtc\"\n} // end tradeOrder\n\n\n// Update the current position\nflow.set(\"posCurrent\", posCurrent + numShares) // Set the position\nmsg.posCurrent = posCurrent + numShares\n\n// Create the Postgres query for updating the timeSubmit table\n// node.warn(\"Current position for \" + symbolName + \" = \" + posDecay)\n// node.warn(\"Target position = \" + posTarget)\nlet zScore = flow.get(\"zScore\") // Get the z-score\nlet tradeLogic = \"Sell 1 share\"\nlet priceVol = flow.get(\"priceVol\") // Get the volatility\nlet pnlDrawdown = flow.get(\"pnlDrawdown\") // Get the PnL drawdown\n\nmsg.query = \"INSERT INTO tableSubmits (timeSubmit, milliseconds, symbolName, orderType, sidev, qty, posCurrent, priceSubmit, tradeLogic, zScore, priceVol, pnlUnreal, pnlReal, pnlDrawdown) VALUES ('\" + timeSubmit + \"', \" + timeMillisec + \", '\" + symbolName + \"', '\" + orderType + \"', '\" + sidev + \"', \" + numShares + \", \" + 0 + \", \" + priceSubmit + \", '\" + tradeLogic + \"', \" + zScore + \", \" + priceVol + \", \" + pnlUnreal + \", \" + pnlReal + \", \" + pnlDrawdown + \")\"\n// msg.query = \"INSERT INTO tableSubmits (timeSubmit, milliseconds, symbolName, orderType, sidev, qty, posCurrent, priceSubmit, zScore, pnlUnreal, pnlReal) VALUES ('\" + timeSubmit + \"', \" + timeMillisec + \", '\" + symbolName + \"', '\" + orderType + \"', '\" + sidev + \"', \" + numShares + \", \" + 0 + \", \" + priceSubmit + \", \" + zScore + \", \" + pnlUnreal + \", \" + pnlReal + \")\"\n\nnode.warn(\"Selling \" + -numShares + \" shares of \" + symbolName)\nmsg.payload = tradeOrder\n\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 990,
+        "y": 1660,
+        "wires": [
+            [
+                "03cc001cf58d0d40",
+                "b6fe434d87329ca3"
+            ]
+        ]
+    },
+    {
+        "id": "468e815755b7f9d7",
+        "type": "inject",
+        "z": "58ebf8403c4c39b7",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "1",
+        "topic": "",
+        "x": 830,
+        "y": 1600,
+        "wires": [
+            [
+                "f2a9c9b0147c6d8f"
+            ]
+        ]
+    },
+    {
+        "id": "f2a9c9b0147c6d8f",
+        "type": "function",
+        "z": "58ebf8403c4c39b7",
+        "name": "Buy 1 share",
+        "func": "// Get timestamp when order was submitted\nlet timeDate = new Date()\n// Get the machine time in milliseconds\nlet timeMillisec = timeDate.getTime() // Machine time in milliseconds\nlet timeSubmit = timeDate.toISOString() // ISO date - a string, not a date object\nflow.set(\"timeSubmit\", timeSubmit) // Set the timeSubmit as ISO date string\nflow.set(\"timeMillisec\", timeMillisec) // Set the timeSubmit machine time in milliseconds\n\n\n// Get symbol\nlet symbolName = flow.get(\"symbolName\")\n// Get the current position - the number of shares\nlet posCurrent = flow.get(\"posCurrent\")\n\n// Get the prices\nlet priceCurrent = flow.get(\"priceCurrent\") // Get the current price\nlet priceSubmit = priceCurrent\n\n// Get the PnLs\nlet pnlReal = flow.get(\"pnlReal\")\nlet pnlUnreal = flow.get(\"pnlUnreal\")\n\n// Define the trade order\nlet sidev = \"buy\"\nlet orderType = \"market\"\nlet numShares = 1\nlet tradeOrder = {\n    \"symbol\": symbolName,\n    \"qty\": numShares,\n    \"side\": sidev,\n    \"type\": orderType,\n    \"time_in_force\": \"gtc\"\n} // end tradeOrder\n\n\n// Update the current position\nflow.set(\"posCurrent\", posCurrent+numShares) // Set the position\nmsg.posCurrent = posCurrent+numShares\n\n// Create the Postgres query for updating the timeSubmit table\n// node.warn(\"Current position for \" + symbolName + \" = \" + posDecay)\n// node.warn(\"Target position = \" + posTarget)\nlet zScore = flow.get(\"zScore\") // Get the z-score\nlet tradeLogic = \"Buy 1 share\"\nlet priceVol = flow.get(\"priceVol\") // Get the volatility\nlet pnlDrawdown = flow.get(\"pnlDrawdown\") // Get the PnL drawdown\n\nmsg.query = \"INSERT INTO tableSubmits (timeSubmit, milliseconds, symbolName, orderType, sidev, qty, posCurrent, priceSubmit, tradeLogic, zScore, priceVol, pnlUnreal, pnlReal, pnlDrawdown) VALUES ('\" + timeSubmit + \"', \" + timeMillisec + \", '\" + symbolName + \"', '\" + orderType + \"', '\" + sidev + \"', \" + numShares + \", \" + 0 + \", \" + priceSubmit + \", '\" + tradeLogic + \"', \" + zScore + \", \" + priceVol + \", \" + pnlUnreal + \", \" + pnlReal + \", \" + pnlDrawdown + \")\"\n// msg.query = \"INSERT INTO tableSubmits (timeSubmit, milliseconds, symbolName, orderType, sidev, qty, posCurrent, priceSubmit, zScore, pnlUnreal, pnlReal) VALUES ('\" + timeSubmit + \"', \" + timeMillisec + \", '\" + symbolName + \"', '\" + orderType + \"', '\" + sidev + \"', \" + numShares + \", \" + 0 + \", \" + priceSubmit + \", \" + zScore + \", \" + pnlUnreal + \", \" + pnlReal + \")\"\n\nnode.warn(\"Buying \" + numShares + \" shares of \" + symbolName)\nmsg.payload = tradeOrder\n\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 990,
+        "y": 1600,
+        "wires": [
+            [
+                "b6fe434d87329ca3",
+                "03cc001cf58d0d40"
+            ]
+        ]
+    },
+    {
+        "id": "51289233c48bc2b7",
+        "type": "function",
+        "z": "58ebf8403c4c39b7",
+        "name": "Bollinger simple",
+        "func": "// This is a simple Bollinger strategy. \n// The strategy sells short 1 share if the z-score is greater than \n// the threshold, and buys 1 share if the z-score is less than minus \n// the threshold.\n// The strategy keeps buying or selling, and accumulates an inventory\n// of long or chort shares until it reaches position limit posLimit.\n// The z-score is equal to the current price minus the reference price, \n// divided by the trailing volatility of prices.\n// The reference price can be chosen to be the EMA price or the last \n// trade fill price.\n\n// Get the time when the order was submitted\n// let timeDate = new Date()\n// Get the machine time in milliseconds\n// let timeMillisec = timeDate.getTime()\n\n// Get the stock symbol for trading\n// let symbolName = flow.get(\"symbolName\")\nlet symbolName = msg.symbolName\n// node.warn(\"Current symbol = \" + symbolName)\n// Get the current pending number of shares to trade\nlet numShares = flow.get(\"numShares\")\nlet pendingTrade = flow.get(\"pendingTrade\")\n\n// Get the z-score\nlet zScore = msg.zScore\n// Get the current position - the number of shares\nlet posCurrent = flow.get(\"posCurrent\")\n// Get the z-score thresholds\nlet threshZscore = flow.get(\"threshZscore\") // Z-score threshold\nnode.warn(symbolName + \" position = \" + posCurrent + \" / Z-score = \" + zScore.toPrecision(4) + \" / Threshold = \" + threshZscore)\n\nif ((numShares == 0) && !pendingTrade) { // Execute strategy only if there are no pending shares to trade\n\n    // Get the position limit\n    let posLimit = flow.get(\"posLimit\")\n\n    // Calculate the Boolean variables with the trading conditions\n    // Is the z-score greater than the z-score threshold?\n    let overBought = (zScore > threshZscore)\n    // Is the z-score less than minus the z-score threshold?\n    let overSold = (zScore < -threshZscore)\n    // Is the position below the limit?\n    let buyMore = (posCurrent < posLimit)\n    let sellMore = (posCurrent > -posLimit)\n\n    // Define the trade logic\n    let tradeLogic = \"fill_old_trade\"\n\n    // Calculate the number of shares to trade\n    // Define the trading logic\n    if (overBought && sellMore) { // Price is overBought and allowed to sell\n        // Sell 1 share because price is overBought and allowed to sell\n        numShares = 1 // The number of shares to trade\n        tradeLogic = \"overBought\"\n        node.warn(\"Buy \" + Math.abs(numShares) + \" shares of \" + symbolName)\n    } else if (overSold && buyMore) { // Price is overSold and allowed to buy\n        // Buy 1 share because price is overSold and allowed to buy\n        numShares = -1 // The number of shares to trade\n        tradeLogic = \"overSold\"\n        node.warn(\"Sell \" + numShares + \" shares of \" + symbolName)\n    } // end if\n\n    msg.tradeLogic = tradeLogic\n    flow.set(\"tradeLogic\", tradeLogic)\n\n    // Return the number of shares to trade\n    msg.numShares = numShares\n    flow.set(\"numShares\", numShares)\n\n} // end if\n\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 260,
+        "y": 1220,
+        "wires": [
+            [
+                "4196848b7f00acd5"
+            ]
+        ]
+    },
+    {
+        "id": "e78830c3e8709cf5",
+        "type": "inject",
+        "z": "58ebf8403c4c39b7",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 2560,
+        "wires": [
+            [
+                "9dfe58d82110b6d6"
+            ]
+        ]
+    },
+    {
+        "id": "9dfe58d82110b6d6",
+        "type": "function",
+        "z": "58ebf8403c4c39b7",
+        "name": "Print submit trades table",
+        "func": "// Print tableSubmits table\nmsg.query = \"SELECT * FROM tableSubmits\"\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 2560,
+        "wires": [
+            [
+                "5da8abff1cd2734b"
+            ]
+        ]
+    },
+    {
+        "id": "5da8abff1cd2734b",
+        "type": "postgresql",
+        "z": "58ebf8403c4c39b7",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 560,
+        "y": 2560,
+        "wires": [
+            [
+                "a0f5a56c99ab4bb2"
+            ]
+        ]
+    },
+    {
+        "id": "a0f5a56c99ab4bb2",
+        "type": "debug",
+        "z": "58ebf8403c4c39b7",
+        "name": "debug 1067",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 750,
+        "y": 2560,
+        "wires": []
+    },
+    {
+        "id": "190ba68e25fc46d7",
+        "type": "link in",
+        "z": "58ebf8403c4c39b7",
+        "name": "Get initial prices",
+        "links": [
+            "122f7aa6c933380e"
+        ],
+        "x": 165,
+        "y": 800,
+        "wires": [
+            [
+                "7649bab0e62d8f7b"
+            ]
+        ]
+    },
+    {
+        "id": "d9cf1374f53d8a01",
+        "type": "comment",
+        "z": "58ebf8403c4c39b7",
+        "name": "Update the technical indicators with live data - Don't click, runs automatically",
+        "info": "",
+        "x": 310,
+        "y": 900,
+        "wires": []
+    },
+    {
+        "id": "f7dbaf652b131298",
+        "type": "inject",
+        "z": "58ebf8403c4c39b7",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "00 03 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 2820,
+        "wires": [
+            [
+                "e78636a5264e9bd7"
+            ]
+        ]
+    },
+    {
+        "id": "e78636a5264e9bd7",
+        "type": "function",
+        "z": "58ebf8403c4c39b7",
+        "name": "Erase or Delete technical indicator table",
+        "func": "// Erase all the price data from the table techindic\nmsg.query = \"TRUNCATE TABLE techindic\"\n\n// Delete the table techindic\n// msg.query = \"DROP TABLE techindic\"\n\nnode.warn(msg.query)\nreturn msg\n\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 2820,
+        "wires": [
+            [
+                "46db91e7d74e101a"
+            ]
+        ]
+    },
+    {
+        "id": "46db91e7d74e101a",
+        "type": "postgresql",
+        "z": "58ebf8403c4c39b7",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 680,
+        "y": 2820,
+        "wires": [
+            [
+                "a2d681e27ad657d5"
+            ]
+        ]
+    },
+    {
+        "id": "586a384fca3a7e69",
+        "type": "inject",
+        "z": "58ebf8403c4c39b7",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 2940,
+        "wires": [
+            [
+                "d07972c82812b4c0"
+            ]
+        ]
+    },
+    {
+        "id": "d07972c82812b4c0",
+        "type": "function",
+        "z": "58ebf8403c4c39b7",
+        "name": "Print technical indicator table",
+        "func": "// Print techindic table\nmsg.query = \"SELECT * FROM techindic\"\n// msg.query = \"SELECT timest, pricelast, retVarEMA, priceFast, priceSlow, zScore FROM techindic\"\n\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 2940,
+        "wires": [
+            [
+                "36eb184196904480"
+            ]
+        ]
+    },
+    {
+        "id": "36eb184196904480",
+        "type": "postgresql",
+        "z": "58ebf8403c4c39b7",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 680,
+        "y": 2940,
+        "wires": [
+            [
+                "eb816289fa2127e6"
+            ]
+        ]
+    },
+    {
+        "id": "a2d681e27ad657d5",
+        "type": "debug",
+        "z": "58ebf8403c4c39b7",
+        "name": "debug 471",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 870,
+        "y": 2820,
+        "wires": []
+    },
+    {
+        "id": "eb816289fa2127e6",
+        "type": "debug",
+        "z": "58ebf8403c4c39b7",
+        "name": "debug 467",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 870,
+        "y": 2940,
+        "wires": []
+    },
+    {
+        "id": "0678d882a9532459",
+        "type": "function",
+        "z": "58ebf8403c4c39b7",
+        "name": "Print indicators",
+        "func": "// Print positions\n// posPrevious is the past position\nlet posPrevious = flow.get(\"posPrevious\")\nnode.warn(\"Past position = \" + posPrevious)\n// posDecay is the decaying past position\nlet posDecay = flow.get(\"posDecay\")\nnode.warn(\"Decaying position = \" + Math.round(100*posDecay)/100)\n\nlet priceFast = flow.get(\"priceFast\")\nnode.warn(\"Fast EMA price = \" + priceFast.toPrecision(4))\nlet priceSlow = flow.get(\"priceSlow\")\nnode.warn(\"Slow EMA price = \" + priceSlow.toPrecision(4))\nlet pricePrevious = flow.get(\"pricePrevious\")\nnode.warn(\"Past EMA price = \" + pricePrevious.toPrecision(4))\nlet priceVol = Math.sqrt(Math.sqrt(flow.get(\"priceVar\")))\nnode.warn(\"Volatility = \" + priceVol.toPrecision(4))\nlet priceMax = flow.get(\"priceMax\")\nnode.warn(\"Maximum price = \" + priceMax.toPrecision(4))\nlet priceMin = flow.get(\"priceMin\")\nnode.warn(\"Minimum price = \" + priceMin.toPrecision(4))\n\nlet numBuys = flow.get(\"numBuys\")\nlet numSells = flow.get(\"numSells\")\nnode.warn(\"numBuys = \" + numBuys + \" / numSells = \" + numSells)\n\n\n/*\n// Print the centered technical indicators\nlet priceVol = Math.sqrt(flow.get(\"priceVol\"))\nnode.warn(\"Volatility = \" + priceVol.toPrecision(4))\nlet zScore = flow.get(\"zScore\")\nnode.warn(\"Return z-score = \" + zScore.toPrecision(4))\nlet retEMA = Math.sqrt(flow.get(\"retEMA\"))\nnode.warn(\"EMA volatility = \" + retEMA.toPrecision(4))\n\n\n// Print the technical indicators\nlet priceCurrent = flow.get(\"priceCurrent\")\nnode.warn(\"Current price = \" + priceCurrent)\nlet zScore = flow.get(\"zScore\")\nnode.warn(\"Z-score = \" + zScore.toPrecision(4))\nlet zScorep = flow.get(\"zScorep\")\nnode.warn(\"Previous z-score = \" + zScorep.toPrecision(4))\nlet zScoremax = flow.get(\"zScoremax\")\nnode.warn(\"Maximum z-score = \" + zScoremax.toPrecision(4))\nlet zScoremin = flow.get(\"zScoremin\")\nnode.warn(\"Minimum z-score = \" + zScoremin.toPrecision(4))\n\n*/\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 2760,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a43abc0548608aa1",
+        "type": "inject",
+        "z": "58ebf8403c4c39b7",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 2760,
+        "wires": [
+            [
+                "0678d882a9532459"
+            ]
+        ]
+    },
+    {
+        "id": "456ce371937aefb6",
+        "type": "inject",
+        "z": "58ebf8403c4c39b7",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 2880,
+        "wires": [
+            [
+                "bb35391b2696656d"
+            ]
+        ]
+    },
+    {
+        "id": "bb35391b2696656d",
+        "type": "function",
+        "z": "58ebf8403c4c39b7",
+        "name": "Create technical indicator table",
+        "func": "msg.query = \"CREATE TABLE IF NOT EXISTS techindic (timeMillisec BIGINT, priceCurrent FLOAT, priceVol FLOAT, zScore FLOAT)\"\n\nnode.warn(msg.query)\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 2880,
+        "wires": [
+            [
+                "7c463e07ce44b7b4"
+            ]
+        ]
+    },
+    {
+        "id": "7c463e07ce44b7b4",
+        "type": "postgresql",
+        "z": "58ebf8403c4c39b7",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 680,
+        "y": 2880,
+        "wires": [
+            [
+                "73f413fb90f66e21"
+            ]
+        ]
+    },
+    {
+        "id": "73f413fb90f66e21",
+        "type": "debug",
+        "z": "58ebf8403c4c39b7",
+        "name": "debug 926",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 870,
+        "y": 2880,
+        "wires": []
+    },
+    {
+        "id": "a8140576ba1b1c0a",
+        "type": "comment",
+        "z": "58ebf8403c4c39b7",
+        "name": "Create the technical indicators table",
+        "info": "",
+        "x": 180,
+        "y": 2700,
+        "wires": []
+    },
+    {
+        "id": "871f80b834c5a421",
+        "type": "inject",
+        "z": "58ebf8403c4c39b7",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 2320,
+        "wires": [
+            [
+                "b0ab2ff2490e66e6"
+            ]
+        ]
+    },
+    {
+        "id": "b0ab2ff2490e66e6",
+        "type": "function",
+        "z": "58ebf8403c4c39b7",
+        "name": "Delete table tableFills",
+        "func": "// Erase all the data from the table tableSubmits\n// msg.query = \"TRUNCATE TABLE tableSubmits\"\n// Delete all the data from the table tableFills\nmsg.query = \"DROP TABLE tableFills\"\n\nnode.warn(msg.query)\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 2320,
+        "wires": [
+            [
+                "f20e0e4a17cd47c9"
+            ]
+        ]
+    },
+    {
+        "id": "f20e0e4a17cd47c9",
+        "type": "postgresql",
+        "z": "58ebf8403c4c39b7",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 560,
+        "y": 2320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "23715be6258d81c8",
+        "type": "pts_oauth_browser",
+        "z": "58ebf8403c4c39b7",
+        "callback": "",
+        "redirect": "https://drive.google.com/file/d/1PWcFGOZuKJ007RJzKcJi-8ZsogQohGbO/view?usp=drive_link",
+        "name": "Bollinger Strategy Theory",
+        "x": 350,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "23831208e9bdb697",
+        "type": "inject",
+        "z": "58ebf8403c4c39b7",
+        "name": "Open",
+        "props": [
+            {
+                "p": "redirect",
+                "v": "",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 120,
+        "wires": [
+            [
+                "23715be6258d81c8"
+            ]
+        ]
+    },
+    {
+        "id": "99a4740162a0748e",
+        "type": "comment",
+        "z": "58ebf8403c4c39b7",
+        "name": "Click the gray nodes to display the documentation",
+        "info": "",
+        "x": 230,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "9f66bdbc257cfcd0",
+        "type": "pts_oauth_browser",
+        "z": "58ebf8403c4c39b7",
+        "callback": "",
+        "redirect": "https://drive.google.com/file/d/1b4sGhXf0koBfMDqrKMEfcusb63CXfjz-/view?usp=sharing",
+        "name": "Bollinger Strategy Implementation",
+        "x": 380,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "8b738f0132585baf",
+        "type": "inject",
+        "z": "58ebf8403c4c39b7",
+        "name": "Open",
+        "props": [
+            {
+                "p": "redirect",
+                "v": "",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 180,
+        "wires": [
+            [
+                "9f66bdbc257cfcd0"
+            ]
+        ]
+    },
+    {
+        "id": "2cb242bf29419ac6",
+        "type": "comment",
+        "z": "58ebf8403c4c39b7",
+        "name": "The strategy will run in your paper account",
+        "info": "",
+        "x": 200,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "7455395cf269fb2b",
+        "type": "postgreSQLConfig",
+        "name": "",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "postgres",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "docker",
+        "userFieldType": "str",
+        "password": "docker",
+        "passwordFieldType": "str"
+    },
+    {
+        "id": "c06cec183f9317f9",
+        "type": "alpaca-account",
+        "name": "paper",
+        "keyId": "USE-OAUTH-OR-REPLACE",
+        "paper": true
+    },
+    {
+        "id": "a52cf3a03e6f3d99",
+        "type": "telegram bot",
+        "botname": "MT05",
+        "usernames": "",
+        "chatids": "",
+        "baseapiurl": "",
+        "updatemode": "polling",
+        "pollinterval": "300",
+        "usesocks": false,
+        "sockshost": "",
+        "socksprotocol": "socks5",
+        "socksport": "6667",
+        "socksusername": "anonymous",
+        "sockspassword": "",
+        "bothost": "",
+        "botpath": "",
+        "localbotport": "8443",
+        "publicbotport": "8443",
+        "privatekey": "",
+        "certificate": "",
+        "useselfsignedcertificate": false,
+        "sslterminated": false,
+        "verboselogging": false
+    }
+]
