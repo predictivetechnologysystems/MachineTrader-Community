@@ -14,7 +14,7 @@
         "name": "Calculate the RSI",
         "info": "",
         "x": 140,
-        "y": 1060,
+        "y": 1280,
         "wires": []
     },
     {
@@ -29,7 +29,7 @@
         "onceDelay": 0.1,
         "topic": "",
         "x": 150,
-        "y": 1120,
+        "y": 1340,
         "wires": [
             [
                 "3938edec93d3e397"
@@ -41,7 +41,7 @@
         "type": "function",
         "z": "6f782989d0b5585e",
         "name": "Initialize RSI parameters",
-        "func": "// Set the number of RSI calculations that have been performed\nlet numcalc = 0\nflow.set(\"numcalc\", numcalc)\n\n// Initialize the average gains and losses\nflow.set(\"gainm\", 0) // Average gain\nflow.set(\"lossm\", 0) // Average loss\n\n/*\n// Create a string with the ticker for RSI\nflow.set(\"symboln\", \"AAPL\")\n\n// Set the length of the RSI look-back interval\nlet lookb = 14\nflow.set(\"lookb\", lookb) // Look-back interval length\nnode.warn(\"Look-back interval = \" + flow.get(\"lookb\"))\n*/\n\n/*\n// Create an empty queue for stock returns\n// The number of elements in the queue is equal to lookb\nlet dataq = Array(lookb).fill(0)\n// Set the position of the end of the queue\nlet endq = lookb - 1\nflow.set(\"dataq\", dataq)\nflow.set(\"endq\", endq)\nnode.warn(\"Data queue = \" + flow.get(\"dataq\"))\nnode.warn(\"End of queue = \" + (1+flow.get(\"endq\")))\n*/",
+        "func": "// Set the number of RSI calculations that have been performed\nlet numcalc = 0\nflow.set(\"numcalc\", numcalc)\n\n// Initialize the average gains and losses\nflow.set(\"gainm\", 0) // Average gain\nflow.set(\"lossm\", 0) // Average loss\n\n",
         "outputs": 1,
         "timeout": "",
         "noerr": 0,
@@ -49,7 +49,7 @@
         "finalize": "",
         "libs": [],
         "x": 370,
-        "y": 1120,
+        "y": 1340,
         "wires": [
             []
         ]
@@ -62,7 +62,7 @@
         "mode": "link",
         "links": [],
         "x": 515,
-        "y": 1200,
+        "y": 1420,
         "wires": []
     },
     {
@@ -70,7 +70,7 @@
         "type": "function",
         "z": "6f782989d0b5585e",
         "name": "Calculate the RSI",
-        "func": "/*\nCalculating the Relative Strength Index (RSI).\n\nThe following website provides a good explanation of the RSI calculation:\n\nhttps://school.stockcharts.com/doku.php?id=technical_indicators:relative_strength_index_rsi\n\n\nThe RSI depends on the trailing average gain (gainm) and the trailing average loss (lossm).\n\nThe average gains and losses are calculated from the gains and losses over a look-back interval (lookb), \nwhich is often chosen to be 14 time periods (days, minutes, etc.) \n\nThe current gains and losses are always expressed as non-negative values:\n\n    gain(t) = max(r(t), 0)\n    loss(t) = max(-r(t), 0)\n\nWhere r(t) is the current return at time t.\n\nIn the initial warmup interval (say the first 250 time periods), the averages \nare calculated as the averages of the gains and losses over the look-back interval:\n\n    gainm(t) = Sum( gain(t) ... gain(t-lookb+1) ) / lookb\n    lossm(t) = Sum( loss(t) ... loss(t-lookb+1) ) / lookb\n\nAfter the initial warmup interval, the average gains and losses are calculated \nrecursively, similar to the exponential moving average (EMA): \n\n    gainm(t) = ( (lookb-1) * gainm(t-1)  + gain(t) ) / lookb\n    lossm(t) = ( (lookb-1) * lossm(t-1)  + loss(t) ) / lookb\n\nThe advantage of the recursive calculation is that it doesn't require maintaining \nan array of recent gains and losses.  \nOnly the the most recent gains and losses are needed to update the averages.  \n\n\nThe RSI is then calculated from the average gains and losses as:\n\n            100 * gainm(t)\n    RSI = ---------------------\n           gainm(t) + lossm(t)\n\nThe RSI value is between 0 and 100 - it is said to oscillate between these extremes.\nIf the average gain is equal to zero, then RSI = 0.\nIf the average loss is equal to zero, then RSI = 100.\nIf the average gains and losses are equal, then RSI = 50.\nIf the gains are greater than the losses, then RSI > 50.  \nIf the gains are less than the losses, then RSI < 50.  \n\nSome traders interpret the condition RSI > 80 as indicating that the prices are overbought (too high).\nSome traders interpret the condition RSI < 20 as indicating that the prices are oversold (too low).\n\n*/\n\n// Get the current stock price\nlet pricec = msg.pricec\n// node.warn(\"Price = \" + pricec)\nlet pricep = flow.get(\"pricep\") // Get the previous price\nflow.set(\"pricep\", pricec) // Set the current price\n\n// Get the number of RSI calculations that have been performed\nlet numcalc = flow.get(\"numcalc\")\n// Set the number of RSI calculations for warmup\nlet warmupc = 250\n\n// Get the length of the RSI look-back interval\nlet lookb = flow.get(\"lookb\") // Look-back interval length\n\n// Calculate the dollar return\nlet retc = 0 // Set first return to zero\nif (numcalc > 0) {\n    retc = (pricec - pricep)\n} // end if\nnumcalc += 1\nflow.set(\"numcalc\", numcalc)\n\n// Get the average gain and loss\nlet gainm = flow.get(\"gainm\") // Average gain\nlet lossm = flow.get(\"lossm\") // Average loss\n\n// Update the average gain and loss\nif (numcalc < warmupc) {\n    // Calculate the averages from the returns queue\n    let dataq = flow.get(\"dataq\")\n    let endq = flow.get(\"endq\")\n\n    // Add the return to the queue\n    dataq[endq] = retc\n    if (endq > 0)\n        endq = endq - 1\n    else\n        endq = lookb - 1\n\n    flow.set(\"dataq\", dataq)\n    flow.set(\"endq\", endq)\n\n    // Sum up the returns queue\n    gainm = 0\n    lossm = 0\n    for (var i = lookb; i--;) {\n        gainm += Math.max(dataq[i], 0)\n        lossm += Math.max(-dataq[i], 0)\n    } // end for\n    gainm = gainm / lookb\n    lossm = lossm / lookb\n} else {\n    // Update the averages using a recursive formula\n    gainm = ((lookb - 1) * gainm + Math.max(retc, 0)) / lookb\n    lossm = ((lookb - 1) * lossm + Math.max(-retc, 0)) / lookb\n} // end if\n\n// Update the average gain and loss\nflow.set(\"gainm\", gainm)\nflow.set(\"lossm\", lossm)\nnode.warn(\"Average gain = \" + gainm.toPrecision(7) + \" / Loss = \" + lossm.toPrecision(7))\n\n// Calculate the RSI\nlet rsi = 0\nif ((gainm + lossm) > 0)\n    rsi = 100 * gainm / (gainm + lossm)\nnode.warn(\"RSI = \" + rsi.toPrecision(7))\n\nmsg.rsi = rsi\nreturn msg\n",
+        "func": "/*\nCalculating the Relative Strength Index (RSI).\n\nThe following website provides a good explanation of the RSI calculation:\n\nhttps://school.stockcharts.com/doku.php?id=technical_indicators:relative_strength_index_rsi\n\n\nThe RSI depends on the trailing average gain (gainm) and the trailing average loss (lossm).\n\nThe average gains and losses are calculated from the gains and losses over a look-back interval (lookBack), \nwhich is often chosen to be 14 time periods (days, minutes, etc.) \n\nThe current gains and losses are always expressed as non-negative values:\n\n    gain(t) = max(r(t), 0)\n    loss(t) = max(-r(t), 0)\n\nWhere r(t) is the current return at time t.\n\nIn the initial warmup interval (say the first 250 time periods), the averages \nare calculated as the averages of the gains and losses over the look-back interval:\n\n    gainm(t) = Sum( gain(t) ... gain(t-lookBack+1) ) / lookBack\n    lossm(t) = Sum( loss(t) ... loss(t-lookBack+1) ) / lookBack\n\nAfter the initial warmup interval, the average gains and losses are calculated \nrecursively, similar to the exponential moving average (EMA): \n\n    gainm(t) = ( (lookBack-1) * gainm(t-1)  + gain(t) ) / lookBack\n    lossm(t) = ( (lookBack-1) * lossm(t-1)  + loss(t) ) / lookBack\n\nThe advantage of the recursive calculation is that it doesn't require maintaining \nan array of recent gains and losses.  \nOnly the the most recent gains and losses are needed to update the averages.  \n\n\nThe RSI is then calculated from the average gains and losses as:\n\n            100 * gainm(t)\n    RSI = ---------------------\n           gainm(t) + lossm(t)\n\nThe RSI value is between 0 and 100 - it is said to oscillate between these extremes.\nIf the average gain is equal to zero, then RSI = 0.\nIf the average loss is equal to zero, then RSI = 100.\nIf the average gains and losses are equal, then RSI = 50.\nIf the gains are greater than the losses, then RSI > 50.  \nIf the gains are less than the losses, then RSI < 50.  \n\nSome traders interpret the condition RSI > 80 as indicating that the prices are overbought (too high).\nSome traders interpret the condition RSI < 20 as indicating that the prices are oversold (too low).\n\n*/\n\n// Get the current stock price\nlet priceCurrent = msg.priceCurrent\n// node.warn(\"Price = \" + priceCurrent)\nlet pricePrevious = flow.get(\"pricePrevious\") // Get the previous price\nflow.set(\"pricePrevious\", priceCurrent) // Set the current price\n\n// Get the number of RSI calculations that have been performed\nlet numcalc = flow.get(\"numcalc\")\n// Set the number of RSI calculations for warmup\nlet warmupc = 250\n\n// Get the length of the RSI look-back interval\nlet lookBack = flow.get(\"lookBack\") // Look-back interval length\n\n// Calculate the dollar return\nlet retCurrent = 0 // Set first return to zero\nif (numcalc > 0) {\n    retCurrent = (priceCurrent - pricePrevious)\n} // end if\nnumcalc += 1\nflow.set(\"numcalc\", numcalc)\n\n// Get the average gain and loss\nlet gainm = flow.get(\"gainm\") // Average gain\nlet lossm = flow.get(\"lossm\") // Average loss\n\n// Update the average gain and loss\nif (numcalc < warmupc) {\n    // Calculate the averages from the returns queue\n    let dataq = flow.get(\"dataq\")\n    let endq = flow.get(\"endq\")\n\n    // Add the return to the queue\n    dataq[endq] = retCurrent\n    if (endq > 0)\n        endq = endq - 1\n    else\n        endq = lookBack - 1\n\n    flow.set(\"dataq\", dataq)\n    flow.set(\"endq\", endq)\n\n    // Sum up the returns queue\n    gainm = 0\n    lossm = 0\n    for (var i = lookBack; i--;) {\n        gainm += Math.max(dataq[i], 0)\n        lossm += Math.max(-dataq[i], 0)\n    } // end for\n    gainm = gainm / lookBack\n    lossm = lossm / lookBack\n} else {\n    // Update the averages using a recursive formula\n    gainm = ((lookBack - 1) * gainm + Math.max(retCurrent, 0)) / lookBack\n    lossm = ((lookBack - 1) * lossm + Math.max(-retCurrent, 0)) / lookBack\n} // end if\n\n// Update the average gain and loss\nflow.set(\"gainm\", gainm)\nflow.set(\"lossm\", lossm)\nnode.warn(\"Average gain = \" + gainm.toPrecision(7) + \" / Loss = \" + lossm.toPrecision(7))\n\n// Calculate the RSI\nlet rsi = 0\nif ((gainm + lossm) > 0)\n    rsi = 100 * gainm / (gainm + lossm)\nnode.warn(\"RSI = \" + rsi.toPrecision(7))\n\nmsg.rsi = rsi\nreturn msg\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -78,7 +78,7 @@
         "finalize": "",
         "libs": [],
         "x": 350,
-        "y": 1200,
+        "y": 1420,
         "wires": [
             [
                 "88351bc48b288e30"
@@ -99,15 +99,15 @@
         "id": "2cb94e402002c8ed",
         "type": "function",
         "z": "6f782989d0b5585e",
-        "name": "Initialize the parameters",
-        "func": "// Create a string with the stock ticker\nflow.set(\"symboln\", \"AAPL\")\n\n// Set the lambda decay factor\nflow.set(\"lambdaf\", 0.9)\nnode.warn(\"Fast lambda = \" + flow.get(\"lambdaf\"))\n\n// Volatility floor in dollars\nflow.set(\"volf\", 0.001)\nnode.warn(\"Volatility floor = \" + flow.get(\"volf\"))\n\nflow.set(\"pricep\", NaN) // Set the previous price to NaN\nflow.set(\"pricema\", NaN) // Set the moving average price to NaN\n\n// Set the length of the look-back interval\n// The number of elements in the queue is equal to lookb\nlet lookb = 14 // The number of elements in the queue\nflow.set(\"lookb\", lookb) // Look-back interval length\nnode.warn(\"Look-back interval = \" + flow.get(\"lookb\"))\n\n\n// Create an empty queue for stock prices\nlet priceq = Array(lookb).fill(0)\n// Set the position of the end of the queue\nlet endpq = lookb - 1\nflow.set(\"priceq\", priceq)\nflow.set(\"endpq\", endpq)\nnode.warn(\"Price queue = \" + flow.get(\"priceq\"))\nnode.warn(\"End of price queue = \" + (1+flow.get(\"endpq\")))\n\n// Create an empty queue for stock returns\nlet retq = Array(lookb).fill(0)\n// Set the position of the end of the queue\nlet endrq = lookb - 1\nflow.set(\"retq\", retq)\nflow.set(\"endrq\", endrq)\nnode.warn(\"Return queue = \" + flow.get(\"retq\"))\nnode.warn(\"End of return queue = \" + (1 + flow.get(\"endrq\")))\n\n",
+        "name": "Create flow variables",
+        "func": "// Create a string with the stock ticker\nflow.set(\"symbolName\", \"SPY\")\nnode.warn(\"Symbol = \" + flow.get(\"symbolName\"))\n\n// Lambda decay factor for EMA\nflow.set(\"lambdaFactor\", 0.9)\nnode.warn(\"Lambda decay factor = \" + flow.get(\"lambdaFactor\"))\n// Fast lambda decay factor for EMA\nflow.set(\"lambdaFast\", 0.8)\nnode.warn(\"Fast lambda = \" + flow.get(\"lambdaFast\"))\n// Slow lambda decay factor for EMA\nflow.set(\"lambdaSlow\", 0.95)\nnode.warn(\"Slow lambda = \" + flow.get(\"lambdaSlow\"))\n\n// Volatility floor in dollars\nlet volFloor = 0.02\nflow.set(\"volFloor\", volFloor)\n\nflow.set(\"threshScrub\", 1.0) // Threshold for bad data in dollars\nnode.warn(\"Bad data threshold in dollars = \" + flow.get(\"threshScrub\"))\n\n// Length of the look-back interval\n// The number of elements in the queue is equal to lookBack\nlet lookBack = 14 // The number of elements in the queue\nflow.set(\"lookBack\", lookBack) // Look-back interval length\nnode.warn(\"Look-back interval = \" + flow.get(\"lookBack\"))\n\n\n// Create an empty queue for stock prices\nlet priceQueue = Array(lookBack).fill(0)\n// Set the position of the end of the queue\nlet endPriceQueue = lookBack - 1\nflow.set(\"priceQueue\", priceQueue)\nflow.set(\"endPriceQueue\", endPriceQueue)\nnode.warn(\"Price queue = \" + flow.get(\"priceQueue\"))\nnode.warn(\"End of price queue = \" + (1+flow.get(\"endPriceQueue\")))\n\n// Create an empty queue for stock returns\nlet returnQueue = Array(lookBack).fill(0)\n// Set the position of the end of the queue\nlet endRetQueue = lookBack - 1\nflow.set(\"returnQueue\", returnQueue)\nflow.set(\"endRetQueue\", endRetQueue)\nnode.warn(\"Return queue = \" + flow.get(\"returnQueue\"))\nnode.warn(\"End of return queue = \" + (1 + flow.get(\"endRetQueue\")))\n\n",
         "outputs": 1,
         "timeout": "",
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 370,
+        "x": 420,
         "y": 120,
         "wires": [
             []
@@ -119,10 +119,10 @@
         "z": "6f782989d0b5585e",
         "name": "Prices In",
         "links": [
-            "6907d48e5dad5f32"
+            "b89fe9856c0255df"
         ],
-        "x": 185,
-        "y": 200,
+        "x": 105,
+        "y": 400,
         "wires": [
             [
                 "90b9b609cce518a3"
@@ -144,8 +144,8 @@
             "a2da5f0258da5d23",
             "1081774edeac600b"
         ],
-        "x": 535,
-        "y": 200,
+        "x": 675,
+        "y": 400,
         "wires": []
     },
     {
@@ -153,18 +153,18 @@
         "type": "function",
         "z": "6f782989d0b5585e",
         "name": "Get stock price",
-        "func": "// Get the current prices for all the stocks from msg\nlet pricestocks = msg.pricestocks\n\n// Get the current price for the target stock\nlet symboln = flow.get(\"symboln\")\nlet pricec = pricestocks[symboln]\n// node.warn(symboln + \" price = \" + pricec)\n// Set the current price\nflow.set(\"pricec\", pricec)\nmsg.pricec = pricec\nreturn msg\n",
+        "func": "// Get the current prices for all the stocks from msg\nlet priceStocks = msg.priceStocks\n\n// Get the current price for the target stock\nlet symbolName = flow.get(\"symbolName\")\nmsg.symbolName = symbolName\n\nlet priceCurrent = priceStocks[symbolName]\n// node.warn(symbolName + \" price = \" + priceCurrent)\n// Set the current price\nflow.set(\"priceCurrent\", priceCurrent)\nmsg.priceCurrent = priceCurrent\n\nreturn msg\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 340,
-        "y": 200,
+        "x": 260,
+        "y": 400,
         "wires": [
             [
-                "02d8cb8b69b31595"
+                "8e4e2c9c25a31a78"
             ]
         ]
     },
@@ -174,10 +174,11 @@
         "z": "6f782989d0b5585e",
         "name": "Price In",
         "links": [
-            "02d8cb8b69b31595"
+            "02d8cb8b69b31595",
+            "493425ccd7582206"
         ],
         "x": 185,
-        "y": 1200,
+        "y": 1420,
         "wires": [
             []
         ]
@@ -189,21 +190,21 @@
         "name": "Calculate the moving average price",
         "info": "",
         "x": 200,
-        "y": 300,
+        "y": 520,
         "wires": []
     },
     {
         "id": "b3db40dd636e8fc4",
         "type": "inject",
         "z": "6f782989d0b5585e",
-        "name": "",
+        "name": "9:29 AM",
         "props": [],
         "repeat": "",
-        "crontab": "30 09 * * 1,2,3,4,5",
+        "crontab": "29 09 * * 1,2,3,4,5",
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "x": 150,
+        "x": 220,
         "y": 120,
         "wires": [
             [
@@ -215,11 +216,11 @@
         "id": "def62101dd8e457b",
         "type": "link out",
         "z": "6f782989d0b5585e",
-        "name": "RSI out",
+        "name": "SMA price",
         "mode": "link",
         "links": [],
         "x": 535,
-        "y": 360,
+        "y": 580,
         "wires": []
     },
     {
@@ -227,7 +228,7 @@
         "type": "function",
         "z": "6f782989d0b5585e",
         "name": "Calculate the SMA prices",
-        "func": "/*\nCalculating the Relative Strength Index (RSI).\n\nThe following website provides a good explanation of the RSI calculation:\n\nhttps://school.stockcharts.com/doku.php?id=technical_indicators:relative_strength_index_rsi\n\n\nThe RSI depends on the trailing average gain (gainm) and the trailing average loss (lossm).\n\nThe average gains and losses are calculated from the gains and losses over a look-back interval (lookb), \nwhich is often chosen to be 14 time periods (days, minutes, etc.) \n\nThe current gains and losses are always expressed as non-negative values:\n\n    gain(t) = max(r(t), 0)\n    loss(t) = max(-r(t), 0)\n\nWhere r(t) is the current return at time t.\n\nIn the initial warmup interval (say the first 250 time periods), the averages \nare calculated as the averages of the gains and losses over the look-back interval:\n\n    gainm(t) = Sum( gain(t) ... gain(t-lookb+1) ) / lookb\n    lossm(t) = Sum( loss(t) ... loss(t-lookb+1) ) / lookb\n\nAfter the initial warmup interval, the average gains and losses are calculated \nrecursively, similar to the exponential moving average (EMA): \n\n    gainm(t) = ( (lookb-1) * gainm(t-1)  + gain(t) ) / lookb\n    lossm(t) = ( (lookb-1) * lossm(t-1)  + loss(t) ) / lookb\n\nThe advantage of the recursive calculation is that it doesn't require maintaining \nan array of recent gains and losses.  \nOnly the the most recent gains and losses are needed to update the averages.  \n\n\nThe RSI is then calculated from the average gains and losses as:\n\n            100 * gainm(t)\n    RSI = ---------------------\n           gainm(t) + lossm(t)\n\nThe RSI value is between 0 and 100 - it is said to oscillate between these extremes.\nIf the average gain is equal to zero, then RSI = 0.\nIf the average loss is equal to zero, then RSI = 100.\nIf the average gains and losses are equal, then RSI = 50.\nIf the gains are greater than the losses, then RSI > 50.  \nIf the gains are less than the losses, then RSI < 50.  \n\nSome traders interpret the condition RSI > 80 as indicating that the prices are overbought (too high).\nSome traders interpret the condition RSI < 20 as indicating that the prices are oversold (too low).\n\n*/\n\n// Get the current stock price\nlet pricec = msg.pricec\n// node.warn(\"Price = \" + pricec)\n\n// Get the price queue\nlet endpq = flow.get(\"endpq\")\nlet priceq = flow.get(\"priceq\")\nlet lenq = priceq.length\n\n// Add to the price queue\npriceq[endpq] = pricec\nif (endpq > 0)\n    endpq = endpq - 1\nelse\n    endpq = lenq - 1\n\n// Update the price queue\nflow.set(\"priceq\", priceq)\nflow.set(\"endpq\", endpq)\n\n// Sum up the price queue\nlet pricema = 0\nfor (var i = lenq; i--;) {\n    pricema += priceq[i]\n} // end for\npricema = pricema / lenq\nflow.set(\"pricema\", pricema)\n\nnode.warn(\"Price = \" + pricec + \" / pricema = \" + pricema.toPrecision(7))\n\nmsg.pricema = pricema\nreturn msg\n",
+        "func": "/*\nCalculate the Simple Moving Average (SMA) prices.\n*/\n\n// Get the current stock price\nlet priceCurrent = msg.priceCurrent\n// node.warn(\"Price = \" + priceCurrent)\n\n// Get the price queue\nlet endPriceQueue = flow.get(\"endPriceQueue\")\nlet priceQueue = flow.get(\"priceQueue\")\nlet lenQueue = priceQueue.length\n\n// Add to the price queue\npriceQueue[endPriceQueue] = priceCurrent\nif (endPriceQueue > 0)\n    endPriceQueue = endPriceQueue - 1\nelse\n    endPriceQueue = lenQueue - 1\n\n// Update the price queue\nflow.set(\"priceQueue\", priceQueue)\nflow.set(\"endPriceQueue\", endPriceQueue)\n\n// Calculate the SMA price\nlet priceSMA = 0\n// Sum up the price queue\nfor (var i = lenQueue; i--;) {\n    priceSMA += priceQueue[i]\n} // end for\npriceSMA = priceSMA / lenQueue\nflow.set(\"priceSMA\", priceSMA)\n\nnode.warn(\"Price = \" + priceCurrent + \" / priceSMA = \" + priceSMA.toPrecision(7))\n\nmsg.priceSMA = priceSMA\nreturn msg\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -235,7 +236,7 @@
         "finalize": "",
         "libs": [],
         "x": 290,
-        "y": 360,
+        "y": 580,
         "wires": [
             [
                 "def62101dd8e457b"
@@ -248,10 +249,11 @@
         "z": "6f782989d0b5585e",
         "name": "Price In",
         "links": [
-            "02d8cb8b69b31595"
+            "02d8cb8b69b31595",
+            "493425ccd7582206"
         ],
         "x": 105,
-        "y": 360,
+        "y": 580,
         "wires": [
             []
         ]
@@ -260,11 +262,11 @@
         "id": "16b6c8dfa8e51f2e",
         "type": "link out",
         "z": "6f782989d0b5585e",
-        "name": "RSI out",
+        "name": "EMA price",
         "mode": "link",
         "links": [],
         "x": 535,
-        "y": 440,
+        "y": 660,
         "wires": []
     },
     {
@@ -272,7 +274,7 @@
         "type": "function",
         "z": "6f782989d0b5585e",
         "name": "Calculate the EMA prices",
-        "func": "/*\nCalculate the exponential moving average (EMA).\n\nThe following website provides a good explanation of the RSI calculation:\n\nhttps://school.stockcharts.com/doku.php?id=technical_indicators:relative_strength_index_rsi\n\n\nThe RSI depends on the trailing average gain (gainm) and the trailing average loss (lossm).\n\nThe average gains and losses are calculated from the gains and losses over a look-back interval (lookb), \nwhich is often chosen to be 14 time periods (days, minutes, etc.) \n\nThe current gains and losses are always expressed as non-negative values:\n\n    gain(t) = max(r(t), 0)\n    loss(t) = max(-r(t), 0)\n\nWhere r(t) is the current return at time t.\n\nIn the initial warmup interval (say the first 250 time periods), the averages \nare calculated as the averages of the gains and losses over the look-back interval:\n\n    gainm(t) = Sum( gain(t) ... gain(t-lookb+1) ) / lookb\n    lossm(t) = Sum( loss(t) ... loss(t-lookb+1) ) / lookb\n\nAfter the initial warmup interval, the average gains and losses are calculated \nrecursively, similar to the exponential moving average (EMA): \n\n    gainm(t) = ( (lookb-1) * gainm(t-1)  + gain(t) ) / lookb\n    lossm(t) = ( (lookb-1) * lossm(t-1)  + loss(t) ) / lookb\n\nThe advantage of the recursive calculation is that it doesn't require maintaining \nan array of recent gains and losses.  \nOnly the the most recent gains and losses are needed to update the averages.  \n\n\nThe RSI is then calculated from the average gains and losses as:\n\n            100 * gainm(t)\n    RSI = ---------------------\n           gainm(t) + lossm(t)\n\nThe RSI value is between 0 and 100 - it is said to oscillate between these extremes.\nIf the average gain is equal to zero, then RSI = 0.\nIf the average loss is equal to zero, then RSI = 100.\nIf the average gains and losses are equal, then RSI = 50.\nIf the gains are greater than the losses, then RSI > 50.  \nIf the gains are less than the losses, then RSI < 50.  \n\nSome traders interpret the condition RSI > 80 as indicating that the prices are overbought (too high).\nSome traders interpret the condition RSI < 20 as indicating that the prices are oversold (too low).\n\n*/\n// Calculate the exponential moving average (EMA)\n// Get the current stock price\nlet pricec = msg.pricec\n\n// Get the lambda decay factor\nlet lambdaf = flow.get(\"lambdaf\")\n\n// Get the EMA price\nlet pricema = flow.get(\"pricema\")\n// Update the EMA price\nif (isNaN(pricema)) {\n    pricema = pricec\n} else {\n    pricema = lambdaf * pricema + (1 - lambdaf) * pricec\n} // end if\nflow.set(\"pricema\", pricema) // Set the EMA price\n\nnode.warn(\"Price = \" + pricec + \" / pricema = \" + pricema.toPrecision(7))\n\nmsg.pricema = pricema\nreturn msg\n",
+        "func": "/*\nCalculate the Exponential Moving Average (EMA) prices.\n\nThe Exponential Moving Average (EMA) price pricEMA(t) is equal to the weighted average \nof the past average and the recent price, using the lambda decay factor: \n\n    pricEMA(t) = lambda * pricEMA(t-1)  + (1 - lambda) * price(t)\n\nThe advantage of the recursive calculation is that it doesn't require maintaining \nan array of recent prices.  \nOnly the the most recent price is needed to update the EMA price.  \nIt also applies greater weight to recent prices and less to past prices.\n\n*/\n\n// Get the current stock price\nlet priceCurrent = msg.priceCurrent\n\n// Get the lambda decay factor\nlet lambdaFactor = flow.get(\"lambdaFactor\")\n\n// Get the EMA price\nlet pricEMA = flow.get(\"pricEMA\")\n// Update the EMA price\n// if (isNaN(pricEMA)) {\n    // pricEMA = priceCurrent\n// } else {\n    pricEMA = lambdaFactor * pricEMA + (1 - lambdaFactor) * priceCurrent\n// } // end if\nflow.set(\"pricEMA\", pricEMA) // Set the EMA price\nmsg.pricEMA = pricEMA\n// node.warn(\"Price = \" + priceCurrent + \" / pricEMA = \" + pricEMA.toPrecision(7))\n\nreturn msg\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -280,7 +282,7 @@
         "finalize": "",
         "libs": [],
         "x": 290,
-        "y": 440,
+        "y": 660,
         "wires": [
             [
                 "16b6c8dfa8e51f2e"
@@ -293,10 +295,11 @@
         "z": "6f782989d0b5585e",
         "name": "Price In",
         "links": [
-            "02d8cb8b69b31595"
+            "02d8cb8b69b31595",
+            "493425ccd7582206"
         ],
         "x": 105,
-        "y": 440,
+        "y": 660,
         "wires": [
             []
         ]
@@ -308,18 +311,18 @@
         "name": "Calculate the moving average return volatility",
         "info": "",
         "x": 230,
-        "y": 560,
+        "y": 780,
         "wires": []
     },
     {
         "id": "75d093f3e9245c09",
         "type": "link out",
         "z": "6f782989d0b5585e",
-        "name": "RSI out",
+        "name": "SMA return vol",
         "mode": "link",
         "links": [],
         "x": 535,
-        "y": 620,
+        "y": 840,
         "wires": []
     },
     {
@@ -327,7 +330,7 @@
         "type": "function",
         "z": "6f782989d0b5585e",
         "name": "Calculate the SMA return volatility",
-        "func": "/*\nCalculating the Relative Strength Index (RSI).\n\nThe following website provides a good explanation of the RSI calculation:\n\nhttps://school.stockcharts.com/doku.php?id=technical_indicators:relative_strength_index_rsi\n\n\nThe RSI depends on the trailing average gain (gainm) and the trailing average loss (lossm).\n\nThe average gains and losses are calculated from the gains and losses over a look-back interval (lookb), \nwhich is often chosen to be 14 time periods (days, minutes, etc.) \n\nThe current gains and losses are always expressed as non-negative values:\n\n    gain(t) = max(r(t), 0)\n    loss(t) = max(-r(t), 0)\n\nWhere r(t) is the current return at time t.\n\nIn the initial warmup interval (say the first 250 time periods), the averages \nare calculated as the averages of the gains and losses over the look-back interval:\n\n    gainm(t) = Sum( gain(t) ... gain(t-lookb+1) ) / lookb\n    lossm(t) = Sum( loss(t) ... loss(t-lookb+1) ) / lookb\n\nAfter the initial warmup interval, the average gains and losses are calculated \nrecursively, similar to the exponential moving average (EMA): \n\n    gainm(t) = ( (lookb-1) * gainm(t-1)  + gain(t) ) / lookb\n    lossm(t) = ( (lookb-1) * lossm(t-1)  + loss(t) ) / lookb\n\nThe advantage of the recursive calculation is that it doesn't require maintaining \nan array of recent gains and losses.  \nOnly the the most recent gains and losses are needed to update the averages.  \n\n\nThe RSI is then calculated from the average gains and losses as:\n\n            100 * gainm(t)\n    RSI = ---------------------\n           gainm(t) + lossm(t)\n\nThe RSI value is between 0 and 100 - it is said to oscillate between these extremes.\nIf the average gain is equal to zero, then RSI = 0.\nIf the average loss is equal to zero, then RSI = 100.\nIf the average gains and losses are equal, then RSI = 50.\nIf the gains are greater than the losses, then RSI > 50.  \nIf the gains are less than the losses, then RSI < 50.  \n\nSome traders interpret the condition RSI > 80 as indicating that the prices are overbought (too high).\nSome traders interpret the condition RSI < 20 as indicating that the prices are oversold (too low).\n\n*/\n\n// Get the stock prices\nlet pricec = msg.pricec // Get the current stock price\nlet pricep = flow.get(\"pricep\") // Get the previous price\nflow.set(\"pricep\", pricec) // Set the previous price\n\n// Get the return queue\nlet endrq = flow.get(\"endrq\")\nlet retq = flow.get(\"retq\")\nlet lenq = retq.length\n\n// Calculate the dollar return\nlet retc = (pricec - pricep)\n// Add the return to the queue\nretq[endrq] = retc\nif (endrq > 0)\n    endrq = endrq - 1\nelse\n    endrq = lenq - 1\n\n// Update the return queue\nflow.set(\"retq\", retq)\nflow.set(\"endrq\", endrq)\n\n// Calculate the SMA return and the return variance\nlet retma = flow.get(\"retma\") // Get SMA return\nlet retvar = 0\nlet retman = 0 // New SMA return\nfor (var i = lenq; i--;) {\n    retvar += Math.pow((retq[i] - retma), 2)\n    retman += retq[i]\n} // end for\nretvar = retvar / (lenq - 1)\nretman = retman / lenq\nflow.set(\"retvar\", retvar) // Set the return variance\n// Calculate the return volatility\nlet volf = flow.get(\"volf\") // Get the volatility floor\nlet retvol = Math.max(volf, Math.sqrt(retvar))\nflow.set(\"retvol\", retvol) // Set the return volatility\nflow.set(\"retma\", retman) // Set the SMA return\nmsg.retma = retman\nmsg.retvar = retvar\nmsg.retvol = retvol\n\nnode.warn(\"Price = \" + pricec + \" / retvol = \" + retvol.toPrecision(7))\n\nreturn msg\n",
+        "func": "/*\nCalculate the Simple Moving Average (SMA) return volatility.\n\nThe return ret(t) is equal to difference of prices:\n\n    ret(t) = p(t) - p(t-1)\n\nThe Simple Moving Average (SMA) return SMA(t) is equal to the average \nof the recent returns over the look-back interval lookBack:\n\n    SMA(t) = Sum( ret(t), ... ret(t-lookBack+1) ) / lookBack\n\nThe return variance var(t) is equal to the average of the squared excess returns \nover the look-back interval lookBack:\n\n    var(t) = Sum( (ret(t) - SMA(t))^2, ... (ret(t-lookBack+1) - SMA(t-lookBack+1))^2 ) / (lookBack - 1)\n\nThe volatility vol(t) is equal to the square root of the variance:\n\n    vol(t) = sqrt(var(t))\n\nThe disadvantage of the SMA calculation is that it requires maintaining an array \nof recent returns.  \nIt also applies the same weight to past returns as to more recent returns.\nBut it makes more sense that recent returns should have a greater weight than past returns.\n\n*/\n\n// Get the stock prices\nlet priceCurrent = msg.priceCurrent // Get the current stock price\nlet pricePrevious = flow.get(\"pricePrevious\") // Get the previous price\nflow.set(\"pricePrevious\", priceCurrent) // Set the previous price\n\n// Get the return queue\nlet endRetQueue = flow.get(\"endRetQueue\")\nlet returnQueue = flow.get(\"returnQueue\")\nlet lenQueue = returnQueue.length\n\n// Calculate the dollar return\nlet retCurrent = (priceCurrent - pricePrevious)\n// Add the return to the queue\nreturnQueue[endRetQueue] = retCurrent\nif (endRetQueue > 0)\n    endRetQueue = endRetQueue - 1\nelse\n    endRetQueue = lenQueue - 1\n\n// Update the return queue\nflow.set(\"returnQueue\", returnQueue)\nflow.set(\"endRetQueue\", endRetQueue)\n\n// Calculate the SMA return and the return variance\nlet retSMA = flow.get(\"retSMA\") // Get SMA return\nlet retVar = 0\nlet retSMAn = 0 // New SMA return\nfor (var i = lenQueue; i--;) {\n    retVar += Math.pow((returnQueue[i] - retSMA), 2)\n    retSMAn += returnQueue[i]\n} // end for\nretVar = retVar / (lenQueue - 1)\nretSMAn = retSMAn / lenQueue\nflow.set(\"retVar\", retVar) // Set the return variance\n// Calculate the return volatility\nlet volFloor = flow.get(\"volFloor\") // Get the volatility floor\nlet retVol = Math.max(volFloor, Math.sqrt(retVar))\nflow.set(\"retVol\", retVol) // Set the return volatility\nflow.set(\"retSMA\", retSMAn) // Set the SMA return\nmsg.retSMA = retSMAn\nmsg.retVarSMA = retVar\nmsg.retVolSMA = retVol\n\nnode.warn(\"Price = \" + priceCurrent + \" / retVol = \" + retVol.toPrecision(7))\n\nreturn msg\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -335,7 +338,7 @@
         "finalize": "",
         "libs": [],
         "x": 320,
-        "y": 620,
+        "y": 840,
         "wires": [
             [
                 "75d093f3e9245c09"
@@ -348,10 +351,11 @@
         "z": "6f782989d0b5585e",
         "name": "Price In",
         "links": [
-            "02d8cb8b69b31595"
+            "02d8cb8b69b31595",
+            "493425ccd7582206"
         ],
         "x": 105,
-        "y": 620,
+        "y": 840,
         "wires": [
             []
         ]
@@ -360,11 +364,11 @@
         "id": "6e7cbe4e9d2005bf",
         "type": "link out",
         "z": "6f782989d0b5585e",
-        "name": "RSI out",
+        "name": "EMA return vol",
         "mode": "link",
         "links": [],
         "x": 535,
-        "y": 700,
+        "y": 920,
         "wires": []
     },
     {
@@ -372,7 +376,7 @@
         "type": "function",
         "z": "6f782989d0b5585e",
         "name": "Calculate the EMA return volatility",
-        "func": "/*\nCalculate the exponential moving average (EMA).\n\nThe following website provides a good explanation of the RSI calculation:\n\nhttps://school.stockcharts.com/doku.php?id=technical_indicators:relative_strength_index_rsi\n\n\nThe RSI depends on the trailing average gain (gainm) and the trailing average loss (lossm).\n\nThe average gains and losses are calculated from the gains and losses over a look-back interval (lookb), \nwhich is often chosen to be 14 time periods (days, minutes, etc.) \n\nThe current gains and losses are always expressed as non-negative values:\n\n    gain(t) = max(r(t), 0)\n    loss(t) = max(-r(t), 0)\n\nWhere r(t) is the current return at time t.\n\nIn the initial warmup interval (say the first 250 time periods), the averages \nare calculated as the averages of the gains and losses over the look-back interval:\n\n    gainm(t) = Sum( gain(t) ... gain(t-lookb+1) ) / lookb\n    lossm(t) = Sum( loss(t) ... loss(t-lookb+1) ) / lookb\n\nAfter the initial warmup interval, the average gains and losses are calculated \nrecursively, similar to the exponential moving average (EMA): \n\n    gainm(t) = ( (lookb-1) * gainm(t-1)  + gain(t) ) / lookb\n    lossm(t) = ( (lookb-1) * lossm(t-1)  + loss(t) ) / lookb\n\nThe advantage of the recursive calculation is that it doesn't require maintaining \nan array of recent gains and losses.  \nOnly the the most recent gains and losses are needed to update the averages.  \n\n\nThe RSI is then calculated from the average gains and losses as:\n\n            100 * gainm(t)\n    RSI = ---------------------\n           gainm(t) + lossm(t)\n\nThe RSI value is between 0 and 100 - it is said to oscillate between these extremes.\nIf the average gain is equal to zero, then RSI = 0.\nIf the average loss is equal to zero, then RSI = 100.\nIf the average gains and losses are equal, then RSI = 50.\nIf the gains are greater than the losses, then RSI > 50.  \nIf the gains are less than the losses, then RSI < 50.  \n\nSome traders interpret the condition RSI > 80 as indicating that the prices are overbought (too high).\nSome traders interpret the condition RSI < 20 as indicating that the prices are oversold (too low).\n\n*/\n// Calculate the exponential moving average (EMA) volatility\n\n// Get the current stock price\nlet pricec = msg.pricec\n\n// Get the lambda decay factor\nlet lambdaf = flow.get(\"lambdaf\")\nlet lambda1 = 1 - lambdaf\n\n// Initialize the data\nlet retma = flow.get(\"retma\") // Get the EMA return\nlet retvar = flow.get(\"retvar\") // Get the return variance\nlet volf = flow.get(\"volf\") // Get the volatility floor\nlet retvol = Math.max(volf, Math.sqrt(retvar)) // The return volatility\n\nlet pricep = flow.get(\"pricep\") // Get the previous price\n\nif (isNaN(pricep)) { // Initialize the return variance\n    retma = 0 // Initialize the EMA return\n    retvar = 0.01 // Initialize the return variance\n    retvol = 0.1 // Initialize the return volatility\n} else { // Update the return variance\n    let retc = (pricec - pricep) // Calculate the dollar return\n    retvar = lambdaf * retvar + lambda1 * Math.pow((retc - retma), 2)\n    retvol = Math.max(volf, Math.sqrt(retvar))\n    // Update the EMA return\n    retma = lambdaf * retma + lambda1 * retc\n    node.warn(\"Price = \" + pricec + \" / retvol = \" + retvol.toPrecision(7))\n} // end if\n\nflow.set(\"retma\", retma) // Set the EMA return\nflow.set(\"pricep\", pricec) // Set the previous price\nflow.set(\"retvar\", retvar) // Set the return variance\nflow.set(\"retvol\", retvol) // Set the return volatility\nmsg.retma = retma\nmsg.retvar = retvar\nmsg.retvol = retvol\n\nnode.warn(\"Price = \" + pricec + \" / retvol = \" + retvol.toPrecision(7))\n\n\nreturn msg\n",
+        "func": "/*\nCalculate the Exponential Moving Average (EMA) return volatility.\n\nThe return ret(t) is equal to difference of prices:\n\n    ret(t) = p(t) - p(t-1)\n\nThe Exponential Moving Average (EMA) return retEMA(t) is equal to the weighted average \nof the past average and the recent return, using the lambda decay factor: \n\n    retEMA(t) = lambda * retEMA(t-1)  + (1-lambda) * ret(t)\n\nThe return variance var(t) is similarly calculated recursively using the lambda decay factor: \n\n    var(t) = lambda * var(t-1)  + (1-lambda) * (ret(t) - retEMA(t))^2\n\nThe volatility vol(t) is equal to the square root of the variance:\n\n    vol(t) = sqrt(var(t))\n\nThe advantage of the recursive calculation is that it doesn't require maintaining \nan array of recent returns.  \nOnly the the most recent return is needed to update the variance.  \nIt also applies greater weight to recent returns and less to past returns.\n\n*/\n\n// Get the current stock price\nlet priceCurrent = msg.priceCurrent\n// Get the previous price\nlet pricePrevious = flow.get(\"pricePrevious\")\n\n// Get the lambda decay factor\nlet lambdaFactor = flow.get(\"lambdaFactor\")\nlet lambda1 = 1 - lambdaFactor\n\n// Initialize the data\nlet retEMA = flow.get(\"retEMA\") // Get the EMA return\nlet retVar = flow.get(\"retVar\") // Get the return variance\nlet volFloor = flow.get(\"volFloor\") // Get the volatility floor\nlet retVol = Math.max(volFloor, Math.sqrt(retVar)) // The return volatility\n\n\n// if (isNaN(pricePrevious)) { // Initialize the return variance\n//     retEMA = 0 // Initialize the EMA return\n//     retVar = 0.01 // Initialize the return variance\n//     retVol = 0.1 // Initialize the return volatility\n// } else { // Update the return variance\n    let retCurrent = (priceCurrent - pricePrevious) // Calculate the dollar return\n    retVar = lambdaFactor * retVar + lambda1 * Math.pow((retCurrent - retEMA), 2)\n    retVol = Math.max(volFloor, Math.sqrt(retVar)) // The return volatility\n    // Update the EMA return\n    retEMA = lambdaFactor * retEMA + lambda1 * retCurrent\n    // node.warn(\"Price = \" + priceCurrent + \" / retVol = \" + retVol.toPrecision(7))\n// } // end if\n\nflow.set(\"retEMA\", retEMA) // Set the EMA return\n// flow.set(\"pricePrevious\", priceCurrent) // Set the previous price\nflow.set(\"retVar\", retVar) // Set the return variance\nflow.set(\"retVol\", retVol) // Set the return volatility\nmsg.retEMA = retEMA\nmsg.retVarEMA = retVar\nmsg.retVolEMA = retVol\n\n// node.warn(\"Price = \" + priceCurrent + \" / retVol = \" + retVol.toPrecision(7))\n\nreturn msg\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -380,7 +384,7 @@
         "finalize": "",
         "libs": [],
         "x": 320,
-        "y": 700,
+        "y": 920,
         "wires": [
             [
                 "6e7cbe4e9d2005bf"
@@ -393,10 +397,11 @@
         "z": "6f782989d0b5585e",
         "name": "Price In",
         "links": [
-            "02d8cb8b69b31595"
+            "02d8cb8b69b31595",
+            "493425ccd7582206"
         ],
         "x": 105,
-        "y": 700,
+        "y": 920,
         "wires": [
             []
         ]
@@ -408,18 +413,18 @@
         "name": "Calculate the moving average price volatility",
         "info": "",
         "x": 230,
-        "y": 800,
+        "y": 1020,
         "wires": []
     },
     {
         "id": "adb7fae2817273cc",
         "type": "link out",
         "z": "6f782989d0b5585e",
-        "name": "RSI out",
+        "name": "SMA price vol",
         "mode": "link",
         "links": [],
         "x": 535,
-        "y": 860,
+        "y": 1080,
         "wires": []
     },
     {
@@ -427,7 +432,7 @@
         "type": "function",
         "z": "6f782989d0b5585e",
         "name": "Calculate the SMA price volatility",
-        "func": "/*\nCalculating the Relative Strength Index (RSI).\n\nThe following website provides a good explanation of the RSI calculation:\n\nhttps://school.stockcharts.com/doku.php?id=technical_indicators:relative_strength_index_rsi\n\n\nThe RSI depends on the trailing average gain (gainm) and the trailing average loss (lossm).\n\nThe average gains and losses are calculated from the gains and losses over a look-back interval (lookb), \nwhich is often chosen to be 14 time periods (days, minutes, etc.) \n\nThe current gains and losses are always expressed as non-negative values:\n\n    gain(t) = max(r(t), 0)\n    loss(t) = max(-r(t), 0)\n\nWhere r(t) is the current return at time t.\n\nIn the initial warmup interval (say the first 250 time periods), the averages \nare calculated as the averages of the gains and losses over the look-back interval:\n\n    gainm(t) = Sum( gain(t) ... gain(t-lookb+1) ) / lookb\n    lossm(t) = Sum( loss(t) ... loss(t-lookb+1) ) / lookb\n\nAfter the initial warmup interval, the average gains and losses are calculated \nrecursively, similar to the exponential moving average (EMA): \n\n    gainm(t) = ( (lookb-1) * gainm(t-1)  + gain(t) ) / lookb\n    lossm(t) = ( (lookb-1) * lossm(t-1)  + loss(t) ) / lookb\n\nThe advantage of the recursive calculation is that it doesn't require maintaining \nan array of recent gains and losses.  \nOnly the the most recent gains and losses are needed to update the averages.  \n\n\nThe RSI is then calculated from the average gains and losses as:\n\n            100 * gainm(t)\n    RSI = ---------------------\n           gainm(t) + lossm(t)\n\nThe RSI value is between 0 and 100 - it is said to oscillate between these extremes.\nIf the average gain is equal to zero, then RSI = 0.\nIf the average loss is equal to zero, then RSI = 100.\nIf the average gains and losses are equal, then RSI = 50.\nIf the gains are greater than the losses, then RSI > 50.  \nIf the gains are less than the losses, then RSI < 50.  \n\nSome traders interpret the condition RSI > 80 as indicating that the prices are overbought (too high).\nSome traders interpret the condition RSI < 20 as indicating that the prices are oversold (too low).\n\n*/\n\n// Get the stock price\nlet pricec = msg.pricec // Get the current stock price\n\n// Get the price queue\nlet endpq = flow.get(\"endpq\")\nlet priceq = flow.get(\"priceq\")\nlet lenq = priceq.length\n\n// Add the price to the queue\npriceq[endpq] = pricec\nif (endpq > 0)\n    endpq = endpq - 1\nelse\n    endpq = lenq - 1\n\n// Update the price queue\nflow.set(\"priceq\", priceq)\nflow.set(\"endpq\", endpq)\n\n// Calculate the SMA price and the price variance\nlet pricevar = 0\nlet priceman = 0 // New SMA price\nlet pricema = flow.get(\"pricema\")\nfor (var i = lenq; i--;) {\n    pricevar += Math.pow((priceq[i] - pricema), 2)\n    priceman += priceq[i]\n} // end for\npricevar = pricevar / (lenq - 1)\npriceman = priceman / lenq\nflow.set(\"pricevar\", pricevar) // Set the price variance\n// Calculate the price volatility\nlet volf = flow.get(\"volf\") // Get the volatility floor\nlet pricevol = Math.max(volf, Math.sqrt(pricevar))\nflow.set(\"pricevol\", pricevol) // Set the price volatility\nflow.set(\"pricema\", priceman) // Set the SMA price\nmsg.pricema = priceman\nmsg.pricevar = pricevar\nmsg.pricevol = pricevol\n\nnode.warn(\"Price = \" + pricec + \" / pricevol = \" + pricevol.toPrecision(7))\n\nreturn msg\n",
+        "func": "/*\nCalculate the Simple Moving Average (SMA) price volatility.\n\nThe Simple Moving Average (SMA) price SMA(t) is equal to the average \nof the recent prices over the look-back interval lookBack:\n\n    SMA(t) = Sum( price(t), ... price(t-lookBack+1) ) / lookBack\n\nThe price variance var(t) is equal to the average of the squared excess prices \nover the look-back interval lookBack:\n\n    var(t) = Sum( (price(t) - SMA(t))^2, ... (price(t-lookBack+1) - SMA(t-lookBack+1))^2 ) / (lookBack - 1)\n\nThe volatility vol(t) is equal to the square root of the variance:\n\n    vol(t) = sqrt(var(t))\n\nThe disadvantage of the SMA calculation is that it requires maintaining an array \nof recent prices.  \nIt also applies the same weight to past prices as to more recent prices.\nBut it makes more sense that recent prices should have a greater weight than past prices.\n\n*/\n\n// Get the stock price\nlet priceCurrent = msg.priceCurrent // Get the current stock price\n\n// Get the price queue\nlet endPriceQueue = flow.get(\"endPriceQueue\")\nlet priceQueue = flow.get(\"priceQueue\")\nlet lenQueue = priceQueue.length\n\n// Add the price to the queue\npriceQueue[endPriceQueue] = priceCurrent\nif (endPriceQueue > 0)\n    endPriceQueue = endPriceQueue - 1\nelse\n    endPriceQueue = lenQueue - 1\n\n// Update the price queue\nflow.set(\"priceQueue\", priceQueue)\nflow.set(\"endPriceQueue\", endPriceQueue)\n\n// Calculate the SMA price and the price variance\nlet priceVar = 0\nlet pricSMAn = 0 // New SMA price\nlet pricSMA = flow.get(\"pricSMA\")\nfor (var i = lenQueue; i--;) {\n    priceVar += Math.pow((priceQueue[i] - pricSMA), 2)\n    pricSMAn += priceQueue[i]\n} // end for\npriceVar = priceVar / (lenQueue - 1)\npricSMAn = pricSMAn / lenQueue\nflow.set(\"priceVar\", priceVar) // Set the price variance\n// Calculate the price volatility\nlet volFloor = flow.get(\"volFloor\") // Get the volatility floor\nlet priceVol = Math.max(volFloor, Math.sqrt(priceVar))\nflow.set(\"priceVol\", priceVol) // Set the price volatility\nflow.set(\"pricSMA\", pricSMAn) // Set the SMA price\nmsg.pricSMA = pricSMAn\nmsg.priceVarSMA = priceVar\nmsg.priceVolSMA = priceVol\n\nnode.warn(\"Price = \" + priceCurrent + \" / priceVol = \" + priceVol.toPrecision(7))\n\nreturn msg\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -435,7 +440,7 @@
         "finalize": "",
         "libs": [],
         "x": 320,
-        "y": 860,
+        "y": 1080,
         "wires": [
             [
                 "adb7fae2817273cc"
@@ -448,10 +453,11 @@
         "z": "6f782989d0b5585e",
         "name": "Price In",
         "links": [
-            "02d8cb8b69b31595"
+            "02d8cb8b69b31595",
+            "493425ccd7582206"
         ],
         "x": 105,
-        "y": 860,
+        "y": 1080,
         "wires": [
             []
         ]
@@ -460,11 +466,13 @@
         "id": "80335ba03b15bcbb",
         "type": "link out",
         "z": "6f782989d0b5585e",
-        "name": "RSI out",
+        "name": "EMA price vol",
         "mode": "link",
-        "links": [],
+        "links": [
+            "808394b86575bac1"
+        ],
         "x": 535,
-        "y": 940,
+        "y": 1160,
         "wires": []
     },
     {
@@ -472,7 +480,7 @@
         "type": "function",
         "z": "6f782989d0b5585e",
         "name": "Calculate the EMA price volatility",
-        "func": "/*\nCalculate the exponential moving average (EMA).\n\nThe following website provides a good explanation of the RSI calculation:\n\nhttps://school.stockcharts.com/doku.php?id=technical_indicators:relative_strength_index_rsi\n\n\nThe RSI depends on the trailing average gain (gainm) and the trailing average loss (lossm).\n\nThe average gains and losses are calculated from the gains and losses over a look-back interval (lookb), \nwhich is often chosen to be 14 time periods (days, minutes, etc.) \n\nThe current gains and losses are always expressed as non-negative values:\n\n    gain(t) = max(r(t), 0)\n    loss(t) = max(-r(t), 0)\n\nWhere r(t) is the current return at time t.\n\nIn the initial warmup interval (say the first 250 time periods), the averages \nare calculated as the averages of the gains and losses over the look-back interval:\n\n    gainm(t) = Sum( gain(t) ... gain(t-lookb+1) ) / lookb\n    lossm(t) = Sum( loss(t) ... loss(t-lookb+1) ) / lookb\n\nAfter the initial warmup interval, the average gains and losses are calculated \nrecursively, similar to the exponential moving average (EMA): \n\n    gainm(t) = ( (lookb-1) * gainm(t-1)  + gain(t) ) / lookb\n    lossm(t) = ( (lookb-1) * lossm(t-1)  + loss(t) ) / lookb\n\nThe advantage of the recursive calculation is that it doesn't require maintaining \nan array of recent gains and losses.  \nOnly the the most recent gains and losses are needed to update the averages.  \n\n\nThe RSI is then calculated from the average gains and losses as:\n\n            100 * gainm(t)\n    RSI = ---------------------\n           gainm(t) + lossm(t)\n\nThe RSI value is between 0 and 100 - it is said to oscillate between these extremes.\nIf the average gain is equal to zero, then RSI = 0.\nIf the average loss is equal to zero, then RSI = 100.\nIf the average gains and losses are equal, then RSI = 50.\nIf the gains are greater than the losses, then RSI > 50.  \nIf the gains are less than the losses, then RSI < 50.  \n\nSome traders interpret the condition RSI > 80 as indicating that the prices are overbought (too high).\nSome traders interpret the condition RSI < 20 as indicating that the prices are oversold (too low).\n\n*/\n// Calculate the exponential moving average (EMA) volatility\n\n// Get the current stock price\nlet pricec = msg.pricec\n\n// Get the lambda decay factor\nlet lambdaf = flow.get(\"lambdaf\")\nlet lambda1 = 1 - lambdaf\n\n// Initialize the data\nlet pricema = flow.get(\"pricema\") // Get the EMA price\nlet pricevar = flow.get(\"pricevar\") // Get the price variance\nlet volf = flow.get(\"volf\") // Get the volatility floor\nlet pricevol = 0.1 // The price volatility\n\nif (isNaN(pricema)) { // Initialize the price variance\n    pricema = pricec // Initialize the EMA price\n    pricevar = 0.01 // Initialize the price variance\n} else {\n    // Update the price variance\n    pricevar = lambdaf * pricevar + lambda1 * Math.pow((pricec - pricema), 2)\n    pricevol = Math.max(volf, Math.sqrt(pricevar)) // The price volatility\n    // Update the EMA price\n    pricema = lambdaf * pricema + lambda1 * pricec\n    node.warn(\"Price = \" + pricec + \" / pricevol = \" + pricevol.toPrecision(7))\n} // end if\n\nflow.set(\"pricema\", pricema) // Set the EMA price\nflow.set(\"pricevar\", pricevar) // Set the price variance\nflow.set(\"pricevol\", pricevol) // Set the price volatility\nmsg.pricema = pricema\nmsg.pricevar = pricevar\nmsg.pricevol = pricevol\n\nnode.warn(\"Price = \" + pricec + \" / pricevol = \" + pricevol.toPrecision(7))\n\n\nreturn msg\n",
+        "func": "/*\nCalculate the Exponential Moving Average (EMA) price volatility.\n\nThe Exponential Moving Average (EMA) price EMA(t) is equal to the weighted average \nof the past average and the recent price, using the lambda decay factor: \n\n    EMA(t) = lambda * EMA(t-1)  + (1-lambda) * price(t)\n\nThe price variance var(t) is similarly calculated recursively using the lambda decay factor: \n\n    var(t) = lambda * var(t-1)  + (1-lambda) * (price(t) - EMA(t))^2\n\nThe volatility vol(t) is equal to the square root of the variance:\n\n    vol(t) = sqrt(var(t))\n\nThe advantage of the recursive calculation is that it doesn't require maintaining \nan array of recent prices.  \nOnly the the most recent price is needed to update the variance.  \nIt also applies greater weight to recent prices and less to past prices.\n\n*/\n\n// Get the current stock price\nlet priceCurrent = msg.priceCurrent\n\n// Get the lambda decay factor\nlet lambdaFactor = flow.get(\"lambdaFast\")\nlet lambda1 = 1 - lambdaFactor\n\n// Initialize the data\n// let pricEMA = msg.pricEMA // Get the EMA price\nlet pricEMA = flow.get(\"pricEMA\") // Get the EMA price\nlet priceVar = flow.get(\"priceVar\") // Get the price variance\nlet volFloor = flow.get(\"volFloor\") // Get the volatility floor\nlet priceVol = volFloor // The price volatility\n\n// if (isNaN(pricEMA)) { // Initialize the price variance\n    // pricEMA = priceCurrent // Initialize the EMA price\n    // priceVar = Math.pow(volFloor, 2) // Initialize the price variance\n// } else {\n    // Update the price variance\n    priceVar = lambdaFactor * priceVar + lambda1 * Math.pow((priceCurrent - pricEMA), 2)\n    priceVol = Math.max(volFloor, Math.sqrt(priceVar)) // The price volatility\n    // Update the EMA price\n    pricEMA = lambdaFactor * pricEMA + lambda1 * priceCurrent\n    // node.warn(\"Price = \" + priceCurrent + \" / priceVol = \" + priceVol.toPrecision(7))\n// } // end if\n\nflow.set(\"pricEMA\", pricEMA) // Set the EMA price\nflow.set(\"priceVar\", priceVar) // Set the price variance\nflow.set(\"priceVol\", priceVol) // Set the price volatility\nmsg.pricEMA = pricEMA\nmsg.priceVarEMA = priceVar\nmsg.priceVolEMA = priceVol\n\n// node.warn(\"Price = \" + priceCurrent + \" / priceVol = \" + priceVol.toPrecision(7))\n\nreturn msg\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -480,7 +488,7 @@
         "finalize": "",
         "libs": [],
         "x": 320,
-        "y": 940,
+        "y": 1160,
         "wires": [
             [
                 "80335ba03b15bcbb"
@@ -493,12 +501,123 @@
         "z": "6f782989d0b5585e",
         "name": "Price In",
         "links": [
-            "02d8cb8b69b31595"
+            "02d8cb8b69b31595",
+            "493425ccd7582206"
         ],
         "x": 105,
-        "y": 940,
+        "y": 1160,
         "wires": [
-            []
+            [
+                "23ce53fe0b143a5a"
+            ]
         ]
+    },
+    {
+        "id": "8e4e2c9c25a31a78",
+        "type": "function",
+        "z": "6f782989d0b5585e",
+        "name": "Scrub prices",
+        "func": "// Scrub the prices from bad data\n\n// Get the machine time in milliseconds\n// let timeDate = new Date()\n// let timeMillisec = timeDate.getTime()\n\n// Get the stock prices\nlet priceCurrent = msg.priceCurrent // Get the current price\nlet pricePrevious = flow.get(\"pricePrevious\") // Get the previous price\nflow.set(\"pricePrevious\", priceCurrent) // Set the previous price\n\n// Calculate the dollar return\nlet retCurrent = (priceCurrent - pricePrevious) // Dollar return\n// Get the dollar threshold for invalid (bad) data\nlet threshScrub = flow.get(\"threshScrub\")\nlet priceValid = flow.get(\"priceValid\") // Was the previous price valid?\n// If the return is very large, then it's from an invalid (bad) price\nif ((Math.abs(retCurrent) > threshScrub) && priceValid) {\n    // Bad price - set the current price to the previous price\n    node.warn(\"Invalid price = \" + priceCurrent + \" / Prev = \" + pricePrevious)\n    priceCurrent = pricePrevious\n    // Set the current price as invalid (bad)\n    flow.set(\"priceValid\", false)\n} // end if\n\n// Set the current price\nflow.set(\"priceCurrent\", priceCurrent)\nmsg.priceCurrent = priceCurrent\n\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 400,
+        "wires": [
+            [
+                "02d8cb8b69b31595"
+            ]
+        ]
+    },
+    {
+        "id": "28030205d848272e",
+        "type": "inject",
+        "z": "6f782989d0b5585e",
+        "name": "9:30 AM",
+        "props": [],
+        "repeat": "",
+        "crontab": "30 09 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": "1",
+        "topic": "",
+        "x": 220,
+        "y": 200,
+        "wires": [
+            [
+                "872a6ce7abff5c20"
+            ]
+        ]
+    },
+    {
+        "id": "ada22cfca95bc4bf",
+        "type": "function",
+        "z": "6f782989d0b5585e",
+        "name": "Initialize the prices",
+        "func": "node.warn(\"Initializing the prices\")\n\nlet priceCurrent = flow.get(\"priceCurrent\")\nmsg.priceCurrent = priceCurrent\n\n// Initialize the prices\nflow.set(\"pricePrevious\", priceCurrent) // Set the previous price\n// msg.pricePrevious = priceCurrent\nflow.set(\"pricEMA\", priceCurrent) // Set the EMA price\n// msg.pricEMA = priceCurrent\n// Initialize fast and slow EMA prices\nflow.set(\"priceFast\", priceCurrent) // Fast EMA price\nmsg.priceFast = priceCurrent\n// node.warn(\"Fast EMA price = \" + flow.get(\"priceFast\"))\nflow.set(\"priceSlow\", priceCurrent) // Slow EMA price\nmsg.priceSlow = priceCurrent\n// node.warn(\"Slow EMA price = \" + flow.get(\"priceSlow\"))\n\nflow.set(\"retEMA\", 0) // Set the EMA return to 0\n// msg.retEMA = 0\n\n// Initialize the variances\nlet varFloor = Math.pow(flow.get(\"volFloor\"), 2)\nflow.set(\"retVar\", varFloor) // Initialize the EMA return variance\nmsg.retVar = varFloor\nflow.set(\"priceVar\", varFloor) // Initialize the EMA price variance\nmsg.priceVar = varFloor\n\nnode.warn(\"Finished initializing the prices\")\n\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 200,
+        "wires": [
+            [
+                "122f7aa6c933380e"
+            ]
+        ]
+    },
+    {
+        "id": "872a6ce7abff5c20",
+        "type": "delay",
+        "z": "6f782989d0b5585e",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "3",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 380,
+        "y": 200,
+        "wires": [
+            [
+                "ada22cfca95bc4bf"
+            ]
+        ]
+    },
+    {
+        "id": "2492e76eb560ee5e",
+        "type": "comment",
+        "z": "6f782989d0b5585e",
+        "name": "Scrub the prices",
+        "info": "",
+        "x": 140,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "122f7aa6c933380e",
+        "type": "link out",
+        "z": "6f782989d0b5585e",
+        "name": "Initial prices out",
+        "mode": "link",
+        "links": [
+            "8804650b737c0b7a",
+            "688557d679508e22"
+        ],
+        "x": 745,
+        "y": 200,
+        "wires": []
     }
 ]

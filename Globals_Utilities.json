@@ -1,0 +1,1718 @@
+[
+    {
+        "id": "76132ff54428e3dc",
+        "type": "tab",
+        "label": "Globals/Utilities",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "587a889797454d49",
+        "type": "comment",
+        "z": "76132ff54428e3dc",
+        "name": "Market Status",
+        "info": "",
+        "x": 110,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "ef8a4f2832b99fe0",
+        "type": "inject",
+        "z": "76132ff54428e3dc",
+        "name": "Every 1 Min",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 580,
+        "wires": [
+            [
+                "fb5e861bba01969c"
+            ]
+        ]
+    },
+    {
+        "id": "5470a0118a94eaad",
+        "type": "comment",
+        "z": "76132ff54428e3dc",
+        "name": "Update balances globals",
+        "info": "",
+        "x": 150,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "8941511860278fb3",
+        "type": "inject",
+        "z": "76132ff54428e3dc",
+        "d": true,
+        "name": "1 Sec",
+        "props": [
+            {
+                "p": "stocks",
+                "v": "tickersStocks",
+                "vt": "global"
+            },
+            {
+                "p": "market",
+                "v": "tickersMarket",
+                "vt": "global"
+            },
+            {
+                "p": "watch",
+                "v": "tickersWatch",
+                "vt": "global"
+            },
+            {
+                "p": "feed",
+                "v": "datatype",
+                "vt": "global"
+            }
+        ],
+        "repeat": "1",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 400,
+        "wires": [
+            [
+                "bb1f394b5448abb3"
+            ]
+        ]
+    },
+    {
+        "id": "fb5e861bba01969c",
+        "type": "gate",
+        "z": "76132ff54428e3dc",
+        "name": "Start flow",
+        "controlTopic": "control",
+        "defaultState": "closed",
+        "openCmd": "open",
+        "closeCmd": "close",
+        "toggleCmd": "toggle",
+        "defaultCmd": "default",
+        "statusCmd": "status",
+        "persist": true,
+        "storeName": "default",
+        "x": 380,
+        "y": 580,
+        "wires": [
+            [
+                "4868076b3c3aed67",
+                "5c31c39b40df9f6b"
+            ]
+        ]
+    },
+    {
+        "id": "550ae9b1c905dd9e",
+        "type": "link in",
+        "z": "76132ff54428e3dc",
+        "name": "run globals > balances updater",
+        "links": [
+            "a4231554d8ccf553"
+        ],
+        "x": 255,
+        "y": 560,
+        "wires": [
+            [
+                "fb5e861bba01969c"
+            ]
+        ]
+    },
+    {
+        "id": "4868076b3c3aed67",
+        "type": "alpaca-account-query",
+        "z": "76132ff54428e3dc",
+        "conf": "810ce3520dc18040",
+        "x": 580,
+        "y": 560,
+        "wires": [
+            [
+                "6156e676ed337077"
+            ]
+        ]
+    },
+    {
+        "id": "5c31c39b40df9f6b",
+        "type": "alpaca-account-query",
+        "z": "76132ff54428e3dc",
+        "conf": "c06cec183f9317f9",
+        "x": 580,
+        "y": 600,
+        "wires": [
+            [
+                "ca346456ce4ba583"
+            ]
+        ]
+    },
+    {
+        "id": "6156e676ed337077",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "store accountLive",
+        "func": "//let balance = msg.payload.equity;\nglobal.set(\"headersLive\", msg.headers)\nglobal.set(\"accountLive\", msg.payload)\n\n/*\nif (!msg.payload.code) {\n    let symbol = msg.payload[\"symbol\"]\n    global.set(\"balanceLive\", balance)\n\n}\n*/\n\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "369326337199f625",
+        "type": "comment",
+        "z": "76132ff54428e3dc",
+        "name": "Set SPY benchmarks",
+        "info": "",
+        "x": 140,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "31e9da7abc7b487b",
+        "type": "inject",
+        "z": "76132ff54428e3dc",
+        "name": "Get SPY at 6 AM",
+        "props": [
+            {
+                "p": "symbol",
+                "v": "SPY",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 06 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 700,
+        "wires": [
+            [
+                "3c9f24a69ad66bdc"
+            ]
+        ]
+    },
+    {
+        "id": "98119b8a9cdef778",
+        "type": "inject",
+        "z": "76132ff54428e3dc",
+        "name": "Get SPY at 8 pm AM",
+        "props": [
+            {
+                "p": "symbol",
+                "v": "SPY",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 20 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 160,
+        "y": 740,
+        "wires": [
+            [
+                "c53c8233fe3841b2"
+            ]
+        ]
+    },
+    {
+        "id": "874047eb97134408",
+        "type": "inject",
+        "z": "76132ff54428e3dc",
+        "name": "Evey min",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "*/1 4-19 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "SPY",
+        "payloadType": "str",
+        "x": 120,
+        "y": 780,
+        "wires": [
+            [
+                "06e66feb8de0ebc2"
+            ]
+        ]
+    },
+    {
+        "id": "3c9f24a69ad66bdc",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "global.set(\"spy_start\")",
+        "func": "msg.symbol = 'SPY'\n//node.warn(msg.symbol)\n\nlet price = global.get(\"lastTrades.SPY.p\")\n//node.warn(\"SPY price: \" +price)\n\n// price at 6 AM\nglobal.set(\"spy_start\", price)\n\nreturn msg",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 700,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "cc4bc6b978a212ab",
+        "type": "comment",
+        "z": "76132ff54428e3dc",
+        "name": "Retrieve/Store Last Trade Values from Alpaca End Point",
+        "info": "",
+        "x": 240,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "06e66feb8de0ebc2",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "global.set(\"spy_current\"), global.set(\"spy_change\"), global.set(\"spy_pctchange\") ",
+        "func": "//node.warn(msg.payload)\n\nmsg.symbol = 'SPY'\n//node.warn(msg.symbol)\n\nlet obj = [global.get(\"lastTrades\")]\n//node.warn(obj)\n\nlet symbol = ''\nlet size = 0\nlet tradeTime = ''\nlet arr = []\n\nlet price = Number(global.get(\"lastTrades.SPY.p\"))\n\nglobal.set(\"spy_current\", price)\n\nlet spy_start = global.get(\"spy_start\")\n//node.warn(spy_start)\n\nlet spy_change = Number( price - spy_start)\nlet spy_pctchange = Number(spy_change / spy_start)\n\n//node.warn(\"SPY Current Price: \" +price+ \" Change: \" +spy_change+ \" Pct Change:\" +spy_pctchange)\n\nglobal.set(\"spy_change\", spy_change)\nglobal.set(\"spy_pctchange\", spy_pctchange)\n\n\nreturn msg",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 600,
+        "y": 780,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "197a14eaffe07584",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "store global lastTrade ",
+        "func": "//node.warn(msg.payload)\n\n// Get the Alpaca price object\nlet pricobj = msg.payload\n\nif (!msg.payload.code)\n{\n    let symbol = msg.payload[\"symbol\"]\n    global.set(\"lastTrades\", pricobj)\n\n}\n\nreturn msg",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 940,
+        "y": 400,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e780c8ef2feb58b3",
+        "type": "alpaca-data-last-multi-trade",
+        "z": "76132ff54428e3dc",
+        "conf": "810ce3520dc18040",
+        "symbol": "",
+        "name": "",
+        "x": 690,
+        "y": 400,
+        "wires": [
+            [
+                "197a14eaffe07584"
+            ]
+        ]
+    },
+    {
+        "id": "7b4e800e76b30d76",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "Save lastTrades",
+        "func": "msg.symbol = msg.stocks\nmsg.symbol += \",\" +msg.market\nmsg.symbol += \",\" +msg.watch\n//node.warn(msg.symbol)\nreturn msg;\n\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 400,
+        "wires": [
+            [
+                "e780c8ef2feb58b3"
+            ]
+        ]
+    },
+    {
+        "id": "69c15896eceb28c3",
+        "type": "inject",
+        "z": "76132ff54428e3dc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 435,
+        "y": 140,
+        "wires": [
+            [
+                "4de3596bc72bc3fd"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "4de3596bc72bc3fd",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "rate limit remaining",
+        "func": "node.warn(global.get(\"headersPaper.x-ratelimit-remaining\"))\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c53c8233fe3841b2",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "global.set(\"spy_close\")",
+        "func": "msg.symbol = 'SPY'\n//node.warn(msg.symbol)\n\nlet price = global.get(\"lastTrades.SPY.p\")\nnode.warn(\"SPY close: \" +price)\n\n// price at 6 AM\nglobal.set(\"spy_close\", price)\n\nreturn msg",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 740,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2f623665b2d4ab6c",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "create global var positionEmpty",
+        "func": "const positionEmpty = { asset_id: '35f33a69-f5d6-4dc9-b158-4485e5e92e4b', symbol: \"\", alpaca_symbol: \"\", exchange: \"\", \nasset_class: \"\", asset_marginable: \"\", qty: 0, avg_entry_price: 0, side: \"\", market_value: 0, cost_basis: 0, \nunrealized_pl: 0, unrealized_plpc: 0, unrealized_intraday_pl: 0, unrealized_intraday_plpc: 0, current_price: 0, \nlastday_price: 0, change_today: 0, qty_available: 0, id: \"Portfolio is empty\", portfolioname: \"\", name: \"\" }\n\nnode.warn(positionEmpty)\nnode.warn(Array.isArray(positionEmpty))\n\n\nlet obj = []\nobj.push(positionEmpty)\n\nnode.warn(Array.isArray(obj))\nglobal.set(\"positionEmpty\", obj)\n\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "512ee298d1d2640c",
+        "type": "inject",
+        "z": "76132ff54428e3dc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 125,
+        "y": 280,
+        "wires": [
+            [
+                "2f623665b2d4ab6c",
+                "3a86d6d21a35bd2b"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "d7de63adcf214869",
+        "type": "link in",
+        "z": "76132ff54428e3dc",
+        "name": "set empty position",
+        "links": [
+            "a4231554d8ccf553"
+        ],
+        "x": 215,
+        "y": 280,
+        "wires": [
+            [
+                "2f623665b2d4ab6c",
+                "3a86d6d21a35bd2b"
+            ]
+        ]
+    },
+    {
+        "id": "a8eabc0bdb32f4fb",
+        "type": "link in",
+        "z": "76132ff54428e3dc",
+        "name": "run globals > SPY benchmarks",
+        "links": [],
+        "x": 295,
+        "y": 660,
+        "wires": [
+            [
+                "16157a445effecec"
+            ]
+        ]
+    },
+    {
+        "id": "16157a445effecec",
+        "type": "delay",
+        "z": "76132ff54428e3dc",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 400,
+        "y": 660,
+        "wires": [
+            [
+                "3c9f24a69ad66bdc",
+                "c53c8233fe3841b2",
+                "06e66feb8de0ebc2"
+            ]
+        ]
+    },
+    {
+        "id": "e9c534234a550177",
+        "type": "comment",
+        "z": "76132ff54428e3dc",
+        "name": "Check to make sure rate limit is not exceeded",
+        "info": "",
+        "x": 210,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "ca346456ce4ba583",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "store accountPaper",
+        "func": "//let balance = msg.payload.equity;\nglobal.set(\"headersPaper\", msg.headers)\nglobal.set(\"accountPaper\", msg.payload)\n\n/*\nif (!msg.payload.code) {\n    let symbol = msg.payload[\"symbol\"]\n    global.set(\"balanceLive\", balance)\n\n}\n*/\n\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 600,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "19b253401817e277",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "update algoStatusLive each second",
+        "func": "msg.query = \"select id,status from algos where account = 'live'\"\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 290,
+        "y": 960,
+        "wires": [
+            [
+                "c2cb5cad48ae35a1"
+            ]
+        ]
+    },
+    {
+        "id": "c2cb5cad48ae35a1",
+        "type": "postgresql",
+        "z": "76132ff54428e3dc",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 520,
+        "y": 960,
+        "wires": [
+            [
+                "f8d99871f848a562"
+            ]
+        ]
+    },
+    {
+        "id": "f8d99871f848a562",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "set status",
+        "func": "//node.warn(msg.payload)\nglobal.set(\"algoStatusLive\", msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 960,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "abae119ff2ac1773",
+        "type": "inject",
+        "z": "76132ff54428e3dc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "5",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 95,
+        "y": 960,
+        "wires": [
+            [
+                "19b253401817e277"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "b72d2ec2f37e7aca",
+        "type": "comment",
+        "z": "76132ff54428e3dc",
+        "name": "Update global algoStatus",
+        "info": "",
+        "x": 150,
+        "y": 880,
+        "wires": []
+    },
+    {
+        "id": "e40c2533342609c5",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "update algoStatusPaper each second",
+        "func": "msg.query = \"select id,status from algos where account = 'paper'\"\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 290,
+        "y": 1000,
+        "wires": [
+            [
+                "476301b1afad3c69"
+            ]
+        ]
+    },
+    {
+        "id": "476301b1afad3c69",
+        "type": "postgresql",
+        "z": "76132ff54428e3dc",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 520,
+        "y": 1000,
+        "wires": [
+            [
+                "5ce8121166b52abb"
+            ]
+        ]
+    },
+    {
+        "id": "5ce8121166b52abb",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "set status",
+        "func": "//node.warn(msg.payload)\nglobal.set(\"algoStatusPaper\", msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 1000,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5d14944a3642f1fa",
+        "type": "inject",
+        "z": "76132ff54428e3dc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "5",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 95,
+        "y": 1000,
+        "wires": [
+            [
+                "e40c2533342609c5"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "b5692d669ab55d67",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "store spy each second",
+        "func": "//node.warn(msg.payload)\n\nmsg.symbol = 'SPY'\n//node.warn(msg.symbol)\n\nlet obj = [global.get(\"lastTrades\")]\n//node.warn(obj)\n\nlet symbol = ''\nlet size = 0\nlet tradeTime = ''\nlet arr = []\n\nlet price = Number(global.get(\"lastTrades.SPY.p\"))\nlet d = Number(Date.now());\nd = d / 1000\nd = d.toFixed(0)\n//node.warn(d)\n\nmsg.query = \"insert into spy (unixtime, spy) values (\" + d + \",\" + price + \");\"\n//node.warn(msg.query)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 1120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "464bd8a9330fd86e",
+        "type": "inject",
+        "z": "76132ff54428e3dc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "1",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 1120,
+        "wires": [
+            [
+                "b5692d669ab55d67"
+            ]
+        ]
+    },
+    {
+        "id": "bddaba51a274368c",
+        "type": "comment",
+        "z": "76132ff54428e3dc",
+        "name": "Store SPY",
+        "info": "",
+        "x": 100,
+        "y": 1080,
+        "wires": []
+    },
+    {
+        "id": "494aefb40d0393fa",
+        "type": "comment",
+        "z": "76132ff54428e3dc",
+        "name": "Balances",
+        "info": "",
+        "x": 140,
+        "y": 1240,
+        "wires": []
+    },
+    {
+        "id": "6ed344c899b52138",
+        "type": "inject",
+        "z": "76132ff54428e3dc",
+        "name": "daily",
+        "props": [],
+        "repeat": "",
+        "crontab": "00 01 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 1300,
+        "wires": [
+            [
+                "849dcda298f63d76"
+            ]
+        ]
+    },
+    {
+        "id": "849dcda298f63d76",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "get balances_daily paper",
+        "func": "msg.query = \"select * from balances_daily where account = 'paper'\"\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 1300,
+        "wires": [
+            [
+                "107f537ff4956508"
+            ]
+        ]
+    },
+    {
+        "id": "107f537ff4956508",
+        "type": "postgresql",
+        "z": "76132ff54428e3dc",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 520,
+        "y": 1300,
+        "wires": [
+            [
+                "7490abbf4e10e1c0"
+            ]
+        ]
+    },
+    {
+        "id": "7490abbf4e10e1c0",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "function 3",
+        "func": "node.warn(msg.payload)\nglobal.set(\"balances_daily_paper\", msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 1300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6ee15dd2da6658bd",
+        "type": "inject",
+        "z": "76132ff54428e3dc",
+        "name": "1 sec",
+        "props": [],
+        "repeat": "1",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 1340,
+        "wires": [
+            [
+                "86e4df6ee57d7ce7"
+            ]
+        ]
+    },
+    {
+        "id": "86e4df6ee57d7ce7",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "get balances paper",
+        "func": "msg.query = \"select * from balances where account = 'paper'\"\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 1340,
+        "wires": [
+            [
+                "f8c79dda1ab3263f"
+            ]
+        ]
+    },
+    {
+        "id": "f8c79dda1ab3263f",
+        "type": "postgresql",
+        "z": "76132ff54428e3dc",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 480,
+        "y": 1340,
+        "wires": [
+            [
+                "18ceca46af47a00c"
+            ]
+        ]
+    },
+    {
+        "id": "18ceca46af47a00c",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "function 5",
+        "func": "//node.warn(msg.payload)\nglobal.set(\"balances_paper\", msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 620,
+        "y": 1340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "29e0c8246d978ec5",
+        "type": "inject",
+        "z": "76132ff54428e3dc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 125,
+        "y": 1500,
+        "wires": [
+            [
+                "33e40dc2961e4a79"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "33e40dc2961e4a79",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "get market tickers",
+        "func": "wmsg.query = \"select symbol from markets\"\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 1480,
+        "wires": [
+            [
+                "7f2bd301574c97c8"
+            ]
+        ]
+    },
+    {
+        "id": "7f2bd301574c97c8",
+        "type": "postgresql",
+        "z": "76132ff54428e3dc",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 470,
+        "y": 1480,
+        "wires": [
+            [
+                "996249139f4df6b2"
+            ]
+        ]
+    },
+    {
+        "id": "4ad5bd87859ae6ab",
+        "type": "comment",
+        "z": "76132ff54428e3dc",
+        "name": "Manage ticker lists",
+        "info": "",
+        "x": 160,
+        "y": 1400,
+        "wires": []
+    },
+    {
+        "id": "483410c81f2cd3bd",
+        "type": "inject",
+        "z": "76132ff54428e3dc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 125,
+        "y": 1540,
+        "wires": [
+            [
+                "5c1b83db5140b1df"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "5c1b83db5140b1df",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "get watchlisttickers",
+        "func": "msg.query = \"select symbol from watchlist\"\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 1520,
+        "wires": [
+            [
+                "9e4f61c378eea817"
+            ]
+        ]
+    },
+    {
+        "id": "9e4f61c378eea817",
+        "type": "postgresql",
+        "z": "76132ff54428e3dc",
+        "name": "postgres",
+        "query": "",
+        "postgreSQLConfig": "7455395cf269fb2b",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 470,
+        "y": 1520,
+        "wires": [
+            [
+                "cdcd63f51dd058c5"
+            ]
+        ]
+    },
+    {
+        "id": "996249139f4df6b2",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "set global tickersMarket",
+        "func": "//node.warn(msg.payload)\nlet obj = msg.payload\nlet symbols = ''\nfor (let x = 0; x < obj.length; x++) {\n    symbols += obj[x][\"symbol\"] + \",\"\n}\n\n//node.warn(symbols)\nmsg.symbols = symbols.slice(0, -1) // delete the last comma \nglobal.set(\"tickersMarket\", msg.symbols)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 1480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "cdcd63f51dd058c5",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "set global tickersWatch",
+        "func": "//node.warn(msg.payload)\nlet obj = msg.payload\nlet symbols = ''\nfor (let x = 0; x < obj.length; x++) {\n    symbols += obj[x][\"symbol\"] + \",\"\n}\n\n//node.warn(symbols)\nmsg.symbols = symbols.slice(0, -1) // delete the last comma \nglobal.set(\"tickersWatch\", msg.symbols)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 1520,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "eed225a20faae0d7",
+        "type": "link in",
+        "z": "76132ff54428e3dc",
+        "name": "Manage Ticker Lists",
+        "links": [
+            "29339223f9a49240"
+        ],
+        "x": 115,
+        "y": 1460,
+        "wires": [
+            [
+                "33e40dc2961e4a79",
+                "5c1b83db5140b1df"
+            ]
+        ]
+    },
+    {
+        "id": "64494d1018e619c0",
+        "type": "inject",
+        "z": "76132ff54428e3dc",
+        "name": "5:00",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 05 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 95,
+        "y": 1640,
+        "wires": [
+            [
+                "88ec3d2161ce22d9"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "88ec3d2161ce22d9",
+        "type": "alpaca-asset-query",
+        "z": "76132ff54428e3dc",
+        "conf": "c06cec183f9317f9",
+        "x": 230,
+        "y": 1640,
+        "wires": [
+            [
+                "b5d3952dbe97b1c3"
+            ]
+        ]
+    },
+    {
+        "id": "b5d3952dbe97b1c3",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "all assets",
+        "func": "global.set(\"assetsAll\", msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 1640,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2173ab28145ff54d",
+        "type": "comment",
+        "z": "76132ff54428e3dc",
+        "name": "Assets managment",
+        "info": "",
+        "x": 150,
+        "y": 1600,
+        "wires": []
+    },
+    {
+        "id": "b57984b76392725e",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "shortable assets",
+        "func": "let assets = global.get(\"assetsAll\")\nlet shortable = []\n\n\nfor ( let i = 0; i < assets.length; i++ ){\n    if ((assets[i][\"tradable\"] === true) && (assets[i][\"shortable\"] === true)  && (assets[i][\"class\"] == 'us_equity') ){\n        //node.warn(assets[i][\"symbol\"])\n        shortable.push(assets[i])\n//        shortable.push(assets[i][\"symbol\"])\n    }\n}\n\nglobal.set(\"assetsShortable\" , shortable)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 220,
+        "y": 1680,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "222538b391544f60",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "tradable assets",
+        "func": "let assets = global.get(\"assetsAll\")\nlet shortable = []\n\n\nfor ( let i = 0; i < assets.length; i++ ){\n    if ((assets[i][\"tradable\"] === true) && (assets[i][\"class\"] == 'us_equity') ){\n        //node.warn(assets[i][\"symbol\"])\n        shortable.push(assets[i][\"symbol\"])\n    }\n}\n\nglobal.set(\"assetsTradable\" , shortable)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 220,
+        "y": 1720,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6f5584656ce79c2d",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "crypto assets",
+        "func": "let assets = global.get(\"assetsAll\")\nlet crypto = []\n\n\nfor ( let i = 0; i < assets.length; i++ ){\n    if ((assets[i][\"class\"] == 'crypto' ) ){\n        //node.warn(assets[i][\"symbol\"])\n        crypto.push(assets[i][\"symbol\"])\n    }\n}\n\nglobal.set(\"assetsCrypto\" , crypto)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 220,
+        "y": 1760,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e2c283e38e758c41",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "option assets",
+        "func": "let assets = global.get(\"assetsAll\")\nlet options = []\n\n\nfor ( let i = 0; i < assets.length; i++ ){\n    if ((assets[i][\"class\"] == 'option' ) ){\n        //node.warn(assets[i][\"symbol\"])\n        options.push(assets[i][\"symbol\"])\n    }\n}\n\nglobal.set(\"assetsOptions\" , options)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 220,
+        "y": 1800,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b8e0edd640507b3a",
+        "type": "inject",
+        "z": "76132ff54428e3dc",
+        "name": "5:05",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "01 05 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 95,
+        "y": 1720,
+        "wires": [
+            [
+                "b57984b76392725e",
+                "222538b391544f60",
+                "6f5584656ce79c2d"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "0678ede4329858e0",
+        "type": "comment",
+        "z": "76132ff54428e3dc",
+        "name": "Create empty positions global",
+        "info": "",
+        "x": 180,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "917a43660faf34f8",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "Open/Close the market",
+        "func": "// Extract variables about the state of the market\nlet earlyHours = msg.payload[\"earlyHours\"]\nlet afterHours = msg.payload[\"afterHours\"]\nlet marketState = msg.payload[\"market\"]\n\n// Set variables about the state of the market\nglobal.set(\"earlyHours\", earlyHours)\nglobal.set(\"afterHours\", afterHours)\nnode.warn(\"Market state = \" + marketState)\nnode.warn(\"Early hours = \" + earlyHours)\nnode.warn(\"After hours = \" + afterHours)\n\nif (marketState == \"open\") {\n    global.set(\"marketOpen\", true)\n    node.warn(\"Market is open\")\n} else {\n    global.set(\"marketOpen\", false)\n    node.warn(\"Market is closed\")\n} // end if\n\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8fa02a3e67215855",
+        "type": "inject",
+        "z": "76132ff54428e3dc",
+        "name": "Check for open",
+        "props": [],
+        "repeat": "",
+        "crontab": "*/30 4-19 * * 1,2,3,4,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 160,
+        "y": 80,
+        "wires": [
+            [
+                "0bbf2201db3a8510"
+            ]
+        ]
+    },
+    {
+        "id": "6cb7716b19922ba1",
+        "type": "polygon-marketinfo",
+        "z": "76132ff54428e3dc",
+        "conf": "eb9fd8fe9c8b9efb",
+        "x": 510,
+        "y": 80,
+        "wires": [
+            [
+                "917a43660faf34f8"
+            ]
+        ]
+    },
+    {
+        "id": "0bbf2201db3a8510",
+        "type": "delay",
+        "z": "76132ff54428e3dc",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 340,
+        "y": 80,
+        "wires": [
+            [
+                "6cb7716b19922ba1"
+            ]
+        ]
+    },
+    {
+        "id": "bb1f394b5448abb3",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "Market Open?",
+        "func": "let marketOpen = global.get(\"marketOpen\")\n// let liquidateMode = global.get(\"liquidateMode\")\n// let warmupMode = global.get(\"warmupMode\")\nlet earlyHours = global.get(\"earlyHours\")\nlet afterHours = global.get(\"afterHours\")\nlet tradExtended = (flow.get(\"tradExtended\") && ((earlyHours || afterHours)))\n\n//node.warn(marketOpen) // display true if open\n//node.warn(tradExtended) // display true if open\n\n// Use the if statement in on line 14 to collect pricing data during marke thours only (9:30 am - 4 pm).\n// Unless you have upgraded your Alpaca data plan to 'sip', pricing data is not available after hours.\n\nif (marketOpen ) { // Trade if either the market is open \n//if (marketOpen || tradExtended) { // Trade if either the market is open or if tradExtended\n\n    msg.symbol = flow.get(\"symbolNames\")\n    msg.feed = global.get(\"datatype\")\n    //node.warn(msg.symbol);\n    return msg\n} // end if\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 400,
+        "wires": [
+            [
+                "7b4e800e76b30d76"
+            ]
+        ]
+    },
+    {
+        "id": "61ca8887e71ff3e0",
+        "type": "comment",
+        "z": "76132ff54428e3dc",
+        "name": "Set global var for allPositions",
+        "info": "",
+        "x": 660,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "e45d12426864c987",
+        "type": "inject",
+        "z": "76132ff54428e3dc",
+        "name": "",
+        "props": [],
+        "repeat": "5",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 615,
+        "y": 240,
+        "wires": [
+            [
+                "fce3b2f71e1c2273"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "131f6ec782127acb",
+        "type": "alpaca-position-query",
+        "z": "76132ff54428e3dc",
+        "conf": "c06cec183f9317f9",
+        "symbol": "",
+        "x": 950,
+        "y": 240,
+        "wires": [
+            [
+                "ba00890a66945237"
+            ]
+        ]
+    },
+    {
+        "id": "ba00890a66945237",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "create positionsPaper",
+        "func": "//node.warn(msg.payload)\n\n// if (Array.isArray(msg.payload))\nlet obj = msg.payload\n// else\n//   let obj = {msg.payload}\n\n// initialize positionsPaper\n//global.set('positionsPaper', undefined);\n\n// this global variable is updated every second in the Globals/Utilities tab\n// by querying the algos table for any ids that are \"running\"\n\nlet assets = global.get(\"assetsActive\")\n//node.warn(assets)\n\n// filter this array where status = \"running\"\nlet finalobj = []\nlet id = 0\nlet symbol = ''\nlet algo_id = ''\nlet algo_name = ''\nlet name = ''\nlet newobj = []\n\nif (obj !== undefined)  //node.warn(\"do nothing\")\n{\n  for (let i = 0; i < obj.length; i++) {\n    try {\n\n    symbol = obj[i][\"symbol\"];\n    for (let i = 0; i < assets.length; i++) {\n      var assetsymbol = assets[i][\"symbol\"];\n      if (assetsymbol == symbol) {\n        obj[i][\"name\"] = assets[i][\"name\"];\n        obj[i][\"id\"] = assets[i][\"algo_id\"];\n        obj[i][\"portfolioname\"] = assets[i][\"portfolioname\"];\n //       node.warn(\"symbol: \" + symbol + \" id: \" + obj[i][\"algo_id\"] + \" algo name: \" + obj[i][\"portfolioname\"])\n      }\n    }\n    } catch(error)\n    {\n\n    }\n  }\nglobal.set(\"positionsPaper\", obj)\n}\nmsg.payload=obj\n//node.warn(obj)\nreturn msg\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1180,
+        "y": 240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "fce3b2f71e1c2273",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "market open?",
+        "func": "let market = global.get(\"market\")\nif ( market == 'open')\n    global.set(\"positionsPaper\", undefined)\n\n{\nreturn msg;\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 740,
+        "y": 240,
+        "wires": [
+            [
+                "131f6ec782127acb"
+            ]
+        ]
+    },
+    {
+        "id": "3a86d6d21a35bd2b",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "initialize activeAssets",
+        "func": "global.set(\"assetsActive\", undefined)\nglobal.set('assetsActive', [])\n\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "54ff31b33f5ad5b5",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "store global lastTrade ",
+        "func": "//node.warn(msg.payload)\n\n// Get the Alpaca price object\nlet pricobj = msg.payload\n\nif (!msg.payload.code)\n{\n    let symbol = msg.payload[\"symbol\"]\n    global.set(\"lastTrades\", pricobj)\n\n}\n\nreturn msg",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 980,
+        "y": 460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1af427a6dbb69fd7",
+        "type": "inject",
+        "z": "76132ff54428e3dc",
+        "name": "SPY Only",
+        "props": [
+            {
+                "p": "stocks",
+                "v": "SPY",
+                "vt": "str"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 460,
+        "wires": [
+            [
+                "33067fba83916808"
+            ]
+        ]
+    },
+    {
+        "id": "bdc5d9e17ceb6125",
+        "type": "alpaca-data-last-multi-trade",
+        "z": "76132ff54428e3dc",
+        "conf": "810ce3520dc18040",
+        "symbol": "",
+        "name": "",
+        "x": 730,
+        "y": 460,
+        "wires": [
+            [
+                "54ff31b33f5ad5b5"
+            ]
+        ]
+    },
+    {
+        "id": "70ca79951efbbab6",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "Save lastTrades",
+        "func": "msg.symbol = msg.stocks\nmsg.symbol += \",\" +msg.market\nmsg.symbol += \",\" +msg.watch\n//node.warn(msg.symbol)\nreturn msg;\n\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 460,
+        "wires": [
+            [
+                "bdc5d9e17ceb6125"
+            ]
+        ]
+    },
+    {
+        "id": "33067fba83916808",
+        "type": "function",
+        "z": "76132ff54428e3dc",
+        "name": "Market Open?",
+        "func": "let marketOpen = global.get(\"marketOpen\")\n// let liquidateMode = global.get(\"liquidateMode\")\n// let warmupMode = global.get(\"warmupMode\")\nlet earlyHours = global.get(\"earlyHours\")\nlet afterHours = global.get(\"afterHours\")\nlet tradExtended = (flow.get(\"tradExtended\") && ((earlyHours || afterHours)))\n\n//node.warn(marketOpen) // display true if open\n//node.warn(tradExtended) // display true if open\n\n// Use the if statement in on line 14 to collect pricing data during marke thours only (9:30 am - 4 pm).\n// Unless you have upgraded your Alpaca data plan to 'sip', pricing data is not available after hours.\n\nif (marketOpen ) { // Trade if either the market is open \n//if (marketOpen || tradExtended) { // Trade if either the market is open or if tradExtended\n\n    msg.symbol = flow.get(\"symbolNames\")\n    msg.feed = global.get(\"datatype\")\n    //node.warn(msg.symbol);\n    return msg\n} // end if\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 460,
+        "wires": [
+            [
+                "70ca79951efbbab6"
+            ]
+        ]
+    },
+    {
+        "id": "5a86f554e990bb54",
+        "type": "inject",
+        "z": "76132ff54428e3dc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 855,
+        "y": 200,
+        "wires": [
+            [
+                "131f6ec782127acb"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "810ce3520dc18040",
+        "type": "alpaca-account",
+        "name": "live",
+        "keyId": "USE-OAUTH-OR-REPLACE",
+        "paper": false
+    },
+    {
+        "id": "c06cec183f9317f9",
+        "type": "alpaca-account",
+        "name": "paper",
+        "keyId": "USE-OAUTH-OR-REPLACE",
+        "paper": true
+    },
+    {
+        "id": "7455395cf269fb2b",
+        "type": "postgreSQLConfig",
+        "name": "",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "postgres",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "docker",
+        "userFieldType": "str",
+        "password": "docker",
+        "passwordFieldType": "str"
+    },
+    {
+        "id": "eb9fd8fe9c8b9efb",
+        "type": "polygon-account",
+        "name": "Basic"
+    }
+]
